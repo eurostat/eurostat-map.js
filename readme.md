@@ -3,64 +3,6 @@
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
-[![Example](img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
-[![Example](img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
-[![Example](img/ps_ex.png)](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/)
-[![Example](img/dv_ex.png)](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/)
-[![Example](img/ct_ex.png)](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/)
-
-## Some examples
-
-* [Population density map](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/) (see [the code](https://bl.ocks.org/jgaffuri/0d6e1b1c6f9e1297829f38b9c37737fe))
-* [Population density map with dot pattern](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/) (see [the code](https://bl.ocks.org/jgaffuri/c8b99b207bb80a923bf1fd19f5d6de7e))
-* [Population map with proportional circles](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/) (see [the code](https://bl.ocks.org/jgaffuri/cf5f187bd195f9c8771a1a3a4898079a))
-* [Population change](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/) (see [the code](https://bl.ocks.org/jgaffuri/e10d3e5540bbf89ee572030f1b13b8e6))
-* [NUTS typology as a categorical map](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/) (see [the code](https://bl.ocks.org/jgaffuri/6bff324484f404c3e09cc2408a3e5265))
-
-## Quick start
-
-First, add the following required libraries to your HTML page. Replace *X.Y.Z* with the version number of the last release (see [here](https://github.com/eurostat/eurostat.js/releases)):
-
-```html
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://d3js.org/d3-queue.v3.min.js"></script>
-<script src="https://d3js.org/topojson.v1.min.js"></script>
-<script src="https://d3js.org/d3-color.v1.min.js"></script>
-<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsonstat@0.13.3/json-stat.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/eurostat/eurostat.js@X.Y.Z/js/eurostat-lib.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/eurostat/eurostat.js@X.Y.Z/js/eurostat-map.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/eurostat/eurostat.js@X.Y.Z/js/eurostat-tooltip.js"></script>
-```
-
-Then, add a SVG element where the map should appear:
-
-```html
-<svg id="map"></svg>
-```
-
-Finally, customize the map content and style with a bit of javascript code such as:
-
-```html
-<script>
-  EstLib.map()
-  .width(1000)
-  .datasetCode("demo_r_d3dens")
-  .filters({time : 2016})
-  .unitText("people/km²")
-  .legendTitleText("Population density (people/km²)")
-  .legendBoxHeight(210)
-  .legendBoxWidth(190)
-  .build();
-</script>
-```
-
-This code builds a map showing population density in 2016, based on statistical figures retrieved directly from Eurostat database *[demo_r_d3dens](http://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=demo_r_d3dens)*. See [the result](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/) and [the code](https://bl.ocks.org/jgaffuri/0d6e1b1c6f9e1297829f38b9c37737fe).
-
-For further customisation, find a (more) complete documentation below.
-
 ## Documentation - API
 
 ### Map creation
