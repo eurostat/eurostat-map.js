@@ -1,0 +1,39 @@
+{
+  "name": "eurostat.js",
+  "version": "0.9.27",
+  "description": "Build maps using d3.js and eurostat data",
+  "keywords": [
+    "eurostat",
+    "statistics",
+    "europe",
+    "NUTS",
+    "map"
+  ],
+  "homepage": "https://github.com/eurostat/eurostat.js",
+  "author": "",
+  "license": "EUPL-1.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eurostat/eurostat.js.git"
+  },
+  "main": "dist/eurostat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --open --watch",
+    "build": "webpack --mode=production",
+    "buildd": "webpack --mode=development",
+    "server": "webpack-dev-server --open"
+  },
+  "dependencies": {
+    "colorbrewer": "^1.3.0",
+    "d3": "^5.15.0",
+    "d3-svg-legend": "^2.25.6",
+    "topojson-client": "^3.1.0",
+    "jsonstat-toolkit": "^1.0.8"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
