@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='shortcut icon' type='image/x-icon' href='../../assets/images/favicon.ico' />
+    <title>eurostat-map.js</title>
+
+</head>
+
+<body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.min.js"></script>
+    <script>
+        eurostatmap
+            .map()
+            .scale("60M")
+            .width(900)
+            .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: 2016 })
+
+            .colorFun(d3.interpolateRdYlBu)
+            .classifMethod("threshold")
+            .threshold([-15, -10, -6, -4, -2, 0, 2, 4, 6, 10, 15])
+
+            .drawCoastalMargin(false)
+            .seaFillStyle("#333")
+            .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
+            .cntbnStroke({ def: "#777", co: "none" })
+            .drawGraticule(false)
+
+            .unitText("‰")
+            .tooltipShowFlags("long")
+            .bottomTextFill("white")
+
+            .legendTitleText("Population change from 2015 to 2016 (in ‰)")
+            .legendBoxWidth(200)
+            .legendBoxHeight(320)
+            .legendLabelDecNb(0)
+            .legendLabelDelimiter("to")
+
+            .set(opts)
+            .build();
+
+    </script>
+</body>
+
+</html>
