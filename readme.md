@@ -16,7 +16,7 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ### Map creation
 
-Create a map with ``var map = eurostatmap.map();`` and customise it with the methods below.
+Create a map with ``let map = eurostatmap.map();`` and customise it with the methods below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
