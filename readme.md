@@ -19,6 +19,8 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ### Installation
 
+
+#### Node.js
 ```properties
 npm install eurostatmap
 ```  
@@ -28,7 +30,7 @@ then
 eurostatmap = require("eurostatmap")
 ```
 
-or
+#### Standalone
 
 ```javascript
 <script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>
