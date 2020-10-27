@@ -1,6 +1,6 @@
 {
   "name": "eurostat-map.js",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Build maps using d3.js and eurostat data",
   "keywords": [
     "eurostat",
@@ -9,14 +9,17 @@
     "NUTS",
     "map"
   ],
-  "homepage": "https://github.com/eurostat/eurostat.js",
+  "homepage": "https://github.com/eurostat/eurostat-map.js",
   "author": "",
   "license": "EUPL-1.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eurostat/eurostat.js.git"
+    "url": "https://github.com/eurostat/eurostat-map.js.git"
   },
-  "main": "build/eurostat.min.js",
+  "main": "build/eurostatmap.min.js",
+  "files": [
+    "build/eurostatmap.min.js"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --watch",
