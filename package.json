@@ -1,6 +1,6 @@
 {
   "name": "eurostat-map.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Build maps using d3.js and eurostat data",
   "keywords": [
     "eurostat",
