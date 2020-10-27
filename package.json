@@ -20,8 +20,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --watch",
-    "build": "webpack --mode=production",
-    "buildd": "webpack --mode=development",
+    "build-dev": "webpack --config webpack.config.dev.js",
+    "build-prod": "webpack --config webpack.config.prod.js",
     "server": "webpack-dev-server --open"
   },
   "dependencies": {
@@ -34,6 +34,10 @@
   "devDependencies": {
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-livereload-plugin": "^2.3.0",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "babel-loader": "^8.1.0"
   }
 }

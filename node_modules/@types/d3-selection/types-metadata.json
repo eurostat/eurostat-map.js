@@ -1,0 +1,40 @@
+{
+    "name": "d3-selection",
+    "libraryName": "D3JS d3-selection module",
+    "sourceRepoURL": "https://www.github.com/DefinitelyTyped/DefinitelyTyped",
+    "data": {
+        "contributors": [
+            {
+                "name": "Tom Wanzek",
+                "url": "https://github.com/tomwanzek"
+            },
+            {
+                "name": "Alex Ford",
+                "url": "https://github.com/gustavderdrache"
+            },
+            {
+                "name": "Boris Yankov",
+                "url": "https://github.com/borisyankov"
+            }
+        ],
+        "dependencies": {},
+        "pathMappings": {},
+        "libraryMajorVersion": 1,
+        "libraryMinorVersion": 0,
+        "typeScriptVersion": "2.0",
+        "libraryName": "D3JS d3-selection module",
+        "typingsPackageName": "d3-selection",
+        "projectName": "https://github.com/d3/d3-selection/",
+        "sourceRepoURL": "https://www.github.com/DefinitelyTyped/DefinitelyTyped",
+        "globals": [],
+        "declaredModules": [
+            "d3-selection/."
+        ],
+        "files": [
+            "index.d.ts"
+        ],
+        "hasPackageJson": false,
+        "contentHash": "e54582791b16dfd39a9de75ff25711ddd44961f4955fbca19a35caff27d7cbf1"
+    },
+    "isLatest": true
+}

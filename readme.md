@@ -3,6 +3,9 @@
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
+## Examples
+
+
 ## Documentation - API
 
 ### Map creation
