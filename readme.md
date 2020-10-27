@@ -3,6 +3,10 @@
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
+## Examples
+
+[population density](https://eurostat.github.io/eurostat-map.js/examples/population.html)
+
 ## Documentation - API
 
 ### Map creation
