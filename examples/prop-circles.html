@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='shortcut icon' type='image/x-icon' href='../../assets/images/favicon.ico' />
+    <title>eurostat-map.js</title>
+
+</head>
+
+<body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.min.js"></script>
+    <script>
+        eurostatmap.map()
+            .width(900)
+            .datasetCode("demo_r_pjangrp3")
+            .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
+
+            .type("ps")
+            .psMaxSize(25)
+            .psStrokeWidth(0.3)
+
+            .unitText("inhabitants")
+            .tooltipShowFlags("long")
+
+            .legendTitleText("Population")
+            .legendLabelDecNb(0)
+            .legendBoxHeight(200)
+            .legendBoxWidth(140)
+
+            .build();
+
+    </script>
+</body>
+
+</html>

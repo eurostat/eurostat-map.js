@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='shortcut icon' type='image/x-icon' href='../../assets/images/favicon.ico' />
+    <title>eurostat-map.js</title>
+
+</head>
+
+<body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.min.js"></script>
+    <script>
+        eurostatmap
+            .map()
+            .width(900)
+            .scale("60M")
+            .NUTSyear(2013)
+            .nutsLvl(3)
+            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat.js/master/assets/data/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
+            .type("ct")
+            .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
+            .legendLabelDecNb(0)
+            .legendBoxHeight(110)
+            .legendBoxWidth(130)
+            .build()
+
+    </script>
+</body>
+
+</html>
