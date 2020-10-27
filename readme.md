@@ -17,6 +17,23 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ## Documentation - API
 
+### Installation
+
+```console
+'npm install nutsdorlingcartogram'
+```
+
+then 
+```javascript
+NutsDorlingCartogram = require("nutsdorlingcartogram")
+```
+
+or
+
+```javascript
+<script src="https://unpkg.com/nutsdorlingcartogram/build/dorling.min.js"></script>
+```
+
 ### Map creation
 
 Create a map with ``let map = eurostatmap.map();`` and customise it with the methods below.
