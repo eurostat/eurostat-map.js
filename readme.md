@@ -16,7 +16,7 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ### Map creation
 
-Create a map with ``var map = EstLib.map();`` and customise it with the methods below.
+Create a map with ``var map = eurostatmap.map();`` and customise it with the methods below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
@@ -57,7 +57,7 @@ To show a choropleth map, *type* should be set to *"ch"*. The following paramete
 | *map*.**makeClassifNice**([*value*]) | *boolean* | true | Make nice break values. Works only for *classifMethod = "equinter"*. |
 | *map*.**clnb**([*value*]) | int | *7* | The number of classes. When *classifMethod = "threshold"*, this parameter is inferred from the number of breaks specified. |
 | *map*.**colorFun**([*value*]) | Function | *d3.interpolateYlOrBr* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
-| *map*.**classToFillStyleCH**([*value*]) | Function | See description | A function returning a fill style for each class number. The default values is the function returned by ``EstLib.getColorLegend(colorFun())``. |
+| *map*.**classToFillStyleCH**([*value*]) | Function | See description | A function returning a fill style for each class number. The default values is the function returned by ``eurostatmap.getColorLegend(colorFun())``. |
 | *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.  |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 | *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
@@ -118,7 +118,7 @@ To show a categorical map, *type* should be set to *"ct"*. The following paramet
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
 | *map*.**showLegend**([*value*]) | boolean | *true* | Set to true to show a legend. False otherwise. |
-| *map*.**legendFontFamily**([*value*]) | String | *EstLib.fontFamilyDefault* | The legend font. |
+| *map*.**legendFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
 | *map*.**legendTitleText**([*value*]) | String | *"Legend"* | The legend title. |
 | *map*.**legendTitleFontSize**([*value*]) | int | *20* | The legend title font size. |
 | *map*.**legendTitleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
@@ -149,7 +149,7 @@ This text field is intended to be used for copyright text. It can however be cus
 | *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
 | *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
 | *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
-| *map*.**bottomTextFontFamily**([*value*]) | String | *EstLib.fontFamilyDefault* | The font family. |
+| *map*.**bottomTextFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The font family. |
 | *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 
@@ -172,7 +172,7 @@ After changing some parameters, one of the following methods need to be executed
 | Method | Returns | Description |
 | --- | --- | --- |
 | *map*.**getTime**() | String | Return the *time* parameter of the statistical data. When a filter such as *{ lastTimePeriod : 1 }* is used, this method allows a retrieval of the map timestamp. |
-| *map*.**set**([options]) | *this* | Run "myMap.set(EstLib.getURLParameters())" to retrieve parameters defined in the URL and apply them to a map element directly. |
+| *map*.**set**([options]) | *this* | Run "myMap.set(eurostatmap.getURLParameters())" to retrieve parameters defined in the URL and apply them to a map element directly. |
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
