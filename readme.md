@@ -1,7 +1,7 @@
 # eurostat-map.js
 
-![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map.js) 
-![npm](https://img.shields.io/npm/v/eurostat-map.js)
+![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map) 
+![npm](https://img.shields.io/npm/v/eurostat-map)
 
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
