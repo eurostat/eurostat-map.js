@@ -1,7 +1,16 @@
 # eurostat-map.js
 
+![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map.js) 
+![npm](https://img.shields.io/npm/v/eurostat-map.js)
+
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
+
+[![Example](docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
+[![Example](docs/img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
+[![Example](docs/img/ps_ex.png)](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/)
+[![Example](docs/img/dv_ex.png)](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/)
+[![Example](docs/img/ct_ex.png)](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/)
 
 ## Examples
 
@@ -14,9 +23,28 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ## Documentation - API
 
+### Installation
+
+
+#### Node.js
+```properties
+npm install eurostatmap
+```  
+
+then 
+```javascript
+eurostatmap = require("eurostatmap")
+```
+
+#### Standalone
+
+```javascript
+<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>
+```
+
 ### Map creation
 
-Create a map with ``var map = eurostatmap.map();`` and customise it with the methods below.
+Create a map with ``let map = eurostatmap.map();`` and customise it with the methods below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
