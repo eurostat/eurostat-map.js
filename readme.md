@@ -2,6 +2,7 @@
 
 ![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map) 
 ![npm](https://img.shields.io/npm/v/eurostat-map)
+![license](https://img.shields.io/badge/license-EUPL-success)
 
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
