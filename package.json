@@ -1,6 +1,6 @@
 {
-  "name": "eurostat.js",
-  "version": "0.9.27",
+  "name": "eurostat-map.js",
+  "version": "1.0.1",
   "description": "Build maps using d3.js and eurostat data",
   "keywords": [
     "eurostat",
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/eurostat/eurostat.js.git"
   },
-  "main": "dist/eurostat.js",
+  "main": "build/eurostat.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --watch",
