@@ -5,6 +5,7 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ## Examples
 
+[population density](https://eurostat.github.io/eurostat-map.js/examples/population.html)
 
 ## Documentation - API
 
