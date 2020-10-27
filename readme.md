@@ -19,9 +19,9 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 
 ### Installation
 
-```console
-'npm install eurostatmap'
-```
+```properties
+npm install eurostatmap
+```  
 
 then 
 ```javascript
