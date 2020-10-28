@@ -33,7 +33,7 @@
     "d3": "^5.15.0",
     "d3-svg-legend": "^2.25.6",
     "jsonstat-toolkit": "^1.0.8",
-    "puppeteer": "1.8.0",
+    "puppeteer": "1.13.0",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
