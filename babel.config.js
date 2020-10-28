@@ -16,7 +16,7 @@ module.exports = function (api) {
   api.cache(true)
   api.debug = true;
 
-  const plugins = []
+  const plugins = ["@babel/plugin-transform-runtime"]
 
   return {
     presets,
