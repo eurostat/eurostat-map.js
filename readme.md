@@ -4,7 +4,7 @@
 ![npm](https://img.shields.io/npm/v/eurostat-map)
 ![license](https://img.shields.io/badge/license-EUPL-success)
 
-Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
+Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
 [![Example](docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
@@ -25,7 +25,7 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 ## Documentation - API
 
 ### Installation
-
+The library is built as a UMD module so it can be imported in node.js or in the browser.
 
 #### Node.js
 ```properties
