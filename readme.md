@@ -2,16 +2,17 @@
 
 ![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map) 
 ![npm](https://img.shields.io/npm/v/eurostat-map)
+[![Build Status](https://travis-ci.org/eurostat/eurostat-map.js.svg?branch=master)](https://travis-ci.org/eurostat/eurostat-map.js)
 ![license](https://img.shields.io/badge/license-EUPL-success)
 
 Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from
 [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
-[![Example](docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
-[![Example](docs/img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
-[![Example](docs/img/ps_ex.png)](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/)
-[![Example](docs/img/dv_ex.png)](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/)
-[![Example](docs/img/ct_ex.png)](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/)
 
 ## Examples
 
@@ -25,7 +26,7 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 ## Documentation - API
 
 ### Installation
-
+The library is built as a UMD module so it can be imported in node.js or in the browser.
 
 #### Node.js
 ```properties
