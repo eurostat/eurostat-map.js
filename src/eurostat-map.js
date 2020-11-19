@@ -14,10 +14,13 @@ import * as tp from './lib/eurostat-tooltip';
 
 export const map = function () {
 
-	//the output object
+	//the map object to return
 	var out = {};
 
-	//map parameters
+	/**
+	* Set attributes default values
+	*/
+
 	out.svgId_ = "map";
 	out.type_ = "ch"; //or "ps" or "ct"
 	out.width_ = 800;
@@ -25,8 +28,8 @@ export const map = function () {
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
 	out.csvDataSource_ = null;
-	//use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-	out.statData_ = null;
+	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+	out.geo_ = "EUR";
 	out.scale_ = "20M";
 	out.scaleExtent_ = [1, 3];
 	out.proj_ = "3035";
@@ -80,6 +83,7 @@ export const map = function () {
 	out.graticuleStrokeWidth_ = 1;
 
 	//legend
+	//TODO: extract that
 	out.showLegend_ = true;
 	out.legendFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.legendTitleText_ = "Legend";
@@ -111,27 +115,32 @@ export const map = function () {
 	out.bottomTextPadding_ = 10;
 	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
-	//definition of generic accessors based on the name of each parameter name
-	for (var p in out)
+
+	/**
+	 * Definition of attribute getters/setters.
+	 * Each method follow the same pattern:
+	 *  - There is a single method for getters/setters of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as argument.
+	*/
+	for (let att in out)
 		(function () {
-			var p_ = p;
-			out[p_.substring(0, p_.length - 1)] = function (v) { if (!arguments.length) return out[p_]; out[p_] = v; return out; };
+			var att_ = att;
+			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
 		})();
 
-	//override of some accessors
+	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
-	//some variables
-	var values, geoData, nutsRG;
-	var height, svg, path;
-	//the classifier, and the reciprocal
-	var classif, classifRec;
 
-	//the tooltip element
-	var tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
 
-	//ease the loading of URL parameters. Use with function loadURLParameters()
+	/**
+	 * Set map attributes based on URL parameters.
+	 * To be used with *loadURLParameters()* function.
+	 * 
+	 * @param {*} opts The URL parameters as an object, as returned by the *loadURLParameters()* function.
+	 */
 	out.set = function (opts) {
 		if (opts.w) out.width(opts.w);
 		if (opts.s) out.scale(opts.s);
@@ -145,54 +154,100 @@ export const map = function () {
 		return out;
 	};
 
-	//use that for initial build of a map
+
+
+	/**
+	 * Map private attributes
+	 */
+	let values, geoData, nutsRG;
+	let height, svg, path;
+	//the classifier, and the reciprocal
+	let classif, classifRec;
+	//the tooltip element
+	let tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
+
+
+
+	/**
+	 * Build a map in the svg element
+	 */
 	out.build = function () {
-		//empty svg
+
+		//empty svg element
 		select("#" + out.svgId_).selectAll("*").remove();
 
-		//get geo and stat data
+		//retrieve geo data
 		out.updateGeoData();
+
+		//retrieve stat data
 		out.updateStatData();
 
 		return out;
 	};
 
-	//get nuts geometries
+	/**
+	 * Update the map with new geo data
+	 */
 	out.updateGeoData = function () {
+
+		//erase previous data
 		geoData = null;
+
+		//get geo data from Nuts2json API
 		//TODO upgrade with new Nuts2json version
 		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/" + out.NUTSyear_ + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
+
+				//build map template
 				out.buildMapTemplate();
+
+				//if statistical figures are available, update the map with these values
 				if (!out.statData_) return;
 				out.updateStatValues();
 			});
 		return out;
 	}
 
-	//get stat data
+	/**
+	 * Update the map with new stat data
+	 */
 	out.updateStatData = function () {
+
+		//erase previous data
 		out.statData_ = null;
 
 		if (out.csvDataSource_ == null) {
+			//statistical data from Eurostat API
+
 			//set precision
 			out.filters_["precision"] = out.precision_;
 			//select only required geo groups, depending on the specified nuts level
 			out.filters_["geoLevel"] = out.nutsLvl_ + "" === "0" ? "country" : "nuts" + out.nutsLvl_;
 			//force filtering of euro-geo-aggregates
 			out.filters_["filterNonGeo"] = 1;
+
+			//retrieve stat data from Eurostat API
 			json(getEstatDataURL(out.datasetCode_, out.filters_)).then(
 				function (data___) {
+
+					//decode stat data
 					out.statData_ = jsonstatToIndex(JSONstat(data___));
+
+					//if geodata are already there, refresh the map with stat values
 					if (!geoData) return;
 					out.updateStatValues();
 				});
 		} else {
+			//statistical data from custom CSV file
 			//retrieve csv data
 			csv(out.csvDataSource_.url).then(
 				function (data___) {
+
+					//decode stat data
 					out.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+
+					//if geodata are already there, refresh the map with stat values
 					if (!geoData) return;
 					out.updateStatValues();
 				});
@@ -201,8 +256,11 @@ export const map = function () {
 	}
 
 
-	//buid a map template, based on the geometries only
+	/** 
+	 * Buid an empty map template, based on the geometries only
+	*/
 	out.buildMapTemplate = function () {
+
 		//empty svg
 		select("#" + out.svgId_).selectAll("*").remove();
 
