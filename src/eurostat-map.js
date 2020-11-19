@@ -222,8 +222,7 @@ export const map = function () {
 		geoData = null;
 
 		//get geo data from Nuts2json API
-		//TODO: finalise nuts2json, change '/dev/' to '/master/'
-		json("https://raw.githubusercontent.com/eurostat/Nuts2json/dev/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
 
