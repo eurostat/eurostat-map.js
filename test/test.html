@@ -10,6 +10,22 @@
 <body>
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
+    <script>
+        eurostatmap
+            .map()
+            .width(900)
+            .scale("20M")
+            .NUTSyear(2016)
+            .datasetCode("demo_r_d3dens")
+            .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
+            .unitText("people/km²")
+            .tooltipShowFlags(false)
+            .legendTitleText("Population density (people/km²)")
+            .legendLabelDecNb(0)
+            .legendBoxHeight(210)
+            .legendBoxWidth(190)
+            .build();
+    </script>
 </body>
 
 </html>

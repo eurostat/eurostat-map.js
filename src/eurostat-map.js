@@ -160,6 +160,7 @@ export const map = function () {
 	//get nuts geometries
 	out.updateGeoData = function () {
 		geoData = null;
+		//TODO upgrade with new Nuts2json version
 		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/" + out.NUTSyear_ + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
