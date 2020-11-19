@@ -222,7 +222,8 @@ export const map = function () {
 		geoData = null;
 
 		//get geo data from Nuts2json API
-		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		//TODO: finalise nuts2json, change '/dev/' to '/master/'
+		json("https://raw.githubusercontent.com/eurostat/Nuts2json/dev/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
 
@@ -307,12 +308,16 @@ export const map = function () {
 		if(!out.height_) out.height_ = 0.85 * out.width_;
 		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", out.height_);
 
-		//geo center: if not specified, use the topojson one   //TODO use default value for GEO
+
+		//geo center: if not specified, use the default one, or the topojson one
+		const dp = _defaultPosition[out.geo_+"_"+out.proj_];
 		if(!out.geoCenter_)
-			out.geoCenter_ = [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])];
+			if(dp) out.geoCenter_ = dp.geoCenter;
+			else out.geoCenter_ = [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])];
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent   //TODO use default value for GEO
 		if(!out.pixSize_)
-			out.pixSize_ = Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_);
+			if(dp) out.pixSize_ = dp.pixSize;
+			else out.pixSize_ = Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_);
 
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
@@ -821,6 +826,17 @@ export const map = function () {
 };
 
 
+
+/**
+ * Default positions and zoom levels for territories and projections.
+ */
+const _defaultPosition = {
+	"EUR_3035":{ geoCenter:[4970000,3350000], pixSize:7254},
+	//TODO add others
+}
+
+
+
 /**
  * Return a GeoJSON feature representing a bounding box, with multipoint geometry.
  * This bounding box is an array like the one in topojson bbox element.
@@ -829,7 +845,7 @@ export const map = function () {
  * 
  * @param {*} bb The bounding box [xmin,ymin,xmax,ymax]. For topojson data, just give the topojson.bbox element. 
  */
-var getTopoJSONExtentAsGeoJSON = function(bb) {
+const getTopoJSONExtentAsGeoJSON = function(bb) {
 	return {
 		type: "Feature",
 		geometry: {
@@ -848,7 +864,7 @@ var getTopoJSONExtentAsGeoJSON = function(bb) {
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
  */
-var tooltipTextDefaultFunction = function (rg, map) {
+const tooltipTextDefaultFunction = function (rg, map) {
 	var buf = [];
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
@@ -900,9 +916,9 @@ export const getColorLegend = function (colorFun) {
  * @param {*} jsData The JSONStat data to index
  */
 export const jsonstatToIndex = function (jsData) {
-	var ind = {};
-	var geos = jsData.Dimension("geo").id;
-	for (var i = 0; i < geos.length; i++)
+	const ind = {};
+	const geos = jsData.Dimension("geo").id;
+	for (let i = 0; i < geos.length; i++)
 		ind[geos[i]] = jsData.Data(i);
 	return ind;
 };
