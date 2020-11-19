@@ -200,7 +200,7 @@ export const map = function () {
 
 		//get geo data from Nuts2json API
 		//TODO upgrade with new Nuts2json version
-		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/" + out.NUTSyear_ + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
 
