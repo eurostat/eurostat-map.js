@@ -167,20 +167,26 @@ export const map = function () {
 	 * Private attributes
 	 */
 
-	//statistical values
+	//statistical values, as an array
 	let values;
-	//geo data (topojson object)
+
+	//geo data, as the raw topojson object returned by nuts2json API
 	let geoData;
-	//the nuts regions
+
+	//the nuts regions, as a GeoJSON feature collection
 	let nutsRG;
-	//the map SVG element
+
+	//the map SVG element, as d3 object (returned by d3.select("#" + out.svgId_))
 	let svg;
-	//the d3 path object
+
+	//the d3 path, to draw SVG paths with screen coordinates
 	let path;
-	//the classifier, and the reciprocal
+
+	//the classifier: a function which return a class number from a stat value.
 	let classif;
-	//the inverse classifier
+	//the inverse classifier, used only for categorical maps: a function returning the category value from the category class
 	let classifRec;
+
 	//the map tooltip element
 	let tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
 
