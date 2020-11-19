@@ -199,8 +199,7 @@ export const map = function () {
 		geoData = null;
 
 		//get geo data from Nuts2json API
-		//TODO upgrade with new Nuts2json version
-		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				geoData = geo___;
 
@@ -280,11 +279,13 @@ export const map = function () {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
+		const geoExtent = getTopoJSONExtentAsGeoJSON(geoData);
+
 		//prepare SVG element
-		//TODO: better choose initial viewshed
+		//TODO: better choose initial viewshed. Give possibility to specify center + screen scale (pix geo size)
 		height = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]),
-			svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height)
-		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], feature(geoData, geoData.objects.gra)));
+			svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height),
+			path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], geoExtent));
 
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
@@ -327,16 +328,18 @@ export const map = function () {
 				.style("stroke-linejoin", "round")
 				.style("stroke-linecap", "round");
 			//countries bn
+			if(cntbn)
 			cg.append("g").attr("id", "g_coast_margin_cnt")
 				.selectAll("path").data(cntbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
 				.append("path").attr("d", path);
 			//nuts bn
+			if(nutsbn)
 			cg.append("g").attr("id", "g_coast_margin_nuts")
 				.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
 				.append("path").attr("d", path);
 		}
 
-		if (out.drawGraticule_) {
+		if (gra && out.drawGraticule_) {
 			//draw graticule
 			zg.append("g").attr("id", "g_gra")
 				.style("fill", "none")
@@ -347,6 +350,7 @@ export const map = function () {
 		}
 
 		//draw country regions
+		if(cntrg)
 		zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 			.enter().append("path").attr("d", path)
 			.attr("class", "cntrg")
@@ -362,6 +366,7 @@ export const map = function () {
 			});
 
 		//draw NUTS regions
+		if(nutsRG)
 		zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 			.enter().append("path").attr("d", path)
 			.attr("class", "nutsrg")
@@ -380,6 +385,7 @@ export const map = function () {
 			});
 
 		//draw country boundaries
+		if(cntbn)
 		zg.append("g").attr("id", "g_cntbn")
 			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 			.selectAll("path").data(cntbn)
@@ -389,6 +395,7 @@ export const map = function () {
 			.style("stroke-width", function (bn) { if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co; return out.cntbnStrokeWidth_.def; });
 
 		//draw NUTS boundaries
+		if(nutsbn) {
 		nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
 		zg.append("g").attr("id", "g_nutsbn")
 			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
@@ -413,6 +420,7 @@ export const map = function () {
 				if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
 				return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
 			});
+		}
 
 		//prepare group for proportional symbols
 		zg.append("g").attr("id", "g_ps");
@@ -457,6 +465,7 @@ export const map = function () {
 		//build the list of statistical values
 		//join values and status to NUTS regions
 		values = [];
+		if(nutsRG)
 		for (var i = 0; i < nutsRG.length; i++) {
 			var rg = nutsRG[i];
 			var value = out.statData_[rg.properties.id];
@@ -570,6 +579,7 @@ export const map = function () {
 			//proportionnal symbol map
 			//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
+			if(nutsRG)
 			svg.select("#g_ps").selectAll("circle")
 				.data(nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
 				.enter().filter(function (d) { return d.properties.val; })
@@ -783,9 +793,22 @@ export const map = function () {
 };
 
 
-
-
-
+/**
+ * Return a GeoJSON feature representing the topojson bounding box, with multipoint geometry.
+ * This is useful for to call d3.fit
+ * 
+ * @param {*} topo 
+ */
+var getTopoJSONExtentAsGeoJSON = function(topo) {
+	const bb = topo.bbox;
+	return {
+		type: "Feature",
+		geometry: {
+		  type: "MultiPoint",
+		  coordinates: [[bb[0], bb[1]], [bb[2], bb[3]]]
+		}
+	  };
+}
 
 
 
