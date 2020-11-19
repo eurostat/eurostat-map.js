@@ -329,21 +329,16 @@ export const map = function () {
 		out.filtersDefinitionFun_(svg, out.clnb_);
 
 		//prepare drawing group
-		var zg = svg.append("g").attr("id", "zoomgroup").attr("transform", "translate(0,0)");
+		var zg = svg.append("g").attr("id", "zoomgroup");
+
+		//make svg zoomable
 		if (out.scaleExtent_) {
-			//add zoom function
-			svg.call(zoom().scaleExtent(out.scaleExtent_)
-			//TODO: fix zoom !!!
-				/*.on("zoom", function () {
-					//TODO fix that
-					console.log(aaa);
-					var k = event.transform.k;
-					var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn"];
-					for (var i = 0; i < cs.length; i++)
-						selectAll("." + cs[i]).style("stroke-width", (1 / k) + "px");
-					zg.attr("transform", event.transform);
-				})*/
-			);
+			svg.call(zoom()
+			.scaleExtent(out.scaleExtent_)
+			.on('zoom', function() {
+				zg.selectAll('path')
+				 .attr('transform', event.transform);
+				}));
 		}
 
 		//draw background rectangle
