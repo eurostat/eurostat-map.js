@@ -12,6 +12,10 @@ import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
 
+
+/**
+ * Function returning a eurostat-map object.
+ */
 export const map = function () {
 
 	//the map object to return
@@ -24,9 +28,9 @@ export const map = function () {
 	out.svgId_ = "map";
 	out.type_ = "ch"; //or "ps" or "ct"
 	out.width_ = 800;
-	out.height_ = 0; //TODO document
-	out.geoCenter_ = undefined; //TODO document
-	out.pixSize_ = undefined; //TODO document
+	out.height_ = 0;
+	out.geoCenter_ = undefined;
+	out.pixSize_ = undefined;
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
@@ -120,11 +124,11 @@ export const map = function () {
 
 
 	/**
-	 * Definition of attribute getters/setters.
+	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
-	 *  - There is a single method for getters/setters of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
 	 *  - To get the attribute value, call the method without argument.
-	 *  - To set the attribute value, call the same method with the new value as argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	for (let att in out)
 		(function () {
@@ -139,7 +143,7 @@ export const map = function () {
 
 
 	/**
-	 * Set map attributes based on URL parameters.
+	 * Set some map attributes based on URL parameters.
 	 * To be used with *loadURLParameters()* function.
 	 * 
 	 * @param {*} opts The URL parameters as an object, as returned by the *loadURLParameters()* function.
@@ -160,15 +164,25 @@ export const map = function () {
 
 
 	/**
-	 * Map private attributes
+	 * Private attributes
 	 */
-	let values, geoData, nutsRG;
-	let svg, path;
-	//the classifier, and the reciprocal
-	let classif, classifRec;
-	//the tooltip element
-	let tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
 
+	//statistical values
+	let values;
+	//geo data (topojson object)
+	let geoData;
+	//the nuts regions
+	let nutsRG;
+	//the map SVG element
+	let svg;
+	//the d3 path object
+	let path;
+	//the classifier, and the reciprocal
+	let classif;
+	//the inverse classifier
+	let classifRec;
+	//the map tooltip element
+	let tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
 
 
 
