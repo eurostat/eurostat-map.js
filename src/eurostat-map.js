@@ -24,6 +24,9 @@ export const map = function () {
 	out.svgId_ = "map";
 	out.type_ = "ch"; //or "ps" or "ct"
 	out.width_ = 800;
+	out.height_ = 0; //TODO document
+	out.geoCenter_ = undefined; //TODO document
+	out.pixSize_ = undefined; //TODO document
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
@@ -160,7 +163,7 @@ export const map = function () {
 	 * Map private attributes
 	 */
 	let values, geoData, nutsRG;
-	let height, svg, path;
+	let svg, path;
 	//the classifier, and the reciprocal
 	let classif, classifRec;
 	//the tooltip element
@@ -279,15 +282,20 @@ export const map = function () {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
-		//geo extent
-		const topojsonBbox = geoData.bbox;
-		const geoExtent = getTopoJSONExtentAsGeoJSON(geoData);
-
 		//prepare SVG element
-		//TODO: better choose initial viewshed. Give possibility to specify center + screen scale (pix geo size)
-		height = out.width_ * (topojsonBbox[3] - topojsonBbox[1]) / (topojsonBbox[2] - topojsonBbox[0]);
-		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height);
-		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], geoExtent));
+		if(!out.height_) out.height_ = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]);
+		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", out.height_);
+
+		//prepare initial geo extent
+		if(!out.geoCenter_)
+			out.geoCenter_ = [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])];
+		if(!out.pixSize_)
+			out.pixSize_ =  (geoData.bbox[2] - geoData.bbox[0]) / out.width_;
+		//compute bbox from geocenter and pixsize
+		const bbox = [out.geoCenter_[0]-0.5*out.pixSize_*out.width_, out.geoCenter_[1]-0.5*out.pixSize_*out.height_, out.geoCenter_[0]+0.5*out.pixSize_*out.width_, out.geoCenter_[1]+0.5*out.pixSize_*out.height_];
+		//drawing function
+		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getTopoJSONExtentAsGeoJSON(bbox)));
+
 
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
@@ -317,7 +325,7 @@ export const map = function () {
 
 		//draw background rectangle
 		zg.append("rect").attr("id", "sea").attr("x", 0).attr("y", 0)
-			.attr("width", out.width_).attr("height", height)
+			.attr("width", out.width_).attr("height", out.height_)
 			.style("fill", out.seaFillStyle_);
 
 		if (out.drawCoastalMargin_) {
@@ -432,7 +440,7 @@ export const map = function () {
 
 		//add bottom text
 		if (out.bottomText_)
-			svg.append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", height - out.bottomTextPadding_)
+			svg.append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
 				.text(out.bottomText_)
 				.style("font-family", out.bottomTextFontFamily_)
 				.style("font-size", out.bottomTextFontSize_)
@@ -796,13 +804,14 @@ export const map = function () {
 
 
 /**
- * Return a GeoJSON feature representing the topojson bounding box, with multipoint geometry.
- * This is useful for to call d3.fit
+ * Return a GeoJSON feature representing a bounding box, with multipoint geometry.
+ * This bounding box is an array like the one in topojson bbox element.
+ * [xmin,ymin,xmax,ymax]
+ * This is useful for to call d3.fitSize([w, h], getTopoJSONExtentAsGeoJSON(topo.bbox)))
  * 
- * @param {*} topo 
+ * @param {*} bb The bounding box [xmin,ymin,xmax,ymax]. For topojson data, just give the topojson.bbox element. 
  */
-var getTopoJSONExtentAsGeoJSON = function(topo) {
-	const bb = topo.bbox;
+var getTopoJSONExtentAsGeoJSON = function(bb) {
 	return {
 		type: "Feature",
 		geometry: {

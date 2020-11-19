@@ -13,11 +13,14 @@
     <script>
         eurostatmap
             .map()
+            .width(700)
+            //.height(400)
+            //.pixSize(3000)
             //.geo("GF").proj("32622")
             //.geo("IC").proj("32628")
-            .geo("CARIB").proj("32620")
+            //.geo("CARIB").proj("32620").geoCenter([650000, 1783000]).pixSize(300)
             //.geo("MT")
-            .scale("01M")
+            .scale("20M")
             .datasetCode("demo_r_d3dens")
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
