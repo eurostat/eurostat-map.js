@@ -168,8 +168,10 @@ export const map = function () {
 
 
 
+
 	/**
-	 * Build a map in the svg element
+	 * Build a map in the svg element.
+	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */
 	out.build = function () {
 
@@ -185,8 +187,11 @@ export const map = function () {
 		return out;
 	};
 
+
+
 	/**
-	 * Update the map with new geo data
+	 * Update the map with new geo data.
+	 * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateGeoData = function () {
 
@@ -209,8 +214,11 @@ export const map = function () {
 		return out;
 	}
 
+
+
 	/**
-	 * Update the map with new stat data
+	 * Update the map with new stat data sources.
+	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
 
@@ -218,12 +226,12 @@ export const map = function () {
 		out.statData_ = null;
 
 		if (out.csvDataSource_ == null) {
-			//statistical data from Eurostat API
+			//for statistical data to retrieve from Eurostat API
 
 			//set precision
 			out.filters_["precision"] = out.precision_;
 			//select only required geo groups, depending on the specified nuts level
-			out.filters_["geoLevel"] = out.nutsLvl_ + "" === "0" ? "country" : "nuts" + out.nutsLvl_;
+			out.filters_["geoLevel"] = out.nutsLvl_ + ("" === "0" ? "country" : "nuts" + out.nutsLvl_);
 			//force filtering of euro-geo-aggregates
 			out.filters_["filterNonGeo"] = 1;
 
@@ -239,7 +247,8 @@ export const map = function () {
 					out.updateStatValues();
 				});
 		} else {
-			//statistical data from custom CSV file
+			//for statistical data to retrieve from custom CSV file
+
 			//retrieve csv data
 			csv(out.csvDataSource_.url).then(
 				function (data___) {
@@ -257,7 +266,7 @@ export const map = function () {
 
 
 	/** 
-	 * Buid an empty map template, based on the geometries only
+	 * Buid an empty map template, based on the geometries only.
 	*/
 	out.buildMapTemplate = function () {
 
@@ -265,13 +274,14 @@ export const map = function () {
 		select("#" + out.svgId_).selectAll("*").remove();
 
 		//decode topojson to geojson
-		var gra = feature(geoData, geoData.objects.gra).features;
+		const gra = feature(geoData, geoData.objects.gra).features;
 		nutsRG = feature(geoData, geoData.objects.nutsrg).features;
-		var nutsbn = feature(geoData, geoData.objects.nutsbn).features;
-		var cntrg = feature(geoData, geoData.objects.cntrg).features;
-		var cntbn = feature(geoData, geoData.objects.cntbn).features;
+		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
+		const cntrg = feature(geoData, geoData.objects.cntrg).features;
+		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
 		//prepare SVG element
+		//TODO: better choose initial viewshed
 		height = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]),
 			svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height)
 		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], feature(geoData, geoData.objects.gra)));
@@ -289,6 +299,7 @@ export const map = function () {
 		if (out.scaleExtent_) {
 			//add zoom function
 			svg.call(zoom().scaleExtent(out.scaleExtent_)
+			//TODO: fix zoom !!!
 				/*.on("zoom", function () {
 					//TODO fix that
 					console.log(aaa);
@@ -436,9 +447,14 @@ export const map = function () {
 
 
 
-	//run when the stat values have changed
+	/**
+	 * Update the map with new stat data.
+	 * This method should be called after stat data attached to the map have changed, to refresh the map.
+	 * If the stat data sources have changed, call *updateStatData* instead.
+	 */
 	out.updateStatValues = function () {
-		//build list of values
+
+		//build the list of statistical values
 		//join values and status to NUTS regions
 		values = [];
 		for (var i = 0; i < nutsRG.length; i++) {
@@ -460,14 +476,21 @@ export const map = function () {
 	}
 
 
-	//run when the classification has changed
+	/**
+	 * Update the map after classification attributes have been changed.
+	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
+	*/
 	out.updateClassificationAndStyle = function () {
 
-		//return [0,1,2,3,...,nb-1]
+		//simply return the array [0,1,2,3,...,nb-1]
+		//TODO: use 'range' ?
 		var getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
 
 		if (out.type_ == "ch") {
+			//case of choropleth map
+			//TODO: make it possible to use continuous color ramps?
 
+			//use suitable classification type
 			if (out.classifMethod_ === "quantile") {
 				//https://github.com/d3/d3-scale#quantile-scales
 				classif = scaleQuantile().domain(values).range(getA(out.clnb_));
@@ -481,7 +504,7 @@ export const map = function () {
 				classif = scaleThreshold().domain(out.threshold_).range(getA(out.clnb_));
 			}
 
-			//apply classification to nuts regions based on their value
+			//assign class to nuts regions, based on their value
 			svg.selectAll("path.nutsrg")
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
@@ -489,10 +512,11 @@ export const map = function () {
 					return +classif(+v);
 				})
 		} else if (out.type_ == "ps") {
+			//case of proportionnal circle maps
 
 			classif = scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]);
-
 		} else if (out.type_ == "ct") {
+			//case of categorical maps
 
 			//get unique values
 			var dom = values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
@@ -501,7 +525,7 @@ export const map = function () {
 			classif = scaleOrdinal().domain(dom).range(rg);
 			classifRec = scaleOrdinal().domain(rg).range(dom);
 
-			//apply classification to nuts regions based on their value
+			//assign class to nuts regions, based on their value
 			svg.selectAll("path.nutsrg")
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
@@ -524,7 +548,10 @@ export const map = function () {
 
 
 
-	//run when the map style/legend has changed
+	/**
+	 * Update the map after styling attributes have been changed.
+	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
+	*/
 	out.updateStyle = function () {
 
 		if (out.type_ == "ch" || out.type_ == "ct") {
@@ -571,6 +598,10 @@ export const map = function () {
 	};
 
 
+	/**
+	 * Update the legend element.
+	 * TODO: extract that.
+	 */
 	out.updateLegend = function () {
 		var lgg = svg.select("#legendg");
 
@@ -734,7 +765,11 @@ export const map = function () {
 
 
 
-	//retrieve the time stamp of the map, even if not specified in the dimension initially
+	/**
+	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
+	 * This applies only for stat data retrieved from Eurostat API.
+	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
+	*/
 	out.getTime = function () {
 		var t = out.filters_.time;
 		if (t) return t;
@@ -754,29 +789,35 @@ export const map = function () {
 
 
 
-//default function returning the tooltip text
-var tooltipTextDefaultFunction = function (rg, out) {
+/**
+ * Get a text tooltip.
+ * TODO: use something else, simpler?
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+var tooltipTextDefaultFunction = function (rg, map) {
 	var buf = [];
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
 	if (rg.properties.val != 0 && !rg.properties.val) {
-		buf.push(out.noDataText_);
+		buf.push(map.noDataText_);
 		return buf.join("");
 	}
 	//case categorical map
-	if (out.type_ === "ct" && out.classToText_) {
-		var lbl = out.classToText_[rg.properties.val];
+	if (map.type_ === "ct" && map.classToText_) {
+		var lbl = map.classToText_[rg.properties.val];
 		buf.push(lbl ? lbl : rg.properties.val);
 		return buf.join("");
 	}
 	//display value
 	buf.push(rg.properties.val);
 	//unit
-	if (out.unitText_) buf.push(" " + out.unitText_);
+	if (map.unitText_) buf.push(" " + map.unitText_);
 	//flag
-	if (rg.properties.st && out.tooltipShowFlags_) {
-		if (out.tooltipShowFlags_ === "short")
+	if (rg.properties.st && map.tooltipShowFlags_) {
+		if (map.tooltipShowFlags_ === "short")
 			buf.push(" " + rg.properties.st);
 		else {
 			var f = flags[rg.properties.st];
@@ -794,6 +835,8 @@ export const getColorLegend = function (colorFun) {
 }
 
 
+
+
 //fill pattern style
 
 //build a fill pattern legend object { nd:"white", 0:"url(#pattern_0)", 1:"url(#pattern_1)", ... }
@@ -801,7 +844,10 @@ export const getFillPatternLegend = function () {
 	return function (ecl) { return "url(#pattern_" + ecl + ")"; }
 }
 
-//make function which build fill patterns style
+/**
+ * make function which build fill patterns style
+ * @param {*} opts 
+ */
 export const getFillPatternDefinitionFun = function (opts) {
 	opts = opts || {};
 	opts.shape = opts.shape || "circle";
@@ -823,7 +869,12 @@ export const getFillPatternDefinitionFun = function (opts) {
 	};
 };
 
-//{geo:{value:0,status:""}}
+/**
+ * Index JSONStat stat values by 'geo' code.
+ * Return a structure like: {geo:{value:0,status:""}}
+ * 
+ * @param {*} jsData The JSONStat data to index
+ */
 export const jsonstatToIndex = function (jsData) {
 	var ind = {};
 	var geos = jsData.Dimension("geo").id;
@@ -833,7 +884,15 @@ export const jsonstatToIndex = function (jsData) {
 };
 
 
-//{geo:{value:0,status:""}}
+
+/**
+ * Index CSV stat values by 'geo' code.
+ * Return a structure like: {geo:{value:0,status:""}}
+ * 
+ * @param {*} csvData The CSV data to index
+ * @param {*} geoCol The name of the geo column in the CSV data
+ * @param {*} valueCol The name of the statistical value column in the CSV file.
+ */
 export const csvToIndex = function (csvData, geoCol, valueCol) {
 	var ind = {};
 	for (var i = 0; i < csvData.length; i++) {
