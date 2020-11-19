@@ -282,17 +282,23 @@ export const map = function () {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
-		//prepare SVG element
-		if(!out.height_) out.height_ = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]);
-		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", out.height_);
-
-		//prepare initial geo extent
+		//geo center: if not specified, use the topojson one
 		if(!out.geoCenter_)
 			out.geoCenter_ = [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])];
+		//pixel size: if not specified, compute value from SVG width and topojson horizontal extent
 		if(!out.pixSize_)
-			out.pixSize_ =  (geoData.bbox[2] - geoData.bbox[0]) / out.width_;
+			out.pixSize_ = (geoData.bbox[2] - geoData.bbox[0]) / out.width_;
+
+			//TODO check here
+		//if no SVG height was specified, compute it from the width topojson extent.
+		if(!out.height_) out.height_ = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]);
+
 		//compute bbox from geocenter and pixsize
 		const bbox = [out.geoCenter_[0]-0.5*out.pixSize_*out.width_, out.geoCenter_[1]-0.5*out.pixSize_*out.height_, out.geoCenter_[0]+0.5*out.pixSize_*out.width_, out.geoCenter_[1]+0.5*out.pixSize_*out.height_];
+
+		//prepare SVG element
+		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", out.height_);
+
 		//drawing function
 		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getTopoJSONExtentAsGeoJSON(bbox)));
 

@@ -59,6 +59,9 @@ Once the parameters have been set or changed, the map needs to be built or updat
 | *map*.**svgId**([*value*]) | String | *"map"* | The id of the SVG element of the HTML page where to draw the map. |
 | *map*.**type**([*value*]) | String | *"ch"* | The type of map. Possible values are *"ch"* for choropleth maps, *"ps"* for proportional symbols and *"ct"* for categorical maps. See below for a description of these map types. |
 | *map*.**width**([*value*]) | int | *800* | The width of the map in pixel. |
+| *map*.**height**([*value*]) | int | *undefined* | The height of the map in pixel. If not specified, it will be calculated automatically from the width and geographical extent. |
+| *map*.**geoCenter**([*value*]) | [x,y] array | *undefined* | TODO describe. |
+| *map*.**pixSize**([*value*]) | number | *undefined* | TODO describe. |
 | *map*.**datasetCode**([*value*]) | String | *"demo_r_d3dens"* | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them. |
 | *map*.**filters**([*value*]) | Object | *{ lastTimePeriod : 1 }* |  The Eurostat dimension codes to filter/select the chosen statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) or [here](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to find them.  |
 | *map*.**precision**([*value*]) | int | *2* | The precision of the statistical variable to retrieve (number of decimal places). |
