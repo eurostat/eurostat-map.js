@@ -279,13 +279,15 @@ export const map = function () {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
+		//geo extent
+		const topojsonBbox = geoData.bbox;
 		const geoExtent = getTopoJSONExtentAsGeoJSON(geoData);
 
 		//prepare SVG element
 		//TODO: better choose initial viewshed. Give possibility to specify center + screen scale (pix geo size)
-		height = out.width_ * (geoData.bbox[3] - geoData.bbox[1]) / (geoData.bbox[2] - geoData.bbox[0]),
-			svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height),
-			path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], geoExtent));
+		height = out.width_ * (topojsonBbox[3] - topojsonBbox[1]) / (topojsonBbox[2] - topojsonBbox[0]);
+		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", height);
+		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, height], geoExtent));
 
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
