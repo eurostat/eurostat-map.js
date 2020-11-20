@@ -126,13 +126,13 @@ export const legend = function (map) {
 				//.orient("vertical")
 				//.shape("rect")
 				.on("cellover", function (ecl) {
-					if (out.map_.type() === "ct") ecl = out.classifier(ecl);
+					if (out.map_.type() === "ct") ecl = out.classifier()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", out.map_.nutsrgSelectionFillStyle_);
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
-					if (out.map_.type() === "ct") ecl = out.classifier(ecl);
+					if (out.map_.type() === "ct") ecl = out.classifier()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
@@ -150,7 +150,7 @@ export const legend = function (map) {
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
-					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[out.classifierInverse(ecl)];
+					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[out.classifierInverse()(ecl)];
 				})
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)
