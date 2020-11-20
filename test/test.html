@@ -25,11 +25,11 @@
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false);
-            
-            map.legend().legendTitleText("Population density (people/km²)")
-            .legendLabelDecNb(0)
-            .legendBoxHeight(210)
-            .legendBoxWidth(190);
+
+            map.legend().titleText("Population density (people/km²)")
+            .labelDecNb(0)
+            .boxHeight(210)
+            .boxWidth(190);
 
             map.build();
     </script>
