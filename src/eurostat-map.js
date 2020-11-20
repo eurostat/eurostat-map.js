@@ -705,18 +705,18 @@ export const legend = function (map) {
 		lgg.selectAll("*").remove();
 
 		const type = out.map_.type();
-		if (type === "ch") {
+		if (type === "ch")
 			updateLegendCommonCH_CT(svg,lgg);
-		} else if (type == "ct") {
+		else if (type == "ct")
 			updateLegendCT(svg,lgg);
-		} else if (type == "ps") {
+		else if (type == "ps")
 			updateLegendPS(svg,lgg);
-		} else {
+		else
 			console.log("Unknown map type: " + type)
-		}
 
 		return out;
 	};
+
 
 	const updateLegendCommonCH_CT = function(svg,lgg) {
 			//locate
