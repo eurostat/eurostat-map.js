@@ -115,7 +115,7 @@ export const legend = function (map) {
 
 					}
 						: function (d) {
-							return out.map_.classToText_ ? out.map_.classToText_[out.classifierInverse_(d.i)] || out.classifierInverse_(d.i) : out.classifierInverse_(d.i);
+							return out.map_.classToText_ ? out.map_.classToText_[out.classifierInverse(d.i)] || out.classifierInverse(d.i) : out.classifierInverse(d.i);
 						}
 				)
 				.labelDelimiter(out.labelDelimiter_)
@@ -150,7 +150,7 @@ export const legend = function (map) {
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
-					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[classifRec(ecl)];
+					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[out.classifierInverse(ecl)];
 				})
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)

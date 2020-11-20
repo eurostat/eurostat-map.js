@@ -314,6 +314,7 @@ export const map = function () {
 		var zg = svg.append("g").attr("id", "zoomgroup");
 
 		//make svg zoomable
+		//TODO: prop circles are out! include them in the zoomgroup
 		if (out.scaleExtent_) {
 			svg.call(zoom()
 			.scaleExtent(out.scaleExtent_)
@@ -512,10 +513,10 @@ export const map = function () {
 			//use suitable classification type
 			if (out.classifMethod_ === "quantile") {
 				//https://github.com/d3/d3-scale#quantile-scales
-				out.classifier()( scaleQuantile().domain(values).range(getA(out.clnb_)) );
+				out.classifier( scaleQuantile().domain(values).range(getA(out.clnb_)) );
 			} else if (out.classifMethod_ === "equinter") {
 				//https://github.com/d3/d3-scale#quantize-scales
-				out.classifier()( scaleQuantize().domain([min(values), max(values)]).range(getA(out.clnb_)) );
+				out.classifier( scaleQuantize().domain([min(values), max(values)]).range(getA(out.clnb_)) );
 				if (out.makeClassifNice_) classif.nice();
 			} else if (out.classifMethod_ === "threshold") {
 				//https://github.com/d3/d3-scale#threshold-scales
@@ -533,7 +534,7 @@ export const map = function () {
 		} else if (out.type_ == "ps") {
 			//case of proportionnal circle maps
 
-			out.classifier()( scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
+			out.classifier( scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
 		} else if (out.type_ == "ct") {
 			//case of categorical maps
 
@@ -541,8 +542,8 @@ export const map = function () {
 			var dom = values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
 			out.clnb(dom.length);
 			var rg = getA(out.clnb_);
-			out.classifier()(scaleOrdinal().domain(dom).range(rg));
-			out.classifierfInverse()(scaleOrdinal().domain(rg).range(dom));
+			out.classifier(scaleOrdinal().domain(dom).range(rg));
+			out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
 
 			//assign class to nuts regions, based on their value
 			svg.selectAll("path.nutsrg")
@@ -582,7 +583,7 @@ export const map = function () {
 					var ecl = select(this).attr("ecl");
 					if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 					if (out.type_ == "ch") return out.classToFillStyleCH_(ecl, out.clnb_);
-					if (out.type_ == "ct") { return out.classToFillStyleCT_[classifRec(ecl)] || out.noDataFillStyle_ || "gray"; }
+					if (out.type_ == "ct") { return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray"; }
 					return out.noDataFillStyle_ || "gray";
 				});
 
@@ -596,7 +597,7 @@ export const map = function () {
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")
 				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("r", function (d) { return d.properties.val ? classifier()(+d.properties.val) : 0; })
+				.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
 				.attr("class", "symbol")
 				.on("mouseover", function (rg) {
 					select(this).style("fill", out.nutsrgSelectionFillStyle_);
