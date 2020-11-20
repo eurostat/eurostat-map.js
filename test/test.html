@@ -11,7 +11,7 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap
+        const map = eurostatmap
             .map()
             .width(700)
             //.height(100)
@@ -24,12 +24,14 @@
             .datasetCode("demo_r_d3dens")
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
-            .tooltipShowFlags(false)
-            .legendTitleText("Population density (people/km²)")
+            .tooltipShowFlags(false);
+            
+            map.legend().legendTitleText("Population density (people/km²)")
             .legendLabelDecNb(0)
             .legendBoxHeight(210)
-            .legendBoxWidth(190)
-            .build();
+            .legendBoxWidth(190);
+
+            map.build();
     </script>
 </body>
 

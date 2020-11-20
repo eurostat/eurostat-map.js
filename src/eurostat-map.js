@@ -90,29 +90,8 @@ export const map = function () {
 	out.graticuleStrokeWidth_ = 1;
 
 	//legend
-	//TODO: extract that
 	out.showLegend_ = true;
-	out.legendFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.legendTitleText_ = "Legend";
-	out.legendTitleFontSize_ = 20;
-	out.legendTitleWidth_ = 140;
-	out.legendBoxWidth_ = 250;
-	out.legendBoxHeight_ = 350;
-	out.legendBoxMargin_ = 10;
-	out.legendBoxPadding_ = 10;
-	out.legendBoxCornerRadius_ = out.legendBoxPadding_;
-	out.legendBoxFill_ = "white";
-	out.legendBoxOpacity_ = 0.5;
-	out.legendCellNb_ = 4; // for ps only
-	out.legendAscending_ = true;
-	out.legendShapeWidth_ = 20;
-	out.legendShapeHeight_ = 16;
-	out.legendShapePadding_ = 2;
-	out.legendLabelFontSize_ = 15;
-	out.legendLabelDelimiter_ = " - ";
-	out.legendLabelWrap_ = 140;
-	out.legendLabelDecNb_ = 2;
-	out.legendLabelOffset_ = 5;
+	out.legend_ = legend(out);
 
 	//copyright text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
@@ -121,6 +100,11 @@ export const map = function () {
 	out.bottomTextFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.bottomTextPadding_ = 10;
 	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
+
+	//the classifier: a function which return a class number from a stat value.
+	out.classifier_ = undefined;
+	//the inverse classifier, used only for categorical maps: a function returning the category value from the category class
+	out.classifierInverse_ = undefined;
 
 
 	/**
@@ -181,11 +165,6 @@ export const map = function () {
 
 	//the d3 path, to draw SVG paths with screen coordinates
 	let path;
-
-	//the classifier: a function which return a class number from a stat value.
-	let classif;
-	//the inverse classifier, used only for categorical maps: a function returning the category value from the category class
-	let classifRec;
 
 	//the map tooltip element
 	let tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
@@ -457,7 +436,7 @@ export const map = function () {
 		//prepare group for proportional symbols
 		zg.append("g").attr("id", "g_ps");
 
-		//prepare group for legend
+		//prepare group for legend TODO: change that - should be independant svg element, built only when default case required
 		svg.append("g").attr("id", "legendg");
 
 		//add bottom text
@@ -534,15 +513,15 @@ export const map = function () {
 			//use suitable classification type
 			if (out.classifMethod_ === "quantile") {
 				//https://github.com/d3/d3-scale#quantile-scales
-				classif = scaleQuantile().domain(values).range(getA(out.clnb_));
+				out.classifier()( scaleQuantile().domain(values).range(getA(out.clnb_)) );
 			} else if (out.classifMethod_ === "equinter") {
 				//https://github.com/d3/d3-scale#quantize-scales
-				classif = scaleQuantize().domain([min(values), max(values)]).range(getA(out.clnb_));
+				out.classifier()( scaleQuantize().domain([min(values), max(values)]).range(getA(out.clnb_)) );
 				if (out.makeClassifNice_) classif.nice();
 			} else if (out.classifMethod_ === "threshold") {
 				//https://github.com/d3/d3-scale#threshold-scales
 				out.clnb(out.threshold_.length + 1);
-				classif = scaleThreshold().domain(out.threshold_).range(getA(out.clnb_));
+				out.classifier( scaleThreshold().domain(out.threshold_).range(getA(out.clnb_)) );
 			}
 
 			//assign class to nuts regions, based on their value
@@ -550,12 +529,12 @@ export const map = function () {
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
 					if (v != 0 && !v) return "nd";
-					return +classif(+v);
+					return +out.classifier_(+v);
 				})
 		} else if (out.type_ == "ps") {
 			//case of proportionnal circle maps
 
-			classif = scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]);
+			out.classifier()( scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
 		} else if (out.type_ == "ct") {
 			//case of categorical maps
 
@@ -563,15 +542,15 @@ export const map = function () {
 			var dom = values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
 			out.clnb(dom.length);
 			var rg = getA(out.clnb_);
-			classif = scaleOrdinal().domain(dom).range(rg);
-			classifRec = scaleOrdinal().domain(rg).range(dom);
+			out.classifier()(scaleOrdinal().domain(dom).range(rg));
+			out.classifierfInverse()(scaleOrdinal().domain(rg).range(dom));
 
 			//assign class to nuts regions, based on their value
 			svg.selectAll("path.nutsrg")
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
 					if (v != 0 && !v) return "nd";
-					return +classif(isNaN(v) ? v : +v);
+					return +out.classifier_(isNaN(v) ? v : +v);
 				})
 		} else {
 			console.log("Unknown map type: " + out.type_)
@@ -579,7 +558,7 @@ export const map = function () {
 		}
 
 		//update legend
-		out.updateLegend();
+		if (out.showLegend_) out.legend_.update();
 
 		//update style
 		out.updateStyle();
@@ -617,7 +596,7 @@ export const map = function () {
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")
 				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("r", function (d) { return d.properties.val ? classif(+d.properties.val) : 0; })
+				.attr("r", function (d) { return d.properties.val ? classifier()(+d.properties.val) : 0; })
 				.attr("class", "symbol")
 				.on("mouseover", function (rg) {
 					select(this).style("fill", out.nutsrgSelectionFillStyle_);
@@ -641,23 +620,94 @@ export const map = function () {
 
 
 	/**
-	 * Update the legend element.
-	 * TODO: extract that.
-	 */
-	out.updateLegend = function () {
-		var lgg = svg.select("#legendg");
+	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
+	 * This applies only for stat data retrieved from Eurostat API.
+	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
+	*/
+	out.getTime = function () {
+		var t = out.filters_.time;
+		if (t) return t;
+		if (!out.statData_) return;
+		t = out.statData_.Dimension("time");
+		if (!t || !t.id || t.id.length == 0) return;
+		return t.id[0]
+	};
 
-		//draw legend
-		if (!out.showLegend_) return out;
+	return out;
+};
+
+
+
+
+
+//TODO: decompose legends, one per map type
+
+/**
+ * A eurostat-map legend.
+ * It is provided as an independant SVG image, which can be nested inside the map SVG.
+*/
+export const legend = function (map) {
+	const out = {};
+
+	//TODO should depend only on the map style and classification
+	out.map_ = map;
+	out.classifier = ()=>{ return out.map_.classifier() };
+	out.classifierInverse = ()=>{ return out.map_.classifierInverse() };
+
+	out.legendFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.legendTitleText_ = "Legend";
+	out.legendTitleFontSize_ = 20;
+	out.legendTitleWidth_ = 140;
+	out.legendBoxWidth_ = 250;
+	out.legendBoxHeight_ = 350;
+	out.legendBoxMargin_ = 10;
+	out.legendBoxPadding_ = 10;
+	out.legendBoxCornerRadius_ = out.legendBoxPadding_;
+	out.legendBoxFill_ = "white";
+	out.legendBoxOpacity_ = 0.5;
+	out.legendCellNb_ = 4; // for ps only
+	out.legendAscending_ = true;
+	out.legendShapeWidth_ = 20;
+	out.legendShapeHeight_ = 16;
+	out.legendShapePadding_ = 2;
+	out.legendLabelFontSize_ = 15;
+	out.legendLabelDelimiter_ = " - ";
+	out.legendLabelWrap_ = 140;
+	out.legendLabelDecNb_ = 2;
+	out.legendLabelOffset_ = 5;
+
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	for (let att in out)
+		(function () {
+			var att_ = att;
+			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
+		})();
+
+
+
+	/**
+	 * Update the legend element.
+	 */
+	out.update = function () {
+		//TODO change that - use own SVG element
+		const svg = select("#" + out.map_.svgId());
+		const lgg = svg.select("#legendg");
 
 		//remove previous content
 		lgg.selectAll("*").remove();
 
-		if (out.type_ === "ch" || out.type_ === "ct") {
+		if (out.map_.type() === "ch" || out.map_.type() === "ct") {
 			//locate
 			out.legendBoxWidth_ = out.legendBoxWidth_ || out.legendBoxPadding_ * 2 + Math.max(out.legendTitleWidth_, out.legendShapeWidth_ + out.legendLabelOffset_ + out.legendLabelWrap_);
 			out.legendBoxHeight_ = out.legendBoxHeight_ || out.legendBoxPadding_ * 2 + out.legendTitleFontSize_ + out.legendShapeHeight_ + (1 + out.legendShapeHeight_ + out.legendShapePadding_) * (out.clnb_ - 1) + 12;
-			lgg.attr("transform", "translate(" + (out.width_ - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
+			//TODO should be moved
+			lgg.attr("transform", "translate(" + (out.map_.width() - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
 
 			//background rectangle
 			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.legendBoxPadding_).attr("y", -out.legendTitleFontSize_ - out.legendBoxPadding_ + 6)
@@ -671,7 +721,7 @@ export const map = function () {
 				.title(out.legendTitleText_)
 				.titleWidth(out.legendTitleWidth_)
 				.useClass(true)
-				.scale(classif)
+				.scale(out.classifier())
 				.ascending(out.legendAscending_)
 				.shapeWidth(out.legendShapeWidth_)
 				.shapeHeight(out.legendShapeHeight_)
@@ -679,7 +729,7 @@ export const map = function () {
 				.labelFormat(format(".0" + out.legendLabelDecNb_ + "f"))
 				//.labels(d3.legendHelpers.thresholdLabels)
 				.labels(
-					out.type_ === "ch" ? function (d) {
+					out.map_.type() === "ch" ? function (d) {
 						if (d.i === 0)
 							return "< " + d.generatedLabels[d.i].split(d.labelDelimiter)[1];
 						else if (d.i === d.genLength - 1)
@@ -689,7 +739,7 @@ export const map = function () {
 
 					}
 						: function (d) {
-							return out.classToText_ ? out.classToText_[classifRec(d.i)] || classifRec(d.i) : classifRec(d.i);
+							return out.map_.classToText_ ? out.map_.classToText_[out.classifierInverse_(d.i)] || out.classifierInverse_(d.i) : out.classifierInverse_(d.i);
 						}
 				)
 				.labelDelimiter(out.legendLabelDelimiter_)
@@ -700,13 +750,13 @@ export const map = function () {
 				//.orient("vertical")
 				//.shape("rect")
 				.on("cellover", function (ecl) {
-					if (out.type_ === "ct") ecl = classif(ecl);
+					if (out.map_.type() === "ct") ecl = out.classifier(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-					sel.style("fill", out.nutsrgSelectionFillStyle_);
+					sel.style("fill", out.map_.nutsrgSelectionFillStyle_);
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
-					if (out.type_ === "ct") ecl = classif(ecl);
+					if (out.map_.type() === "ct") ecl = out.classifier(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
@@ -723,8 +773,8 @@ export const map = function () {
 				})
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-					return out.type_ == "ch" ? out.classToFillStyleCH_(ecl, out.clnb_) : out.classToFillStyleCT_[classifRec(ecl)];
+					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
+					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[classifRec(ecl)];
 				})
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)
@@ -733,7 +783,7 @@ export const map = function () {
 			lgg.selectAll("text.label").style("font-size", out.legendLabelFontSize_);
 			lgg.style("font-family", out.legendFontFamily_);
 
-		} else if (out.type_ == "ct") {
+		} else if (out.map_.type() == "ct") {
 			//define legend
 			//see http://d3-legend.susielu.com/#color
 			//http://d3-legend.susielu.com/#symbol ?
@@ -741,7 +791,7 @@ export const map = function () {
 				.title(out.legendTitleText_)
 				.titleWidth(out.legendTitleWidth_)
 				.useClass(true)
-				.scale(classif)
+				.scale(out.classifier())
 				.ascending(out.legendAscending_)
 				.shapeWidth(out.legendShapeWidth_)
 				.shapeHeight(out.legendShapeHeight_)
@@ -751,12 +801,12 @@ export const map = function () {
 			//make legend
 			lgg.call(d3Legend);
 
-		} else if (out.type_ == "ps") {
+		} else if (out.map_.type() == "ps") {
 
 			//locate
 			out.legendBoxWidth_ = out.legendBoxWidth_ || out.legendBoxPadding_ * 2 + Math.max(out.legendTitleWidth_, out.psMaxSize_ + out.legendLabelOffset_ + out.legendLabelWrap_);
-			out.legendBoxHeight_ = out.legendBoxHeight_ || out.legendBoxPadding_ * 2 + out.legendTitleFontSize_ + (out.psMaxSize_ * 0.7 + out.legendShapePadding_) * (out.legendCellNb_) + 35;
-			lgg.attr("transform", "translate(" + (out.width_ - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
+			out.legendBoxHeight_ = out.legendBoxHeight_ || out.legendBoxPadding_ * 2 + out.legendTitleFontSize_ + (out.map_.psMaxSize_ * 0.7 + out.legendShapePadding_) * (out.legendCellNb_) + 35;
+			lgg.attr("transform", "translate(" + (out.map_.width() - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
 
 			//background rectangle
 			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.legendBoxPadding_).attr("y", -out.legendTitleFontSize_ - out.legendBoxPadding_ + 6)
@@ -769,7 +819,7 @@ export const map = function () {
 			var d3Legend = legendSize()
 				.title(out.legendTitleText_)
 				.titleWidth(out.legendTitleWidth_)
-				.scale(classif)
+				.scale(out.classifier())
 				.cells(out.legendCellNb_ + 1)
 				.cellFilter(function (d) { if (!d.data) return false; return true; })
 				.orient("vertical")
@@ -789,40 +839,26 @@ export const map = function () {
 
 			//apply style to legend elements
 			svg.selectAll(".swatch")
-				.style("fill", out.psFill_)
-				.style("fill-opacity", out.psFillOpacity_)
-				.style("stroke", out.psStroke_)
-				.style("stroke-width", out.psStrokeWidth_);
+				.style("fill", out.map_.psFill())
+				.style("fill-opacity", out.map_.psFillOpacity())
+				.style("stroke", out.map_.psStroke())
+				.style("stroke-width", out.map_.psStrokeWidth());
 
 			lgg.select(".legendTitle").style("font-size", out.legendTitleFontSize_);
 			lgg.selectAll("text.label").style("font-size", out.legendLabelFontSize_);
 			lgg.style("font-family", out.legendFontFamily_);
 
 		} else {
-			console.log("Unknown map type: " + out.type_)
+			console.log("Unknown map type: " + out.map_.type())
 		}
 
 		return out;
 	};
 
-
-
-	/**
-	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
-	 * This applies only for stat data retrieved from Eurostat API.
-	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
-	*/
-	out.getTime = function () {
-		var t = out.filters_.time;
-		if (t) return t;
-		if (!out.statData_) return;
-		t = out.statData_.Dimension("time");
-		if (!t || !t.id || t.id.length == 0) return;
-		return t.id[0]
-	};
-
 	return out;
-};
+}
+
+
 
 
 
