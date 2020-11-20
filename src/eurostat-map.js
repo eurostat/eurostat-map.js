@@ -558,7 +558,8 @@ export const map = function () {
 		}
 
 		//update legend
-		if (out.showLegend_) out.legend_.update();
+		if (out.showLegend_)
+			out.legend_.update();
 
 		//update style
 		out.updateStyle();
@@ -665,7 +666,6 @@ export const legend = function (map) {
 	out.boxCornerRadius_ = out.boxPadding_;
 	out.boxFill_ = "white";
 	out.boxOpacity_ = 0.5;
-	out.cellNb_ = 4; // for ps only
 	out.ascending_ = true;
 	out.shapeWidth_ = 20;
 	out.shapeHeight_ = 16;
@@ -675,6 +675,8 @@ export const legend = function (map) {
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
 	out.labelOffset_ = 5;
+
+	out.cellNb_ = 4; // for ps maps only
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -695,14 +697,28 @@ export const legend = function (map) {
 	 * Update the legend element.
 	 */
 	out.update = function () {
-		//TODO change that - use own SVG element
+		//TODO change that - use own SVG element instead
 		const svg = select("#" + out.map_.svgId());
 		const lgg = svg.select("#legendg");
 
 		//remove previous content
 		lgg.selectAll("*").remove();
 
-		if (out.map_.type() === "ch" || out.map_.type() === "ct") {
+		const type = out.map_.type();
+		if (type === "ch") {
+			updateLegendCommonCH_CT(svg,lgg);
+		} else if (type == "ct") {
+			updateLegendCT(svg,lgg);
+		} else if (type == "ps") {
+			updateLegendPS(svg,lgg);
+		} else {
+			console.log("Unknown map type: " + type)
+		}
+
+		return out;
+	};
+
+	const updateLegendCommonCH_CT = function(svg,lgg) {
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
@@ -782,27 +798,30 @@ export const legend = function (map) {
 			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
 			lgg.style("font-family", out.fontFamily_);
+	}
 
-		} else if (out.map_.type() == "ct") {
-			//define legend
-			//see http://d3-legend.susielu.com/#color
-			//http://d3-legend.susielu.com/#symbol ?
-			var d3Legend = legendColor()
-				.title(out.titleText_)
-				.titleWidth(out.titleWidth_)
-				.useClass(true)
-				.scale(out.classifier())
-				.ascending(out.ascending_)
-				.shapeWidth(out.shapeWidth_)
-				.shapeHeight(out.shapeHeight_)
-				.shapePadding(out.shapePadding_)
-				;
+	const updateLegendCT = function(svg,lgg) {
+		updateLegendCommonCH_CT(svg,lgg);
 
-			//make legend
-			lgg.call(d3Legend);
+		//define legend
+		//see http://d3-legend.susielu.com/#color
+		//http://d3-legend.susielu.com/#symbol ?
+		var d3Legend = legendColor()
+			.title(out.titleText_)
+			.titleWidth(out.titleWidth_)
+			.useClass(true)
+			.scale(out.classifier())
+			.ascending(out.ascending_)
+			.shapeWidth(out.shapeWidth_)
+			.shapeHeight(out.shapeHeight_)
+			.shapePadding(out.shapePadding_)
+			;
 
-		} else if (out.map_.type() == "ps") {
+		//make legend
+		lgg.call(d3Legend);
+	}
 
+	const updateLegendPS = function(svg,lgg) {
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
 			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + (out.map_.psMaxSize_ * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
@@ -847,13 +866,7 @@ export const legend = function (map) {
 			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
 			lgg.style("font-family", out.fontFamily_);
-
-		} else {
-			console.log("Unknown map type: " + out.map_.type())
-		}
-
-		return out;
-	};
+	}
 
 	return out;
 }
