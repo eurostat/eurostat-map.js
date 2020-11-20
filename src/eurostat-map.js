@@ -654,27 +654,27 @@ export const legend = function (map) {
 	out.classifier = ()=>{ return out.map_.classifier() };
 	out.classifierInverse = ()=>{ return out.map_.classifierInverse() };
 
-	out.legendFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.legendTitleText_ = "Legend";
-	out.legendTitleFontSize_ = 20;
-	out.legendTitleWidth_ = 140;
-	out.legendBoxWidth_ = 250;
-	out.legendBoxHeight_ = 350;
-	out.legendBoxMargin_ = 10;
-	out.legendBoxPadding_ = 10;
-	out.legendBoxCornerRadius_ = out.legendBoxPadding_;
-	out.legendBoxFill_ = "white";
-	out.legendBoxOpacity_ = 0.5;
-	out.legendCellNb_ = 4; // for ps only
-	out.legendAscending_ = true;
-	out.legendShapeWidth_ = 20;
-	out.legendShapeHeight_ = 16;
-	out.legendShapePadding_ = 2;
-	out.legendLabelFontSize_ = 15;
-	out.legendLabelDelimiter_ = " - ";
-	out.legendLabelWrap_ = 140;
-	out.legendLabelDecNb_ = 2;
-	out.legendLabelOffset_ = 5;
+	out.fontFamily_ = "Helvetica, Arial, sans-serif";
+	out.titleText_ = "Legend";
+	out.titleFontSize_ = 20;
+	out.titleWidth_ = 140;
+	out.boxWidth_ = 250;
+	out.boxHeight_ = 350;
+	out.boxMargin_ = 10;
+	out.boxPadding_ = 10;
+	out.boxCornerRadius_ = out.boxPadding_;
+	out.boxFill_ = "white";
+	out.boxOpacity_ = 0.5;
+	out.cellNb_ = 4; // for ps only
+	out.ascending_ = true;
+	out.shapeWidth_ = 20;
+	out.shapeHeight_ = 16;
+	out.shapePadding_ = 2;
+	out.labelFontSize_ = 15;
+	out.labelDelimiter_ = " - ";
+	out.labelWrap_ = 140;
+	out.labelDecNb_ = 2;
+	out.labelOffset_ = 5;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -704,29 +704,29 @@ export const legend = function (map) {
 
 		if (out.map_.type() === "ch" || out.map_.type() === "ct") {
 			//locate
-			out.legendBoxWidth_ = out.legendBoxWidth_ || out.legendBoxPadding_ * 2 + Math.max(out.legendTitleWidth_, out.legendShapeWidth_ + out.legendLabelOffset_ + out.legendLabelWrap_);
-			out.legendBoxHeight_ = out.legendBoxHeight_ || out.legendBoxPadding_ * 2 + out.legendTitleFontSize_ + out.legendShapeHeight_ + (1 + out.legendShapeHeight_ + out.legendShapePadding_) * (out.clnb_ - 1) + 12;
+			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
+			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
 			//TODO should be moved
-			lgg.attr("transform", "translate(" + (out.map_.width() - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
+			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
 			//background rectangle
-			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.legendBoxPadding_).attr("y", -out.legendTitleFontSize_ - out.legendBoxPadding_ + 6)
-				.attr("rx", out.legendBoxCornerRadius_).attr("ry", out.legendBoxCornerRadius_)
-				.attr("width", out.legendBoxWidth_).attr("height", out.legendBoxHeight_)
-				.style("fill", out.legendBoxFill_).style("opacity", out.legendBoxOpacity_);
+			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
+				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
 			//define legend
 			//see http://d3-legend.susielu.com/#color
 			var d3Legend = legendColor()
-				.title(out.legendTitleText_)
-				.titleWidth(out.legendTitleWidth_)
+				.title(out.titleText_)
+				.titleWidth(out.titleWidth_)
 				.useClass(true)
 				.scale(out.classifier())
-				.ascending(out.legendAscending_)
-				.shapeWidth(out.legendShapeWidth_)
-				.shapeHeight(out.legendShapeHeight_)
-				.shapePadding(out.legendShapePadding_)
-				.labelFormat(format(".0" + out.legendLabelDecNb_ + "f"))
+				.ascending(out.ascending_)
+				.shapeWidth(out.shapeWidth_)
+				.shapeHeight(out.shapeHeight_)
+				.shapePadding(out.shapePadding_)
+				.labelFormat(format(".0" + out.labelDecNb_ + "f"))
 				//.labels(d3.legendHelpers.thresholdLabels)
 				.labels(
 					out.map_.type() === "ch" ? function (d) {
@@ -742,9 +742,9 @@ export const legend = function (map) {
 							return out.map_.classToText_ ? out.map_.classToText_[out.classifierInverse_(d.i)] || out.classifierInverse_(d.i) : out.classifierInverse_(d.i);
 						}
 				)
-				.labelDelimiter(out.legendLabelDelimiter_)
-				.labelOffset(out.legendLabelOffset_)
-				.labelWrap(out.legendLabelWrap_)
+				.labelDelimiter(out.labelDelimiter_)
+				.labelOffset(out.labelOffset_)
+				.labelWrap(out.labelWrap_)
 				//.labelAlign("end") //?
 				//.classPrefix("from ")
 				//.orient("vertical")
@@ -779,23 +779,23 @@ export const legend = function (map) {
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)
 				;
-			lgg.select(".legendTitle").style("font-size", out.legendTitleFontSize_);
-			lgg.selectAll("text.label").style("font-size", out.legendLabelFontSize_);
-			lgg.style("font-family", out.legendFontFamily_);
+			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
+			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
+			lgg.style("font-family", out.fontFamily_);
 
 		} else if (out.map_.type() == "ct") {
 			//define legend
 			//see http://d3-legend.susielu.com/#color
 			//http://d3-legend.susielu.com/#symbol ?
 			var d3Legend = legendColor()
-				.title(out.legendTitleText_)
-				.titleWidth(out.legendTitleWidth_)
+				.title(out.titleText_)
+				.titleWidth(out.titleWidth_)
 				.useClass(true)
 				.scale(out.classifier())
-				.ascending(out.legendAscending_)
-				.shapeWidth(out.legendShapeWidth_)
-				.shapeHeight(out.legendShapeHeight_)
-				.shapePadding(out.legendShapePadding_)
+				.ascending(out.ascending_)
+				.shapeWidth(out.shapeWidth_)
+				.shapeHeight(out.shapeHeight_)
+				.shapePadding(out.shapePadding_)
 				;
 
 			//make legend
@@ -804,34 +804,34 @@ export const legend = function (map) {
 		} else if (out.map_.type() == "ps") {
 
 			//locate
-			out.legendBoxWidth_ = out.legendBoxWidth_ || out.legendBoxPadding_ * 2 + Math.max(out.legendTitleWidth_, out.psMaxSize_ + out.legendLabelOffset_ + out.legendLabelWrap_);
-			out.legendBoxHeight_ = out.legendBoxHeight_ || out.legendBoxPadding_ * 2 + out.legendTitleFontSize_ + (out.map_.psMaxSize_ * 0.7 + out.legendShapePadding_) * (out.legendCellNb_) + 35;
-			lgg.attr("transform", "translate(" + (out.map_.width() - out.legendBoxWidth_ - out.legendBoxMargin_ + out.legendBoxPadding_) + "," + (out.legendTitleFontSize_ + out.legendBoxMargin_ + out.legendBoxPadding_ - 6) + ")");
+			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
+			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + (out.map_.psMaxSize_ * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
+			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
 			//background rectangle
-			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.legendBoxPadding_).attr("y", -out.legendTitleFontSize_ - out.legendBoxPadding_ + 6)
-				.attr("rx", out.legendBoxCornerRadius_).attr("ry", out.legendBoxCornerRadius_)
-				.attr("width", out.legendBoxWidth_).attr("height", out.legendBoxHeight_)
-				.style("fill", out.legendBoxFill_).style("opacity", out.legendBoxOpacity_);
+			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
+				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
 			//define legend
 			//see http://d3-legend.susielu.com/#size
 			var d3Legend = legendSize()
-				.title(out.legendTitleText_)
-				.titleWidth(out.legendTitleWidth_)
+				.title(out.titleText_)
+				.titleWidth(out.titleWidth_)
 				.scale(out.classifier())
-				.cells(out.legendCellNb_ + 1)
+				.cells(out.cellNb_ + 1)
 				.cellFilter(function (d) { if (!d.data) return false; return true; })
 				.orient("vertical")
-				.ascending(out.legendAscending_)
+				.ascending(out.ascending_)
 				.shape("circle") //"rect", "circle", or "line"
-				.shapePadding(out.legendShapePadding_)
+				.shapePadding(out.shapePadding_)
 				//.classPrefix("prefix")
 				.labels(function (d) { return d.generatedLabels[d.i] })
 				//.labelAlign("middle") //?
-				.labelFormat(format("." + out.legendLabelDecNb_ + "f"))
-				.labelOffset(out.legendLabelOffset_)
-				.labelWrap(out.legendLabelWrap_)
+				.labelFormat(format("." + out.labelDecNb_ + "f"))
+				.labelOffset(out.labelOffset_)
+				.labelWrap(out.labelWrap_)
 				;
 
 			//make legend
@@ -844,9 +844,9 @@ export const legend = function (map) {
 				.style("stroke", out.map_.psStroke())
 				.style("stroke-width", out.map_.psStrokeWidth());
 
-			lgg.select(".legendTitle").style("font-size", out.legendTitleFontSize_);
-			lgg.selectAll("text.label").style("font-size", out.legendLabelFontSize_);
-			lgg.style("font-family", out.legendFontFamily_);
+			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
+			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
+			lgg.style("font-family", out.fontFamily_);
 
 		} else {
 			console.log("Unknown map type: " + out.map_.type())
