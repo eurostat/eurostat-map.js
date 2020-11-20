@@ -9,7 +9,7 @@
 
 <body>
     <svg id="map"></svg>
-    <script src="../build/eurostatmap.min.js"></script>
+    <script src="../build/eurostatmap.js"></script>
     <script>
         eurostatmap.map()
             .width(900)
@@ -23,13 +23,12 @@
             .unitText("inhabitants")
             .tooltipShowFlags("long")
 
-            .legendTitleText("Population")
-            .legendLabelDecNb(0)
-            .legendBoxHeight(200)
-            .legendBoxWidth(140)
+            .legend().titleText("Population")
+            .legend().labelDecNb(0)
+            .legend().boxHeight(200)
+            .legend().boxWidth(140)
 
             .build();
-
     </script>
 </body>
 

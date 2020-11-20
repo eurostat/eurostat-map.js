@@ -48,7 +48,7 @@ export const legend = function (map) {
 	for (let att in out)
 		(function () {
 			var att_ = att;
-			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
+			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out.map_; };
 		})();
 
 
