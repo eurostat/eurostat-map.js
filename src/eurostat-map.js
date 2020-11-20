@@ -299,7 +299,7 @@ export const map = function () {
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
 		const bbox = [out.geoCenter_[0]-0.5*out.pixSize_*out.width_, out.geoCenter_[1]-0.5*out.pixSize_*out.height_, out.geoCenter_[0]+0.5*out.pixSize_*out.width_, out.geoCenter_[1]+0.5*out.pixSize_*out.height_];
-		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getTopoJSONExtentAsGeoJSON(bbox)));
+		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
 
 
 		if (out.drawCoastalMargin_)
@@ -658,7 +658,7 @@ const _defaultPosition = {
  * 
  * @param {*} bb The bounding box [xmin,ymin,xmax,ymax]. For topojson data, just give the topojson.bbox element. 
  */
-const getTopoJSONExtentAsGeoJSON = function(bb) {
+const getBBOXAsGeoJSON = function(bb) {
 	return {
 		type: "Feature",
 		geometry: {
