@@ -11,6 +11,7 @@ import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
+import * as lg from './lib/eurostat-map-legend';
 
 
 /**
@@ -640,8 +641,6 @@ export const map = function () {
 
 
 
-
-//TODO: decompose legends, one per map type
 
 /**
  * A eurostat-map legend.
