@@ -17,6 +17,9 @@ import * as tp from './lib/eurostat-tooltip';
  */
 export const map = function () {
 
+
+	//TODO: upgrade to d3 v6?
+
 	//the map object to return
 	var out = {};
 
@@ -576,7 +579,7 @@ export const map = function () {
 	out.updateStyle = function () {
 
 		if (out.type_ == "ch" || out.type_ == "ct") {
-			//choropleth map
+			//choropleth and categorical map
 			//apply style to nuts regions depending on class
 			svg.selectAll("path.nutsrg")
 				.attr("fill", function () {
@@ -592,11 +595,15 @@ export const map = function () {
 			//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
 			if(nutsRG)
+			//TODO add circle creation in mapbuid method - change the radius here, only
 			svg.select("#g_ps").selectAll("circle")
 				.data(nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")
-				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+				//TODO
+				//.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+				.attr("cx", function (d) { return path.centroid(d)[0]; })
+				.attr("cy", function (d) { return path.centroid(d)[1]; })
 				.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
 				.attr("class", "symbol")
 				.on("mouseover", function (rg) {
