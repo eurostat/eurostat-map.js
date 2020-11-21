@@ -317,7 +317,7 @@ export const map = function () {
 		var zg = svg.append("g").attr("id", "zoomgroup");
 
 		//make svg zoomable
-		//TODO: prop circles are out! include them in the zoomgroup
+		//TODO: prop circles are out!
 		if (out.scaleExtent_) {
 			svg.call(zoom()
 			.scaleExtent(out.scaleExtent_)
@@ -600,7 +600,6 @@ export const map = function () {
 				.data(nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")
-				//TODO
 				//.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 				.attr("cx", function (d) { return path.centroid(d)[0]; })
 				.attr("cy", function (d) { return path.centroid(d)[1]; })
