@@ -317,19 +317,15 @@ export const map = function () {
 		var zg = svg.append("g").attr("id", "zoomgroup");
 
 		//make svg zoomable
-		//TODO: prop circles are out!
 		if (out.scaleExtent_) {
 			svg.call(zoom()
 			.scaleExtent(out.scaleExtent_)
-			.on('zoom', function() {
-				zg.selectAll('path')
-				 .attr('transform', event.transform);
-				}));
+			.on('zoom', function() { zg.attr('transform', event.transform); }));
 		}
 
 		//draw background rectangle
-		zg.append("rect").attr("id", "sea").attr("x", 0).attr("y", 0)
-			.attr("width", out.width_).attr("height", out.height_)
+		zg.append("rect").attr("id", "sea").attr("x", -5*out.width_).attr("y", -5*out.height_)
+			.attr("width", 11*out.width_).attr("height", 11*out.height_)
 			.style("fill", out.seaFillStyle_);
 
 		if (out.drawCoastalMargin_) {
@@ -600,9 +596,7 @@ export const map = function () {
 				.data(nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")
-				//.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("cx", function (d) { return path.centroid(d)[0]; })
-				.attr("cy", function (d) { return path.centroid(d)[1]; })
+				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 				.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
 				.attr("class", "symbol")
 				.on("mouseover", function (rg) {
