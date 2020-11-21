@@ -70,8 +70,8 @@ export const map = function () {
 	out.psStrokeWidth_ = 0.5;
 
 	//categorical maps
-	out.classToFillStyleCT_ = null;
-	out.classToText_ = null;
+	out.classToFillStyleCT_ = undefined;
+	out.classToText_ = undefined;
 
 	//style
 	out.nutsrgFillStyle_ = "#eee"; //used for ps map

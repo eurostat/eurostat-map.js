@@ -66,7 +66,7 @@ export const legend = function (map) {
 
 		const type = out.map_.type();
 		if (type === "ch")
-			updateLegendCommonCH_CT(svg,lgg);
+			updateLegendCH(svg,lgg);
 		else if (type == "ct")
 			updateLegendCT(svg,lgg);
 		else if (type == "ps")
@@ -78,7 +78,9 @@ export const legend = function (map) {
 	};
 
 
-	const updateLegendCommonCH_CT = function(svg,lgg) {
+
+
+	const updateLegendCH = function(svg,lgg) {
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
@@ -104,20 +106,14 @@ export const legend = function (map) {
 				.shapePadding(out.shapePadding_)
 				.labelFormat(format(".0" + out.labelDecNb_ + "f"))
 				//.labels(d3.legendHelpers.thresholdLabels)
-				.labels(
-					out.map_.type() === "ch" ? function (d) {
+				.labels( function (d) {
 						if (d.i === 0)
 							return "< " + d.generatedLabels[d.i].split(d.labelDelimiter)[1];
 						else if (d.i === d.genLength - 1)
 							return ">=" + d.generatedLabels[d.i].split(d.labelDelimiter)[0];
 						else
 							return d.generatedLabels[d.i]
-
-					}
-						: function (d) {
-							return out.map_.classToText_ ? out.map_.classToText_[out.classifierInverse(d.i)] || out.classifierInverse(d.i) : out.classifierInverse(d.i);
-						}
-				)
+						})
 				.labelDelimiter(out.labelDelimiter_)
 				.labelOffset(out.labelOffset_)
 				.labelWrap(out.labelWrap_)
@@ -126,13 +122,11 @@ export const legend = function (map) {
 				//.orient("vertical")
 				//.shape("rect")
 				.on("cellover", function (ecl) {
-					if (out.map_.type() === "ct") ecl = out.classifier()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-					sel.style("fill", out.map_.nutsrgSelectionFillStyle_);
+					sel.style("fill", out.map_.nutsrgSelectionFillStyle());
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
-					if (out.map_.type() === "ct") ecl = out.classifier()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
@@ -150,7 +144,7 @@ export const legend = function (map) {
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
-					return out.map_.type() == "ch" ? out.map_.classToFillStyleCH()(ecl, out.map_.clnb()) : out.map_.classToFillStyleCT()[out.classifierInverse()(ecl)];
+					return out.map_.classToFillStyleCH()(ecl, out.map_.clnb());
 				})
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)
@@ -160,26 +154,75 @@ export const legend = function (map) {
 			lgg.style("font-family", out.fontFamily_);
 	}
 
+
+
+
 	const updateLegendCT = function(svg,lgg) {
-		updateLegendCommonCH_CT(svg,lgg);
+			//locate
+			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
+			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
+			//TODO should be moved
+			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
-		//define legend
-		//see http://d3-legend.susielu.com/#color
-		//http://d3-legend.susielu.com/#symbol ?
-		var d3Legend = legendColor()
-			.title(out.titleText_)
-			.titleWidth(out.titleWidth_)
-			.useClass(true)
-			.scale(out.classifier())
-			.ascending(out.ascending_)
-			.shapeWidth(out.shapeWidth_)
-			.shapeHeight(out.shapeHeight_)
-			.shapePadding(out.shapePadding_)
-			;
+			//background rectangle
+			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
+				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
-		//make legend
-		lgg.call(d3Legend);
+			//define legend
+			//see http://d3-legend.susielu.com/#color
+			var d3Legend = legendColor()
+				.title(out.titleText_)
+				.titleWidth(out.titleWidth_)
+				.useClass(true)
+				.scale(out.classifier())
+				.ascending(out.ascending_)
+				.shapeWidth(out.shapeWidth_)
+				.shapeHeight(out.shapeHeight_)
+				.shapePadding(out.shapePadding_)
+				.labels( function (d) {
+					return out.map().classToText() ?
+						out.map().classToText()[out.classifierInverse()(d.i)] || out.classifierInverse()(d.i)
+						: out.classifierInverse()(d.i);
+				})
+				.labelDelimiter(out.labelDelimiter_)
+				.labelOffset(out.labelOffset_)
+				.labelWrap(out.labelWrap_)
+				.on("cellover", function (ecl) {
+					ecl = out.classifier()(ecl);
+					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					sel.style("fill", out.map_.nutsrgSelectionFillStyle());
+					sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				})
+				.on("cellout", function (ecl) {
+					ecl = out.classifier()(ecl);
+					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					sel.style("fill", function (d) { select(this).attr("fill___"); });
+				});
+
+			//make legend
+			lgg.call(d3Legend);
+
+			//apply style to legend elements
+			svg.selectAll(".swatch")
+				.attr("ecl", function () {
+					var ecl = select(this).attr("class").replace("swatch ", "");
+					if (!ecl || ecl === "nd") return "nd";
+					return ecl;
+				})
+				.attr("fill", function () {
+					var ecl = select(this).attr("class").replace("swatch ", "");
+					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
+					return out.map_.classToFillStyleCT()[out.classifierInverse()(ecl)];
+				});
+			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
+			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
+			lgg.style("font-family", out.fontFamily_);
 	}
+
+
+
 
 	const updateLegendPS = function(svg,lgg) {
 			//locate
