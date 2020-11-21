@@ -273,4 +273,3 @@ export const legend = function (map) {
 
 	return out;
 }
-
