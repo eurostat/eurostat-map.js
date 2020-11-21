@@ -10,10 +10,8 @@ import { format } from "d3-format";
 export const legend = function (map) {
 	const out = {};
 
-	//TODO should depend only on the map style and classification
+	//TODO should depend only on the classifier and style ?
 	out.map_ = map;
-	out.classifier = ()=>{ return out.map_.classifier() };
-	out.classifierInverse = ()=>{ return out.map_.classifierInverse() };
 
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleText_ = "Legend";
@@ -58,13 +56,13 @@ export const legend = function (map) {
 	 */
 	out.update = function () {
 		//TODO change that - use own SVG element instead
-		const svg = select("#" + out.map_.svgId());
+		const svg = select("#" + out.map().svgId());
 		const lgg = svg.select("#legendg");
 
 		//remove previous content
 		lgg.selectAll("*").remove();
 
-		const type = out.map_.type();
+		const type = out.map().type();
 		if (type === "ch")
 			updateLegendCH(svg,lgg);
 		else if (type == "ct")
@@ -79,13 +77,18 @@ export const legend = function (map) {
 
 
 
+	const cla = ()=>{ return out.map().classifier() };
+	const claInv = ()=>{ return out.map().classifierInverse() };
+
 
 	const updateLegendCH = function(svg,lgg) {
+			const m = out.map();
+
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
 			//TODO should be moved
-			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
+			lgg.attr("transform", "translate(" + (m.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
 			//background rectangle
 			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
@@ -99,7 +102,7 @@ export const legend = function (map) {
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
 				.useClass(true)
-				.scale(out.classifier())
+				.scale(cla())
 				.ascending(out.ascending_)
 				.shapeWidth(out.shapeWidth_)
 				.shapeHeight(out.shapeHeight_)
@@ -123,7 +126,7 @@ export const legend = function (map) {
 				//.shape("rect")
 				.on("cellover", function (ecl) {
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-					sel.style("fill", out.map_.nutsrgSelectionFillStyle());
+					sel.style("fill", m.nutsrgSelectionFillStyle());
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
@@ -143,8 +146,8 @@ export const legend = function (map) {
 				})
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
-					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
-					return out.map_.classToFillStyleCH()(ecl, out.map_.clnb());
+					if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
+					return m.classToFillStyleCH()(ecl, m.clnb());
 				})
 				//.attr("stroke", "black")
 				//.attr("stroke-width", 0.5)
@@ -158,11 +161,13 @@ export const legend = function (map) {
 
 
 	const updateLegendCT = function(svg,lgg) {
+			const m = out.map();
+
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
 			//TODO should be moved
-			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
+			lgg.attr("transform", "translate(" + (m.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
 			//background rectangle
 			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
@@ -176,27 +181,25 @@ export const legend = function (map) {
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
 				.useClass(true)
-				.scale(out.classifier())
+				.scale(cla())
 				.ascending(out.ascending_)
 				.shapeWidth(out.shapeWidth_)
 				.shapeHeight(out.shapeHeight_)
 				.shapePadding(out.shapePadding_)
 				.labels( function (d) {
-					return out.map().classToText() ?
-						out.map().classToText()[out.classifierInverse()(d.i)] || out.classifierInverse()(d.i)
-						: out.classifierInverse()(d.i);
+					return m.classToText() ? m.classToText()[claInv()(d.i)] || claInv()(d.i) : claInv()(d.i);
 				})
 				.labelDelimiter(out.labelDelimiter_)
 				.labelOffset(out.labelOffset_)
 				.labelWrap(out.labelWrap_)
 				.on("cellover", function (ecl) {
-					ecl = out.classifier()(ecl);
+					ecl = cla()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-					sel.style("fill", out.map_.nutsrgSelectionFillStyle());
+					sel.style("fill", m.nutsrgSelectionFillStyle());
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
-					ecl = out.classifier()(ecl);
+					ecl = cla()(ecl);
 					var sel = svg.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
@@ -213,8 +216,8 @@ export const legend = function (map) {
 				})
 				.attr("fill", function () {
 					var ecl = select(this).attr("class").replace("swatch ", "");
-					if (!ecl || ecl === "nd") return out.map_.noDataFillStyle() || "gray";
-					return out.map_.classToFillStyleCT()[out.classifierInverse()(ecl)];
+					if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
+					return m.classToFillStyleCT()[claInv()(ecl)];
 				});
 			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
@@ -225,10 +228,12 @@ export const legend = function (map) {
 
 
 	const updateLegendPS = function(svg,lgg) {
+			const m = out.map();
+
 			//locate
 			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
-			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + (out.map_.psMaxSize_ * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
-			lgg.attr("transform", "translate(" + (out.map_.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
+			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + (m.psMaxSize() * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
+			lgg.attr("transform", "translate(" + (m.width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
 
 			//background rectangle
 			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
@@ -241,7 +246,7 @@ export const legend = function (map) {
 			var d3Legend = legendSize()
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
-				.scale(out.classifier())
+				.scale(cla())
 				.cells(out.cellNb_ + 1)
 				.cellFilter(function (d) { if (!d.data) return false; return true; })
 				.orient("vertical")
@@ -261,10 +266,10 @@ export const legend = function (map) {
 
 			//apply style to legend elements
 			svg.selectAll(".swatch")
-				.style("fill", out.map_.psFill())
-				.style("fill-opacity", out.map_.psFillOpacity())
-				.style("stroke", out.map_.psStroke())
-				.style("stroke-width", out.map_.psStrokeWidth());
+				.style("fill", m.psFill())
+				.style("fill-opacity", m.psFillOpacity())
+				.style("stroke", m.psStroke())
+				.style("stroke-width", m.psStrokeWidth());
 
 			lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 			lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
