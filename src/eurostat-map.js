@@ -293,7 +293,7 @@ export const map = function () {
 		if(!out.geoCenter())
 			if(dp) out.geoCenter( dp.geoCenter );
 			else out.geoCenter( [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])] );
-		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent   //TODO use default value for GEO
+		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
 		if(!out.pixSize())
 			if(dp) out.pixSize( dp.widthGeo/out.width() );
 			else out.pixSize( Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_) );
@@ -438,6 +438,7 @@ export const map = function () {
 		}
 
 		//prepare group for proportional symbols
+		//TODO build them here, with same size. only when style require it.
 		zg.append("g").attr("id", "g_ps");
 
 		//prepare group for legend TODO: change that - should be independant svg element, built only when default case required
