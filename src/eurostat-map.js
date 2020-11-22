@@ -285,19 +285,18 @@ export const map = function () {
 
 		//set SVG dimensions
 		//if no SVG height was specified, compute it as 85% of the width.
-		if(!out.height_) out.height_ = 0.85 * out.width_;
-		svg = select("#" + out.svgId_).attr("width", out.width_).attr("height", out.height_);
+		if(!out.height()) out.height( 0.85 * out.width() );
+		svg = select("#" + out.svgId_).attr("width", out.width()).attr("height", out.height());
 
-
-		//geo center: if not specified, use the default one, or the topojson one
-		const dp = _defaultPosition[out.geo_+"_"+out.proj_];
-		if(!out.geoCenter_)
-			if(dp) out.geoCenter_ = dp.geoCenter;
-			else out.geoCenter_ = [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])];
+		//geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
+		const dp = _defaultPosition[out.geo()+"_"+out.proj()];
+		if(!out.geoCenter())
+			if(dp) out.geoCenter( dp.geoCenter );
+			else out.geoCenter( [ 0.5*(geoData.bbox[0] + geoData.bbox[2]), 0.5*(geoData.bbox[1] + geoData.bbox[3])] );
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent   //TODO use default value for GEO
-		if(!out.pixSize_)
-			if(dp) out.pixSize_ = dp.pixSize;
-			else out.pixSize_ = Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_);
+		if(!out.pixSize())
+			if(dp) out.pixSize( dp.widthGeo/out.width() );
+			else out.pixSize( Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_) );
 
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
@@ -642,10 +641,10 @@ export const map = function () {
 
 
 /**
- * Default positions and zoom levels for territories and projections.
+ * Default positions and width (in projection unit) for territories and projections.
  */
 const _defaultPosition = {
-	"EUR_3035":{ geoCenter:[4970000,3350000], pixSize:7254},
+	"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
 	//TODO add others
 }
 
