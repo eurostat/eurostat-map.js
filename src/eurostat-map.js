@@ -93,7 +93,7 @@ export const map = function () {
 
 	//legend
 	out.showLegend_ = true;
-	out.legend_ = lg.legend(out);
+	out.legend_ = undefined;
 
 	//copyright text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
@@ -126,6 +126,14 @@ export const map = function () {
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
+	out.legend = function (v) {
+		if (!arguments.length) {
+			if(!out.legend_) out.legend_ = lg.legend(out, select("#" + out.svgId()));
+			return out.legend_;
+		}
+		out.legend_ = v;
+		return out;
+	};
 
 
 	/**
@@ -180,7 +188,7 @@ export const map = function () {
 	out.build = function () {
 
 		//empty svg element
-		select("#" + out.svgId_).selectAll("*").remove();
+		select("#" + out.svgId()).selectAll("*").remove();
 
 		//retrieve geo data
 		out.updateGeoData();
@@ -441,8 +449,6 @@ export const map = function () {
 		//TODO build them here, with same size. only when style require it.
 		zg.append("g").attr("id", "g_ps");
 
-		//prepare group for legend TODO: change that - should be independant svg element, built only when default case required
-		svg.append("g").attr("id", "legendg");
 
 		//add bottom text
 		if (out.bottomText_)
@@ -563,8 +569,12 @@ export const map = function () {
 		}
 
 		//update legend
-		if (out.showLegend_)
-			out.legend_.update();
+		if (out.showLegend()) {
+			const lg = out.legend();
+			lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
+			lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
+			lg.update();
+		}
 
 		//update style
 		out.updateStyle();

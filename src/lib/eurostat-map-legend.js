@@ -7,14 +7,16 @@ import { format } from "d3-format";
  * A eurostat-map legend.
  * It is provided as an independant SVG image, which can be nested inside the map SVG.
 */
-export const legend = function (map) {
+export const legend = function (map, elementToAppend) {
 	const out = {};
 
-	//TODO should depend only on the classifier and style ?
 	out.map_ = map;
+	out.elementToAppend_ = elementToAppend;
 
 	out.svgId_ = "legend_" + Math.round(10e15*Math.random());
 	out.svg_ = undefined;
+	out.x_ = 0;
+	out.y_ = 0;
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleText_ = "Legend";
 	out.titleFontSize_ = 20;
@@ -62,17 +64,17 @@ export const legend = function (map) {
 	 * Update the legend element.
 	 */
 	out.update = function () {
+		//TODO decompose into build and update
 
-		//build legend svg TODO change that. should be done at map level.
-		const svgMap = select("#" + out.map().svgId());
-		out.svg( svgMap.append("svg").attr("id", out.svgId()) );
+		//build legend svg
+		out.svg( out.elementToAppend().append("svg").attr("id", out.svgId()) );
 		lgg = out.svg().append("g");
 
 		//remove previous content
 		lgg.selectAll("*").remove();
 
 		//location
-		lgg.attr("transform", "translate(" + (out.map().width() - out.boxWidth_ - out.boxMargin_ + out.boxPadding_) + "," + (out.titleFontSize_ + out.boxMargin_ + out.boxPadding_ - 6) + ")");
+		lgg.attr("transform", "translate(" + out.x() + "," + out.y() + ")");
 
 		const type = out.map().type();
 		if (type === "ch")
