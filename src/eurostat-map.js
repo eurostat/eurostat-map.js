@@ -9,7 +9,9 @@ import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
-import * as lg from './legend/legend';
+import * as lgch from './legend/legend-choropleth';
+import * as lgct from './legend/legend-categorical';
+import * as lgps from './legend/legend-proportionnal-symbols';
 
 
 /**
@@ -129,10 +131,20 @@ export const map = function () {
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
+
+
+
+	
 	out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
-			if(!out.legend_) out.legend_ = lg.getLegend(out);
+			if(!out.legend_) {
+				const type = out.type();
+				if (type == "ch") out.legend_ = lgch.legendChoropleth(out);
+				else if (type == "ct") out.legend_ = lgct.legendCategorical(out);
+				else if (type == "ps") out.legend_ = lgps.legendProportionnalSymbols(out);
+				else console.log("Unknown map type: " + type)
+			}
 			return out.legend_;
 		}
 		//setter: link map and legend
