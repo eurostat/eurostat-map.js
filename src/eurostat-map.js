@@ -8,8 +8,8 @@ import { interpolateYlOrBr } from "d3-scale-chromatic";
 import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL } from './lib/eurostat-base';
-import * as lg from './lib/eurostat-map-legend';
 import * as tp from './lib/eurostat-tooltip';
+import * as lg from './eurostat-map-legend';
 
 
 /**
@@ -190,9 +190,6 @@ export const map = function () {
 
 	//the nuts regions, as a GeoJSON feature collection
 	let nutsRG;
-
-	//the map SVG element, as d3 object (returned by d3.select("#" + out.svgId_))
-	let svg;
 
 	//the d3 path, to draw SVG paths with screen coordinates
 	let path;

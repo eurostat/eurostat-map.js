@@ -4,7 +4,8 @@ import { format } from "d3-format";
 
 
 
-
+//TODO decompose file
+//TODO build legends in a group, not a svg element ?
 //TODO problem in legend position / dimension
 
 
