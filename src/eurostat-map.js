@@ -215,10 +215,35 @@ export const map = function () {
 		if(!out.height()) out.height( 0.85 * out.width() );
 		svg.attr("width", out.width()).attr("height", out.height());
 
+		if (out.drawCoastalMargin_)
+			//define filter for coastal margin
+			svg.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
+				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
+
+		//add additional filters for fill patterns for example
+		out.filtersDefinitionFun_(svg, out.clnb_);
+
+		//prepare drawing group
+		var zg = svg.append("g").attr("id", "zoomgroup");
+		//make zoomable
+		if (out.scaleExtent()) {
+			svg.call(zoom()
+			.scaleExtent(out.scaleExtent())
+			.on('zoom', function(a,b,c) {
+				var k = event.transform.k;
+				var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn", "symbol"];
+				for (var i = 0; i < cs.length; i++)
+					svg.selectAll("." + cs[i]).style("stroke-width", (1 / k) + "px");
+				zg.attr('transform', event.transform);
+			}));
+		}
+
 		//build legend element
 		if(out.showLegend()) {
 			console.log("aaa")
 			const lg = out.legend();
+			svg.append("ggg");
+			svg.append("g");
 			svg.append("svg").attr("id", lg.svgId());
 			//TODO create legend SVG if not already there
 			//lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
@@ -317,16 +342,6 @@ export const map = function () {
 	*/
 	out.buildMapTemplate = function () {
 
-		//empty svg
-		select("#" + out.svgId()).selectAll("*").remove();
-
-		//decode topojson to geojson
-		const gra = feature(geoData, geoData.objects.gra).features;
-		nutsRG = feature(geoData, geoData.objects.nutsrg).features;
-		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
-		const cntrg = feature(geoData, geoData.objects.cntrg).features;
-		const cntbn = feature(geoData, geoData.objects.cntbn).features;
-
 		//geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
 		const dp = _defaultPosition[out.geo()+"_"+out.proj()];
 		if(!out.geoCenter())
@@ -343,29 +358,16 @@ export const map = function () {
 		path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
 
 
-		if (out.drawCoastalMargin_)
-			//define filter for coastal margin
-			svg.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
-				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
-
-		//add additional filters for fill patterns for example
-		out.filtersDefinitionFun_(svg, out.clnb_);
+		//decode topojson to geojson
+		const gra = feature(geoData, geoData.objects.gra).features;
+		nutsRG = feature(geoData, geoData.objects.nutsrg).features;
+		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
+		const cntrg = feature(geoData, geoData.objects.cntrg).features;
+		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
 		//prepare drawing group
-		var zg = svg.append("g").attr("id", "zoomgroup");
-
-		//make svg zoomable
-		if (out.scaleExtent_) {
-			svg.call(zoom()
-			.scaleExtent(out.scaleExtent_)
-			.on('zoom', function(a,b,c) {
-				var k = event.transform.k;
-				var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn", "symbol"];
-				for (var i = 0; i < cs.length; i++)
-					svg.selectAll("." + cs[i]).style("stroke-width", (1 / k) + "px");
-				zg.attr('transform', event.transform);
-			}));
-		}
+		var zg = select("#zoomgroup");
+		zg.selectAll("*").remove();
 
 		//draw background rectangle
 		zg.append("rect").attr("id", "sea").attr("x", -5*out.width_).attr("y", -5*out.height_)
