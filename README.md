@@ -151,7 +151,8 @@ To show a categorical map, *type* should be set to *"ct"*. The following paramet
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
-| *map*.**showLegend**([*value*]) | boolean | *true* | Set to true to show a legend. False otherwise. |
+| *map*.**legend**() | legend | *undefined* | The map legend. |
+| *map*.**showLegend**([*value*]) | boolean | *false* | Set to true to show a legend directly within the map. False otherwise. |
 | *map*.**legendFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
 | *map*.**legendTitleText**([*value*]) | String | *"Legend"* | The legend title. |
 | *map*.**legendTitleFontSize**([*value*]) | int | *20* | The legend title font size. |

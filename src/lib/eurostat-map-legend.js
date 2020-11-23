@@ -7,26 +7,24 @@ import { format } from "d3-format";
  * A eurostat-map legend.
  * It is provided as an independant SVG image, which can be nested inside the map SVG.
 */
-export const legend = function (map, elementToAppend) {
+export const legend = function (map) {
 	const out = {};
 
 	out.map_ = map;
-	out.elementToAppend_ = elementToAppend;
 
 	out.svgId_ = "legend_" + Math.round(10e15*Math.random());
 	out.svg_ = undefined;
-	out.x_ = 0;
-	out.y_ = 0;
+	out.width_ = undefined;
+	out.height_ = undefined;
+	out.position_ = undefined;
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleText_ = "Legend";
 	out.titleFontSize_ = 20;
 	out.titleWidth_ = 140;
-	out.boxWidth_ = 250;
-	out.boxHeight_ = 350;
 	out.boxMargin_ = 10;
 	out.boxPadding_ = 10;
 	out.boxCornerRadius_ = out.boxPadding_;
-	out.boxFill_ = "white";
+	out.boxFill_ = "#EEEEEE";
 	out.boxOpacity_ = 0.5;
 	out.ascending_ = true;
 	out.shapeWidth_ = 20;
@@ -49,8 +47,8 @@ export const legend = function (map, elementToAppend) {
 	*/
 	for (let att in out)
 		(function () {
-			var att_ = att;
-			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out.map_; };
+			const att_ = att;
+			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
 		})();
 
 	/**
@@ -61,23 +59,49 @@ export const legend = function (map, elementToAppend) {
 	let lgg;
 
 	/**
+	 * Build legeng element.
+	 */
+	out.build = function () {
+
+		//create svg
+		out.svg( select("#" + out.svgId()) );
+		lgg = out.svg().append("g");
+
+		//set size
+		if(!out.width_) out.width_ = out.computeWidth();
+		if(!out.height_) out.height_ = out.computeHeight();
+		out.svg().attr("width", out.width()).attr("height", out.height());
+
+		//set position
+		if(!out.position_) out.position_ = out.computePosition();
+		lgg.attr("transform", "translate(" + out.position()[0] + "," + out.position()[1] + ")");
+	}
+
+
+
+
+	out.computeWidth = function() {
+		const type = out.map().type();
+		if (type == "ps") return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
+		else return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
+	}
+	out.computeHeight = function() {
+		const type = out.map().type();
+		if (type == "ps") return out.boxPadding_ * 2 + out.titleFontSize_ + (m.psMaxSize() * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
+		else return out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.map().clnb() - 1) + 12;
+	}
+	out.computePosition = function() {
+		const x = out.boxPadding_;
+		const y = out.boxPadding_ + out.titleFontSize_;
+		return [x,y];
+	}
+
+	/**
 	 * Update the legend element.
 	 */
 	out.update = function () {
-		//TODO decompose into build and update
-
-		//build legend svg
-		out.svg( out.elementToAppend().append("svg").attr("id", out.svgId()) );
-		lgg = out.svg().append("g");
-
-		//remove previous content
-		lgg.selectAll("*").remove();
-
-		//location
-		lgg.attr("transform", "translate(" + out.x() + "," + out.y() + ")");
-
 		const type = out.map().type();
-		if (type === "ch")
+		if (type == "ch")
 			updateLegendCH();
 		else if (type == "ct")
 			updateLegendCT();
@@ -99,19 +123,18 @@ export const legend = function (map, elementToAppend) {
 			const m = out.map();
 			const svgMap = select("#" + m.svgId());
 
-			//size
-			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
-			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
+			//remove previous content
+			lgg.selectAll("*").remove();
 
 			//background rectangle
-			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+			lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
 				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
-				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.attr("width", out.width_).attr("height", out.height_)
 				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
 			//define legend
 			//see http://d3-legend.susielu.com/#color
-			var d3Legend = legendColor()
+			const d3Legend = legendColor()
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
 				.useClass(true)
@@ -138,12 +161,12 @@ export const legend = function (map, elementToAppend) {
 				//.orient("vertical")
 				//.shape("rect")
 				.on("cellover", function (ecl) {
-					var sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", m.nutsrgSelectionFillStyle());
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
-					var sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
 
@@ -151,14 +174,14 @@ export const legend = function (map, elementToAppend) {
 			lgg.call(d3Legend);
 
 			//apply style to legend elements
-			svgMap.selectAll(".swatch")
+			lgg.selectAll(".swatch")
 				.attr("ecl", function () {
-					var ecl = select(this).attr("class").replace("swatch ", "");
+					const ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return "nd";
 					return ecl;
 				})
 				.attr("fill", function () {
-					var ecl = select(this).attr("class").replace("swatch ", "");
+					const ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
 					return m.classToFillStyleCH()(ecl, m.clnb());
 				})
@@ -177,19 +200,18 @@ export const legend = function (map, elementToAppend) {
 			const m = out.map();
 			const svgMap = select("#" + m.svgId());
 
-			//size
-			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
-			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.clnb_ - 1) + 12;
+			//remove previous content
+			lgg.selectAll("*").remove();
 
 			//background rectangle
-			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+			lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
 				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
-				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.attr("width", out.width_).attr("height", out.height_)
 				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
 			//define legend
 			//see http://d3-legend.susielu.com/#color
-			var d3Legend = legendColor()
+			const d3Legend = legendColor()
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
 				.useClass(true)
@@ -206,13 +228,13 @@ export const legend = function (map, elementToAppend) {
 				.labelWrap(out.labelWrap_)
 				.on("cellover", function (ecl) {
 					ecl = cla()(ecl);
-					var sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", m.nutsrgSelectionFillStyle());
 					sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				})
 				.on("cellout", function (ecl) {
 					ecl = cla()(ecl);
-					var sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 					sel.style("fill", function (d) { select(this).attr("fill___"); });
 				});
 
@@ -220,14 +242,14 @@ export const legend = function (map, elementToAppend) {
 			lgg.call(d3Legend);
 
 			//apply style to legend elements
-			svgMap.selectAll(".swatch")
+			lgg.selectAll(".swatch")
 				.attr("ecl", function () {
-					var ecl = select(this).attr("class").replace("swatch ", "");
+					const ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return "nd";
 					return ecl;
 				})
 				.attr("fill", function () {
-					var ecl = select(this).attr("class").replace("swatch ", "");
+					const ecl = select(this).attr("class").replace("swatch ", "");
 					if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
 					return m.classToFillStyleCT()[claInv()(ecl)];
 				});
@@ -241,21 +263,20 @@ export const legend = function (map, elementToAppend) {
 
 	const updateLegendPS = function() {
 			const m = out.map();
-			const svgMap = select("#" + m.svgId());
+			//const svgMap = select("#" + m.svgId());
 
-			//size
-			out.boxWidth_ = out.boxWidth_ || out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
-			out.boxHeight_ = out.boxHeight_ || out.boxPadding_ * 2 + out.titleFontSize_ + (m.psMaxSize() * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
+			//remove previous content
+			lgg.selectAll("*").remove();
 
 			//background rectangle
-			var lggBR = lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+			lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
 				.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
-				.attr("width", out.boxWidth_).attr("height", out.boxHeight_)
+				.attr("width", out.width_).attr("height", out.height_)
 				.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
 			//define legend
 			//see http://d3-legend.susielu.com/#size
-			var d3Legend = legendSize()
+			const d3Legend = legendSize()
 				.title(out.titleText_)
 				.titleWidth(out.titleWidth_)
 				.scale(cla())
@@ -277,7 +298,7 @@ export const legend = function (map, elementToAppend) {
 			lgg.call(d3Legend);
 
 			//apply style to legend elements
-			svgMap.selectAll(".swatch")
+			lgg.selectAll(".swatch")
 				.style("fill", m.psFill())
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())

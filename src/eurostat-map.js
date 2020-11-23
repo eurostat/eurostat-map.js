@@ -92,7 +92,7 @@ export const map = function () {
 	out.graticuleStrokeWidth_ = 1;
 
 	//legend
-	out.showLegend_ = true;
+	out.showLegend_ = false;
 	out.legend_ = undefined;
 
 	//copyright text
@@ -128,12 +128,31 @@ export const map = function () {
 
 	out.legend = function (v) {
 		if (!arguments.length) {
-			if(!out.legend_) out.legend_ = lg.legend(out, select("#" + out.svgId()));
+			//create legend if needed
+			if(!out.legend_) out.legend_ = lg.legend(out);
 			return out.legend_;
 		}
-		out.legend_ = v;
+		//setter: link map and legend
+		out.legend_ = v; v.map(out);
 		return out;
 	};
+
+	out.showLegend = function (v) {
+		if (!arguments.length) return out.showLegend_;
+		out.showLegend_ = v;
+		if(v) {
+			//TODO create legend SVG if not already there
+			//lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
+			//lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
+		} else {
+			//hide legend element if there
+		}
+		return out;
+	};
+
+
+
+
 
 
 	/**
@@ -568,13 +587,8 @@ export const map = function () {
 			return out;
 		}
 
-		//update legend
-		if (out.showLegend()) {
-			const lg = out.legend();
-			lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
-			lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
-			lg.update();
-		}
+		//update legend, if any
+		if(out.legend()) out.legend().update();
 
 		//update style
 		out.updateStyle();

@@ -10,25 +10,28 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap
+        const map = eurostatmap
             .map()
             .width(600)
             //.height(100)
             //.pixSize(3000)
             //.geo("GF").proj("32622")
             //.geo("IC").proj("32628")
-            //.geo("CARIB").proj("32620").geoCenter([650000, 1783000]).pixSize(300)
+            //.geo("CARIB").proj("32620").geoCenter([650000, 1783000]).pixSize(800)
             //.geo("MT")
             .scale("20M")
             .datasetCode("demo_r_d3dens")
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
-            .legend().boxHeight(210)
-            .legend().boxWidth(190)
             .build();
+
+
+            //map.legend().titleText("Population density (people/km²)")
+            //map.legend().labelDecNb(0)
+            //map.legend().boxHeight(210)
+            //map.legend().boxWidth(190)
+            //map.showLegend(true);
     </script>
 </body>
 
