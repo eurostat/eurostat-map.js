@@ -141,11 +141,10 @@ export const map = function () {
 		if (!arguments.length) return out.showLegend_;
 		out.showLegend_ = v;
 		if(v) {
-			//TODO create legend SVG if not already there
-			//lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
-			//lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
+			//?
 		} else {
 			//hide legend element if there
+			//TODO
 		}
 		return out;
 	};
@@ -206,8 +205,26 @@ export const map = function () {
 	 */
 	out.build = function () {
 
+		svg = select("#" + out.svgId());
+
 		//empty svg element
-		select("#" + out.svgId()).selectAll("*").remove();
+		svg.selectAll("*").remove();
+
+		//set SVG dimensions
+		//if no SVG height was specified, compute it as 85% of the width.
+		if(!out.height()) out.height( 0.85 * out.width() );
+		svg.attr("width", out.width()).attr("height", out.height());
+
+		//build legend element
+		if(out.showLegend()) {
+			console.log("aaa")
+			const lg = out.legend();
+			svg.append("svg").attr("id", lg.svgId());
+			//TODO create legend SVG if not already there
+			//lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
+			//lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
+			lg.build();
+		}
 
 		//retrieve geo data
 		out.updateGeoData();
@@ -301,7 +318,7 @@ export const map = function () {
 	out.buildMapTemplate = function () {
 
 		//empty svg
-		select("#" + out.svgId_).selectAll("*").remove();
+		select("#" + out.svgId()).selectAll("*").remove();
 
 		//decode topojson to geojson
 		const gra = feature(geoData, geoData.objects.gra).features;
@@ -309,11 +326,6 @@ export const map = function () {
 		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
-
-		//set SVG dimensions
-		//if no SVG height was specified, compute it as 85% of the width.
-		if(!out.height()) out.height( 0.85 * out.width() );
-		svg = select("#" + out.svgId_).attr("width", out.width()).attr("height", out.height());
 
 		//geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
 		const dp = _defaultPosition[out.geo()+"_"+out.proj()];
@@ -588,7 +600,7 @@ export const map = function () {
 		}
 
 		//update legend, if any
-		if(out.legend()) out.legend().update();
+		if(out.legend_) out.legend().update();
 
 		//update style
 		out.updateStyle();

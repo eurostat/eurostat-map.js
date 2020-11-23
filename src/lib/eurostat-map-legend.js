@@ -13,7 +13,7 @@ export const legend = function (map) {
 	out.map_ = map;
 
 	out.svgId_ = "legend_" + Math.round(10e15*Math.random());
-	out.svg_ = undefined;
+	out.svg_ = undefined; //TODO remove? or add the same to map?
 	out.width_ = undefined;
 	out.height_ = undefined;
 	out.position_ = undefined;
@@ -48,7 +48,7 @@ export const legend = function (map) {
 	for (let att in out)
 		(function () {
 			const att_ = att;
-			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
+			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out.map(); };
 		})();
 
 	/**
