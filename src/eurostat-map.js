@@ -234,20 +234,18 @@ export const map = function () {
 				var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn", "symbol"];
 				for (var i = 0; i < cs.length; i++)
 					svg.selectAll("." + cs[i]).style("stroke-width", (1 / k) + "px");
-				zg.attr('transform', event.transform);
+				zg.attr("transform", event.transform);
 			}));
 		}
 
 		//build legend element
 		if(out.showLegend()) {
-			console.log("aaa")
+			//create and position legend element
 			const lg = out.legend();
-			svg.append("ggg");
-			svg.append("g");
-			svg.append("svg").attr("id", lg.svgId());
-			//TODO create legend SVG if not already there
-			//lg.x( out.width() - lg.boxWidth_ - lg.boxMargin_ + lg.boxPadding_ );
-			//lg.y( lg.titleFontSize_ + lg.boxMargin_ + lg.boxPadding_ - 6 )
+			const dx = out.width() - lg.width() - lg.boxMargin();
+			const dy = lg.boxMargin();
+			const lgg = svg.append("g").attr("transform", "translate("+dx+","+dy+")");
+			lgg.append("svg").attr("id", lg.svgId());
 			lg.build();
 		}
 
