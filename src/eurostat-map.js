@@ -129,7 +129,7 @@ export const map = function () {
 	out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
-			if(!out.legend_) out.legend_ = lg.legend(out);
+			if(!out.legend_) out.legend_ = lg.createLegend(out);
 			return out.legend_;
 		}
 		//setter: link map and legend

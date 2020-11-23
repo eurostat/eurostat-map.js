@@ -311,3 +311,33 @@ export const legend = function (map) {
 
 	return out;
 }
+
+
+export const createLegend = function(map) {
+	const type = map.type();
+	if (type == "ch")
+		return legend_ch(map);
+	else if (type == "ct")
+		return legend_ct(map);
+	else if (type == "ps")
+		return legend_ps(map);
+	else
+		console.log("Unknown map type: " + type)
+	return out;
+}
+
+export const legend_ch = function (map) {
+	const out = legend(map);
+	return out;
+}
+
+export const legend_ct = function (map) {
+	const out = legend(map);
+	return out;
+}
+
+export const legend_ps = function (map) {
+	const out = legend(map);
+	return out;
+}
+
