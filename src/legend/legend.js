@@ -13,7 +13,7 @@ import { format } from "d3-format";
  * 
  * @param {*} map 
  */
-export const legend = function(map) {
+export const getLegend = function(map) {
 	const type = map.type();
 	if (type == "ch")
 		return legendChoropleth(map);
@@ -32,7 +32,7 @@ export const legend = function(map) {
  * A eurostat-map legend. This is an abstract method.
  * A legend is provided as an independant SVG image, which can be nested inside the map SVG.
 */
-const _legend = function (map) {
+export const _legend = function (map) {
 	const out = {};
 
 	out.map_ = map;
@@ -154,7 +154,7 @@ const _legend = function (map) {
  * 
  * @param {*} map 
  */
-const legendChoropleth = function (map) {
+export const legendChoropleth = function (map) {
 	const out = _legend(map);
 
 
@@ -254,7 +254,7 @@ const legendChoropleth = function (map) {
  * 
  * @param {*} map 
  */
-const legendCategorical = function (map) {
+export const legendCategorical = function (map) {
 	const out = _legend(map);
 
 	out.update = function() {
@@ -343,7 +343,7 @@ const legendCategorical = function (map) {
  * 
  * @param {*} map 
  */
-const legendProportionnalSymbols = function (map) {
+export const legendProportionnalSymbols = function (map) {
 	const out = _legend(map);
 
 	//attributes
