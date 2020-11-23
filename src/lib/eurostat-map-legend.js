@@ -149,7 +149,7 @@ export const legend = function (map) {
 						if (d.i === 0)
 							return "< " + d.generatedLabels[d.i].split(d.labelDelimiter)[1];
 						else if (d.i === d.genLength - 1)
-							return ">=" + d.generatedLabels[d.i].split(d.labelDelimiter)[0];
+							return ">= " + d.generatedLabels[d.i].split(d.labelDelimiter)[0];
 						else
 							return d.generatedLabels[d.i]
 						})
