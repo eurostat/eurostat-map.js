@@ -7,7 +7,7 @@ import { scaleQuantile, scaleQuantize, scaleThreshold, scaleSqrt, scaleOrdinal }
 import { interpolateYlOrBr } from "d3-scale-chromatic";
 import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
-import { getEstatDataURL } from './lib/eurostat-base';
+import { getEstatDataURL, flags } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
 import * as lgch from './legend/legend-choropleth';
 import * as lgct from './legend/legend-categorical';
