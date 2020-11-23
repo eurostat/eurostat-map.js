@@ -4,6 +4,10 @@ import { format } from "d3-format";
 
 
 
+
+//TODO problem in legend position / dimension
+
+
 /**
  * Create a map legend.
  * 
@@ -60,9 +64,6 @@ const _legend = function (map) {
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
 	out.labelOffset_ = 5;
-
-	//TODO move that to ps
-	out.cellNb_ = 4; // for ps maps only
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -349,6 +350,10 @@ const legend_ct = function (map) {
 const legend_ps = function (map) {
 	const out = _legend(map);
 
+	//attributes
+	out.cellNb_ = 4;
+	out.cellNb = function (v) { if (!arguments.length) return out["cellNb_"]; out["cellNb_"] = v; return out.map(); }
+
 	//the map classifier
 	const cla = ()=>{ return out.map().classifier() };
 
@@ -365,6 +370,7 @@ const legend_ps = function (map) {
 			.attr("width", out.width_).attr("height", out.height_)
 			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
+		//TODO better choose circle sizes. Rounded values.
 		//define legend
 		//see http://d3-legend.susielu.com/#size
 		const d3Legend = legendSize()
