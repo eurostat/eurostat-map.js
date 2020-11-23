@@ -26,16 +26,20 @@ export const map = function () {
 	*/
 
 	out.svgId_ = "map";
+	out.svg_ = undefined;
 	out.type_ = "ch"; //or "ps" or "ct"
+
 	out.width_ = 800;
 	out.height_ = 0;
 	out.geoCenter_ = undefined;
 	out.pixSize_ = undefined;
+
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
 	out.csvDataSource_ = null;
 	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+
 	out.geo_ = "EUR";
 	out.scale_ = "20M"; //TODO better choose automatically
 	out.scaleExtent_ = [1, 5];
@@ -43,6 +47,7 @@ export const map = function () {
 	out.nutsLvl_ = 3;
 	out.NUTSyear_ = 2016;
 	out.lg_ = "en";
+
 	out.tooltipText_ = tooltipTextDefaultFunction;
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
@@ -203,7 +208,8 @@ export const map = function () {
 	 */
 	out.build = function () {
 
-		svg = select("#" + out.svgId());
+		const svg = select("#" + out.svgId());
+		out.svg(svg);
 
 		//empty svg element
 		svg.selectAll("*").remove();
@@ -486,7 +492,7 @@ export const map = function () {
 
 		//add bottom text
 		if (out.bottomText_)
-			svg.append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
+			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
 				.text(out.bottomText_)
 				.style("font-family", out.bottomTextFontFamily_)
 				.style("font-size", out.bottomTextFontSize_)
@@ -570,7 +576,7 @@ export const map = function () {
 			}
 
 			//assign class to nuts regions, based on their value
-			svg.selectAll("path.nutsrg")
+			out.svg().selectAll("path.nutsrg")
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
 					if (v != 0 && !v) return "nd";
@@ -591,7 +597,7 @@ export const map = function () {
 			out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
 
 			//assign class to nuts regions, based on their value
-			svg.selectAll("path.nutsrg")
+			out.svg().selectAll("path.nutsrg")
 				.attr("ecl", function (rg) {
 					var v = rg.properties.val;
 					if (v != 0 && !v) return "nd";
@@ -622,7 +628,7 @@ export const map = function () {
 		if (out.type_ == "ch" || out.type_ == "ct") {
 			//choropleth and categorical map
 			//apply style to nuts regions depending on class
-			svg.selectAll("path.nutsrg")
+			out.svg().selectAll("path.nutsrg")
 				.attr("fill", function () {
 					var ecl = select(this).attr("ecl");
 					if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
@@ -637,7 +643,7 @@ export const map = function () {
 
 			if(nutsRG)
 			//TODO add circle creation in mapbuid method - change the radius here, only
-			svg.select("#g_ps").selectAll("circle")
+			out.svg().select("#g_ps").selectAll("circle")
 				.data(nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
 				.enter().filter(function (d) { return d.properties.val; })
 				.append("circle")

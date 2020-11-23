@@ -34,7 +34,7 @@ const _legend = function (map) {
 	out.map_ = map;
 
 	out.svgId_ = "legend_" + Math.round(10e15*Math.random());
-	out.svg_ = undefined; //TODO remove? or add the same to map?
+	out.svg_ = undefined;
 
 	out.width_ = undefined;
 	out.height_ = undefined;
