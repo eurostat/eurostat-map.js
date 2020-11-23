@@ -9,7 +9,7 @@ import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
-import * as lg from './eurostat-map-legend';
+import * as lg from './legend/legend';
 
 
 /**

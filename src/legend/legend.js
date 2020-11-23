@@ -3,10 +3,9 @@ import { legendColor, legendSize } from "d3-svg-legend";
 import { format } from "d3-format";
 
 
-
 //TODO decompose file
 //TODO build legends in a group, not a svg element ?
-//TODO problem in legend position / dimension
+//TODO fix problem in legend position / dimension
 
 
 /**
@@ -17,11 +16,11 @@ import { format } from "d3-format";
 export const legend = function(map) {
 	const type = map.type();
 	if (type == "ch")
-		return legend_ch(map);
+		return legendChoropleth(map);
 	else if (type == "ct")
-		return legend_ct(map);
+		return legendCategorical(map);
 	else if (type == "ps")
-		return legend_ps(map);
+		return legendProportionnalSymbols(map);
 	else
 		console.log("Unknown map type: " + type)
 	return out;
@@ -155,7 +154,7 @@ const _legend = function (map) {
  * 
  * @param {*} map 
  */
-const legend_ch = function (map) {
+const legendChoropleth = function (map) {
 	const out = _legend(map);
 
 
@@ -255,7 +254,7 @@ const legend_ch = function (map) {
  * 
  * @param {*} map 
  */
-const legend_ct = function (map) {
+const legendCategorical = function (map) {
 	const out = _legend(map);
 
 	out.update = function() {
@@ -344,7 +343,7 @@ const legend_ct = function (map) {
  * 
  * @param {*} map 
  */
-const legend_ps = function (map) {
+const legendProportionnalSymbols = function (map) {
 	const out = _legend(map);
 
 	//attributes
