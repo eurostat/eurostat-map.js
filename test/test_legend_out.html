@@ -8,7 +8,7 @@
 
 <body>
     <svg id="map"></svg>
-    <svg id="legend"></svg>
+    <svg height="210"><g id="legend"></g></svg>
 
     <script src="../build/eurostatmap.js"></script>
     <script>
@@ -24,7 +24,7 @@
         ;
 
         const lg = map.legend();
-        lg.svgId("legend");
+        lg.gId("legend");
         lg.titleText("Population density (people/km²)");
         lg.labelDecNb(0);
         lg.height(210);

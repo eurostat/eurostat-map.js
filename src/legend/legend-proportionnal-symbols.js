@@ -19,12 +19,13 @@ export const legendProportionnalSymbols = function (map) {
 	out.update = function() {
 		const m = out.map();
 		//const svgMap = select("#" + m.svgId());
+        const g = out.g();
 
 		//remove previous content
-		out._lgg.selectAll("*").remove();
+		g.selectAll("*").remove();
 
 		//background rectangle
-		out._lgg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
+		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
 			.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
 			.attr("width", out.width_).attr("height", out.height_)
 			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
@@ -51,18 +52,18 @@ export const legendProportionnalSymbols = function (map) {
 			;
 
 		//make legend
-		out._lgg.call(d3Legend);
+		g.call(d3Legend);
 
 		//apply style to legend elements
-		out._lgg.selectAll(".swatch")
+		g.selectAll(".swatch")
 			.style("fill", m.psFill())
 			.style("fill-opacity", m.psFillOpacity())
 			.style("stroke", m.psStroke())
 			.style("stroke-width", m.psStrokeWidth());
 
-		out._lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
-		out._lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
-		out._lgg.style("font-family", out.fontFamily_);
+		g.select(".legendTitle").style("font-size", out.titleFontSize_);
+		g.selectAll("text.label").style("font-size", out.labelFontSize_);
+		g.style("font-family", out.fontFamily_);
 	}
 
 	out.computeWidth = function() {

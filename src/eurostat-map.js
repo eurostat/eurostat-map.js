@@ -128,13 +128,10 @@ export const map = function () {
 		})();
 
 	//override of some special getters/setters
+
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
-
-
-
-	
 	out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
@@ -151,22 +148,6 @@ export const map = function () {
 		out.legend_ = v; v.map(out);
 		return out;
 	};
-
-	out.showLegend = function (v) {
-		if (!arguments.length) return out.showLegend_;
-		out.showLegend_ = v;
-		if(v) {
-			//?
-		} else {
-			//hide legend element if there
-			//TODO
-		}
-		return out;
-	};
-
-
-
-
 
 
 	/**
@@ -221,10 +202,11 @@ export const map = function () {
 		out.svg(svg);
 
 		//empty svg element
-		svg.selectAll("*").remove();
+		//TODO necessary?
+		//svg.selectAll("*").remove();
 
 		//set SVG dimensions
-		//if no SVG height was specified, compute it as 85% of the width.
+		//if no height was specified, use 85% of the width.
 		if(!out.height()) out.height( 0.85 * out.width() );
 		svg.attr("width", out.width()).attr("height", out.height());
 
@@ -257,8 +239,7 @@ export const map = function () {
 		if(out.showLegend()) {
 			//create legend element
 			const lg = out.legend();
-			const lgg = svg.append("g");
-			lgg.append("svg").attr("id", lg.svgId());
+			const lgg = svg.append("g").attr("id", lg.gId());
 			lg.build();
 			//position
 			const dx = out.width() - lg.width() - lg.boxMargin();

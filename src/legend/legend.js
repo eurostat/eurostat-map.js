@@ -1,21 +1,20 @@
 import { select } from "d3-selection";
 
 
-//TODO build legends in a group, not a svg element ?
 //TODO fix problem in legend position / dimension
 
 
 /**
  * A eurostat-map legend. This is an abstract method.
- * A legend is provided as an independant SVG image, which can be nested inside the map SVG.
+ * A legend is provided as an independant g element to be nested within a SVG image.
 */
 export const legend = function (map) {
 	const out = {};
 
 	out.map_ = map;
 
-	out.svgId_ = "legend_" + Math.round(10e15*Math.random());
-	out.svg_ = undefined;
+	out.gId_ = "legend_" + Math.round(10e15*Math.random());
+	out.g_ = undefined;
 
 	out.width_ = undefined;
 	out.height_ = undefined;
@@ -60,9 +59,6 @@ export const legend = function (map) {
 	 * Private variables.
 	 */
 
-	//the group where to draw the legend
-	out._lgg;
-
 
 	/**
 	 * Build legeng element.
@@ -70,17 +66,16 @@ export const legend = function (map) {
 	out.build = function () {
 
 		//create svg
-		out.svg( select("#" + out.svgId()) );
-		out._lgg = out.svg().append("g");
+		out.g( select("#" + out.gId()) );
 
 		//set size
+		//TODO necessary?
 		if(!out.width_) out.width_ = out.computeWidth();
 		if(!out.height_) out.height_ = out.computeHeight();
-		out.svg().attr("width", out.width()).attr("height", out.height());
 
 		//set position
 		if(!out.position_) out.position_ = out.computePosition();
-		out._lgg.attr("transform", "translate(" + out.position()[0] + "," + out.position()[1] + ")");
+		out.g().attr("transform", "translate(" + out.position()[0] + "," + out.position()[1] + ")");
 	}
 
 	/**
