@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <svg id="map"></svg>
+    <svg id="legend"></svg>
+
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+        const map = eurostatmap
+            .map()
+            .width(400)
+            .scale("60M")
+            .datasetCode("demo_r_d3dens")
+            .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
+            .unitText("people/km²")
+            .tooltipShowFlags(false)
+            .build()
+        ;
+
+        const lg = map.legend()
+            .svgId("legend")
+            .titleText("Population density (people/km²)")
+            .labelDecNb(0)
+            //.height(210)
+            //.width(190)
+            .build()
+    </script>
+</body>
+
+</html>
