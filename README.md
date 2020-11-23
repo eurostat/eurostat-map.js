@@ -151,29 +151,29 @@ To show a categorical map, *type* should be set to *"ct"*. The following paramet
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
-| *map*.**legend**() | legend | *undefined* | The map legend. |
+| *map*.**legend**() | legend | *auto* | The map legend. |
 | *map*.**showLegend**([*value*]) | boolean | *false* | Set to true to show a legend directly within the map. False otherwise. |
-| *map*.**legendFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
-| *map*.**legendTitleText**([*value*]) | String | *"Legend"* | The legend title. |
-| *map*.**legendTitleFontSize**([*value*]) | int | *20* | The legend title font size. |
-| *map*.**legendTitleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
-| *map*.**legendBoxWidth**([*value*]) | int | *250* | The legend box width. |
-| *map*.**legendBoxHeight**([*value*]) | int | *350* | The legend box height. |
-| *map*.**legendBoxMargin**([*value*]) | int | *10* | The legend box margin, in pixel. |
-| *map*.**legendBoxPadding**([*value*]) | int | *10* | The legend box padding, in pixel. |
-| *map*.**legendBoxCornerRadius**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
-| *map*.**legendBoxFill**([*value*]) | String | *"white"* | The legend box fill style. |
-| *map*.**legendBoxOpacity**([*value*]) | number | *0.5* | The legend box opacity, from 0 to 1. |
-| *map*.**legendCellNb**([*value*]) | int | *4* | The legend cells number (used for proportional symbol maps only). |
-| *map*.**legendAscending**([*value*]) | String | *true* | The legend cells order. |
-| *map*.**legendShapeWidth**([*value*]) | int | *20* | The cell width (used for choropleth maps only). |
-| *map*.**legendShapeHeight**([*value*]) | int | *16* | The cell heigth (used for choropleth maps only). |
-| *map*.**legendShapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
-| *map*.**legendLabelFontSize**([*value*]) | int | *15* | The label font size. |
-| *map*.**legendLabelDelimiter**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
-| *map*.**legendLabelWrap**([*value*]) | int | *140* | The label text wrap length, in pixel. |
-| *map*.**legendLabelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
-| *map*.**legendLabelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
+| *map*.**legend().width**([*value*]) | int | *auto* | The legend box width. If not specified, a value is automated computed. |
+| *map*.**legend().height**([*value*]) | int | *auto* | The legend box height. If not specified, a value is automated computed. |
+| *map*.**legend().boxMargin**([*value*]) | int | *10* | The legend box margin, in pixel. |
+| *map*.**legend().boxPadding**([*value*]) | int | *10* | The legend box padding, in pixel. |
+| *map*.**legend().boxCornerRadius**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
+| *map*.**legend().boxFill**([*value*]) | String | *"white"* | The legend box fill style. |
+| *map*.**legend().boxOpacity**([*value*]) | number | *0.5* | The legend box opacity, from 0 to 1. |
+| *map*.**legend().fontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
+| *map*.**legend().titleText**([*value*]) | String | *"Legend"* | The legend title. |
+| *map*.**legend().titleFontSize**([*value*]) | int | *17* | The legend title font size. |
+| *map*.**legend().titleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
+| *map*.**legend().cellNb**([*value*]) | int | *4* | The legend cells number (used for proportional symbol maps only). |
+| *map*.**legend().ascending**([*value*]) | String | *true* | The legend cells order. |
+| *map*.**legend().shapeWidth**([*value*]) | int | *15* | The cell width (used for choropleth maps only). |
+| *map*.**legend().shapeHeight**([*value*]) | int | *13* | The cell heigth (used for choropleth maps only). |
+| *map*.**legend().shapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
+| *map*.**legend().labelFontSize**([*value*]) | int | *13* | The label font size. |
+| *map*.**legend().labelDelimiter**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
+| *map*.**legend().labelWrap**([*value*]) | int | *140* | The label text wrap length, in pixel. |
+| *map*.**legend().labelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
+| *map*.**legend().labelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
 
 ### Bottom text customisation
 
