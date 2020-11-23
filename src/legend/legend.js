@@ -1,9 +1,6 @@
 import { select } from "d3-selection";
 
 
-//TODO fix problem in legend position / dimension
-
-
 /**
  * A eurostat-map legend. This is an abstract method.
  * A legend is provided as an independant g element to be nested within a SVG image.
@@ -28,14 +25,14 @@ export const legend = function (map) {
 
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleText_ = "Legend";
-	out.titleFontSize_ = 20;
+	out.titleFontSize_ = 17;
 	out.titleWidth_ = 140;
 
 	out.ascending_ = true;
-	out.shapeWidth_ = 20;
-	out.shapeHeight_ = 16;
+	out.shapeWidth_ = 15;
+	out.shapeHeight_ = 13;
 	out.shapePadding_ = 2;
-	out.labelFontSize_ = 15;
+	out.labelFontSize_ = 13;
 	out.labelDelimiter_ = " - ";
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
@@ -69,7 +66,6 @@ export const legend = function (map) {
 		out.g( select("#" + out.gId()) );
 
 		//set size
-		//TODO necessary?
 		if(!out.width_) out.width_ = out.computeWidth();
 		if(!out.height_) out.height_ = out.computeHeight();
 

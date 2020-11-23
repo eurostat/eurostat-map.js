@@ -91,7 +91,7 @@ export const legendChoropleth = function (map) {
 		return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 	}
 	out.computeHeight = function() {
-		return out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.map().clnb() - 1) + 12;
+		return out.boxPadding_ * 2 + out.titleFontSize_ + (out.shapeHeight_ + out.shapePadding_ + 8) * (out.map().clnb());
 	}
 	out.computePosition = function() {
 		const x = out.boxPadding_;

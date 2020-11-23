@@ -234,13 +234,15 @@ export const map = function () {
 
 		//build legend element
 		if(out.showLegend()) {
+
 			//create legend element
 			const lg = out.legend();
 			const lgg = svg.append("g").attr("id", lg.gId());
 			lg.build();
-			//position
-			const dx = out.width() - lg.width() - lg.boxMargin();
-			const dy = lg.boxMargin();
+
+			//set position
+			const dx = out.width() - lg.width();
+			const dy = lg.boxPadding() + lg.titleFontSize();
 			lgg.attr("transform", "translate("+dx+","+dy+")");
 		}
 
