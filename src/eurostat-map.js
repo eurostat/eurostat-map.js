@@ -201,10 +201,6 @@ export const map = function () {
 		const svg = select("#" + out.svgId());
 		out.svg(svg);
 
-		//empty svg element
-		//TODO necessary?
-		//svg.selectAll("*").remove();
-
 		//set SVG dimensions
 		//if no height was specified, use 85% of the width.
 		if(!out.height()) out.height( 0.85 * out.width() );
@@ -218,9 +214,10 @@ export const map = function () {
 		//add additional filters for fill patterns for example
 		out.filtersDefinitionFun_(svg, out.clnb_);
 
-		//prepare drawing group
-		var zg = svg.append("g").attr("id", "zoomgroup");
-		//make zoomable
+		//create drawing group, as first child
+		var zg = svg.insert("g",":first-child").attr("id", "zoomgroup");
+
+		//make drawing group zoomable
 		if (out.scaleExtent()) {
 			svg.call(zoom()
 			.scaleExtent(out.scaleExtent())
