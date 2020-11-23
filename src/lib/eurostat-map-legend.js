@@ -85,9 +85,6 @@ const _legend = function (map) {
 	//the group where to draw the legend
 	out._lgg;
 
-	out._cla = ()=>{ return out.map().classifier() };
-	out._claInv = ()=>{ return out.map().classifierInverse() };
-
 
 
 	/**
@@ -159,6 +156,9 @@ const _legend = function (map) {
 const legend_ch = function (map) {
 	const out = _legend(map);
 
+	//the map classifier
+	const cla = ()=>{ return out.map().classifier() };
+
 	out.update = function() {
 		const m = out.map();
 		const svgMap = select("#" + m.svgId());
@@ -178,7 +178,7 @@ const legend_ch = function (map) {
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
 			.useClass(true)
-			.scale(out._cla())
+			.scale(cla())
 			.ascending(out.ascending_)
 			.shapeWidth(out.shapeWidth_)
 			.shapeHeight(out.shapeHeight_)
@@ -258,6 +258,11 @@ const legend_ch = function (map) {
 const legend_ct = function (map) {
 	const out = _legend(map);
 
+	//the map classifier
+	const cla = ()=>{ return out.map().classifier() };
+	//the map classifier inverse function
+	const claInv = ()=>{ return out.map().classifierInverse() };
+
 	out.update = function() {
 		const m = out.map();
 		const svgMap = select("#" + m.svgId());
@@ -277,25 +282,25 @@ const legend_ct = function (map) {
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
 			.useClass(true)
-			.scale(out._cla())
+			.scale(cla())
 			.ascending(out.ascending_)
 			.shapeWidth(out.shapeWidth_)
 			.shapeHeight(out.shapeHeight_)
 			.shapePadding(out.shapePadding_)
 			.labels( function (d) {
-				return m.classToText() ? m.classToText()[out._claInv()(d.i)] || out._claInv()(d.i) : out._claInv()(d.i);
+				return m.classToText() ? m.classToText()[claInv()(d.i)] || claInv()(d.i) : claInv()(d.i);
 			})
 			.labelDelimiter(out.labelDelimiter_)
 			.labelOffset(out.labelOffset_)
 			.labelWrap(out.labelWrap_)
 			.on("cellover", function (ecl) {
-				ecl = out._cla()(ecl);
+				ecl = cla()(ecl);
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelectionFillStyle());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 			})
 			.on("cellout", function (ecl) {
-				ecl = out._cla()(ecl);
+				ecl = cla()(ecl);
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
 			});
@@ -313,7 +318,7 @@ const legend_ct = function (map) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("class").replace("swatch ", "");
 				if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
-				return m.classToFillStyleCT()[out._claInv()(ecl)];
+				return m.classToFillStyleCT()[claInv()(ecl)];
 			});
 		out._lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 		out._lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
@@ -344,6 +349,9 @@ const legend_ct = function (map) {
 const legend_ps = function (map) {
 	const out = _legend(map);
 
+	//the map classifier
+	const cla = ()=>{ return out.map().classifier() };
+
 	out.update = function() {
 		const m = out.map();
 		//const svgMap = select("#" + m.svgId());
@@ -362,7 +370,7 @@ const legend_ps = function (map) {
 		const d3Legend = legendSize()
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
-			.scale(out._cla())
+			.scale(cla())
 			.cells(out.cellNb_ + 1)
 			.cellFilter(function (d) { if (!d.data) return false; return true; })
 			.orient("vertical")

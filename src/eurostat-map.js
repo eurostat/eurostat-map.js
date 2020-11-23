@@ -16,15 +16,13 @@ import * as tp from './lib/eurostat-tooltip';
  * Function returning a eurostat-map object.
  */
 export const map = function () {
-
-
 	//TODO: upgrade to d3 v6?
 
 	//the map object to return
 	var out = {};
 
 	/**
-	* Set attributes default values
+	* Create attributes and set default values
 	*/
 
 	out.svgId_ = "map";
