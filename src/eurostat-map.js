@@ -282,56 +282,6 @@ export const map = function () {
 	}
 
 
-
-	/**
-	 * Update the map with new stat data sources.
-	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
-	 */
-	out.updateStatData = function () {
-
-		//erase previous data
-		out.statData_ = null;
-
-		if (out.csvDataSource_ == null) {
-			//for statistical data to retrieve from Eurostat API
-
-			//set precision
-			out.filters_["precision"] = out.precision_;
-			//select only required geo groups, depending on the specified nuts level
-			out.filters_["geoLevel"] = out.nutsLvl_ + "" === "0" ? "country" : "nuts" + out.nutsLvl_;
-			//force filtering of euro-geo-aggregates
-			out.filters_["filterNonGeo"] = 1;
-
-			//retrieve stat data from Eurostat API
-			json(getEstatDataURL(out.datasetCode_, out.filters_)).then(
-				function (data___) {
-
-					//decode stat data
-					out.statData_ = jsonstatToIndex(JSONstat(data___));
-
-					//if geodata are already there, refresh the map with stat values
-					if (!geoData) return;
-					out.updateStatValues();
-				});
-		} else {
-			//for statistical data to retrieve from custom CSV file
-
-			//retrieve csv data
-			csv(out.csvDataSource_.url).then(
-				function (data___) {
-
-					//decode stat data
-					out.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
-
-					//if geodata are already there, refresh the map with stat values
-					if (!geoData) return;
-					out.updateStatValues();
-				});
-		}
-		return out;
-	}
-
-
 	/** 
 	 * Buid an empty map template, based on the geometries only.
 	*/
@@ -502,6 +452,58 @@ export const map = function () {
 
 		return out;
 	};
+
+
+
+
+
+	/**
+	 * Update the map with new stat data sources.
+	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
+	 */
+	out.updateStatData = function () {
+
+		//erase previous data
+		out.statData_ = null;
+
+		if (out.csvDataSource_ == null) {
+			//for statistical data to retrieve from Eurostat API
+
+			//set precision
+			out.filters_["precision"] = out.precision_;
+			//select only required geo groups, depending on the specified nuts level
+			out.filters_["geoLevel"] = out.nutsLvl_ + "" === "0" ? "country" : "nuts" + out.nutsLvl_;
+			//force filtering of euro-geo-aggregates
+			out.filters_["filterNonGeo"] = 1;
+
+			//retrieve stat data from Eurostat API
+			json(getEstatDataURL(out.datasetCode_, out.filters_)).then(
+				function (data___) {
+
+					//decode stat data
+					out.statData_ = jsonstatToIndex(JSONstat(data___));
+
+					//if geodata are already there, refresh the map with stat values
+					if (!geoData) return;
+					out.updateStatValues();
+				});
+		} else {
+			//for statistical data to retrieve from custom CSV file
+
+			//retrieve csv data
+			csv(out.csvDataSource_.url).then(
+				function (data___) {
+
+					//decode stat data
+					out.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+
+					//if geodata are already there, refresh the map with stat values
+					if (!geoData) return;
+					out.updateStatValues();
+				});
+		}
+		return out;
+	}
 
 
 
