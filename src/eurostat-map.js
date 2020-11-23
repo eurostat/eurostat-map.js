@@ -39,7 +39,7 @@ export const map = function () {
 	out.csvDataSource_ = null;
 	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
 	out.geo_ = "EUR";
-	out.scale_ = "20M";
+	out.scale_ = "20M"; //TODO better choose automatically
 	out.scaleExtent_ = [1, 5];
 	out.proj_ = "3035";
 	out.nutsLvl_ = 3;
@@ -231,22 +231,26 @@ export const map = function () {
 			.scaleExtent(out.scaleExtent())
 			.on('zoom', function(a,b,c) {
 				var k = event.transform.k;
-				var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn", "symbol"];
+				var cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
 				for (var i = 0; i < cs.length; i++)
-					svg.selectAll("." + cs[i]).style("stroke-width", (1/k) + "px");
+					svg.selectAll("." + cs[i]).style("stroke-width", function(d) {
+						return (1/k) + "px";
+					});
 				zg.attr("transform", event.transform);
 			}));
 		}
 
 		//build legend element
 		if(out.showLegend()) {
-			//create and position legend element
+			//create legend element
 			const lg = out.legend();
-			const dx = out.width() - lg.width() - lg.boxMargin();
-			const dy = lg.boxMargin();
-			const lgg = svg.append("g").attr("transform", "translate("+dx+","+dy+")");
+			const lgg = svg.append("g");
 			lgg.append("svg").attr("id", lg.svgId());
 			lg.build();
+			//position
+			const dx = out.width() - lg.width() - lg.boxMargin();
+			const dy = lg.boxMargin();
+			lgg.attr("transform", "translate("+dx+","+dy+")");
 		}
 
 		//retrieve geo data
@@ -397,10 +401,10 @@ export const map = function () {
 			//draw graticule
 			zg.append("g").attr("id", "g_gra")
 				.style("fill", "none")
-				.style("stroke", out.graticuleStroke_)
-				.style("stroke-width", out.graticuleStrokeWidth_)
+				.style("stroke", out.graticuleStroke())
+				.style("stroke-width", out.graticuleStrokeWidth())
 				.selectAll("path").data(gra)
-				.enter().append("path").attr("d", path).attr("class", "gra");
+				.enter().append("path").attr("d", path).attr("class", "gra")
 		}
 
 		//draw country regions
@@ -459,19 +463,20 @@ export const map = function () {
 				bn = bn.properties;
 				if (bn.co === "T") return "bn_co";
 				var cl = ["bn_" + bn.lvl];
-				if (bn.oth === "T") cl.push("bn_oth");
+				//if (bn.oth === "T") cl.push("bn_oth");
 				return cl.join(" ");
 			})
 			.style("stroke", function (bn) {
 				bn = bn.properties;
 				if (bn.co === "T") return out.nutsbnStroke_.co || "#1f78b4";
-				if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
+				//if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
 				return out.nutsbnStroke_[bn.lvl] || "#777";
 			})
 			.style("stroke-width", function (bn) {
 				bn = bn.properties;
 				if (bn.co === "T") return out.nutsbnStrokeWidth_.co || 1;
-				if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
+				if(bn.lvl>0) return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
+				//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
 				return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
 			});
 		}
