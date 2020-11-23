@@ -158,8 +158,6 @@ const _legend = function (map) {
 const legend_ch = function (map) {
 	const out = _legend(map);
 
-	//the map classifier
-	const cla = ()=>{ return out.map().classifier() };
 
 	out.update = function() {
 		const m = out.map();
@@ -180,7 +178,7 @@ const legend_ch = function (map) {
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
 			.useClass(true)
-			.scale(cla())
+			.scale(m.classifier())
 			.ascending(out.ascending_)
 			.shapeWidth(out.shapeWidth_)
 			.shapeHeight(out.shapeHeight_)
@@ -260,13 +258,11 @@ const legend_ch = function (map) {
 const legend_ct = function (map) {
 	const out = _legend(map);
 
-	//the map classifier
-	const cla = ()=>{ return out.map().classifier() };
-	//the map classifier inverse function
-	const claInv = ()=>{ return out.map().classifierInverse() };
-
 	out.update = function() {
 		const m = out.map();
+		const cla = m.classifier();
+		const claInv = m.classifierInverse();
+
 		const svgMap = select("#" + m.svgId());
 
 		//remove previous content
@@ -284,25 +280,25 @@ const legend_ct = function (map) {
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
 			.useClass(true)
-			.scale(cla())
+			.scale(cla)
 			.ascending(out.ascending_)
 			.shapeWidth(out.shapeWidth_)
 			.shapeHeight(out.shapeHeight_)
 			.shapePadding(out.shapePadding_)
 			.labels( function (d) {
-				return m.classToText() ? m.classToText()[claInv()(d.i)] || claInv()(d.i) : claInv()(d.i);
+				return m.classToText() ? m.classToText()[claInv(d.i)] || claInv(d.i) : claInv(d.i);
 			})
 			.labelDelimiter(out.labelDelimiter_)
 			.labelOffset(out.labelOffset_)
 			.labelWrap(out.labelWrap_)
 			.on("cellover", function (ecl) {
-				ecl = cla()(ecl);
+				ecl = cla(ecl);
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelectionFillStyle());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 			})
 			.on("cellout", function (ecl) {
-				ecl = cla()(ecl);
+				ecl = cla(ecl);
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
 			});
@@ -320,7 +316,7 @@ const legend_ct = function (map) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("class").replace("swatch ", "");
 				if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
-				return m.classToFillStyleCT()[claInv()(ecl)];
+				return m.classToFillStyleCT()[claInv(ecl)];
 			});
 		out._lgg.select(".legendTitle").style("font-size", out.titleFontSize_);
 		out._lgg.selectAll("text.label").style("font-size", out.labelFontSize_);
@@ -355,8 +351,7 @@ const legend_ps = function (map) {
 	out.cellNb_ = 4;
 	out.cellNb = function (v) { if (!arguments.length) return out["cellNb_"]; out["cellNb_"] = v; return out.map(); }
 
-	//the map classifier
-	const cla = ()=>{ return out.map().classifier() };
+
 
 	out.update = function() {
 		const m = out.map();
@@ -377,7 +372,7 @@ const legend_ps = function (map) {
 		const d3Legend = legendSize()
 			.title(out.titleText_)
 			.titleWidth(out.titleWidth_)
-			.scale(cla())
+			.scale(m.classifier())
 			.cells(out.cellNb_ + 1)
 			.cellFilter(function (d) { if (!d.data) return false; return true; })
 			.orient("vertical")
