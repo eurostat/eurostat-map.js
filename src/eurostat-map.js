@@ -233,7 +233,7 @@ export const map = function () {
 				var k = event.transform.k;
 				var cs = ["gra", "bn_0", "bn_oth", "bn_co", "cntbn", "symbol"];
 				for (var i = 0; i < cs.length; i++)
-					svg.selectAll("." + cs[i]).style("stroke-width", (1 / k) + "px");
+					svg.selectAll("." + cs[i]).style("stroke-width", (1/k) + "px");
 				zg.attr("transform", event.transform);
 			}));
 		}
