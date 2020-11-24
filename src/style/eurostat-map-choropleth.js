@@ -2,9 +2,8 @@ import { min, max } from "d3-array";
 import { select } from "d3-selection";
 import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { interpolateYlOrBr } from "d3-scale-chromatic";
-
-import * as mt from './eurostat-map-template';
-import * as lgch from './legend/legend-choropleth';
+import * as mt from '../eurostat-map-template';
+import * as lgch from '../legend/legend-choropleth';
 
 
 export const map = function () {
@@ -112,9 +111,11 @@ export const map = function () {
 		return out;
 	};
 
-
-
-
-
     return out;
+}
+
+//build a color legend object
+export const getColorLegend = function (colorFun) {
+	colorFun = colorFun || interpolateYlOrRd;
+	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }

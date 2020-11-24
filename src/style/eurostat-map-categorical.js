@@ -1,8 +1,7 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
-
-import * as mt from './eurostat-map-template';
-import * as lgct from './legend/legend-categorical';
+import * as mt from '../eurostat-map-template';
+import * as lgct from '../legend/legend-categorical';
 
 
 export const map = function () {

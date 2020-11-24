@@ -9,7 +9,6 @@ import * as tp from './lib/eurostat-tooltip';
 
 
 export const mapTemplate = function () {
-	//TODO: upgrade to d3 v6?
 
     const out = {};
 
