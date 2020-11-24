@@ -4,7 +4,7 @@ import { select, event } from "d3-selection";
 import { geoIdentity, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
-import { getEstatDataURL, flags } from './lib/eurostat-base';
+import { getEstatDataURL, flags, getURLParameterByName } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
 
 /**
@@ -517,14 +517,14 @@ export const mapTemplate = function (withCenterPoints) {
 	};
 
 
-	//TODO reuse that.
+
 	/**
 	 * Set some map attributes based on URL parameters.
-	 * To be used with *loadURLParameters()* function.
+	 * To be used with *getURLParameters()* function.
 	 * 
-	 * @param {*} opts The URL parameters as an object, as returned by the *loadURLParameters()* function.
+	 * @param {*} opts The URL parameters as an object, as returned by the *getURLParameters()* function.
 	 */
-	/*out.set = function (opts) {
+	out.set = function (opts) {
 		if (opts.w) out.width(opts.w);
 		if (opts.s) out.scale(opts.s);
 		if (opts.lvl) out.nutsLvl(opts.lvl);
@@ -534,7 +534,7 @@ export const mapTemplate = function (withCenterPoints) {
 		if (opts.clnb) out.clnb(+opts.clnb);
 		if (opts.lg) out.lg(opts.lg);
 		return out;
-	};*/
+	};
 
 
 	return out;
@@ -602,6 +602,20 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	}
 	return buf.join("");
 };
+
+
+/**
+ * Retrieve some URL parameters, which could be then reused as map definition parameters.
+ * This allow a quick map customisation by simply adding and changing some URL parameters.
+ */
+export const getURLParameters = function () {
+	const ps = {};
+	const p = ["w", "s", "lvl", "time", "proj", "y", "clnb", "lg", "type"];
+	for (let i = 0; i < p.length; i++)
+		ps[p[i]] = getURLParameterByName(p[i]);
+	return ps;
+};
+
 
 
 

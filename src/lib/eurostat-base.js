@@ -81,7 +81,6 @@ export const countryCodes3To2 = { AUT: "AT", BEL: "BE", CHE: "CH", CYP: "CY", CZ
 //override country names, to shorter ones
 export const overrideCountryNames = function (dict, lg) {
 	lg = lg || "en";
-	var data;
 	if (dict.EA) dict.EA = { en: "Euro area", fr: "Zone euro", de: "Euroraum" }[lg];
 	if (dict.EU) dict.EU = { en: "European Union", fr: "Union européenne", de: "Europäische Union" }[lg];
 	if (dict.EEA) dict.EEA = { en: "European Economic Area", fr: "Espace économique européen", de: "Europäischer Wirtschaftsraum" }[lg];
@@ -96,22 +95,11 @@ export const getMonthTXT = function (monthInt) {
 };
 
 
-
-
-//get generic url parameters
-export const getURLParameters = function () {
-	var ps = {};
-	var p = ["w", "s", "lvl", "time", "proj", "y", "clnb", "lg", "type"];
-	for (var i = 0; i < p.length; i++)
-		ps[p[i]] = getParameterByName(p[i]);
-	return ps;
-};
-
 /**
  * @param {string} name
  * @returns {string}
  */
-export const getParameterByName = function (name) {
+export const getURLParameterByName = function (name) {
 	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 		results = regex.exec(location.search);
@@ -446,7 +434,7 @@ export const getLang = function () {
  * @return {string}
  */
 export const getLang2Chars = function () {
-	var lg = getParameterByName("lang") || getLang() || "en";
+	var lg = getURLParameterByName("lang") || getLang() || "en";
 	return lg.substring(0, 2);
 };
 
