@@ -98,7 +98,7 @@ export const mapTemplate = function (withCenterPoints) {
 	*/
 	for (let att in out)
 		(function () {
-			var att_ = att;
+			const att_ = att;
 			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
 		})();
 
@@ -167,16 +167,16 @@ export const mapTemplate = function (withCenterPoints) {
 		out.filtersDefinitionFun_(svg, out.clnb_);
 
 		//create drawing group, as first child
-		var zg = svg.insert("g",":first-child").attr("id", "zoomgroup");
+		const zg = svg.insert("g",":first-child").attr("id", "zoomgroup");
 
 		//make drawing group zoomable
 		if (out.scaleExtent()) {
 			svg.call(zoom()
 			.scaleExtent(out.scaleExtent())
 			.on('zoom', function(a,b,c) {
-				var k = event.transform.k;
-				var cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
-				for (var i = 0; i < cs.length; i++)
+				const k = event.transform.k;
+				const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
+				for (let i = 0; i < cs.length; i++)
 					svg.selectAll("." + cs[i]).style("stroke-width", function(d) {
 						return (1/k) + "px";
 					});
@@ -262,7 +262,7 @@ export const mapTemplate = function (withCenterPoints) {
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
 
 		//prepare drawing group
-		var zg = select("#zoomgroup");
+		const zg = select("#zoomgroup");
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
@@ -272,7 +272,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 		if (out.drawCoastalMargin_) {
 			//draw coastal margin
-			var cg = zg.append("g").attr("id", "g_coast_margin")
+			const cg = zg.append("g").attr("id", "g_coast_margin")
 				.style("fill", "none")
 				.style("stroke-width", out.coastalMarginWidth_)
 				.style("stroke", out.coastalMarginColor_)
@@ -324,14 +324,14 @@ export const mapTemplate = function (withCenterPoints) {
 			.attr("class", "nutsrg")
 			.attr("fill", out.nutsrgFillStyle_)
 			.on("mouseover", function (rg) {
-				var sel = select(this);
+				const sel = select(this);
 				sel.attr("fill___", sel.attr("fill"));
 				sel.attr("fill", out.nutsrgSelectionFillStyle_);
 				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
 			}).on("mousemove", function () {
 				if (out.tooltipText_) out._tooltip.mousemove();
 			}).on("mouseout", function () {
-				var sel = select(this);
+				const sel = select(this);
 				sel.attr("fill", sel.attr("fill___"));
 				if (out.tooltipText_) out._tooltip.mouseout();
 			});
@@ -356,7 +356,7 @@ export const mapTemplate = function (withCenterPoints) {
 			.attr("class", function (bn) {
 				bn = bn.properties;
 				if (bn.co === "T") return "bn_co";
-				var cl = ["bn_" + bn.lvl];
+				const cl = ["bn_" + bn.lvl];
 				//if (bn.oth === "T") cl.push("bn_oth");
 				return cl.join(" ");
 			})
@@ -379,6 +379,7 @@ export const mapTemplate = function (withCenterPoints) {
 		if(withCenterPoints) {
 			zg.append("g").attr("id", "g_ps");
 			//TODO build them here, with same size. only when style require it.
+
 		}
 
 		//add bottom text
@@ -471,12 +472,12 @@ export const mapTemplate = function (withCenterPoints) {
 		//join values and status to NUTS regions
 		out._values = [];
 		if(out._nutsRG)
-		for (var i = 0; i < out._nutsRG.length; i++) {
-			var rg = out._nutsRG[i];
-			var value = out.statData_[rg.properties.id];
+		for (let i = 0; i < out._nutsRG.length; i++) {
+			const rg = out._nutsRG[i];
+			const value = out.statData_[rg.properties.id];
 			if (!value) continue;
 			if (!value.value == 0 && !value.value) continue;
-			var v = value.value;
+			let v = value.value;
 			if (!isNaN(+v)) v = +v;
 			rg.properties.val = v;
 			if (value.status) rg.properties.st = value.status;
@@ -516,7 +517,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
 	*/
 	out.getTime = function () {
-		var t = out.filters_.time;
+		const t = out.filters_.time;
 		if (t) return t;
 		if (!out.statData_) return;
 		t = out.statData_.Dimension("time");
@@ -566,7 +567,7 @@ const getBBOXAsGeoJSON = function(bb) {
  * @param {*} map The map element
  */
 const tooltipTextDefaultFunction = function (rg, map) {
-	var buf = [];
+	const buf = [];
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
@@ -583,7 +584,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 		if (map.tooltipShowFlags_ === "short")
 			buf.push(" " + rg.properties.st);
 		else {
-			var f = flags[rg.properties.st];
+			const f = flags[rg.properties.st];
 			buf.push(f ? " (" + f + ")" : " " + rg.properties.st);
 		}
 	}
@@ -622,10 +623,10 @@ export const jsonstatToIndex = function (jsData) {
  * @param {*} valueCol The name of the statistical value column in the CSV file.
  */
 export const csvToIndex = function (csvData, geoCol, valueCol) {
-	var ind = {};
-	for (var i = 0; i < csvData.length; i++) {
-		var d = csvData[i];
-		var v = d[valueCol];
+	const ind = {};
+	for (let i = 0; i < csvData.length; i++) {
+		const d = csvData[i];
+		const v = d[valueCol];
 		ind[d[geoCol]] = { value: isNaN(+v) ? v : +v, status: "" };
 	}
 	return ind;
@@ -655,15 +656,15 @@ export const getFillPatternLegend = function () {
 export const getFillPatternDefinitionFun = function (opts) {
 	opts = opts || {};
 	opts.shape = opts.shape || "circle";
-	var ps = opts.patternSize || 5;
-	var smin = opts.minSize || 1;
-	var smax = opts.maxSize || 5.5;
+	const ps = opts.patternSize || 5;
+	const smin = opts.minSize || 1;
+	const smax = opts.maxSize || 5.5;
 	opts.bckColor = opts.bckColor || "white";
 	opts.symbColor = opts.symbColor || "black";
 	return function (svg, clnb) {
-		for (var i = 0; i < clnb; i++) {
-			var si = smin + (smax - smin) * i / (clnb - 1);
-			var patt = svg.append("pattern").attr("id", "pattern_" + i).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
+		for (let i = 0; i < clnb; i++) {
+			const si = smin + (smax - smin) * i / (clnb - 1);
+			const patt = svg.append("pattern").attr("id", "pattern_" + i).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
 			patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
 			if (opts.shape == "square")
 				patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
