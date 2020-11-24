@@ -13,7 +13,7 @@ import * as tp from './lib/eurostat-tooltip';
  * @param {*} withCenterPoints Set to true or 1 to add regions center points to the map template, to be used for proportionnal symbols maps for example.
  */
 export const mapTemplate = function (withCenterPoints) {
-	//TODO decompose empty map and stat map?
+	//TODO decompose into: map template and stat part?
 
     const out = {};
 
@@ -105,25 +105,6 @@ export const mapTemplate = function (withCenterPoints) {
 			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
 		})();
 
-
-
-	/**
-	 * Set some map attributes based on URL parameters.
-	 * To be used with *loadURLParameters()* function.
-	 * 
-	 * @param {*} opts The URL parameters as an object, as returned by the *loadURLParameters()* function.
-	 */
-	/*out.set = function (opts) {
-		if (opts.w) out.width(opts.w);
-		if (opts.s) out.scale(opts.s);
-		if (opts.lvl) out.nutsLvl(opts.lvl);
-		if (opts.time) { out.filters_.time = opts.time; delete out.filters_.lastTimePeriod; }
-		if (opts.proj) out.proj(opts.proj);
-		if (opts.y) out.NUTSyear(opts.y);
-		if (opts.clnb) out.clnb(+opts.clnb);
-		if (opts.lg) out.lg(opts.lg);
-		return out;
-	};*/
 
 
     /**
@@ -534,6 +515,27 @@ export const mapTemplate = function (withCenterPoints) {
 		if (!t || !t.id || t.id.length == 0) return;
 		return t.id[0]
 	};
+
+
+	//TODO reuse that.
+	/**
+	 * Set some map attributes based on URL parameters.
+	 * To be used with *loadURLParameters()* function.
+	 * 
+	 * @param {*} opts The URL parameters as an object, as returned by the *loadURLParameters()* function.
+	 */
+	/*out.set = function (opts) {
+		if (opts.w) out.width(opts.w);
+		if (opts.s) out.scale(opts.s);
+		if (opts.lvl) out.nutsLvl(opts.lvl);
+		if (opts.time) { out.filters_.time = opts.time; delete out.filters_.lastTimePeriod; }
+		if (opts.proj) out.proj(opts.proj);
+		if (opts.y) out.NUTSyear(opts.y);
+		if (opts.clnb) out.clnb(+opts.clnb);
+		if (opts.lg) out.lg(opts.lg);
+		return out;
+	};*/
+
 
 	return out;
 }
