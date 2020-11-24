@@ -16,5 +16,5 @@ export const map = function (type) {
 	if(type == "ps") return mapps.map();
 
 	console.log("Unexpected map type: " + type);
-	return mt.mapTemplate();
+	return mt.mapTemplate(true);
 };

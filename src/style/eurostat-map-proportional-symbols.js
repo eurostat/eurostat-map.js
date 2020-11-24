@@ -16,7 +16,7 @@ export const map = function () {
 	out.psFill_ = "#B45F04";
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
-	out.psStrokeWidth_ = 0.5;
+	out.psStrokeWidth_ = 0.3;
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
@@ -46,26 +46,22 @@ export const map = function () {
 	};
 
 
+
+	//@override
 	out.updateClassification = function () {
-
 		out.classifier( scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, out._values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
-
 		return out;
 	};
 
 
+
+	//@override
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
+		//set circle radius depending on stat value
 		if(out._nutsRG)
-		//TODO add circle creation in map template buid method ? - change the radius here, only
-		out.svg().select("#g_ps").selectAll("circle")
-			.data(out._nutsRG.sort(function (a, b) { return b.properties.val - a.properties.val; }))
-			.enter().filter(function (d) { return d.properties.val; })
-			.append("circle")
-			.attr("transform", function (d) { return "translate(" + out._path.centroid(d) + ")"; })
-			.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
-			.attr("class", "symbol")
+		out.svg().select("#g_ps").selectAll("circle.symbol")
 			.on("mouseover", function (rg) {
 				select(this).style("fill", out.nutsrgSelectionFillStyle_);
 				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
@@ -75,6 +71,8 @@ export const map = function () {
 				select(this).style("fill", out.psFill_);
 				if (out.tooltipText_) out._tooltip.mouseout();
 			})
+			.transition().duration(out.transitionDuration())
+			.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
 			.style("fill", out.psFill_)
 			.style("fill-opacity", out.psFillOpacity_)
 			.style("stroke", out.psStroke_)

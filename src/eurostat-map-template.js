@@ -86,6 +86,9 @@ export const mapTemplate = function (withCenterPoints) {
 	out.showLegend_ = false;
 	out.legend_ = undefined;
 
+	//transition duration
+	out.transitionDuration_ = 800;
+
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	out.filtersDefinitionFun_ = function () {};
 
@@ -375,11 +378,18 @@ export const mapTemplate = function (withCenterPoints) {
 			});
 		}
 
-		//prepare group for proportional symbols
+		//prepare group for proportional symbols, with nuts region centroids
 		if(withCenterPoints) {
-			zg.append("g").attr("id", "g_ps");
-			//TODO build them here, with same size. only when style require it.
+			const gcp = zg.append("g").attr("id", "g_ps");
 
+			gcp.selectAll("circle")
+			.data(out._nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+			.enter() //.filter(function (d) { return d.properties.val; })
+			.append("circle")
+			.attr("transform", function (d) { return "translate(" + out._path.centroid(d) + ")"; })
+			.attr("r", 1)
+			.attr("class", "symbol")
+			.style("fill", "gray");
 		}
 
 		//add bottom text

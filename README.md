@@ -110,7 +110,7 @@ To show a proportional symbol map, *type* should be set to *"ps"*. The following
 | *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
-| *map*.**psStrokeWidth**([*value*]) | number | *0.5* | The width of the stroke. |
+| *map*.**psStrokeWidth**([*value*]) | number | *0.3* | The width of the stroke. |
 
 ### For categorical maps
 

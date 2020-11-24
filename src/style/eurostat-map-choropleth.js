@@ -51,6 +51,7 @@ export const map = function () {
 	};
 
 
+	//@override
 	out.updateClassification = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
@@ -85,10 +86,12 @@ export const map = function () {
 	};
 
 
+	//@override
 	out.updateStyle = function () {
 
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
+			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
