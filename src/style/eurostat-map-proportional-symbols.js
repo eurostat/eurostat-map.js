@@ -9,7 +9,7 @@ export const map = function () {
 	//create map object to return, using the template
 	const out = mt.mapTemplate(true);
 
-	//TODO rename, remove 'ps'
+	//out.psShape_ = CIRCLE; //TODO specify other shapes than simply circles
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 0.8;
 	out.psMinValue_ = 0;
