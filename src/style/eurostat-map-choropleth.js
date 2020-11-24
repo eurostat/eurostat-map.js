@@ -8,10 +8,9 @@ import * as lgch from '../legend/legend-choropleth';
 
 export const map = function () {
 
-	//the map object to return
+	//create map object to return, using the template
 	var out = mt.mapTemplate();
 
-	//choropleth map
 	out.classifMethod_ = "quantile"; // or: equinter  threshold
 	out.threshold_ = [0];
 	out.makeClassifNice_ = true;
@@ -21,14 +20,24 @@ export const map = function () {
 	out.filtersDefinitionFun_ = function () { };
 	out.noDataFillStyle_ = "lightgray";
 	out.noDataText_ = "No data available";
-
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
-    //TODO add getters and setters
+
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["classifMethod_","threshold_","makeClassifNice_","clnb_","colorFun_","classToFillStyleCH_","filtersDefinitionFun_","noDataFillStyle_","noDataText_","classifier_"]
+	.forEach(function(att) {
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+	});
 
 
-   	//override of some special getters/setters
+	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 

@@ -9,8 +9,8 @@ import * as lg from './legend';
  * @param {*} map 
  */
 export const legendChoropleth = function (map) {
-	const out = lg.legend(map);
 
+	const out = lg.legend(map);
 
 	out.update = function() {
 		const m = out.map();

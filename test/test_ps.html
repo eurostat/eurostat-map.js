@@ -10,12 +10,11 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap.map()
+        eurostatmap.map("ps")
             //.width(900)
             .datasetCode("demo_r_pjangrp3")
             .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
 
-            .type("ps")
             .psMaxSize(25)
             .psStrokeWidth(0.3)
 

@@ -6,10 +6,11 @@ import * as lgps from '../legend/legend-proportionnal-symbols';
 
 export const map = function () {
 
-	//the map object to return
+	//create map object to return, using the template
+	//TODO: add argument to indicate the need to buid the circles at center of the regions
 	var out = mt.mapTemplate();
 
-	//proportional symbols
+	//TODO rename, remove 'ps'
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 0.8;
 	out.psMinValue_ = 0;
@@ -17,13 +18,21 @@ export const map = function () {
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.5;
-
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
 
-
-    //TODO add getters and setters
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["psMaxSize_","psMinSize_","psMinValue_","psFill_","psFillOpacity_","psStroke_","psStrokeWidth_","classifier_"]
+	.forEach(function(att) {
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+	});
 
 
 

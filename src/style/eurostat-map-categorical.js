@@ -6,20 +6,28 @@ import * as lgct from '../legend/legend-categorical';
 
 export const map = function () {
 
-	//the map object to return
+	//create map object to return, using the template
 	var out = mt.mapTemplate();
 
-	//categorical maps
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
-
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 	//the inverse classifier: a function returning the category value from the category class (used only for categorical maps).
 	out.classifierInverse_ = undefined;
 
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["classToFillStyleCT_","classToText_","classifier_","classifierInverse_"]
+	.forEach(function(att) {
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+	});
 
-    //TODO add getters and setters
 
 
     out.legend = function (v) {
