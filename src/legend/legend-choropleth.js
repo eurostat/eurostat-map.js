@@ -12,6 +12,7 @@ export const legendChoropleth = function (map) {
 
 	const out = lg.legend(map);
 
+	//@override
 	out.update = function() {
 		const m = out.map();
         const svgMap = select("#" + m.svgId());
@@ -87,12 +88,15 @@ export const legendChoropleth = function (map) {
 		g.style("font-family", out.fontFamily_);
 	}
 
+	//@override
 	out.computeWidth = function() {
 		return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
 	}
+	//@override
 	out.computeHeight = function() {
 		return out.boxPadding_ * 2 + out.titleFontSize_ + (out.shapeHeight_ + out.shapePadding_ + 8) * (out.map().clnb());
 	}
+	//@override
 	out.computePosition = function() {
 		const x = out.boxPadding_;
 		const y = out.boxPadding_ + out.titleFontSize_;

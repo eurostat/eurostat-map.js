@@ -490,7 +490,10 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	 */
-	out.updateClassification = function () {}
+	out.updateClassification = function () {
+		console.log("Map updateClassification function not implemented")
+		return out;
+	}
 
 
 	/**
@@ -498,7 +501,10 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Update the map after styling attributes have been changed.
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	 */
-	out.updateStyle = function () {}
+	out.updateStyle = function () {
+		console.log("Map updateStyle function not implemented")
+		return out;
+	}
 
 
 
