@@ -29,19 +29,14 @@ export const map = function () {
 
 	out.svgId_ = "map";
 	out.svg_ = undefined;
-	out.type_ = "ch"; //or "ps" or "ct"
 
+	//map viewport
 	out.width_ = 800;
 	out.height_ = 0;
 	out.geoCenter_ = undefined;
 	out.pixSize_ = undefined;
 
-	out.datasetCode_ = "demo_r_d3dens";
-	out.filters_ = { lastTimePeriod: 1 };
-	out.precision_ = 2;
-	out.csvDataSource_ = null;
-	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-
+	//map template information
 	out.geo_ = "EUR";
 	out.scale_ = "20M"; //TODO better choose automatically
 	out.scaleExtent_ = [1, 5];
@@ -50,10 +45,56 @@ export const map = function () {
 	out.NUTSyear_ = 2016;
 	out.lg_ = "en";
 
+	//stat data
+	out.datasetCode_ = "demo_r_d3dens";
+	out.filters_ = { lastTimePeriod: 1 };
+	out.precision_ = 2;
+	out.csvDataSource_ = null;
+	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+
+	//template default style
+	//nuts
+	out.nutsrgFillStyle_ = "#eee";
+	out.nutsrgSelectionFillStyle_ = "purple";
+	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
+	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
+	//countries
+	out.cntrgFillStyle_ = "lightgray";
+	out.cntrgSelectionFillStyle_ = "darkgray";
+	out.cntbnStroke_ = { def: "#777", co: "#1f78b4" };
+	out.cntbnStrokeWidth_ = { def: 1, co: 1 };
+	//sea
+	out.seaFillStyle_ = "#b3cde3";
+	out.drawCoastalMargin_ = true;
+	out.coastalMarginColor_ = "white";
+	out.coastalMarginWidth_ = 12;
+	out.coastalMarginStdDev_ = 12;
+	//graticule
+	out.drawGraticule_ = true;
+	out.graticuleStroke_ = "gray";
+	out.graticuleStrokeWidth_ = 1;
+
+	//default copyright and disclaimer text
+	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
+	out.bottomTextFontSize_ = 12;
+	out.bottomTextFill_ = "black";
+	out.bottomTextFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.bottomTextPadding_ = 10;
+	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
+	
+	//tooltip
 	out.tooltipText_ = tooltipTextDefaultFunction;
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
 
+	//legend
+	out.showLegend_ = false;
+	out.legend_ = undefined;
+
+
+
+	//map type TODO - extract to specific file
+	out.type_ = "ch"; //or "ps" or "ct"
 	//choropleth map
 	out.classifMethod_ = "quantile"; // or: equinter  threshold
 	out.threshold_ = [0];
@@ -64,7 +105,6 @@ export const map = function () {
 	out.filtersDefinitionFun_ = function () { };
 	out.noDataFillStyle_ = "lightgray";
 	out.noDataText_ = "No data available";
-
 	//proportional circles
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 0.8;
@@ -73,44 +113,14 @@ export const map = function () {
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.5;
-
 	//categorical maps
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
 
-	//style
-	out.nutsrgFillStyle_ = "#eee"; //used for ps map
-	out.nutsrgSelectionFillStyle_ = "purple";
-	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
-	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
-	out.cntrgFillStyle_ = "lightgray";
-	out.cntrgSelectionFillStyle_ = "darkgray";
-	out.cntbnStroke_ = { def: "#777", co: "#1f78b4" };
-	out.cntbnStrokeWidth_ = { def: 1, co: 1 };
-	out.seaFillStyle_ = "#b3cde3";
-	out.drawCoastalMargin_ = true;
-	out.coastalMarginColor_ = "white";
-	out.coastalMarginWidth_ = 12;
-	out.coastalMarginStdDev_ = 12;
-	out.drawGraticule_ = true;
-	out.graticuleStroke_ = "gray";
-	out.graticuleStrokeWidth_ = 1;
-
-	//legend
-	out.showLegend_ = false;
-	out.legend_ = undefined;
-
-	//copyright text
-	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
-	out.bottomTextFontSize_ = 12;
-	out.bottomTextFill_ = "black";
-	out.bottomTextFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.bottomTextPadding_ = 10;
-	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
-	//the inverse classifier, used only for categorical maps: a function returning the category value from the category class
+	//the inverse classifier: a function returning the category value from the category class (used only for categorical maps).
 	out.classifierInverse_ = undefined;
 
 
@@ -126,6 +136,7 @@ export const map = function () {
 			var att_ = att;
 			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
 		})();
+
 
 	//override of some special getters/setters
 
@@ -193,7 +204,7 @@ export const map = function () {
 
 
 	/**
-	 * Build a map in the svg element.
+	 * Build a map object.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */
 	out.build = function () {
@@ -234,7 +245,6 @@ export const map = function () {
 
 		//build legend element
 		if(out.showLegend()) {
-
 			//create legend element
 			const lg = out.legend();
 			const lgg = svg.append("g").attr("id", lg.gId());
