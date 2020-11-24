@@ -72,6 +72,7 @@ export const mapTemplate = function () {
 	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
 	//tooltip
+	//the function returning the tooltip text
 	out.tooltipText_ = tooltipTextDefaultFunction;
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
@@ -79,6 +80,9 @@ export const mapTemplate = function () {
 	//legend
 	out.showLegend_ = false;
 	out.legend_ = undefined;
+
+	//for maps using special fill patterns, this is the function to define them in the SVG image
+	out.filtersDefinitionFun_ = function () {};
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -110,7 +114,6 @@ export const mapTemplate = function () {
 		if (opts.y) out.NUTSyear(opts.y);
 		if (opts.clnb) out.clnb(+opts.clnb);
 		if (opts.lg) out.lg(opts.lg);
-		if (opts.type) out.type(opts.type);
 		return out;
 	};*/
 
@@ -495,7 +498,7 @@ export const mapTemplate = function () {
 		return t.id[0]
 	};
 
-    return out;
+	return out;
 }
 
 
@@ -530,10 +533,8 @@ const getBBOXAsGeoJSON = function(bb) {
 }
 
 
-
 /**
- * Get a text tooltip.
- * TODO: use something else, simpler?
+ * Get a text tooltip text.
  * 
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
@@ -545,12 +546,6 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//case when no data available
 	if (rg.properties.val != 0 && !rg.properties.val) {
 		buf.push(map.noDataText_);
-		return buf.join("");
-	}
-	//case categorical map
-	if (map.type_ === "ct" && map.classToText_) {
-		var lbl = map.classToText_[rg.properties.val];
-		buf.push(lbl ? lbl : rg.properties.val);
 		return buf.join("");
 	}
 	//display value
@@ -568,6 +563,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	}
 	return buf.join("");
 };
+
 
 
 

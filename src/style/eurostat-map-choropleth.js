@@ -11,13 +11,12 @@ export const map = function () {
 	//create map object to return, using the template
 	var out = mt.mapTemplate();
 
-	out.classifMethod_ = "quantile"; // or: equinter  threshold
+	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];
 	out.makeClassifNice_ = true;
 	out.clnb_ = 7;
 	out.colorFun_ = interpolateYlOrBr;
 	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
-	out.filtersDefinitionFun_ = function () { };
 	out.noDataFillStyle_ = "lightgray";
 	out.noDataText_ = "No data available";
 	//the classifier: a function which return a class number from a stat value.
@@ -31,7 +30,7 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classifMethod_","threshold_","makeClassifNice_","clnb_","colorFun_","classToFillStyleCH_","filtersDefinitionFun_","noDataFillStyle_","noDataText_","classifier_"]
+	["classifMethod_","threshold_","makeClassifNice_","clnb_","colorFun_","classToFillStyleCH_","noDataFillStyle_","noDataText_","classifier_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
@@ -40,8 +39,6 @@ export const map = function () {
 	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
-
-
 	out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
@@ -54,9 +51,7 @@ export const map = function () {
 	};
 
 
-
-
-    	/**
+   	/**
 	 * Update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	*/
@@ -66,39 +61,39 @@ export const map = function () {
 		//TODO: use 'range' ?
 		var getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
 
-			//TODO: make it possible to use continuous color ramps?
+		//TODO: make it possible to use continuous color ramps?
 
-			//use suitable classification type
-			if (out.classifMethod_ === "quantile") {
-				//https://github.com/d3/d3-scale#quantile-scales
-				out.classifier( scaleQuantile().domain(out._values).range(getA(out.clnb_)) );
-			} else if (out.classifMethod_ === "equinter") {
-				//https://github.com/d3/d3-scale#quantize-scales
-				out.classifier( scaleQuantize().domain([min(out._values), max(out._values)]).range(getA(out.clnb_)) );
-				if (out.makeClassifNice_) classif.nice();
-			} else if (out.classifMethod_ === "threshold") {
-				//https://github.com/d3/d3-scale#threshold-scales
-				out.clnb(out.threshold_.length + 1);
-				out.classifier( scaleThreshold().domain(out.threshold_).range(getA(out.clnb_)) );
-			}
+		//use suitable classification type
+		if (out.classifMethod_ === "quantile") {
+			//https://github.com/d3/d3-scale#quantile-scales
+			out.classifier( scaleQuantile().domain(out._values).range(getA(out.clnb_)) );
+		} else if (out.classifMethod_ === "equinter") {
+			//https://github.com/d3/d3-scale#quantize-scales
+			out.classifier( scaleQuantize().domain([min(out._values), max(out._values)]).range(getA(out.clnb_)) );
+			if (out.makeClassifNice_) classif.nice();
+		} else if (out.classifMethod_ === "threshold") {
+			//https://github.com/d3/d3-scale#threshold-scales
+			out.clnb(out.threshold_.length + 1);
+			out.classifier( scaleThreshold().domain(out.threshold_).range(getA(out.clnb_)) );
+		}
 
-			//assign class to nuts regions, based on their value
-			out.svg().selectAll("path.nutsrg")
-				.attr("ecl", function (rg) {
-					var v = rg.properties.val;
-					if (v != 0 && !v) return "nd";
-					return +out.classifier_(+v);
-				})
+		//assign class to nuts regions, based on their value
+		out.svg().selectAll("path.nutsrg")
+			.attr("ecl", function (rg) {
+				var v = rg.properties.val;
+				if (v != 0 && !v) return "nd";
+				return +out.classifier_(+v);
+		})
 
 		//update legend, if any
 		if(out.legend_) out.legend().update();
 
 		//update style
+		//TODO change that.
 		out.updateStyle();
 
 		return out;
 	};
-
 
 
 	/**
@@ -106,17 +101,13 @@ export const map = function () {
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	*/
 	out.updateStyle = function () {
-
-			//apply style to nuts regions depending on class
-			out.svg().selectAll("path.nutsrg")
-				.attr("fill", function () {
-					var ecl = select(this).attr("ecl");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-					if (out.type_ == "ch") return out.classToFillStyleCH_(ecl, out.clnb_);
-					if (out.type_ == "ct") { return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray"; }
-					return out.noDataFillStyle_ || "gray";
-				});
-
+		//apply style to nuts regions depending on class
+		out.svg().selectAll("path.nutsrg")
+			.attr("fill", function () {
+				var ecl = select(this).attr("ecl");
+				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
+				return out.classToFillStyleCH_(ecl, out.clnb_);
+		});
 		return out;
 	};
 

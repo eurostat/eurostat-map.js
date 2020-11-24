@@ -9,6 +9,7 @@ export const map = function () {
 	//create map object to return, using the template
 	var out = mt.mapTemplate();
 
+	out.clnb_ = 7;
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
 	//the classifier: a function which return a class number from a stat value.
@@ -23,12 +24,10 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classToFillStyleCT_","classToText_","classifier_","classifierInverse_"]
+	["clnb_","classToFillStyleCT_","classToText_","classifier_","classifierInverse_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
-
-
 
     out.legend = function (v) {
 		if (!arguments.length) {
@@ -41,9 +40,7 @@ export const map = function () {
 		return out;
 	};
 
-
-
-    	/**
+   	/**
 	 * Update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	*/
@@ -51,27 +48,28 @@ export const map = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
 		//TODO: use 'range' ?
-		var getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
+		const getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
 
-			//get unique values
-			var dom = out._values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
-			out.clnb(dom.length);
-			var rg = getA(out.clnb_);
-			out.classifier(scaleOrdinal().domain(dom).range(rg));
-			out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
+		//get unique values
+		const dom = out._values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
+		out.clnb(dom.length);
+		const rg = getA(out.clnb_);
+		out.classifier(scaleOrdinal().domain(dom).range(rg));
+		out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
 
-			//assign class to nuts regions, based on their value
-			out.svg().selectAll("path.nutsrg")
-				.attr("ecl", function (rg) {
-					var v = rg.properties.val;
-					if (v != 0 && !v) return "nd";
-					return +out.classifier_(isNaN(v) ? v : +v);
-				})
+		//assign class to nuts regions, based on their value
+		out.svg().selectAll("path.nutsrg")
+			.attr("ecl", function (rg) {
+				var v = rg.properties.val;
+				if (v != 0 && !v) return "nd";
+				return +out.classifier_(isNaN(v) ? v : +v);
+		})
 
 		//update legend, if any
 		if(out.legend_) out.legend().update();
 
 		//update style
+		//TODO change that.
 		out.updateStyle();
 
 		return out;
@@ -84,19 +82,41 @@ export const map = function () {
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	*/
 	out.updateStyle = function () {
-
-			//apply style to nuts regions depending on class
-			out.svg().selectAll("path.nutsrg")
-				.attr("fill", function () {
-					var ecl = select(this).attr("ecl");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-					if (out.type_ == "ch") return out.classToFillStyleCH_(ecl, out.clnb_);
-					if (out.type_ == "ct") { return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray"; }
-					return out.noDataFillStyle_ || "gray";
-				});
-
+		//apply style to nuts regions depending on class
+		out.svg().selectAll("path.nutsrg")
+			.attr("fill", function () {
+				var ecl = select(this).attr("ecl");
+				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
+				return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray";
+		});
 		return out;
 	};
 
-    return out;
+
+	/**
+	 * Specific function for tooltip text.
+	 * 
+	 * @param {*} rg 
+	 * @param {*} map 
+	 */
+	out.tooltipText_ = function (rg, map) {
+		var buf = [];
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+		//case when no data available
+		if (rg.properties.val != 0 && !rg.properties.val) {
+			buf.push(map.noDataText_);
+			return buf.join("");
+		}
+		if (map.classToText_) {
+			var lbl = map.classToText_[rg.properties.val];
+			buf.push(lbl ? lbl : rg.properties.val);
+			return buf.join("");
+		}
+		//display value
+		buf.push(rg.properties.val);
+		return buf.join("");
+	};
+
+	return out;
 }
