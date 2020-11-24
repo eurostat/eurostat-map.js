@@ -29,6 +29,7 @@ export const map = function () {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
+	//override of some special getters/setters
     out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed

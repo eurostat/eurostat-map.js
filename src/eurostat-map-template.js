@@ -7,8 +7,13 @@ import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL, flags } from './lib/eurostat-base';
 import * as tp from './lib/eurostat-tooltip';
 
-
-export const mapTemplate = function () {
+/**
+ * Build an empty map template.
+ * 
+ * @param {*} withCenterPoints Set to true or 1 to add regions center points to the map template, to be used for proportionnal symbols maps for example.
+ */
+export const mapTemplate = function (withCenterPoints) {
+	//TODO decompose empty map and stat map?
 
     const out = {};
 
@@ -371,9 +376,10 @@ export const mapTemplate = function () {
 		}
 
 		//prepare group for proportional symbols
-		//TODO build them here, with same size. only when style require it.
-		zg.append("g").attr("id", "g_ps");
-
+		if(withCenterPoints) {
+			zg.append("g").attr("id", "g_ps");
+			//TODO build them here, with same size. only when style require it.
+		}
 
 		//add bottom text
 		if (out.bottomText_)

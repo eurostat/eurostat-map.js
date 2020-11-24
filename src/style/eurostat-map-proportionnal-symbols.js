@@ -7,8 +7,7 @@ import * as lgps from '../legend/legend-proportionnal-symbols';
 export const map = function () {
 
 	//create map object to return, using the template
-	//TODO: add argument to indicate the need to buid the circles at center of the regions
-	var out = mt.mapTemplate();
+	var out = mt.mapTemplate(true);
 
 	//TODO rename, remove 'ps'
 	out.psMaxSize_ = 30;
@@ -34,7 +33,7 @@ export const map = function () {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
-
+	//override of some special getters/setters
     out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
