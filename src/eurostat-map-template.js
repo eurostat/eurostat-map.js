@@ -536,6 +536,7 @@ export const mapTemplate = function (withCenterPoints) {
 		return out;
 	};
 
+	
 
 	return out;
 }
