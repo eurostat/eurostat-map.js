@@ -7,7 +7,7 @@ import * as lgps from '../legend/legend-proportionnal-symbols';
 export const map = function () {
 
 	//create map object to return, using the template
-	var out = mt.mapTemplate(true);
+	const out = mt.mapTemplate(true);
 
 	//TODO rename, remove 'ps'
 	out.psMaxSize_ = 30;

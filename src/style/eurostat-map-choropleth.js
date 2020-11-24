@@ -9,7 +9,7 @@ import * as lgch from '../legend/legend-choropleth';
 export const map = function () {
 
 	//create map object to return, using the template
-	var out = mt.mapTemplate();
+	const out = mt.mapTemplate();
 
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];
@@ -55,7 +55,7 @@ export const map = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
 		//TODO: use 'range' ?
-		var getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
+		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//TODO: make it possible to use continuous color ramps?
 
@@ -76,7 +76,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				var v = rg.properties.val;
+				const v = rg.properties.val;
 				if (v != 0 && !v) return "nd";
 				return +out.classifier_(+v);
 		})
@@ -90,7 +90,7 @@ export const map = function () {
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.attr("fill", function () {
-				var ecl = select(this).attr("ecl");
+				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 				return out.classToFillStyleCH_(ecl, out.clnb_);
 		});

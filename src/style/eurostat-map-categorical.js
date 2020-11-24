@@ -7,7 +7,7 @@ import * as lgct from '../legend/legend-categorical';
 export const map = function () {
 
 	//create map object to return, using the template
-	var out = mt.mapTemplate();
+	const out = mt.mapTemplate();
 
 	out.clnb_ = 7;
 	out.classToFillStyleCT_ = undefined;
@@ -46,7 +46,7 @@ export const map = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
 		//TODO: use 'range' ?
-		const getA = function (nb) { var a = []; for (var i = 0; i < nb; i++) a.push(i); return a; }
+		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get unique values
 		const dom = out._values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
@@ -58,7 +58,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				var v = rg.properties.val;
+				const v = rg.properties.val;
 				if (v != 0 && !v) return "nd";
 				return +out.classifier_(isNaN(v) ? v : +v);
 		})
@@ -73,7 +73,7 @@ export const map = function () {
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.attr("fill", function () {
-				var ecl = select(this).attr("ecl");
+				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 				return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray";
 		});
@@ -89,7 +89,7 @@ export const map = function () {
 	 * @param {*} map 
 	 */
 	out.tooltipText_ = function (rg, map) {
-		var buf = [];
+		const buf = [];
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//case when no data available
@@ -98,7 +98,7 @@ export const map = function () {
 			return buf.join("");
 		}
 		if (map.classToText_) {
-			var lbl = map.classToText_[rg.properties.val];
+			const lbl = map.classToText_[rg.properties.val];
 			buf.push(lbl ? lbl : rg.properties.val);
 			return buf.join("");
 		}
