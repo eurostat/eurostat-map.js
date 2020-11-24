@@ -1,6 +1,6 @@
 # Dependency tree
 package-lock.json
 # Dependency directories
-node_modules/
+/node_modules/
 # Dev version
 /build/eurostatmap.js
