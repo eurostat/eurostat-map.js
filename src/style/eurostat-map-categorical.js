@@ -40,11 +40,8 @@ export const map = function () {
 		return out;
 	};
 
-   	/**
-	 * Update the map after classification attributes have been changed.
-	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
-	*/
-	out.updateClassificationAndStyle = function () {
+
+	out.updateClassification = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
 		//TODO: use 'range' ?
@@ -65,23 +62,13 @@ export const map = function () {
 				return +out.classifier_(isNaN(v) ? v : +v);
 		})
 
-		//update legend, if any
-		if(out.legend_) out.legend().update();
-
-		//update style
-		//TODO change that.
-		out.updateStyle();
-
 		return out;
 	};
 
 
 
-	/**
-	 * Update the map after styling attributes have been changed.
-	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
-	*/
 	out.updateStyle = function () {
+
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.attr("fill", function () {
@@ -89,6 +76,7 @@ export const map = function () {
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 				return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray";
 		});
+
 		return out;
 	};
 

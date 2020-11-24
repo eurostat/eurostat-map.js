@@ -478,10 +478,30 @@ export const mapTemplate = function () {
 		}
 
 		//update classification and styles
-		out.updateClassificationAndStyle();
+		out.updateClassification();
+		out.updateStyle();
+
+		//update legend, if any
+		if(out.legend_) out.legend().update();
 
 		return out;
 	}
+
+	/**
+	 * Abstract method.
+	 * Update the map after classification attributes have been changed.
+	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
+	 */
+	out.updateClassification = function () {}
+
+
+	/**
+	 * Abstract method.
+	 * Update the map after styling attributes have been changed.
+	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
+	 */
+	out.updateStyle = function () {}
+
 
 
     /**
