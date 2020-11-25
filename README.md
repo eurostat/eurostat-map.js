@@ -33,15 +33,15 @@ The library is built as a UMD module so it can be imported in node.js or in a HT
 ### Map creation
 
 Create a map with ``let map = eurostatmap.map( mapType );``. Set the parameter *mapType* to a value corresponding to the desired type of map:
-- *"ch"* for a choropleth map
-- *"ps"* for a proportional symbol map.
-- *"ct"* for a categorical map.
+- *"ch"* for a [choropleth map](#for-choropleth-maps),
+- *"ps"* for a [proportional symbol map](#for-proportional-symbol-maps),
+- *"ct"* for a [categorical map](#for-categorical-maps).
 
-The map can then be customised with the methods below.
+The map can then be customised with the methods listed in the tables below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
-Once the parameters have been set or changed, the map needs to be built or updated using one of [these methods](#build-and-update).
+Once the map parameters have been set or changed, the map needs to be built or updated using one of [these methods](#build-and-update).
 
 ### Map definition
 
