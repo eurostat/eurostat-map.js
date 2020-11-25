@@ -62,6 +62,8 @@ export const map = function () {
 		//set circle radius depending on stat value
 		if(out._nutsRG)
 		out.svg().select("#g_ps").selectAll("circle.symbol")
+
+			//TODO should not be done everytime, only once is sufficient... Move that at build level
 			.on("mouseover", function (rg) {
 				select(this).style("fill", out.nutsrgSelectionFillStyle_);
 				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
@@ -71,6 +73,7 @@ export const map = function () {
 				select(this).style("fill", out.psFill_);
 				if (out.tooltipText_) out._tooltip.mouseout();
 			})
+
 			.transition().duration(out.transitionDuration())
 			.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
 			.style("fill", out.psFill_)

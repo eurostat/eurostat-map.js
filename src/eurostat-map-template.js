@@ -516,6 +516,7 @@ export const mapTemplate = function (withCenterPoints) {
 	out.getTime = function () {
 		const t = out.filters_.time;
 		if (t) return t;
+		//TODO extract generic part
 		if (!out.statData_) return;
 		t = out.statData_.Dimension("time");
 		if (!t || !t.id || t.id.length == 0) return;
@@ -577,6 +578,9 @@ const getBBOXAsGeoJSON = function(bb) {
 		}
 	  };
 }
+
+
+//TODO extract to eurostat.js or new eurostat-map-util.js ?
 
 
 /**
