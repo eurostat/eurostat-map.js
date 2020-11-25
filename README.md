@@ -5,8 +5,7 @@
 [![Build Status](https://travis-ci.org/eurostat/eurostat-map.js.svg?branch=master)](https://travis-ci.org/eurostat/eurostat-map.js)
 ![license](https://img.shields.io/badge/license-EUPL-success)
 
-Reusable library to quickly create and customise web maps showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the
-[Eurostat database](https://ec.europa.eu/eurostat/data/database).
+Reusable library to quickly create and customise web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
@@ -26,33 +25,27 @@ Reusable library to quickly create and customise web maps showing [Eurostat](htt
 ## Documentation - API
 
 ### Installation
-The library is built as a UMD module so it can be imported in node.js or in the browser.
 
-#### Node.js
-```properties
-npm install eurostatmap
-```  
-
-then 
-```javascript
-eurostatmap = require("eurostatmap")
-```
-
-#### Standalone
-
-```javascript
-<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>
-```
+The library is built as a UMD module so it can be imported in node.js or in a HTML page.
+- In Node.js, install the module with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
+- In a HTML page, use ``<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>`` as shown in [the examples](#examples).
 
 ### Map creation
 
-Create a map with ``let map = eurostatmap.map();`` and customise it with the methods below.
+Create a map with ``let map = eurostatmap.map( mapType );``. Set the parameter *mapType* to a value corresponding to the desired type of map:
+- *"ch"* for a choropleth map
+- *"ps"* for a proportional symbol map.
+- *"ct"* for a categorical map.
+
+The map can then be customised with the methods below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
 Once the parameters have been set or changed, the map needs to be built or updated using one of [these methods](#build-and-update).
 
 ### Map definition
+
+These are parameters common to all map types.
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
@@ -82,7 +75,7 @@ Once the parameters have been set or changed, the map needs to be built or updat
 
 A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://bl.ocks.org/jgaffuri/0d6e1b1c6f9e1297829f38b9c37737fe) with color value, [another](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6) with a diverging color scheme, and [a last one](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/) with a texture pattern.
 
-To show a choropleth map, *type* should be set to *"ch"*. The following parameters are then considered:
+To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The following parameters specific to this type of map can then be considered:
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
@@ -96,11 +89,11 @@ To show a choropleth map, *type* should be set to *"ch"*. The following paramete
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 | *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
 
-### For proportional symbol map
+### For proportional symbol maps
 
 A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://bl.ocks.org/jgaffuri/cf5f187bd195f9c8771a1a3a4898079a).
 
-To show a proportional symbol map, *type* should be set to *"ps"*. The following parameters are then considered:
+To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
@@ -114,9 +107,9 @@ To show a proportional symbol map, *type* should be set to *"ps"*. The following
 
 ### For categorical maps
 
-A categorical map shows areas according to categories. Here is [an example](https://bl.ocks.org/jgaffuri/6bff324484f404c3e09cc2408a3e5265) of such map.
+A categorical map shows areas according to categories (or discrete values). Here is [an example](https://bl.ocks.org/jgaffuri/6bff324484f404c3e09cc2408a3e5265) of such map.
 
-To show a categorical map, *type* should be set to *"ct"*. The following parameters are then considered:
+To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The following parameters specific to this type of map can then be considered:
 
 | Method | Type | Default value | Description |
 | --- | --- | --- | --- |
