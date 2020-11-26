@@ -3,11 +3,11 @@ import { format } from "d3-format";
 import * as lg from './legend';
 
 /**
- * A legend for proportionnal symbol map
+ * A legend for proportional symbol map
  * 
  * @param {*} map 
  */
-export const legendProportionnalSymbols = function (map) {
+export const legendProportionalSymbols = function (map) {
 	const out = lg.legend(map);
 
 	//attributes

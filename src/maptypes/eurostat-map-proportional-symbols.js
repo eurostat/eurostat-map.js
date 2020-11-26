@@ -1,7 +1,7 @@
 import { select } from "d3-selection";
 import { scaleSqrt } from "d3-scale";
 import * as mt from '../eurostat-map-template';
-import * as lgps from '../legend/legend-proportionnal-symbols';
+import * as lgps from '../legend/legend-proportional-symbols';
 
 
 export const map = function () {
@@ -37,7 +37,7 @@ export const map = function () {
     out.legend = function (v) {
 		if (!arguments.length) {
 			//create legend if needed
-			if(!out.legend_) out.legend_ = lgps.legendProportionnalSymbols(out);
+			if(!out.legend_) out.legend_ = lgps.legendProportionalSymbols(out);
 			return out.legend_;
 		}
 		//setter: link map and legend
