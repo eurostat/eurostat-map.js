@@ -123,15 +123,25 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Private attributes
 	 */
 
-	//statistical data, indexed by NUTS id.
+	/**
+	 * Statistical data, indexed by nuts id.
+	 */
 	out._statDataIndex;
+
+	/**
+	 * Return the stat value {value,status} from a nuts id, using the index.
+	 * @param {*} nutsId 
+	 */
 	out.getStat = (nutsId) => out._statDataIndex[nutsId];
 
-	//geo data, as the raw topojson object returned by nuts2json API
+	/**
+	 * geo data, as the raw topojson object returned by nuts2json API
+	 */
 	out._geoData;
 
 
-    	/**
+
+	/**
 	 * Build a map object.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */

@@ -12,18 +12,21 @@
     <script src="../build/eurostatmap.min.js"></script>
     <script>
         eurostatmap
-            .map()
+            .map("ct")
+            .title("NUTS urban/rural typology")
             .width(900)
             .scale("60M")
             .NUTSyear(2013)
             .nutsLvl(3)
-            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat.js/master/assets/data/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
-            .type("ct")
+            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
             .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .legendLabelDecNb(0)
-            .legendBoxHeight(110)
-            .legendBoxWidth(130)
+
+            .showLegend(true)
+            .legend().labelDecNb(0)
+            .legend().height(110)
+            .legend().width(130)
+
             .build()
 
     </script>

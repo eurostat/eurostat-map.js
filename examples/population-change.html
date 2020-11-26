@@ -18,7 +18,10 @@
     
     <script>
         eurostatmap
-            .map()
+            .map("ch")
+            .title("Population change")
+            .titleFontSize(40)
+            .titleFill("Khaki")
             .scale("60M")
             .width(900)
             .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: 2016 })
@@ -37,11 +40,12 @@
             .tooltipShowFlags("long")
             .bottomTextFill("white")
 
-            .legendTitleText("Population change from 2015 to 2016 (in ‰)")
-            .legendBoxWidth(200)
-            .legendBoxHeight(320)
-            .legendLabelDecNb(0)
-            .legendLabelDelimiter("to")
+            .showLegend(true)
+            .legend().titleText("Population change from 2015 to 2016 (in ‰)")
+            .legend().width(200)
+            .legend().height(320)
+            .legend().labelDecNb(0)
+            .legend().labelDelimiter("to")
 
             .build();
 
