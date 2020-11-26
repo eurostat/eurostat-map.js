@@ -71,6 +71,12 @@ export const mapTemplate = function (withCenterPoints) {
 	out.graticuleStroke_ = "gray";
 	out.graticuleStrokeWidth_ = 1;
 
+	//map title
+	out.title_ = "";
+	out.titleFontSize_ = 16;
+	out.titleFill_ = "black";
+	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
+
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
 	out.bottomTextFontSize_ = 12;
@@ -171,7 +177,10 @@ export const mapTemplate = function (withCenterPoints) {
 			}));
 		}
 
-		//build legend element
+		//title
+		//TODO
+
+		//legend element
 		if(out.showLegend()) {
 			//create legend element
 			const lg = out.legend();
@@ -183,6 +192,27 @@ export const mapTemplate = function (withCenterPoints) {
 			const dy = lg.boxPadding() + lg.titleFontSize();
 			lgg.attr("transform", "translate("+dx+","+dy+")");
 		}
+
+		//bottom text
+		if (out.bottomText_)
+			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
+				.text(out.bottomText_)
+				.style("font-family", out.bottomTextFontFamily_)
+				.style("font-size", out.bottomTextFontSize_)
+				.style("fill", out.bottomTextFill_)
+				.on("mouseover", function () {
+					out._tooltip.mw___ = out._tooltip.style("max-width");
+					out._tooltip.f___ = out._tooltip.style("font");
+					out._tooltip.style("max-width", "800px");
+					out._tooltip.style("font", "6px");
+					if (out.bottomTextTooltipMessage_) out._tooltip.mouseover(out.bottomTextTooltipMessage_);
+				}).on("mousemove", function () {
+					if (out.bottomTextTooltipMessage_) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					if (out.bottomTextTooltipMessage_) out._tooltip.mouseout();
+					out._tooltip.style("max-width", out._tooltip.mw___);
+					out._tooltip.style("font", out._tooltip.f___);
+				});
 
 		//retrieve geo data
 		out.updateGeoData();
@@ -245,7 +275,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//decode topojson to geojson
 		const gra = feature(out._geoData, out._geoData.objects.gra).features;
-		out._nutsRG = feature(out._geoData, out._geoData.objects.nutsrg).features;
+		out._nutsRG = feature(out._geoData, out._geoData.objects.nutsrg).features; //TODO no longer needed
 		const nutsbn = feature(out._geoData, out._geoData.objects.nutsbn).features;
 		const cntrg = feature(out._geoData, out._geoData.objects.cntrg).features;
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
@@ -386,27 +416,6 @@ export const mapTemplate = function (withCenterPoints) {
 				if (out.tooltipText_) out._tooltip.mouseout();
 			});
 		}
-
-		//add bottom text
-		if (out.bottomText_)
-			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
-				.text(out.bottomText_)
-				.style("font-family", out.bottomTextFontFamily_)
-				.style("font-size", out.bottomTextFontSize_)
-				.style("fill", out.bottomTextFill_)
-				.on("mouseover", function () {
-					out._tooltip.mw___ = out._tooltip.style("max-width");
-					out._tooltip.f___ = out._tooltip.style("font");
-					out._tooltip.style("max-width", "800px");
-					out._tooltip.style("font", "6px");
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseover(out.bottomTextTooltipMessage_);
-				}).on("mousemove", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mousemove();
-				}).on("mouseout", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseout();
-					out._tooltip.style("max-width", out._tooltip.mw___);
-					out._tooltip.style("font", out._tooltip.f___);
-				});
 
 		return out;
 	};
