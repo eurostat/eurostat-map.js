@@ -12,7 +12,7 @@ import * as tp from './lib/eurostat-tooltip';
 /**
  * Build an empty map template.
  * 
- * @param {*} withCenterPoints Set to true or 1 to add regions center points to the map template, to be used for proportional symbols maps for example.
+ * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
 export const mapTemplate = function (withCenterPoints) {
 	//TODO decompose into: map template and stat part?
@@ -42,6 +42,7 @@ export const mapTemplate = function (withCenterPoints) {
 	out.lg_ = "en";
 
 	//stat data
+	//TODO extract that into a "statData" component.
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
@@ -92,7 +93,9 @@ export const mapTemplate = function (withCenterPoints) {
 	out.transitionDuration_ = 800;
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
+	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () {};
+
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -111,6 +114,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 
 	//statistical values, as an array
+	//TODO extract that into a "statData" component.
 	out._values;
 
 	//geo data, as the raw topojson object returned by nuts2json API
@@ -184,6 +188,7 @@ export const mapTemplate = function (withCenterPoints) {
 		out.updateGeoData();
 
 		//retrieve stat data
+		//TODO extract that into a "statData" component.
 		out.updateStatData();
 
 		return out;
@@ -410,6 +415,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
+	//TODO extract that into a "statData" component.
 	/**
 	 * Update the map with new stat data sources.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
@@ -461,6 +467,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
+	//TODO extract that into a "statData" component.
 	/**
 	 * Update the map with new stat data.
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
