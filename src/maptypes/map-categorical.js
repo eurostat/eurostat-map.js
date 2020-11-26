@@ -49,6 +49,10 @@ export const map = function () {
 		//TODO: use 'range' ?
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
+
+		console.log(out.getStat("FRA40"));
+		console.log(out.getStat("FRA50"));
+
 		//get unique values
 		const dom = out._values.filter(function (item, i, ar) { if(!item) console.log("aaa "+i+" " + item); return ar.indexOf(item) === i; });
 		out.clnb(dom.length);
