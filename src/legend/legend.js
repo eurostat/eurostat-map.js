@@ -54,6 +54,7 @@ export const legend = function (map) {
 	*/
 	for (const att in out)
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out.map(); };
+	//note that setters do not return the legend element itself, but the map element. This makes map definitions simpler with chaining.
 
 
 
