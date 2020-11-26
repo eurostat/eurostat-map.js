@@ -2,7 +2,7 @@ import { min, max } from "d3-array";
 import { select } from "d3-selection";
 import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { interpolateYlOrBr } from "d3-scale-chromatic";
-import * as mt from '../eurostat-map-template';
+import * as mt from '../map-template';
 import * as lgch from '../legend/legend-choropleth';
 
 

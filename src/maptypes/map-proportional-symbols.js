@@ -1,6 +1,6 @@
 import { select } from "d3-selection";
 import { scaleSqrt } from "d3-scale";
-import * as mt from '../eurostat-map-template';
+import * as mt from '../map-template';
 import * as lgps from '../legend/legend-proportional-symbols';
 
 
