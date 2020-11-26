@@ -21,7 +21,7 @@
             .map("ch")
             .title("Population change")
             .titleFontSize(40)
-            .titleFill("Khaki")
+            .titleFill("white")
             .scale("60M")
             .width(900)
             .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: 2016 })
@@ -34,6 +34,9 @@
             .seaFillStyle("#333")
             .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
             .cntbnStroke({ def: "#777", co: "none" })
+            .cntrgFillStyle("darkgray")
+        	.cntrgSelectionFillStyle("lightgray")
+
             .drawGraticule(false)
 
             .unitText("‰")
