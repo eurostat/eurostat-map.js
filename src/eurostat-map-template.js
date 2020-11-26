@@ -540,26 +540,28 @@ export const mapTemplate = function (withCenterPoints) {
 	};
 
 
-
 	/**
-	 * Set some map attributes based on URL parameters.
-	 * To be used with *getURLParameters()* function.
-	 * 
-	 * @param {*} opts The URL parameters as an object, as returned by the *getURLParameters()* function.
+	 * Set some map attributes based on the following URL parameters:
+	 * "w":width, "h":height, "x":xGeoCenter, "y":yGeoCenter, "z":pixGeoSize, "s":scale, "lvl":nuts level, "time":time,
+	 * "proj":CRS, "geo":geo territory, "ny":nuts version, "lg":langage, "sl":show legend, "clnb":class number
 	 */
-	out.set = function (opts) {
+	out.setFromURL = function () {
+		const opts = getURLParameters();
 		if (opts.w) out.width(opts.w);
+		if (opts.h) out.height(opts.h);
+		if (opts.x && opts.y) out.geoCenter([opts.x, opts.y]);
+		if (opts.z) out.pixSize(opts.z);
 		if (opts.s) out.scale(opts.s);
 		if (opts.lvl) out.nutsLvl(opts.lvl);
 		if (opts.time) { out.filters_.time = opts.time; delete out.filters_.lastTimePeriod; }
 		if (opts.proj) out.proj(opts.proj);
-		if (opts.y) out.NUTSyear(opts.y);
-		if (opts.clnb) out.clnb(+opts.clnb);
+		if (opts.geo) out.geo(opts.geo);
+		if (opts.ny) out.NUTSyear(opts.ny);
 		if (opts.lg) out.lg(opts.lg);
+		if (opts.sl) out.showLegend(opts.sl);
+		if (opts.clnb) out.clnb(+opts.clnb);
 		return out;
 	};
-
-	
 
 	return out;
 }
@@ -571,7 +573,7 @@ export const mapTemplate = function (withCenterPoints) {
  * Default positions and width (in projection unit) for territories and projections.
  */
 const _defaultPosition = {
-	"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
+	//"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
 	//TODO add others
 }
 
@@ -619,12 +621,11 @@ const tooltipTextDefaultFunction = function (rg, map) {
  */
 export const getURLParameters = function () {
 	const ps = {};
-	const p = ["w", "s", "lvl", "time", "proj", "y", "clnb", "lg", "type"];
+	const p = ["w", "h","x", "y", "z", "s", "lvl", "time", "proj", "geo", "ny", "lg", "sl", "clnb"];
 	for (let i = 0; i < p.length; i++)
 		ps[p[i]] = getURLParameterByName(p[i]);
 	return ps;
 };
-
 
 
 
