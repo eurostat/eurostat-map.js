@@ -75,12 +75,6 @@ export const legendProportionnalSymbols = function (map) {
 	out.computeHeight = function() {
 		return out.boxPadding_ * 2 + out.titleFontSize_ + (m.psMaxSize() * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
 	}
-	//@override
-	out.computePosition = function() {
-		const x = out.boxPadding_;
-		const y = out.boxPadding_ + out.titleFontSize_;
-		return [x,y];
-	}
 
 	return out;
 }

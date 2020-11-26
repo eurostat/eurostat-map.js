@@ -10,13 +10,15 @@ export const legend = function (map) {
 
 	out.map_ = map;
 
+	//the SVG 'g' element where to make the legend
 	out.gId_ = "legend_" + Math.round(10e15*Math.random());
 	out.g_ = undefined;
 
+	//the legend element dimension
 	out.width_ = undefined;
 	out.height_ = undefined;
-	out.position_ = undefined;
 
+	//the legend box
 	out.boxMargin_ = 10;
 	out.boxPadding_ = 10;
 	out.boxCornerRadius_ = out.boxPadding_;
@@ -24,19 +26,24 @@ export const legend = function (map) {
 	out.boxOpacity_ = 0.5;
 
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
+
+	//legend title
 	out.titleText_ = "Legend";
 	out.titleFontSize_ = 17;
 	out.titleWidth_ = 140;
 
-	out.ascending_ = true;
-	out.shapeWidth_ = 15;
-	out.shapeHeight_ = 13;
-	out.shapePadding_ = 2;
+	//legeng element labels
+	out.labelOffset_ = 5;
 	out.labelFontSize_ = 13;
 	out.labelDelimiter_ = " - ";
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
-	out.labelOffset_ = 5;
+
+	//TODO: move those to the legends where it is used, only?
+	out.ascending_ = true;
+	out.shapeWidth_ = 15;
+	out.shapeHeight_ = 13;
+	out.shapePadding_ = 2;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -62,16 +69,12 @@ export const legend = function (map) {
 	 */
 	out.build = function () {
 
-		//create svg
+		//set SVG group
 		out.g( select("#" + out.gId()) );
 
 		//set size
 		if(!out.width_) out.width_ = out.computeWidth();
 		if(!out.height_) out.height_ = out.computeHeight();
-
-		//set position
-		if(!out.position_) out.position_ = out.computePosition();
-		out.g().attr("transform", "translate(" + out.position()[0] + "," + out.position()[1] + ")");
 	}
 
 	/**
@@ -99,15 +102,6 @@ export const legend = function (map) {
 	out.computeHeight = function() {
 		console.log("Legend computeHeight not implemented")
 		return 100;
-	}
-
-	/**
-	 * Return a default value for the legend position.
-	 * This is an abstract method.
-	 */
-	out.computePosition = function() {
-		console.log("Legend computePosition not implemented")
-		return [0,0];
 	}
 
 	return out;

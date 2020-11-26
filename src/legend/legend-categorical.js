@@ -85,12 +85,6 @@ export const legendCategorical = function (map) {
 	out.computeHeight = function() {
 		return out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.map().clnb() - 1) + 12;
 	}
-	//@override
-	out.computePosition = function() {
-		const x = out.boxPadding_;
-		const y = out.boxPadding_ + out.titleFontSize_;
-		return [x,y];
-	}
 
 	return out;
 }
