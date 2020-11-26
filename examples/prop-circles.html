@@ -11,22 +11,23 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.min.js"></script>
     <script>
-        eurostatmap.map()
+        eurostatmap.map("ps")
             .width(900)
             .datasetCode("demo_r_pjangrp3")
             .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
 
-            .type("ps")
             .psMaxSize(25)
             .psStrokeWidth(0.3)
 
             .unitText("inhabitants")
             .tooltipShowFlags("long")
 
-            .legendTitleText("Population")
-            .legendLabelDecNb(0)
-            .legendBoxHeight(200)
-            .legendBoxWidth(140)
+            .showLegend(true)
+            .legend().titleText("Population")
+            .legend().cellNb(6)
+            .legend().labelDecNb(0)
+            .legend().height(200)
+            .legend().width(140)
 
             .build();
 
