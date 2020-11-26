@@ -10,7 +10,7 @@ import * as tp from './lib/eurostat-tooltip';
 /**
  * Build an empty map template.
  * 
- * @param {*} withCenterPoints Set to true or 1 to add regions center points to the map template, to be used for proportionnal symbols maps for example.
+ * @param {*} withCenterPoints Set to true or 1 to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
 export const mapTemplate = function (withCenterPoints) {
 	//TODO decompose into: map template and stat part?
@@ -99,11 +99,8 @@ export const mapTemplate = function (withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	for (let att in out)
-		(function () {
-			const att_ = att;
-			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out; };
-		})();
+	for (const att in out)
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 
 

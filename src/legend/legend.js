@@ -52,11 +52,9 @@ export const legend = function (map) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	for (let att in out)
-		(function () {
-			const att_ = att;
-			out[att_.substring(0, att_.length - 1)] = function (v) { if (!arguments.length) return out[att_]; out[att_] = v; return out.map(); };
-		})();
+	for (const att in out)
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out.map(); };
+
 
 
 	/**
