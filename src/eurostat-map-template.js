@@ -119,15 +119,17 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Private attributes
 	 */
 
+	//statistical data, indexed by NUTS id.
+	out._statDataIndex;
+	out.getStat = (nutsId) => out._statDataIndex[nutsId];
+
 	//statistical values, as an array
 	//TODO extract that into a "statData" component.
+	//TODO may not be necessary?
 	out._values;
 
 	//geo data, as the raw topojson object returned by nuts2json API
 	out._geoData;
-
-	//the nuts regions, as a GeoJSON feature collection
-	out._nutsRG;
 
 	//the d3 path, to draw SVG paths with screen coordinates
 	out._path;
@@ -193,27 +195,6 @@ export const mapTemplate = function (withCenterPoints) {
 			lgg.attr("transform", "translate("+dx+","+dy+")");
 		}
 
-		//bottom text
-		if (out.bottomText_)
-			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
-				.text(out.bottomText_)
-				.style("font-family", out.bottomTextFontFamily_)
-				.style("font-size", out.bottomTextFontSize_)
-				.style("fill", out.bottomTextFill_)
-				.on("mouseover", function () {
-					out._tooltip.mw___ = out._tooltip.style("max-width");
-					out._tooltip.f___ = out._tooltip.style("font");
-					out._tooltip.style("max-width", "800px");
-					out._tooltip.style("font", "6px");
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseover(out.bottomTextTooltipMessage_);
-				}).on("mousemove", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mousemove();
-				}).on("mouseout", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseout();
-					out._tooltip.style("max-width", out._tooltip.mw___);
-					out._tooltip.style("font", out._tooltip.f___);
-				});
-
 		//retrieve geo data
 		out.updateGeoData();
 
@@ -275,7 +256,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//decode topojson to geojson
 		const gra = feature(out._geoData, out._geoData.objects.gra).features;
-		out._nutsRG = feature(out._geoData, out._geoData.objects.nutsrg).features; //TODO no longer needed
+		const nutsRG = feature(out._geoData, out._geoData.objects.nutsrg).features;
 		const nutsbn = feature(out._geoData, out._geoData.objects.nutsbn).features;
 		const cntrg = feature(out._geoData, out._geoData.objects.cntrg).features;
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
@@ -337,8 +318,8 @@ export const mapTemplate = function (withCenterPoints) {
 			});
 
 		//draw NUTS regions
-		if(out._nutsRG)
-		zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(out._nutsRG)
+		if(nutsRG)
+		zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 			.enter().append("path").attr("d", out._path)
 			.attr("class", "nutsrg")
 			.attr("fill", out.nutsrgFillStyle_)
@@ -399,7 +380,7 @@ export const mapTemplate = function (withCenterPoints) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			gcp.selectAll("circle")
-			.data(out._nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+			.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
 			.enter() //.filter(function (d) { return d.properties.val; })
 			.append("circle")
 			.attr("transform", function (d) { return "translate(" + out._path.centroid(d) + ")"; })
@@ -416,6 +397,27 @@ export const mapTemplate = function (withCenterPoints) {
 				if (out.tooltipText_) out._tooltip.mouseout();
 			});
 		}
+
+		//bottom text
+		if (out.bottomText_)
+			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
+				.text(out.bottomText_)
+				.style("font-family", out.bottomTextFontFamily_)
+				.style("font-size", out.bottomTextFontSize_)
+				.style("fill", out.bottomTextFill_)
+				.on("mouseover", function () {
+					out._tooltip.mw___ = out._tooltip.style("max-width");
+					out._tooltip.f___ = out._tooltip.style("font");
+					out._tooltip.style("max-width", "800px");
+					out._tooltip.style("font", "6px");
+					if (out.bottomTextTooltipMessage_) out._tooltip.mouseover(out.bottomTextTooltipMessage_);
+				}).on("mousemove", function () {
+					if (out.bottomTextTooltipMessage_) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					if (out.bottomTextTooltipMessage_) out._tooltip.mouseout();
+					out._tooltip.style("max-width", out._tooltip.mw___);
+					out._tooltip.style("font", out._tooltip.f___);
+				});
 
 		return out;
 	};
@@ -484,19 +486,15 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 	out.updateStatValues = function () {
 
-		//build the list of statistical values
-		//join values and status to NUTS regions
+		//build the list of statistical values and index stat values by NUTS id.
 		out._values = [];
-		if(out._nutsRG)
-		for (let i = 0; i < out._nutsRG.length; i++) {
-			const rg = out._nutsRG[i];
-			const value = out.statData_[rg.properties.id];
-			if (!value) continue;
-			if (!value.value == 0 && !value.value) continue;
+		out._statDataIndex = {};
+		for(const id in out.statData_) {
+			const value = out.statData_[id];
+			if (value.value != 0 && !value.value) continue;
 			let v = value.value;
-			if (!isNaN(+v)) v = +v;
-			rg.properties.val = v;
-			if (value.status) rg.properties.st = value.status;
+			if (!isNaN(+v)) { v = +v; value.value = +v; }
+			out._statDataIndex[id] = value;
 			out._values.push(v);
 		}
 
@@ -601,12 +599,13 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
-	if (rg.properties.val != 0 && !rg.properties.val) {
+	const sv = map.getStat(rg.properties.id);
+	if (!sv || (sv.value != 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");
 	}
 	//display value
-	buf.push(rg.properties.val);
+	buf.push(sv.value);
 	//unit
 	if (map.unitText_) buf.push(" " + map.unitText_);
 	//flag

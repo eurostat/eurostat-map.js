@@ -60,10 +60,13 @@ export const map = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
 		//set circle radius depending on stat value
-		if(out._nutsRG)
 		out.svg().select("#g_ps").selectAll("circle.symbol")
 			.transition().duration(out.transitionDuration())
-			.attr("r", function (d) { return d.properties.val ? out.classifier()(+d.properties.val) : 0; })
+			.attr("r", function (rg) {
+				const sv = out.getStat(rg.properties.id);
+				if( !sv || !sv.value ) return 0;
+				return out.classifier()(+sv.value);
+			})
 
 			//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
 			.style("fill", out.psFill_)

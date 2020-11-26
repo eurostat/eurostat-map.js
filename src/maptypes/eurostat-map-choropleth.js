@@ -77,7 +77,9 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const v = rg.properties.val;
+				const sv = out.getStat(rg.properties.id);
+				if (!sv) return "nd";
+				const v = sv.value;
 				if (v != 0 && !v) return "nd";
 				return +out.classifier_(+v);
 		})
