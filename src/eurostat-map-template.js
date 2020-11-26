@@ -609,12 +609,13 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//unit
 	if (map.unitText_) buf.push(" " + map.unitText_);
 	//flag
-	if (rg.properties.st && map.tooltipShowFlags_) {
+	const f = sv.status;
+	if (f && map.tooltipShowFlags_) {
 		if (map.tooltipShowFlags_ === "short")
-			buf.push(" " + rg.properties.st);
+			buf.push(" " + f);
 		else {
-			const f = flags[rg.properties.st];
-			buf.push(f ? " (" + f + ")" : " " + rg.properties.st);
+			const f_ = flags[f];
+			buf.push(f_ ? " (" + f_ + ")" : " " + f);
 		}
 	}
 	return buf.join("");
