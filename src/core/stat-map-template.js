@@ -73,9 +73,11 @@ export const mapTemplate = function (withCenterPoints) {
 
 	//map title
 	out.title_ = "";
-	out.titleFontSize_ = 16;
+	out.titleFontSize_ = 25;
 	out.titleFill_ = "black";
+	out.titlePosition_ = undefined;
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.titleFontWeight_ = "bold";
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
@@ -181,9 +183,6 @@ export const mapTemplate = function (withCenterPoints) {
 				zg.attr("transform", event.transform);
 			}));
 		}
-
-		//title
-		//TODO
 
 		//legend element
 		if(out.showLegend()) {
@@ -401,10 +400,23 @@ export const mapTemplate = function (withCenterPoints) {
 			});
 		}
 
+		//title
+		if (out.title()) {
+			//define default position
+			if(!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()]);
+			//draw title
+			out.svg().append("text").attr("id", "title").attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
+				.text(out.title())
+				.style("font-family", out.titleFontFamily())
+				.style("font-size", out.titleFontSize())
+				.style("font-weight", out.titleFontWeight())
+				.style("fill", out.titleFill())
+			}
+
 		//bottom text
-		if (out.bottomText_)
+		if (out.bottomText())
 			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
-				.text(out.bottomText_)
+				.text(out.bottomText())
 				.style("font-family", out.bottomTextFontFamily_)
 				.style("font-size", out.bottomTextFontSize_)
 				.style("fill", out.bottomTextFill_)
