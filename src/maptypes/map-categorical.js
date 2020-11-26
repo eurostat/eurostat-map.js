@@ -1,6 +1,6 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
-import * as mt from '../map-template';
+import * as mt from '../core/stat-map-template';
 import * as lgct from '../legend/legend-categorical';
 
 

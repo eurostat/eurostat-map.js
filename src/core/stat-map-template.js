@@ -4,9 +4,9 @@ import { select, event } from "d3-selection";
 import { geoIdentity, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
-import { getEstatDataURL, flags } from './lib/eurostat-base';
-import { getBBOXAsGeoJSON, csvToIndex, jsonstatToIndex } from './lib/eurostat-map-util';
-import * as tp from './lib/eurostat-tooltip';
+import { getEstatDataURL, flags } from '../lib/eurostat-base';
+import { getBBOXAsGeoJSON, csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
+import * as tp from '../lib/eurostat-tooltip';
 
 
 /**
@@ -15,7 +15,7 @@ import * as tp from './lib/eurostat-tooltip';
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
 export const mapTemplate = function (withCenterPoints) {
-	//TODO decompose into: map template and stat part?
+	//TODO decompose into: map template, statData, and statMapTemplate (with several statData)?
 
     const out = {};
 

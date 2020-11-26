@@ -1,7 +1,7 @@
 import * as mapch from './maptypes/map-choropleth';
 import * as mapps from './maptypes/map-proportional-symbols';
 import * as mapct from './maptypes/map-categorical';
-import * as mt from './map-template';
+import * as mt from './core/stat-map-template';
 
 /**
  * Function returning a eurostat-map object.

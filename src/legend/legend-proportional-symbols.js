@@ -1,6 +1,6 @@
 import { legendSize } from "d3-svg-legend";
 import { format } from "d3-format";
-import * as lg from './legend';
+import * as lg from '../core/legend';
 
 /**
  * A legend for proportional symbol map

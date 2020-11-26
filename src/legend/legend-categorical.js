@@ -1,6 +1,6 @@
 import { select } from "d3-selection";
 import { legendColor } from "d3-svg-legend";
-import * as lg from './legend';
+import * as lg from '../core/legend';
 
 /**
  * A legend for categorical maps
