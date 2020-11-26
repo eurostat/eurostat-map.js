@@ -42,7 +42,6 @@ export const mapTemplate = function (withCenterPoints) {
 	out.lg_ = "en";
 
 	//stat data
-	//TODO extract that into a "statData" component.
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
@@ -125,15 +124,11 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 
 	//statistical data, indexed by NUTS id.
-	//TODO extract that into a "statData" component.
 	out._statDataIndex;
 	out.getStat = (nutsId) => out._statDataIndex[nutsId];
 
 	//geo data, as the raw topojson object returned by nuts2json API
 	out._geoData;
-
-	//the d3 path, to draw SVG paths with screen coordinates
-	out._path;
 
 	//the map tooltip element
 	out._tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
@@ -197,7 +192,6 @@ export const mapTemplate = function (withCenterPoints) {
 		out.updateGeoData();
 
 		//retrieve stat data
-		//TODO extract that into a "statData" component.
 		out.updateStatData();
 
 		return out;
@@ -215,7 +209,6 @@ export const mapTemplate = function (withCenterPoints) {
 		out._geoData = null;
 
 		//get geo data from Nuts2json API
-		//TODO: expose URL
 		json(out.nuts2jsonBaseURL_ + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				out._geoData = geo___;
@@ -249,7 +242,7 @@ export const mapTemplate = function (withCenterPoints) {
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
 		const bbox = [out.geoCenter_[0]-0.5*out.pixSize_*out.width_, out.geoCenter_[1]-0.5*out.pixSize_*out.height_, out.geoCenter_[0]+0.5*out.pixSize_*out.width_, out.geoCenter_[1]+0.5*out.pixSize_*out.height_];
-		out._path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
+		const path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
 
 
 		//decode topojson to geojson
@@ -281,12 +274,12 @@ export const mapTemplate = function (withCenterPoints) {
 			if(cntbn)
 			cg.append("g").attr("id", "g_coast_margin_cnt")
 				.selectAll("path").data(cntbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
-				.append("path").attr("d", out._path);
+				.append("path").attr("d", path);
 			//nuts bn
 			if(nutsbn)
 			cg.append("g").attr("id", "g_coast_margin_nuts")
 				.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
-				.append("path").attr("d", out._path);
+				.append("path").attr("d", path);
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -296,13 +289,13 @@ export const mapTemplate = function (withCenterPoints) {
 				.style("stroke", out.graticuleStroke())
 				.style("stroke-width", out.graticuleStrokeWidth())
 				.selectAll("path").data(gra)
-				.enter().append("path").attr("d", out._path).attr("class", "gra")
+				.enter().append("path").attr("d", path).attr("class", "gra")
 		}
 
 		//draw country regions
 		if(cntrg)
 		zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
-			.enter().append("path").attr("d", out._path)
+			.enter().append("path").attr("d", path)
 			.attr("class", "cntrg")
 			.style("fill", out.cntrgFillStyle_)
 			.on("mouseover", function (rg) {
@@ -318,7 +311,7 @@ export const mapTemplate = function (withCenterPoints) {
 		//draw NUTS regions
 		if(nutsRG)
 		zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
-			.enter().append("path").attr("d", out._path)
+			.enter().append("path").attr("d", path)
 			.attr("class", "nutsrg")
 			.attr("fill", out.nutsrgFillStyle_)
 			.on("mouseover", function (rg) {
@@ -339,7 +332,7 @@ export const mapTemplate = function (withCenterPoints) {
 		zg.append("g").attr("id", "g_cntbn")
 			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 			.selectAll("path").data(cntbn)
-			.enter().append("path").attr("d", out._path)
+			.enter().append("path").attr("d", path)
 			.attr("class", function (bn) { if (bn.properties.co === "T") return "bn_co"; return "cntbn"; })
 			.style("stroke", function (bn) { if (bn.properties.co === "T") return out.cntbnStroke_.co; return out.cntbnStroke_.def; })
 			.style("stroke-width", function (bn) { if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co; return out.cntbnStrokeWidth_.def; });
@@ -350,7 +343,7 @@ export const mapTemplate = function (withCenterPoints) {
 		zg.append("g").attr("id", "g_nutsbn")
 			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 			.selectAll("path").data(nutsbn).enter()
-			.append("path").attr("d", out._path)
+			.append("path").attr("d", path)
 			.attr("class", function (bn) {
 				bn = bn.properties;
 				if (bn.co === "T") return "bn_co";
@@ -381,7 +374,7 @@ export const mapTemplate = function (withCenterPoints) {
 			.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
 			.enter() //.filter(function (d) { return d.properties.val; })
 			.append("circle")
-			.attr("transform", function (d) { return "translate(" + out._path.centroid(d) + ")"; })
+			.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 			.attr("r", 1)
 			.attr("class", "symbol")
 			.style("fill", "gray")
@@ -437,7 +430,6 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
-	//TODO extract that into a "statData" component.
 	/**
 	 * Update the map with new stat data sources.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
@@ -489,7 +481,6 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
-	//TODO extract that into a "statData" component.
 	/**
 	 * Update the map with new stat data.
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
