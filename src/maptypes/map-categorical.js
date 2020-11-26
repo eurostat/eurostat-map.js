@@ -50,7 +50,7 @@ export const map = function () {
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get unique values
-		const dom = out._values.filter(function (item, i, ar) { return ar.indexOf(item) === i; });
+		const dom = out._values.filter(function (item, i, ar) { if(!item) console.log("aaa "+i+" " + item); return ar.indexOf(item) === i; });
 		out.clnb(dom.length);
 		const rg = getA(out.clnb_);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));

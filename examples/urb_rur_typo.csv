@@ -795,7 +795,7 @@ FRA10,int
 FRA20,int
 FRA30,int
 FRA40,urb
-FRA50,0
+FRA50,
 HR031,int
 HR032,rur
 HR033,rur
