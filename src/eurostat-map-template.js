@@ -371,7 +371,16 @@ export const mapTemplate = function (withCenterPoints) {
 			.attr("transform", function (d) { return "translate(" + out._path.centroid(d) + ")"; })
 			.attr("r", 1)
 			.attr("class", "symbol")
-			.style("fill", "gray");
+			.style("fill", "gray")
+			.on("mouseover", function (rg) {
+				select(this).style("fill", out.nutsrgSelectionFillStyle_);
+				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
+			}).on("mousemove", function () {
+				if (out.tooltipText_) out._tooltip.mousemove();
+			}).on("mouseout", function () {
+				select(this).style("fill", out.psFill_);
+				if (out.tooltipText_) out._tooltip.mouseout();
+			});
 		}
 
 		//add bottom text
