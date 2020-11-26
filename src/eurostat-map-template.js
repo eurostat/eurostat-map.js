@@ -202,6 +202,7 @@ export const mapTemplate = function (withCenterPoints) {
 		out._geoData = null;
 
 		//get geo data from Nuts2json API
+		//TODO: expose URL
 		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				out._geoData = geo___;
