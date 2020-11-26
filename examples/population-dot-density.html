@@ -11,8 +11,11 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.min.js"></script>
     <script>
-        eurostatmap.map()
+        eurostatmap.map("ch")
             .width(900)
+            .title("Population in Europe")
+            .titleFontSize(40)
+            .titleFill("#444")
             .scale("60M")
             .datasetCode("demo_r_d3dens")
             .filters({ time: 2016 })
@@ -37,10 +40,11 @@
             .unitText("people/km²")
             .tooltipShowFlags(false)
 
-            .legendTitleText("Population density (people/km²)")
-            .legendLabelDecNb(0)
-            .legendBoxHeight(260)
-            .legendBoxWidth(190)
+            .showLegend(true)
+            .legend().titleText("Population density (people/km²)")
+            .legend().labelDecNb(0)
+            .legend().height(260)
+            .legend().width(190)
 
             .build();
 
