@@ -98,6 +98,9 @@ export const mapTemplate = function (withCenterPoints) {
 	//transition duration
 	out.transitionDuration_ = 800;
 
+	//geo data service
+	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () {};
@@ -218,7 +221,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//get geo data from Nuts2json API
 		//TODO: expose URL
-		json("https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/" + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		json(out.nuts2jsonBaseURL_ + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				out._geoData = geo___;
 
