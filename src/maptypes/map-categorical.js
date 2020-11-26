@@ -49,8 +49,9 @@ export const map = function () {
 		//TODO: use 'range' ?
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
-		//get unique values
-		const dom = out._values.filter(function (item, i, ar) { if(!item) console.log("aaa "+i+" " + item); return ar.indexOf(item) === i; });
+		//get domain: unique values
+		const dom = Object.values(out._statDataIndex).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+
 		out.clnb(dom.length);
 		const rg = getA(out.clnb_);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));

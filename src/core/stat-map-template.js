@@ -125,13 +125,9 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 
 	//statistical data, indexed by NUTS id.
+	//TODO extract that into a "statData" component.
 	out._statDataIndex;
 	out.getStat = (nutsId) => out._statDataIndex[nutsId];
-
-	//statistical values, as an array
-	//TODO extract that into a "statData" component.
-	//TODO may not be necessary?
-	out._values;
 
 	//geo data, as the raw topojson object returned by nuts2json API
 	out._geoData;
@@ -501,8 +497,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 	out.updateStatValues = function () {
 
-		//build the list of statistical values and index stat values by NUTS id.
-		out._values = [];
+		//index stat values by NUTS id.
 		out._statDataIndex = {};
 		for(const id in out.statData_) {
 			const value = out.statData_[id];
@@ -510,7 +505,6 @@ export const mapTemplate = function (withCenterPoints) {
 			let v = value.value;
 			if (!isNaN(+v)) { v = +v; value.value = +v; }
 			out._statDataIndex[id] = value;
-			out._values.push(v);
 		}
 
 		//update classification and styles

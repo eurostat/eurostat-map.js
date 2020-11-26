@@ -63,10 +63,12 @@ export const map = function () {
 		//use suitable classification type
 		if (out.classifMethod_ === "quantile") {
 			//https://github.com/d3/d3-scale#quantile-scales
-			out.classifier( scaleQuantile().domain(out._values).range(getA(out.clnb_)) );
+			const statValues = Object.values(out._statDataIndex).map(s=>s.value).filter(s=>(s==0||s));
+			out.classifier( scaleQuantile().domain(statValues).range(getA(out.clnb_)) );
 		} else if (out.classifMethod_ === "equinter") {
 			//https://github.com/d3/d3-scale#quantize-scales
-			out.classifier( scaleQuantize().domain([min(out._values), max(out._values)]).range(getA(out.clnb_)) );
+			const statValues = Object.values(out._statDataIndex).map(s=>s.value).filter(s=>(s==0||s));
+			out.classifier( scaleQuantize().domain([min(statValues), max(statValues)]).range(getA(out.clnb_)) );
 			if (out.makeClassifNice_) classif.nice();
 		} else if (out.classifMethod_ === "threshold") {
 			//https://github.com/d3/d3-scale#threshold-scales

@@ -49,7 +49,10 @@ export const map = function () {
 
 	//@override
 	out.updateClassification = function () {
-		out.classifier( scaleSqrt().domain([out.psMinValue_, Math.max.apply(Math, out._values)]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
+		//get max value
+		const maxValue = Object.values(out._statDataIndex).map(s=>s.value).filter(s=>(s==0||s)).reduce( (acc,v) => Math.max(acc,v), 0);
+		//define classifier
+		out.classifier( scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
 		return out;
 	};
 
