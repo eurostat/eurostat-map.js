@@ -130,10 +130,6 @@ export const mapTemplate = function (withCenterPoints) {
 	//geo data, as the raw topojson object returned by nuts2json API
 	out._geoData;
 
-	//the map tooltip element
-	out._tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
-
-
 
     	/**
 	 * Build a map object.
@@ -252,6 +248,9 @@ export const mapTemplate = function (withCenterPoints) {
 		const cntrg = feature(out._geoData, out._geoData.objects.cntrg).features;
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
 
+		//prepare map tooltip
+		const tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
+
 		//prepare drawing group
 		const zg = select("#zoomgroup");
 		zg.selectAll("*").remove();
@@ -300,12 +299,12 @@ export const mapTemplate = function (withCenterPoints) {
 			.style("fill", out.cntrgFillStyle_)
 			.on("mouseover", function (rg) {
 				select(this).style("fill", out.cntrgSelectionFillStyle_);
-				if (out.tooltipText_) out._tooltip.mouseover("<b>" + rg.properties.na + "</b>");
+				if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
 			}).on("mousemove", function () {
-				if (out.tooltipText_) out._tooltip.mousemove();
+				if (tooltip) tooltip.mousemove();
 			}).on("mouseout", function () {
 				select(this).style("fill", out.cntrgFillStyle_);
-				if (out.tooltipText_) out._tooltip.mouseout();
+				if (tooltip) tooltip.mouseout();
 			});
 
 		//draw NUTS regions
@@ -318,13 +317,13 @@ export const mapTemplate = function (withCenterPoints) {
 				const sel = select(this);
 				sel.attr("fill___", sel.attr("fill"));
 				sel.attr("fill", out.nutsrgSelectionFillStyle_);
-				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
+				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
 			}).on("mousemove", function () {
-				if (out.tooltipText_) out._tooltip.mousemove();
+				if (tooltip) tooltip.mousemove();
 			}).on("mouseout", function () {
 				const sel = select(this);
 				sel.attr("fill", sel.attr("fill___"));
-				if (out.tooltipText_) out._tooltip.mouseout();
+				if (tooltip) tooltip.mouseout();
 			});
 
 		//draw country boundaries
@@ -380,12 +379,12 @@ export const mapTemplate = function (withCenterPoints) {
 			.style("fill", "gray")
 			.on("mouseover", function (rg) {
 				select(this).style("fill", out.nutsrgSelectionFillStyle_);
-				if (out.tooltipText_) { out._tooltip.mouseover(out.tooltipText_(rg, out)); }
+				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
 			}).on("mousemove", function () {
-				if (out.tooltipText_) out._tooltip.mousemove();
+				if (tooltip) tooltip.mousemove();
 			}).on("mouseout", function () {
 				select(this).style("fill", out.psFill_);
-				if (out.tooltipText_) out._tooltip.mouseout();
+				if (tooltip) tooltip.mouseout();
 			});
 		}
 
@@ -410,17 +409,17 @@ export const mapTemplate = function (withCenterPoints) {
 				.style("font-size", out.bottomTextFontSize_)
 				.style("fill", out.bottomTextFill_)
 				.on("mouseover", function () {
-					out._tooltip.mw___ = out._tooltip.style("max-width");
-					out._tooltip.f___ = out._tooltip.style("font");
-					out._tooltip.style("max-width", "800px");
-					out._tooltip.style("font", "6px");
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseover(out.bottomTextTooltipMessage_);
+					tooltip.mw___ = tooltip.style("max-width");
+					tooltip.f___ = tooltip.style("font");
+					tooltip.style("max-width", "800px");
+					tooltip.style("font", "6px");
+					if (out.bottomTextTooltipMessage_) tooltip.mouseover(out.bottomTextTooltipMessage_);
 				}).on("mousemove", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mousemove();
+					if (out.bottomTextTooltipMessage_) tooltip.mousemove();
 				}).on("mouseout", function () {
-					if (out.bottomTextTooltipMessage_) out._tooltip.mouseout();
-					out._tooltip.style("max-width", out._tooltip.mw___);
-					out._tooltip.style("font", out._tooltip.f___);
+					if (out.bottomTextTooltipMessage_) tooltip.mouseout();
+					tooltip.style("max-width", tooltip.mw___);
+					tooltip.style("font", tooltip.f___);
 				});
 
 		return out;
