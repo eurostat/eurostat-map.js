@@ -32,12 +32,12 @@ The library is built as a UMD module so it can be imported:
 
 ### Map creation
 
-Create a map with ``let map = eurostatmap.map( mapType );``. Set the parameter *mapType* to a value corresponding to the desired type of map:
-- *"ch"* for a [choropleth map](#for-choropleth-maps),
-- *"ps"* for a [proportional symbol map](#for-proportional-symbol-maps),
-- *"ct"* for a [categorical map](#for-categorical-maps).
+Create a map with ``let map = eurostatmap.map( mapType );``. Set the parameter ``mapType`` to a value corresponding to the desired type of map:
+- ``"ch"`` for a [choropleth map](#for-choropleth-maps),
+- ``"ps"`` for a [proportional symbol map](#for-proportional-symbol-maps),
+- ``"ct"`` for a [categorical map](#for-categorical-maps).
 
-The map can then be customised with the methods listed in the tables below.
+The ``map`` can then be customised with the methods listed in the tables below.
 
 Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
@@ -53,7 +53,6 @@ These are parameters common to all map types.
 | *map*.**width**([*value*]) | int | *800* | The width of the map, in pixel. |
 | *map*.**height**([*value*]) | int | *auto* | The height of the map, in pixel. If not specified, the width is set automatically as 85% of the width. |
 | **On NUTS geometries** |
-| Method | Type | Default value | Description |
 | *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
 | *map*.**NUTSyear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
 | *map*.**geo**([*value*]) | String | *"EUR"* | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets). |
@@ -69,7 +68,6 @@ These are parameters common to all map types.
 | *map*.**csvDataSource**([*value*]) | Object | null | To load statistical data from a CSV file, set this parameter with an object *{ url: "", geoCol: "", valueCol: ""}* where *url* is the URL to get the file, *geoCol* is the column where the NUTS_ID is specified, and *valueCol* is the column containing the statistical values. |
 | *map*.**statData**([*value*]) | Object | null | - |
 | **Map title** |
-| Method | Type | Default value | Description |
 | *map*.title_****([*value*]) | String | "" |  |
 | *map*.titleFontSize_****([*value*]) | int | 25 |  |
 | *map*.titleFill_****([*value*]) | Color | "black" |  |
@@ -77,12 +75,10 @@ These are parameters common to all map types.
 | *map*.titleFontFamily_****([*value*]) | Fonts | "Helvetica, Arial, sans-serif" |  |
 | *map*.titleFontWeight_****([*value*]) | Font weights | "bold" |  |
 | **Tooltip** |
-| Method | Type | Default value | Description |
 | *map*.**tooltipText**([*value*]) | Function | A default function. | A function returning the text to show in a tooltip which appears when the mouse passes over map features. Set to *null* if no tooltip is needed. |
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
 | *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
 | **Styling customisation** |
-| Method | Type | Default value | Description |
 | *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
 | *map*.**nutsrgSelectionFillStyle**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
@@ -100,7 +96,6 @@ These are parameters common to all map types.
 | *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 | **Legend** |
-| Method | Type | Default value | Description |
 | *map*.**legend**() | legend | *auto* | The map legend. |
 | *map*.**showLegend**([*value*]) | boolean | *false* | Set to true to show a legend directly within the map. False otherwise. |
 | *map*.**legend().width**([*value*]) | int | *auto* | The legend box width. If not specified, a value is automated computed. |
@@ -125,7 +120,6 @@ These are parameters common to all map types.
 | *map*.**legend().labelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
 | *map*.**legend().labelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
 | **Bottom text** |
-| Method | Type | Default value | Description |
 | *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
 | *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
 | *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
@@ -133,7 +127,6 @@ These are parameters common to all map types.
 | *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | **Other** |
-| Method | Type | Default value | Description |
 | *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
 
 
