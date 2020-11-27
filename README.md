@@ -7,19 +7,19 @@
 
 Reusable library to quickly create and customise web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://bl.ocks.org/jgaffuri/raw/0d6e1b1c6f9e1297829f38b9c37737fe/)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://bl.ocks.org/jgaffuri/raw/cf5f187bd195f9c8771a1a3a4898079a/)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6/)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://bl.ocks.org/jgaffuri/raw/6bff324484f404c3e09cc2408a3e5265/)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
 
 ## Examples
 
-[Population density](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html))  
+[Population density](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html))
 [Population density map with dot pattern](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html))  
-[Population map with proportional circles](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html))  
-[Population change ](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html))    
-[NUTS typology as a categorical map](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html))    
+[Population map with proportional circles](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html))
+[Population change ](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html))
+[NUTS typology as a categorical map](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html))
 
 
 ## Documentation - API
@@ -134,7 +134,7 @@ These are parameters common to all map types.
 
 ### For choropleth maps
 
-A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://bl.ocks.org/jgaffuri/0d6e1b1c6f9e1297829f38b9c37737fe) with color value, [another](https://bl.ocks.org/jgaffuri/raw/e10d3e5540bbf89ee572030f1b13b8e6) with a diverging color scheme, and [a last one](https://bl.ocks.org/jgaffuri/raw/c8b99b207bb80a923bf1fd19f5d6de7e/) with a texture pattern.
+A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
 
 To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The following parameters specific to this type of map can then be considered:
 
@@ -150,7 +150,7 @@ To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The foll
 
 ### For proportional symbol maps
 
-A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://bl.ocks.org/jgaffuri/cf5f187bd195f9c8771a1a3a4898079a).
+A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
 
 To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
 
@@ -166,7 +166,7 @@ To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``.
 
 ### For categorical maps
 
-A categorical map shows areas according to categories (or discrete values). Here is [an example](https://bl.ocks.org/jgaffuri/6bff324484f404c3e09cc2408a3e5265) of such map.
+A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html)).
 
 To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The following parameters specific to this type of map can then be considered:
 
