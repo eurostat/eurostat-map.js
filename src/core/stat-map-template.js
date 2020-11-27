@@ -166,7 +166,7 @@ export const mapTemplate = function (withCenterPoints) {
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
 			svg.call(zoom()
-			.zoomExtent(out.zoomExtent())
+			.scaleExtent(out.zoomExtent())
 			.on('zoom', function(a,b,c) {
 				const k = event.transform.k;
 				const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
