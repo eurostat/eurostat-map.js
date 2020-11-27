@@ -50,7 +50,6 @@ Once the map parameters have been set or changed, the map needs to be built or u
 | *map*.**svgId**([*value*]) | String | *"map"* | The id of the SVG element of the HTML page where to draw the map. |
 | *map*.**width**([*value*]) | int | *800* | The width of the map, in pixel. |
 | *map*.**height**([*value*]) | int | *auto* | The height of the map, in pixel. If not specified, the width is set automatically as 85% of the width. |
-| **Geography** |
 
 ### Map geography
 
@@ -219,8 +218,8 @@ To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The fol
 | *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
 | *map*.**transitionDuration**([*value*]) | int | *800* | When updating statistical figures, the map style changes progressively. This parameter sets the duration of this transition, in ms. |
 | *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.  |
-| *map*.**getTime**() | String | Return the *time* parameter of the statistical data. When a filter such as *{ lastTimePeriod : 1 }* is used, this method allows a retrieval of the map timestamp. |
-| *map*.**setFromURL**() | *this* | Set some map parameters based on URL parameters: "w" for width, "h" for height, "x" for xGeoCenter, "y" for yGeoCenter, "z" for pixGeoSize, "s" for scale, "lvl" for nuts level, "time" for time, "proj" for the CRS, "geo" for the geographical territory, "ny" for the NUTS version, "lg" for the langage, "sl" to show legend, "clnb" for the number of classes. |
+| *map*.**getTime**() | String | - | Return the *time* parameter of the statistical data. When a filter such as *{ lastTimePeriod : 1 }* is used, this method allows a retrieval of the map timestamp. |
+| *map*.**setFromURL**() | *this* | - | Set some map parameters based on URL parameters: "w" for width, "h" for height, "x" for xGeoCenter, "y" for yGeoCenter, "z" for pixGeoSize, "s" for scale, "lvl" for nuts level, "time" for time, "proj" for the CRS, "geo" for the geographical territory, "ny" for the NUTS version, "lg" for the langage, "sl" to show legend, "clnb" for the number of classes. |
 
 ### Build and update
 
