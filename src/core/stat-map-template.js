@@ -48,6 +48,14 @@ export const mapTemplate = function (withCenterPoints) {
 	out.csvDataSource_ = null;
 	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
 
+	//map title
+	out.title_ = "";
+	out.titleFontSize_ = 25;
+	out.titleFill_ = "black";
+	out.titlePosition_ = undefined;
+	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.titleFontWeight_ = "bold";
+
 	//template default style
 	//nuts
 	out.nutsrgFillStyle_ = "#eee";
@@ -69,14 +77,6 @@ export const mapTemplate = function (withCenterPoints) {
 	out.drawGraticule_ = true;
 	out.graticuleStroke_ = "gray";
 	out.graticuleStrokeWidth_ = 1;
-
-	//map title
-	out.title_ = "";
-	out.titleFontSize_ = 25;
-	out.titleFill_ = "black";
-	out.titlePosition_ = undefined;
-	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.titleFontWeight_ = "bold";
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";

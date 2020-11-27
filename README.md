@@ -26,9 +26,9 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 
 ### Installation
 
-The library is built as a UMD module so it can be imported in node.js or in a HTML page.
-- In Node.js, install the module with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
-- In a HTML page, use ``<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>`` as shown in [the examples](#examples).
+The library is built as a UMD module so it can be imported:
+- In Node.js, with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
+- In a HTML page, with ``<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>`` as shown in [the examples](#examples).
 
 ### Map creation
 
@@ -52,29 +52,90 @@ These are parameters common to all map types.
 | *map*.**svgId**([*value*]) | String | *"map"* | The id of the SVG element of the HTML page where to draw the map. |
 | *map*.**width**([*value*]) | int | *800* | The width of the map, in pixel. |
 | *map*.**height**([*value*]) | int | *auto* | The height of the map, in pixel. If not specified, the width is set automatically as 85% of the width. |
-| *map*.**geoCenter**([*value*]) | [x,y] array | *auto* | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically. |
+| **On NUTS geometries** |
+| Method | Type | Default value | Description |
+| *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
+| *map*.**NUTSyear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
+| *map*.**geo**([*value*]) | String | *"EUR"* | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets). |
+| *map*.**proj**([*value*]) | String | *"3035"* | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory. |
+| *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
+| *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto* | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically. |
 | *map*.**pixSize**([*value*]) | number | *auto* | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, this value is computed automatically to show the map extent. |
+| *map*.**scaleExtent**([*value*]) | Array ([min,max]) | *[1,5]* | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming. |
+| **Statistical data** |
 | *map*.**datasetCode**([*value*]) | String | *"demo_r_d3dens"* | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them. |
 | *map*.**filters**([*value*]) | Object | *{ lastTimePeriod : 1 }* |  The Eurostat dimension codes to filter/select the chosen statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) or [here](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to find them.  |
 | *map*.**precision**([*value*]) | int | *2* | The precision of the statistical variable to retrieve (number of decimal places). |
 | *map*.**csvDataSource**([*value*]) | Object | null | To load statistical data from a CSV file, set this parameter with an object *{ url: "", geoCol: "", valueCol: ""}* where *url* is the URL to get the file, *geoCol* is the column where the NUTS_ID is specified, and *valueCol* is the column containing the statistical values. |
 | *map*.**statData**([*value*]) | Object | null | - |
-| *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
-| *map*.**scaleExtent**([*value*]) | Array | *[1,5]* | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming. |
-| *map*.**geo**([*value*]) | String | *"EUR"* | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets). |
-| *map*.**proj**([*value*]) | String | *"3035"* | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory. |
-| *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
-| *map*.**NUTSyear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
-| *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
-
-
-add title
-add sections in the table
-
-
+| **Map title** |
+| Method | Type | Default value | Description |
+| *map*.title_****([*value*]) | String | "" |  |
+| *map*.titleFontSize_****([*value*]) | int | 25 |  |
+| *map*.titleFill_****([*value*]) | Color | "black" |  |
+| *map*.titlePosition_****([*value*]) | Array ([x,y]) | auto |  |
+| *map*.titleFontFamily_****([*value*]) | Fonts | "Helvetica, Arial, sans-serif" |  |
+| *map*.titleFontWeight_****([*value*]) | Font weights | "bold" |  |
+| **Tooltip** |
+| Method | Type | Default value | Description |
 | *map*.**tooltipText**([*value*]) | Function | A default function. | A function returning the text to show in a tooltip which appears when the mouse passes over map features. Set to *null* if no tooltip is needed. |
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
 | *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
+| **Styling customisation** |
+| Method | Type | Default value | Description |
+| *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
+| *map*.**nutsrgSelectionFillStyle**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
+| *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
+| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
+| *map*.**cntrgFillStyle**([*value*]) | String | *"lightgray"* | The fill style of the countries. |
+| *map*.**cntrgSelectionFillStyle**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
+| *map*.**cntbnStroke**([*value*]) | Object | *{def:"#777", co:"#1f78b4"}* | The stroke style of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
+| *map*.**cntbnStrokeWidth**([*value*]) | Object | *{def:1, co:1}* | The stroke width of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
+| *map*.**seaFillStyle**([*value*]) | String | *"#b3cde3"* | The fill style of the sea areas. |
+| *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
+| *map*.**coastalMarginColor**([*value*]) | String | *"white"* | The color of the coastal blurry margin. |
+| *map*.**coastalMarginWidth**([*value*]) | number | *12* | The width of the coastal blurry margin. |
+| *map*.**coastalMarginStdDev**([*value*]) | number | *12* | The standard deviation of the coastal blurry margin. |
+| *map*.**drawGraticule**([*value*]) | boolean | *true* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
+| *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
+| *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
+| **Legend** |
+| Method | Type | Default value | Description |
+| *map*.**legend**() | legend | *auto* | The map legend. |
+| *map*.**showLegend**([*value*]) | boolean | *false* | Set to true to show a legend directly within the map. False otherwise. |
+| *map*.**legend().width**([*value*]) | int | *auto* | The legend box width. If not specified, a value is automated computed. |
+| *map*.**legend().height**([*value*]) | int | *auto* | The legend box height. If not specified, a value is automated computed. |
+| *map*.**legend().boxMargin**([*value*]) | int | *10* | The legend box margin, in pixel. |
+| *map*.**legend().boxPadding**([*value*]) | int | *10* | The legend box padding, in pixel. |
+| *map*.**legend().boxCornerRadius**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
+| *map*.**legend().boxFill**([*value*]) | String | *"white"* | The legend box fill style. |
+| *map*.**legend().boxOpacity**([*value*]) | number | *0.5* | The legend box opacity, from 0 to 1. |
+| *map*.**legend().fontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
+| *map*.**legend().titleText**([*value*]) | String | *"Legend"* | The legend title. |
+| *map*.**legend().titleFontSize**([*value*]) | int | *17* | The legend title font size. |
+| *map*.**legend().titleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
+| *map*.**legend().cellNb**([*value*]) | int | *4* | The legend cells number (used for proportional symbol maps only). |
+| *map*.**legend().ascending**([*value*]) | String | *true* | The legend cells order. |
+| *map*.**legend().shapeWidth**([*value*]) | int | *15* | The cell width (used for choropleth maps only). |
+| *map*.**legend().shapeHeight**([*value*]) | int | *13* | The cell heigth (used for choropleth maps only). |
+| *map*.**legend().shapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
+| *map*.**legend().labelFontSize**([*value*]) | int | *13* | The label font size. |
+| *map*.**legend().labelDelimiter**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
+| *map*.**legend().labelWrap**([*value*]) | int | *140* | The label text wrap length, in pixel. |
+| *map*.**legend().labelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
+| *map*.**legend().labelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
+| **Bottom text** |
+| Method | Type | Default value | Description |
+| *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
+| *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
+| *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
+| *map*.**bottomTextFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The font family. |
+| *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
+| *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
+| **Other** |
+| Method | Type | Default value | Description |
+| *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
+
 
 ### For choropleth maps
 
@@ -124,67 +185,6 @@ To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The fol
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 | *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
 
-### Some styling customisation
-
-| Method | Type | Default value | Description |
-| --- | --- | --- | --- |
-| *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
-| *map*.**nutsrgSelectionFillStyle**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
-| *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
-| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
-| *map*.**cntrgFillStyle**([*value*]) | String | *"lightgray"* | The fill style of the countries. |
-| *map*.**cntrgSelectionFillStyle**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
-| *map*.**cntbnStroke**([*value*]) | Object | *{def:"#777", co:"#1f78b4"}* | The stroke style of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**cntbnStrokeWidth**([*value*]) | Object | *{def:1, co:1}* | The stroke width of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**seaFillStyle**([*value*]) | String | *"#b3cde3"* | The fill style of the sea areas. |
-| *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
-| *map*.**coastalMarginColor**([*value*]) | String | *"white"* | The color of the coastal blurry margin. |
-| *map*.**coastalMarginWidth**([*value*]) | number | *12* | The width of the coastal blurry margin. |
-| *map*.**coastalMarginStdDev**([*value*]) | number | *12* | The standard deviation of the coastal blurry margin. |
-| *map*.**drawGraticule**([*value*]) | boolean | *true* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
-| *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
-| *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
-
-### Legend customisation
-
-| Method | Type | Default value | Description |
-| --- | --- | --- | --- |
-| *map*.**legend**() | legend | *auto* | The map legend. |
-| *map*.**showLegend**([*value*]) | boolean | *false* | Set to true to show a legend directly within the map. False otherwise. |
-| *map*.**legend().width**([*value*]) | int | *auto* | The legend box width. If not specified, a value is automated computed. |
-| *map*.**legend().height**([*value*]) | int | *auto* | The legend box height. If not specified, a value is automated computed. |
-| *map*.**legend().boxMargin**([*value*]) | int | *10* | The legend box margin, in pixel. |
-| *map*.**legend().boxPadding**([*value*]) | int | *10* | The legend box padding, in pixel. |
-| *map*.**legend().boxCornerRadius**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
-| *map*.**legend().boxFill**([*value*]) | String | *"white"* | The legend box fill style. |
-| *map*.**legend().boxOpacity**([*value*]) | number | *0.5* | The legend box opacity, from 0 to 1. |
-| *map*.**legend().fontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The legend font. |
-| *map*.**legend().titleText**([*value*]) | String | *"Legend"* | The legend title. |
-| *map*.**legend().titleFontSize**([*value*]) | int | *17* | The legend title font size. |
-| *map*.**legend().titleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
-| *map*.**legend().cellNb**([*value*]) | int | *4* | The legend cells number (used for proportional symbol maps only). |
-| *map*.**legend().ascending**([*value*]) | String | *true* | The legend cells order. |
-| *map*.**legend().shapeWidth**([*value*]) | int | *15* | The cell width (used for choropleth maps only). |
-| *map*.**legend().shapeHeight**([*value*]) | int | *13* | The cell heigth (used for choropleth maps only). |
-| *map*.**legend().shapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
-| *map*.**legend().labelFontSize**([*value*]) | int | *13* | The label font size. |
-| *map*.**legend().labelDelimiter**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
-| *map*.**legend().labelWrap**([*value*]) | int | *140* | The label text wrap length, in pixel. |
-| *map*.**legend().labelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
-| *map*.**legend().labelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
-
-### Bottom text customisation
-
-This text field is intended to be used for copyright text. It can however be customised.
-
-| Method | Type | Default value | Description |
-| --- | --- | --- | --- |
-| *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
-| *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
-| *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
-| *map*.**bottomTextFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The font family. |
-| *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
-| *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 
 ### Build and update
 
