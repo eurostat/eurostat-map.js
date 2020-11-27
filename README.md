@@ -28,7 +28,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 
 The library is built as a UMD module so it can be imported:
 - In Node.js, with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
-- In a HTML page, with ``<script src="https://unpkg.com/eurostatmap/build/eurostatmap.min.js"></script>`` as shown in [the examples](#examples).
+- In a HTML page, with ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples).
 
 ### Map creation
 
