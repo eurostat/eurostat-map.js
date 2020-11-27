@@ -185,20 +185,23 @@ After changing some parameters, one of the following methods need to be executed
 | --- | --- | --- |
 | *map*.**build**() | *this* | Build (or rebuild) the entire map. |
 | *map*.**updateGeoData**() | *this* | Get new geometrical data. It should be used to update the map when parameters on the map geometries have changed. |
-| *map*.**updateStatData**() | *this* | Get new statistical data. It should be used to update the map when parameters on the statistical data have changed. |
 | *map*.**buildMapTemplate**() | *this* | Update the map when parameters on the map template have changed. |
-| *map*.**updateClassificationAndStyle**() | *this* | Update the map when parameters on the classification have changed. |
-| *map*.**updateLegend**() | *this* | Update the map when parameters on the legend have changed.  |
-| *map*.**updateStyle**() | *this* | Update the map when parameters on the classification style have changed.  |
+| *map*.**updateStatData**() | *this* | Get new statistical data. It should be used to update the map when parameters on the statistical data sources have changed. |
+| *map*.**updateStatValues**() | *this* | Update client side information related to statistical values. It should be used to update the map when statistical values have changed. |
+| *map*.**updateClassification**() | *this* | Update the map when parameters on the classification have changed. |
+| *map*.**updateStyle**() | *this* | Update the map when parameters on the styling have changed. |
+| *map*.**legend().build()**() | *this* | Build the legend.  |
+| *map*.**legend().update()**() | *this* | Update the legend.  |
 
 ### Miscellaneous
 
 | Method | Returns | Description |
 | --- | --- | --- |
 | *map*.**getTime**() | String | Return the *time* parameter of the statistical data. When a filter such as *{ lastTimePeriod : 1 }* is used, this method allows a retrieval of the map timestamp. |
-| *map*.**set**([options]) | *this* | Run "myMap.set(eurostatmap.getURLParameters())" to retrieve parameters defined in the URL and apply them to a map element directly. |
+| *map*.**setFromURL**() | *this* | Set some map parameters based on URL parameters: "w" for width, "h" for height, "x" for xGeoCenter, "y" for yGeoCenter, "z" for pixGeoSize, "s" for scale, "lvl" for nuts level, "time" for time, "proj" for the CRS, "geo" for the geographical territory, "ny" for the NUTS version, "lg" for the langage, "sl" to show legend, "clnb" for the number of classes. |
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
+
 
 ## Technical details
 
