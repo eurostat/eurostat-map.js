@@ -124,10 +124,12 @@ These are parameters common to all map types.
 | *map*.**bottomTextFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The font family. |
 | *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
-| **Other** |
-| *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
+| **Miscellaneous** |
 | *map*.**zoomExtent**([*value*]) | Array ([min,max]) | *[1,5]* | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming. |
+| *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
+| *map*.**lg**([*value*]) | String | *"en"* | The language code, for multilingual maps. |
 | *map*.**transitionDuration**([*value*]) | int | *800* | When updating statistical figures, the map style changes progressively. This parameter sets the duration of this transition, in ms. |
+| *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.  |
 
 
 ### For choropleth maps
@@ -144,9 +146,7 @@ To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The foll
 | *map*.**clnb**([*value*]) | int | *7* | The number of classes. When *classifMethod = "threshold"*, this parameter is inferred from the number of breaks specified. |
 | *map*.**colorFun**([*value*]) | Function | *d3.interpolateYlOrBr* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
 | *map*.**classToFillStyleCH**([*value*]) | Function | See description | A function returning a fill style for each class number. The default values is the function returned by ``eurostatmap.getColorLegend(colorFun())``. |
-| *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.  |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
-| *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
 
 ### For proportional symbol maps
 
@@ -174,9 +174,7 @@ To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The fol
 | --- | --- | --- | --- |
 | *map*.**classToFillStyleCT**([*value*]) | Object | null | An object giving the fill style depending on the class code. |
 | *map*.**classToText**([*value*]) | Object | null | An object giving the legend label text depending on the class code. |
-| *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.  |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
-| *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |
 
 
 ### Build and update

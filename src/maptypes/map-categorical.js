@@ -9,9 +9,10 @@ export const map = function () {
 	//create map object to return, using the template
 	const out = mt.mapTemplate();
 
-	out.clnb_ = 7;
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
+	out.noDataFillStyle_ = "lightgray";
+
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 	//the inverse classifier: a function returning the category value from the category class (used only for categorical maps).
@@ -24,7 +25,7 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_","classToFillStyleCT_","classToText_","classifier_","classifierInverse_"]
+	["classToFillStyleCT_","classToText_","noDataFillStyle_","classifier_","classifierInverse_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
@@ -52,8 +53,7 @@ export const map = function () {
 		//get domain: unique values
 		const dom = Object.values(out._statDataIndex).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
 
-		out.clnb(dom.length);
-		const rg = getA(out.clnb_);
+		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));
 		out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
 

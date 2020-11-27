@@ -18,7 +18,7 @@ export const map = function () {
 	out.colorFun_ = interpolateYlOrBr;
 	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
 	out.noDataFillStyle_ = "lightgray";
-	out.noDataText_ = "No data available";
+
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
@@ -30,7 +30,7 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classifMethod_","threshold_","makeClassifNice_","clnb_","colorFun_","classToFillStyleCH_","noDataFillStyle_","noDataText_","classifier_"]
+	["classifMethod_","threshold_","makeClassifNice_","clnb_","colorFun_","classToFillStyleCH_","noDataFillStyle_","classifier_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
