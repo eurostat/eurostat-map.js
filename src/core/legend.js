@@ -21,8 +21,8 @@ export const legend = function (map) {
 	//the legend box
 	out.boxMargin_ = 10;
 	out.boxPadding_ = 10;
-	out.boxCornerRadius_ = out.boxPadding_;
-	out.boxFill_ = "#EEEEEE";
+	out.boxCornerRadius_ = 10;
+	out.boxFill_ = "#eeeeee";
 	out.boxOpacity_ = 0.5;
 
 	out.fontFamily_ = "Helvetica, Arial, sans-serif";
@@ -33,11 +33,11 @@ export const legend = function (map) {
 	out.titleWidth_ = 140;
 
 	//legeng element labels
-	out.labelOffset_ = 5;
 	out.labelFontSize_ = 13;
 	out.labelDelimiter_ = " - ";
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
+	out.labelOffset_ = 5;
 
 	//TODO: move those to the legends where it is used, only?
 	out.ascending_ = true;
