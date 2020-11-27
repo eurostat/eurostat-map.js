@@ -118,7 +118,7 @@ These are parameters common to all map types.
 | *map*.**legend().shapeHeight**([*value*]) | int | *13* | The cell heigth (used for choropleth maps only). |
 | *map*.**legend().shapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
 | **Bottom text** |
-| *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
+| *map*.**bottomText**([*value*]) | String | *Some default text* | The text. Note that the default value is mandatory. |
 | *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
 | *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
 | *map*.**bottomTextFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
