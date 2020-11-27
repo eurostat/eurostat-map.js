@@ -62,12 +62,12 @@ export const mapTemplate = function (withCenterPoints) {
 	//template default style
 	//nuts
 	out.nutsrgFillStyle_ = "#eee";
-	out.nutsrgSelectionFillStyle_ = "purple";
+	out.nutsrgSelFillSty_ = "purple";
 	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
 	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
 	//countries
 	out.cntrgFillStyle_ = "lightgray";
-	out.cntrgSelectionFillStyle_ = "darkgray";
+	out.cntrgSelFillSty_ = "darkgray";
 	out.cntbnStroke_ = { def: "#777", co: "#1f78b4" };
 	out.cntbnStrokeWidth_ = { def: 1, co: 1 };
 	//sea
@@ -87,11 +87,11 @@ export const mapTemplate = function (withCenterPoints) {
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
-	out.bottomTextFontSize_ = 12;
-	out.bottomTextFill_ = "black";
-	out.bottomTextFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.bottomTextPadding_ = 10;
-	out.bottomTextTooltipMessage_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
+	out.botTxtFontSize_ = 12;
+	out.botTxtFill_ = "black";
+	out.botTxtFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.botTxtPadding_ = 10;
+	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
 	//other
 	out.zoomExtent_ = [1, 5];
@@ -256,7 +256,7 @@ export const mapTemplate = function (withCenterPoints) {
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
 
 		//prepare map tooltip
-		const tooltip = (out.tooltipText_ || out.bottomTextTooltipMessage_) ? tp.tooltip() : null;
+		const tooltip = (out.tooltipText_ || out.botTxtTooltipTxt_) ? tp.tooltip() : null;
 
 		//prepare drawing group
 		const zg = select("#zoomgroup");
@@ -305,7 +305,7 @@ export const mapTemplate = function (withCenterPoints) {
 			.attr("class", "cntrg")
 			.style("fill", out.cntrgFillStyle_)
 			.on("mouseover", function (rg) {
-				select(this).style("fill", out.cntrgSelectionFillStyle_);
+				select(this).style("fill", out.cntrgSelFillSty_);
 				if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
 			}).on("mousemove", function () {
 				if (tooltip) tooltip.mousemove();
@@ -323,7 +323,7 @@ export const mapTemplate = function (withCenterPoints) {
 			.on("mouseover", function (rg) {
 				const sel = select(this);
 				sel.attr("fill___", sel.attr("fill"));
-				sel.attr("fill", out.nutsrgSelectionFillStyle_);
+				sel.attr("fill", out.nutsrgSelFillSty_);
 				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
 			}).on("mousemove", function () {
 				if (tooltip) tooltip.mousemove();
@@ -385,7 +385,7 @@ export const mapTemplate = function (withCenterPoints) {
 			.attr("class", "symbol")
 			.style("fill", "gray")
 			.on("mouseover", function (rg) {
-				select(this).style("fill", out.nutsrgSelectionFillStyle_);
+				select(this).style("fill", out.nutsrgSelFillSty_);
 				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
 			}).on("mousemove", function () {
 				if (tooltip) tooltip.mousemove();
@@ -410,21 +410,21 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//bottom text
 		if (out.bottomText())
-			out.svg().append("text").attr("id", "bottomtext").attr("x", out.bottomTextPadding_).attr("y", out.height_ - out.bottomTextPadding_)
+			out.svg().append("text").attr("id", "bottomtext").attr("x", out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text(out.bottomText())
-				.style("font-family", out.bottomTextFontFamily_)
-				.style("font-size", out.bottomTextFontSize_)
-				.style("fill", out.bottomTextFill_)
+				.style("font-family", out.botTxtFontFamily_)
+				.style("font-size", out.botTxtFontSize_)
+				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
 					tooltip.mw___ = tooltip.style("max-width");
 					tooltip.f___ = tooltip.style("font");
 					tooltip.style("max-width", "800px");
 					tooltip.style("font", "6px");
-					if (out.bottomTextTooltipMessage_) tooltip.mouseover(out.bottomTextTooltipMessage_);
+					if (out.botTxtTooltipTxt_) tooltip.mouseover(out.botTxtTooltipTxt_);
 				}).on("mousemove", function () {
-					if (out.bottomTextTooltipMessage_) tooltip.mousemove();
+					if (out.botTxtTooltipTxt_) tooltip.mousemove();
 				}).on("mouseout", function () {
-					if (out.bottomTextTooltipMessage_) tooltip.mouseout();
+					if (out.bottomTextTooltipTxt_) tooltip.mouseout();
 					tooltip.style("max-width", tooltip.mw___);
 					tooltip.style("font", tooltip.f___);
 				});

@@ -79,11 +79,11 @@ These are parameters common to all map types.
 | *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
 | **Styling customisation** |
 | *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
-| *map*.**nutsrgSelectionFillStyle**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
+| *map*.**nutsrgSelFillSty**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
 | *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
 | *map*.**cntrgFillStyle**([*value*]) | String | *"lightgray"* | The fill style of the countries. |
-| *map*.**cntrgSelectionFillStyle**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
+| *map*.**cntrgSelFillSty**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
 | *map*.**cntbnStroke**([*value*]) | Object | *{def:"#777", co:"#1f78b4"}* | The stroke style of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
 | *map*.**cntbnStrokeWidth**([*value*]) | Object | *{def:1, co:1}* | The stroke width of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
 | *map*.**seaFillStyle**([*value*]) | String | *"#b3cde3"* | The fill style of the sea areas. |
@@ -101,7 +101,7 @@ These are parameters common to all map types.
 | *map*.**legend().height**([*value*]) | int | *auto* | The legend box height. If not specified, a value is automated computed. |
 | *map*.**legend().boxMargin**([*value*]) | int | *10* | The legend box margin, in pixel. |
 | *map*.**legend().boxPadding**([*value*]) | int | *10* | The legend box padding, in pixel. |
-| *map*.**legend().boxCornerRadius**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
+| *map*.**legend().boxCornerRad**([*value*]) | int | *10* | The legend box corner radius, in pixel. |
 | *map*.**legend().boxFill**([*value*]) | String | *"#eeeeee"* | The legend box fill style. |
 | *map*.**legend().boxOpacity**([*value*]) | number | *0.5* | The legend box opacity, from 0 to 1. |
 | *map*.**legend().fontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The legend font. |
@@ -109,7 +109,7 @@ These are parameters common to all map types.
 | *map*.**legend().titleFontSize**([*value*]) | int | *17* | The legend title font size. |
 | *map*.**legend().titleWidth**([*value*]) | int | *140* | The legend title text wrap, in pixel. |
 | *map*.**legend().labelFontSize**([*value*]) | int | *13* | The label font size. |
-| *map*.**legend().labelDelimiter**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
+| *map*.**legend().labelDelim**([*value*]) | String | *" - "* | The label delimiter size (used for choropleth maps only). |
 | *map*.**legend().labelWrap**([*value*]) | int | *140* | The label text wrap length, in pixel. |
 | *map*.**legend().labelDecNb**([*value*]) | int | *2* | The number of decimal places to show in text labels. |
 | *map*.**legend().labelOffset**([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
@@ -119,11 +119,11 @@ These are parameters common to all map types.
 | *map*.**legend().shapePadding**([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
 | **Bottom text** |
 | *map*.**bottomText**([*value*]) | String | *Some default text* | The text. Note that the default value is mandatory. |
-| *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
-| *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
-| *map*.**bottomTextFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
-| *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
-| *map* .**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
+| *map*.**botTxtFontSize**([*value*]) | int | *12* | The font size. |
+| *map*.**botTxtFill**([*value*]) | String | *"black"* | The text color. |
+| *map*.**botTxtFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
+| *map*.**botTxtPadding**([*value*]) | number | *10* | The padding, in pixel. |
+| *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | **Miscellaneous** |
 | *map*.**zoomExtent**([*value*]) | Array | *[1,5]* | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming. |
 | *map*.**noDataText**([*value*]) | String | *"No data available"* | The text to show for regions where no data is available.  |

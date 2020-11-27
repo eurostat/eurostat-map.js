@@ -23,7 +23,7 @@ export const legendChoropleth = function (map) {
 
 		//background rectangle
 		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
-			.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
+			.attr("rx", out.boxCornerRad()).attr("ry", out.boxCornerRad())
 			.attr("width", out.width_).attr("height", out.height_)
 			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 
@@ -48,7 +48,7 @@ export const legendChoropleth = function (map) {
 					else
 						return d.generatedLabels[d.i]
 					})
-			.labelDelimiter(out.labelDelimiter_)
+			.labelDelimiter(out.labelDelim_)
 			.labelOffset(out.labelOffset_)
 			.labelWrap(out.labelWrap_)
 			//.labelAlign("end") //?
@@ -57,7 +57,7 @@ export const legendChoropleth = function (map) {
 			//.shape("rect")
 			.on("cellover", function (ecl) {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", m.nutsrgSelectionFillStyle());
+				sel.style("fill", m.nutsrgSelFillSty());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 			})
 			.on("cellout", function (ecl) {

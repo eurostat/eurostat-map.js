@@ -27,7 +27,7 @@ export const legendProportionalSymbols = function (map) {
 
 		//background rectangle
 		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
-			.attr("rx", out.boxCornerRadius_).attr("ry", out.boxCornerRadius_)
+			.attr("rx", out.boxCornerRad()).attr("ry", out.boxCornerRad())
 			.attr("width", out.width_).attr("height", out.height_)
 			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
 

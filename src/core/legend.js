@@ -21,7 +21,7 @@ export const legend = function (map) {
 	//the legend box
 	out.boxMargin_ = 10;
 	out.boxPadding_ = 10;
-	out.boxCornerRadius_ = 10;
+	out.boxCornerRad_ = 10;
 	out.boxFill_ = "#eeeeee";
 	out.boxOpacity_ = 0.5;
 
@@ -34,7 +34,7 @@ export const legend = function (map) {
 
 	//legeng element labels
 	out.labelFontSize_ = 13;
-	out.labelDelimiter_ = " - ";
+	out.labelDelim_ = " - ";
 	out.labelWrap_ = 140;
 	out.labelDecNb_ = 2;
 	out.labelOffset_ = 5;
