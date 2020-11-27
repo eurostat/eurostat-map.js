@@ -68,12 +68,12 @@ These are parameters common to all map types.
 | *map*.**csvDataSource**([*value*]) | Object | null | To load statistical data from a CSV file, set this parameter with an object *{ url: "", geoCol: "", valueCol: ""}* where *url* is the URL to get the file, *geoCol* is the column where the NUTS_ID is specified, and *valueCol* is the column containing the statistical values. |
 | *map*.**statData**([*value*]) | Object | null | - |
 | **Map title** |
-| *map*.title_****([*value*]) | String | "" |  |
-| *map*.titleFontSize_****([*value*]) | int | 25 |  |
-| *map*.titleFill_****([*value*]) | Color | "black" |  |
-| *map*.titlePosition_****([*value*]) | Array ([x,y]) | auto |  |
-| *map*.titleFontFamily_****([*value*]) | Fonts | "Helvetica, Arial, sans-serif" |  |
-| *map*.titleFontWeight_****([*value*]) | Font weights | "bold" |  |
+| *map*.**title**([*value*]) | String | "" |  |
+| *map*.**titleFontSize**([*value*]) | int | 25 |  |
+| *map*.**titleFill**([*value*]) | Color | "black" |  |
+| *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto |  |
+| *map*.**titleFontFamily**([*value*]) | Fonts | "Helvetica, Arial, sans-serif" |  |
+| *map*.**titleFontWeight**([*value*]) | Font weights | "bold" |  |
 | **Tooltip** |
 | *map*.**tooltipText**([*value*]) | Function | A default function. | A function returning the text to show in a tooltip which appears when the mouse passes over map features. Set to *null* if no tooltip is needed. |
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
