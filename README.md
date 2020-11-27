@@ -32,7 +32,7 @@ The library is built as a UMD module so it can be imported:
 
 ### Map creation
 
-Create a map with ``let map = eurostatmap.map( mapType );``. Set the parameter ``mapType`` to a value corresponding to the desired type of map:
+Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding to the desired type of map:
 - ``"ch"`` for a [choropleth map](#for-choropleth-maps),
 - ``"ps"`` for a [proportional symbol map](#for-proportional-symbol-maps),
 - ``"ct"`` for a [categorical map](#for-categorical-maps).
@@ -121,7 +121,7 @@ These are parameters common to all map types.
 | *map*.**bottomText**([*value*]) | String | *"(C)EuroGeographics (C)UN-FAO (C)Turkstat"* | The text. Note that the default value is mandatory. |
 | *map*.**bottomTextFontSize**([*value*]) | int | *12* | The font size. |
 | *map*.**bottomTextFill**([*value*]) | String | *"black"* | The text color. |
-| *map*.**bottomTextFontFamily**([*value*]) | String | *eurostatmap.fontFamilyDefault* | The font family. |
+| *map*.**bottomTextFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
 | *map*.**bottomTextPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map*.**bottomTextTooltipMessage**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | **Miscellaneous** |
