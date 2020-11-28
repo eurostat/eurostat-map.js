@@ -17,7 +17,7 @@ export const legendCategorical = function (map) {
 		const claInv = m.classifierInverse();
         const g = out.g();
 
-		const svgMap = select("#" + m.svgId());
+		const svgMap = m.svg();
 
 		//remove previous content
 		g.selectAll("*").remove();

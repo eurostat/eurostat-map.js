@@ -1,5 +1,5 @@
-import { min, max } from "d3-array";
 import { select } from "d3-selection";
+import { min, max } from "d3-array";
 import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as mt from '../core/stat-map-template';

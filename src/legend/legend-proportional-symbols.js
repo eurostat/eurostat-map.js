@@ -19,7 +19,7 @@ export const legendProportionalSymbols = function (map) {
 	//@override
 	out.update = function() {
 		const m = out.map();
-		//const svgMap = select("#" + m.svgId());
+		//const svgMap = m.svg();
         const g = out.g();
 
 		//remove previous content
