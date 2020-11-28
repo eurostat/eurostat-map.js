@@ -1,5 +1,3 @@
-import { select } from "d3-selection";
-
 
 /**
  * A eurostat-map legend. This is an abstract method.
@@ -69,7 +67,7 @@ export const legend = function (map) {
 	out.build = function () {
 
 		//set SVG group
-		out.g( select("#" + out.gId()) );
+		out.g( map.svg().select("#" + out.gId()) );
 
 		//set size
 		if(!out.width_) out.width_ = out.computeWidth();

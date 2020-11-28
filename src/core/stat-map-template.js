@@ -259,7 +259,7 @@ export const mapTemplate = function (withCenterPoints) {
 		const tooltip = (out.tooltipText_ || out.botTxtTooltipTxt_) ? tp.tooltip() : null;
 
 		//prepare drawing group
-		const zg = select("#zoomgroup");
+		const zg = out.svg().select("#zoomgroup");
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
