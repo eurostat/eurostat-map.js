@@ -16,19 +16,22 @@
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
     <script>
-        //const year = 2016;
-        for(let year = 2010; year<=2018; year++) {
-            eurostatmap
+        for(let year = 2020; year>=2010; year--) {
+        for(let q = 1; q<=4; q++) {
+           eurostatmap
             .map("ch")
-            .svgId("map"+year)
-            .title(year)
+            .svgId("map_"+year+"_Q"+q)
+            .title(year+" " + "Q"+q)
+            .titleFontSize(18)
+            .titleFill("#333333")
             .scale("60M")
-            .width(300)
-            .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: year })
+            .width(250)
+            //.nutsLvl(3).datasetCode("demo_r_mwk3_t").filters({ time: "2020W"+week })
+            .nutsLvl(0).datasetCode("namq_10_gdp").filters({ freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"Q"+q })
 
             .colorFun(d3.interpolateRdYlBu)
             .classifMethod("threshold")
-            .threshold([-15, -10, -6, -4, -2, 0, 2, 4, 6, 10, 15])
+            .threshold([-15,-10,-8,-6,-4,-2,-1,-0.5,0,0.5,,1,2,4,6,7,10,15])
 
             .seaFillStyle("#eee")
             .drawCoastalMargin(false)
@@ -36,24 +39,17 @@
             //.nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
             .cntbnStrokeWidth({ def: 0, co: 0 })
             //.cntbnStroke({ def: "#777", co: "none" })
-            //.cntrgFillStyle("darkgray")
-        	//.cntrgSelFillSty("lightgray")
             .drawGraticule(false)
 
-            .unitText("‰")
-            //.tooltipShowFlags("long")
+            .unitText("%")
+            .tooltipShowFlags("long")
             .bottomText(null)
-            //.botTxtFill("white")
-
-            /*.showLegend(true)
-            .legend().titleText("Population change from 2015 to 2016 (in ‰)")
-            .legend().width(200)
-            .legend().height(320)
-            .legend().labelDecNb(0)
-            .legend().labelDelim("to")*/
 
             .build();
         }
+        //add br
+        document.getElementsByTagName("body")[0].appendChild( document.createElement("br") );
+    }
 
     </script>
 </body>
