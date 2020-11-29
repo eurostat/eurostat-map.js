@@ -8,7 +8,8 @@
 </head>
 
 <body>
-<h1>20 years of GDP changes in Europe</h1>
+<h1 style="font-family: sans-serif">20 years of GDP change in Europe</h1>
+<p style="font-family: sans-serif">Source: <a href="https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/">Eurostat</a></p>
 
     <script src="https://unpkg.com/eurostat-map"></script>
 
@@ -18,6 +19,10 @@
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
     <script>
+        //Gross domestic product at market prices
+        //Chain linked volumes, percentage change compared to same period in previous year
+        //Seasonally and calendar adjusted data
+
         for(let year = 2020; year>=2000; year--) {
         for(let q = 1; q<=4; q++) {
            eurostatmap
