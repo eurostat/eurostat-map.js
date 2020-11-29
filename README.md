@@ -251,7 +251,7 @@ Maps based on [NUTS regions](http://ec.europa.eu/eurostat/web/nuts/overview) rel
 | | |
 |-|-|
 | *contributors* | [<img src="https://github.com/jgaffuri.png" height="40" />](https://github.com/jgaffuri) [<img src="https://github.com/JoeWDavies.png" height="40" />](https://github.com/JoeWDavies) |
-| *version* | 1.9.2 |
+| *version* | 2 |
 | *status* | Since 2018 |
 | *license* | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE) |
 
