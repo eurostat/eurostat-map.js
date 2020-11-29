@@ -129,7 +129,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Return the stat value {value,status} from a nuts id, using the index.
 	 * @param {*} nutsId 
 	 */
-	out.getStat = (nutsId) => out._statDataIndex[nutsId];
+	out.getStat = (nutsId) => out._statDataIndex? out._statDataIndex[nutsId] : undefined;
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
