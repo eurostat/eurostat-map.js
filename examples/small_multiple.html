@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<h1>GDP monthly rate</h1>
+<h1>20 years of GDP changes in Europe</h1>
 
     <script src="../build/eurostatmap.js"></script>
 
@@ -18,7 +18,7 @@
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
     <script>
-        for(let year = 2020; year>=2018; year--) {
+        for(let year = 2020; year>=2000; year--) {
         for(let q = 1; q<=4; q++) {
            eurostatmap
             .map("ch")
@@ -27,7 +27,7 @@
             .titleFontSize(18)
             .titleFill("#333333")
             .scale("60M")
-            .width(200)
+            .width(250)
             //.nutsLvl(3).datasetCode("demo_r_mwk3_t").filters({ time: "2020W"+week })
             .nutsLvl(0).datasetCode("namq_10_gdp").filters({ freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"Q"+q })
 
@@ -35,10 +35,10 @@
             .classifMethod("threshold")
             .threshold([-15,-10,-8,-6,-4,-2,-1,-0.5,0,0.5,,1,2,4,6,7,10,15])
 
-            .seaFillStyle("#eee")
+            .seaFillStyle("#fff")
             .drawCoastalMargin(false)
-        	.nutsbnStrokeWidth({ 0: 0.8, 1: 0, 2: 0, 3: 0, oth: 0, co: 0 })
-            //.nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
+        	.nutsbnStrokeWidth({ 0: 0.8, 1: 0, 2: 0, 3: 0, oth: 0, co: 0.6 })
+            .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#777" })
             .cntbnStrokeWidth({ def: 0, co: 0 })
             //.cntbnStroke({ def: "#777", co: "none" })
             .drawGraticule(false)
