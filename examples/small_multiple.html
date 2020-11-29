@@ -8,20 +8,23 @@
 </head>
 
 <body>
-    <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
 
     <!-- for eurostatmap.colorFun() -->
     <script src="https://d3js.org/d3-color.v2.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
-    
+
     <script>
-        eurostatmap
+        //const year = 2016;
+        for(let year = 2010; year<=2018; year++) {
+            eurostatmap
             .map("ch")
+            .svgId("map"+year)
+            .title(year)
             .scale("60M")
-            .width(400)
-            .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: 2016 })
+            .width(300)
+            .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: year })
 
             .colorFun(d3.interpolateRdYlBu)
             .classifMethod("threshold")
@@ -29,7 +32,9 @@
 
             .seaFillStyle("#eee")
             .drawCoastalMargin(false)
+        	.nutsbnStrokeWidth({ 0: 0, 1: 0, 2: 0, 3: 0, oth: 0, co: 0 })
             //.nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
+            .cntbnStrokeWidth({ def: 0, co: 0 })
             //.cntbnStroke({ def: "#777", co: "none" })
             //.cntrgFillStyle("darkgray")
         	//.cntrgSelFillSty("lightgray")
@@ -48,6 +53,7 @@
             .legend().labelDelim("to")*/
 
             .build();
+        }
 
     </script>
 </body>

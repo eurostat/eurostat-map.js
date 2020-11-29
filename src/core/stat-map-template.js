@@ -144,7 +144,10 @@ export const mapTemplate = function (withCenterPoints) {
 	 */
 	out.build = function () {
 
-		const svg = select("#" + out.svgId());
+		//get svg element. Create it if it does not exists
+		let svg = select("#" + out.svgId());
+		if(svg.size() == 0)
+			svg = select("body").append("svg").attr("id", out.svgId())
 		out.svg(svg);
 
 		//set SVG dimensions

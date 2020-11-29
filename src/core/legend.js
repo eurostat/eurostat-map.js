@@ -68,6 +68,7 @@ export const legend = function (map) {
 	out.build = function () {
 
 		//set SVG group
+		//TODO use d3.create ?
 		out.g( select("#" + out.gId()) );
 
 		//set size
