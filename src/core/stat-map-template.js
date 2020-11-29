@@ -327,7 +327,7 @@ export const mapTemplate = function (withCenterPoints) {
 				const sel = select(this);
 				sel.attr("fill___", sel.attr("fill"));
 				sel.attr("fill", out.nutsrgSelFillSty_);
-				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+				if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out));
 			}).on("mousemove", function () {
 				if (tooltip) tooltip.mousemove();
 			}).on("mouseout", function () {
@@ -342,9 +342,9 @@ export const mapTemplate = function (withCenterPoints) {
 			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 			.selectAll("path").data(cntbn)
 			.enter().append("path").attr("d", path)
-			.attr("class", function (bn) { if (bn.properties.co === "T") return "bn_co"; return "cntbn"; })
-			.style("stroke", function (bn) { if (bn.properties.co === "T") return out.cntbnStroke_.co; return out.cntbnStroke_.def; })
-			.style("stroke-width", function (bn) { if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co; return out.cntbnStrokeWidth_.def; });
+			.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
+			.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.cntbnStroke_.co : out.cntbnStroke_.def })
+			.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.cntbnStrokeWidth_.co : out.cntbnStrokeWidth_.def });
 
 		//draw NUTS boundaries
 		if(nutsbn) {
@@ -368,8 +368,8 @@ export const mapTemplate = function (withCenterPoints) {
 			})
 			.style("stroke-width", function (bn) {
 				bn = bn.properties;
-				if (bn.co === "T") return out.nutsbnStrokeWidth_.co || 1;
-				if(bn.lvl>0) return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
+				if (bn.co === "T") return out.nutsbnStrokeWidth_.co;
+				if(bn.lvl>0) return out.nutsbnStrokeWidth_[bn.lvl];
 				//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
 				return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
 			});
