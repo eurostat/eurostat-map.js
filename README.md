@@ -29,18 +29,18 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 
 The library is built as a UMD module so it can be imported:
 - In Node.js, with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
-- In a HTML page, with ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). This will use the latest version. Tu rely on a specific version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z/build/eurostatmap.min.js"></script>`` instead, where *X.Y.Z* is a version number among [those ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
+- In a HTML page, with ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). This will use the latest version. To rely on a specific version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z/build/eurostatmap.min.js"></script>`` instead, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
 
 ### Map creation
 
-Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding to the desired type of map:
+Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding with the desired type of map:
 - ``"ch"`` for a [choropleth map](#for-choropleth-maps),
 - ``"ps"`` for a [proportional symbol map](#for-proportional-symbol-maps),
 - ``"ct"`` for a [categorical map](#for-categorical-maps).
 
 The ``map`` can then be customised with the methods listed in the tables below.
 
-Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and return the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
+Most of these methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
 Once the map parameters have been set or changed, the map needs to be built or updated using one of [these methods](#build-and-update).
 
