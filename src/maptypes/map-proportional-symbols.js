@@ -61,8 +61,19 @@ export const map = function () {
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
+
+		console.log(out.psStrokeWidth_)
+		console.log(out.psStrokeWidth())
+
 		//set circle radius depending on stat value
 		out.svg().select("#g_ps").selectAll("circle.symbol")
+
+			//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
+			.style("fill", out.psFill())
+			.style("fill-opacity", out.psFillOpacity())
+			.style("stroke", out.psStroke())
+			.style("stroke-width", out.psStrokeWidth())
+
 			.transition().duration(out.transitionDuration())
 			.attr("r", function (rg) {
 				const sv = out.getStat(rg.properties.id);
@@ -70,13 +81,7 @@ export const map = function () {
 				return out.classifier()(+sv.value);
 			})
 
-			//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
-			.style("fill", out.psFill_)
-			.style("fill-opacity", out.psFillOpacity_)
-			.style("stroke", out.psStroke_)
-			.style("stroke-width", out.psStrokeWidth_);
-
-        return out;
+		return out;
 	};
 
 
