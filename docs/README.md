@@ -17,3 +17,8 @@ eurostat-map.js is now bundled and compiled using webpack & babel.
 
 -- run "npm run build-prod"
  This will use the configuration in webpack.config.prod.js to build a minified development bundle without source maps and place it in the /build folder as eurostatmap.min.js
+
+
+### Testing
+
+To run tests, use "npm test". This will execute eurostatmap.test.js using jest. Jest will execute the code in this file using a headless chrome upon test.html. 
