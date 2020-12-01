@@ -8,7 +8,9 @@
 
 <body>
     <svg id="map"></svg>
-    <svg height="210"><g id="legend"></g></svg>
+    <svg height="210">
+        <g id="legend"></g>
+    </svg>
 
     <script src="../build/eurostatmap.js"></script>
     <script>
@@ -21,15 +23,15 @@
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .build()
-        ;
+            ;
 
-        const lg = map.legend();
-        lg.gId("legend");
-        lg.titleText("Population density (people/km²)");
-        lg.labelDecNb(0);
-        lg.height(210);
-        lg.width(190);
-        lg.build();
+        const lg = map.legend({
+            gId: "legend",
+            titleText: "Population density (people/km²)",
+            labelDecNb: 0,
+            height: 210,
+            width: 190
+        }).build();
 
     </script>
 </body>

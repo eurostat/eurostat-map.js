@@ -17,7 +17,7 @@ import * as tp from '../lib/eurostat-tooltip';
 export const mapTemplate = function (withCenterPoints) {
 	//TODO decompose it: extract map template, extract statData. Enable several statData (as dict).
 
-    const out = {};
+	const out = {};
 
 	/**
 	* Create attributes and set default values
@@ -102,7 +102,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function () {};
+	out.filtersDefinitionFun_ = function () { };
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -114,9 +114,15 @@ export const mapTemplate = function (withCenterPoints) {
 	for (const att in out)
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
+	//override legend accesor
+	// out.legend = function (v) {
+	// 	for (let key in v) {
+	// 		out.legend_[key] = v[key];
+	// 	}
+	// 	return out;
+	// };
 
-
-    /**
+	/**
 	 * Private attributes
 	 */
 
@@ -129,7 +135,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 * Return the stat value {value,status} from a nuts id, using the index.
 	 * @param {*} nutsId 
 	 */
-	out.getStat = (nutsId) => out._statDataIndex? out._statDataIndex[nutsId] : undefined;
+	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
@@ -146,13 +152,13 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//get svg element. Create it if it does not exists
 		let svg = select("#" + out.svgId());
-		if(svg.size() == 0)
+		if (svg.size() == 0)
 			svg = select("body").append("svg").attr("id", out.svgId())
 		out.svg(svg);
 
 		//set SVG dimensions
 		//if no height was specified, use 85% of the width.
-		if(!out.height()) out.height( 0.85 * out.width() );
+		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
 
 		if (out.drawCoastalMargin_)
@@ -164,34 +170,34 @@ export const mapTemplate = function (withCenterPoints) {
 		out.filtersDefinitionFun_(svg, out.clnb_);
 
 		//create drawing group, as first child
-		const zg = svg.insert("g",":first-child").attr("id", "zoomgroup");
+		const zg = svg.insert("g", ":first-child").attr("id", "zoomgroup");
 
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
 			svg.call(zoom()
-			.scaleExtent(out.zoomExtent())
-			.on('zoom', function(a,b,c) {
-				const k = event.transform.k;
-				const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
-				for (let i = 0; i < cs.length; i++)
-					svg.selectAll("." + cs[i]).style("stroke-width", function(d) {
-						return (1/k) + "px";
-					});
-				zg.attr("transform", event.transform);
-			}));
+				.scaleExtent(out.zoomExtent())
+				.on('zoom', function (a, b, c) {
+					const k = event.transform.k;
+					const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
+					for (let i = 0; i < cs.length; i++)
+						svg.selectAll("." + cs[i]).style("stroke-width", function (d) {
+							return (1 / k) + "px";
+						});
+					zg.attr("transform", event.transform);
+				}));
 		}
 
 		//legend element
-		if(out.showLegend()) {
+		if (out.showLegend()) {
 			//create legend element
-			const lg = out.legend();
-			const lgg = svg.append("g").attr("id", lg.gId());
+			const lg = out.legend_;
+			const lgg = svg.append("g").attr("id", lg.gId_);
 			lg.build();
 
 			//set position
-			const dx = out.width() - lg.width();
-			const dy = lg.boxPadding() + lg.titleFontSize();
-			lgg.attr("transform", "translate("+dx+","+dy+")");
+			const dx = out.width() - lg.width;
+			const dy = lg.boxPadding + lg.titleFontSize;
+			lgg.attr("transform", "translate(" + dx + "," + dy + ")");
 		}
 
 		//retrieve geo data
@@ -215,7 +221,7 @@ export const mapTemplate = function (withCenterPoints) {
 		out._geoData = null;
 
 		//get geo data from Nuts2json API
-		json(out.nuts2jsonBaseURL_ + out.NUTSyear_ + (out.geo_==="EUR"?"":"/"+this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
+		json(out.nuts2jsonBaseURL_ + out.NUTSyear_ + (out.geo_ === "EUR" ? "" : "/" + this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
 			.then(function (geo___) {
 				out._geoData = geo___;
 
@@ -236,18 +242,18 @@ export const mapTemplate = function (withCenterPoints) {
 	out.buildMapTemplate = function () {
 
 		//geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
-		const dp = _defaultPosition[out.geo()+"_"+out.proj()];
-		if(!out.geoCenter())
-			if(dp) out.geoCenter( dp.geoCenter );
-			else out.geoCenter( [ 0.5*(out._geoData.bbox[0] + out._geoData.bbox[2]), 0.5*(out._geoData.bbox[1] + out._geoData.bbox[3])] );
+		const dp = _defaultPosition[out.geo() + "_" + out.proj()];
+		if (!out.geoCenter())
+			if (dp) out.geoCenter(dp.geoCenter);
+			else out.geoCenter([0.5 * (out._geoData.bbox[0] + out._geoData.bbox[2]), 0.5 * (out._geoData.bbox[1] + out._geoData.bbox[3])]);
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
-		if(!out.pixSize())
-			if(dp) out.pixSize( dp.widthGeo/out.width() );
-			else out.pixSize( Math.min((out._geoData.bbox[2] - out._geoData.bbox[0]) / out.width_, (out._geoData.bbox[3] - out._geoData.bbox[1]) / out.height_) );
+		if (!out.pixSize())
+			if (dp) out.pixSize(dp.widthGeo / out.width());
+			else out.pixSize(Math.min((out._geoData.bbox[2] - out._geoData.bbox[0]) / out.width_, (out._geoData.bbox[3] - out._geoData.bbox[1]) / out.height_));
 
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
-		const bbox = [out.geoCenter_[0]-0.5*out.pixSize_*out.width_, out.geoCenter_[1]-0.5*out.pixSize_*out.height_, out.geoCenter_[0]+0.5*out.pixSize_*out.width_, out.geoCenter_[1]+0.5*out.pixSize_*out.height_];
+		const bbox = [out.geoCenter_[0] - 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] - 0.5 * out.pixSize_ * out.height_, out.geoCenter_[0] + 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] + 0.5 * out.pixSize_ * out.height_];
 		const path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
 
 
@@ -266,8 +272,8 @@ export const mapTemplate = function (withCenterPoints) {
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
-		zg.append("rect").attr("id", "sea").attr("x", -5*out.width_).attr("y", -5*out.height_)
-			.attr("width", 11*out.width_).attr("height", 11*out.height_)
+		zg.append("rect").attr("id", "sea").attr("x", -5 * out.width_).attr("y", -5 * out.height_)
+			.attr("width", 11 * out.width_).attr("height", 11 * out.height_)
 			.style("fill", out.seaFillStyle_);
 
 		if (out.drawCoastalMargin_) {
@@ -280,15 +286,15 @@ export const mapTemplate = function (withCenterPoints) {
 				.style("stroke-linejoin", "round")
 				.style("stroke-linecap", "round");
 			//countries bn
-			if(cntbn)
-			cg.append("g").attr("id", "g_coast_margin_cnt")
-				.selectAll("path").data(cntbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
-				.append("path").attr("d", path);
+			if (cntbn)
+				cg.append("g").attr("id", "g_coast_margin_cnt")
+					.selectAll("path").data(cntbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.append("path").attr("d", path);
 			//nuts bn
-			if(nutsbn)
-			cg.append("g").attr("id", "g_coast_margin_nuts")
-				.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
-				.append("path").attr("d", path);
+			if (nutsbn)
+				cg.append("g").attr("id", "g_coast_margin_nuts")
+					.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.append("path").attr("d", path);
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -302,106 +308,106 @@ export const mapTemplate = function (withCenterPoints) {
 		}
 
 		//draw country regions
-		if(cntrg)
-		zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
-			.enter().append("path").attr("d", path)
-			.attr("class", "cntrg")
-			.style("fill", out.cntrgFillStyle_)
-			.on("mouseover", function (rg) {
-				select(this).style("fill", out.cntrgSelFillSty_);
-				if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
-			}).on("mousemove", function () {
-				if (tooltip) tooltip.mousemove();
-			}).on("mouseout", function () {
-				select(this).style("fill", out.cntrgFillStyle_);
-				if (tooltip) tooltip.mouseout();
-			});
+		if (cntrg)
+			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
+				.enter().append("path").attr("d", path)
+				.attr("class", "cntrg")
+				.style("fill", out.cntrgFillStyle_)
+				.on("mouseover", function (rg) {
+					select(this).style("fill", out.cntrgSelFillSty_);
+					if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
+				}).on("mousemove", function () {
+					if (tooltip) tooltip.mousemove();
+				}).on("mouseout", function () {
+					select(this).style("fill", out.cntrgFillStyle_);
+					if (tooltip) tooltip.mouseout();
+				});
 
 		//draw NUTS regions
-		if(nutsRG)
-		zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
-			.enter().append("path").attr("d", path)
-			.attr("class", "nutsrg")
-			.attr("fill", out.nutsrgFillStyle_)
-			.on("mouseover", function (rg) {
-				const sel = select(this);
-				sel.attr("fill___", sel.attr("fill"));
-				sel.attr("fill", out.nutsrgSelFillSty_);
-				if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out));
-			}).on("mousemove", function () {
-				if (tooltip) tooltip.mousemove();
-			}).on("mouseout", function () {
-				const sel = select(this);
-				sel.attr("fill", sel.attr("fill___"));
-				if (tooltip) tooltip.mouseout();
-			});
+		if (nutsRG)
+			zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+				.enter().append("path").attr("d", path)
+				.attr("class", "nutsrg")
+				.attr("fill", out.nutsrgFillStyle_)
+				.on("mouseover", function (rg) {
+					const sel = select(this);
+					sel.attr("fill___", sel.attr("fill"));
+					sel.attr("fill", out.nutsrgSelFillSty_);
+					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out));
+				}).on("mousemove", function () {
+					if (tooltip) tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this);
+					sel.attr("fill", sel.attr("fill___"));
+					if (tooltip) tooltip.mouseout();
+				});
 
 		//draw country boundaries
-		if(cntbn)
-		zg.append("g").attr("id", "g_cntbn")
-			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
-			.selectAll("path").data(cntbn)
-			.enter().append("path").attr("d", path)
-			.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-			.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.cntbnStroke_.co : out.cntbnStroke_.def })
-			.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.cntbnStrokeWidth_.co : out.cntbnStrokeWidth_.def });
+		if (cntbn)
+			zg.append("g").attr("id", "g_cntbn")
+				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.selectAll("path").data(cntbn)
+				.enter().append("path").attr("d", path)
+				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
+				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.cntbnStroke_.co : out.cntbnStroke_.def })
+				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.cntbnStrokeWidth_.co : out.cntbnStrokeWidth_.def });
 
 		//draw NUTS boundaries
-		if(nutsbn) {
-		nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
-		zg.append("g").attr("id", "g_nutsbn")
-			.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
-			.selectAll("path").data(nutsbn).enter()
-			.append("path").attr("d", path)
-			.attr("class", function (bn) {
-				bn = bn.properties;
-				if (bn.co === "T") return "bn_co";
-				const cl = ["bn_" + bn.lvl];
-				//if (bn.oth === "T") cl.push("bn_oth");
-				return cl.join(" ");
-			})
-			.style("stroke", function (bn) {
-				bn = bn.properties;
-				if (bn.co === "T") return out.nutsbnStroke_.co || "#1f78b4";
-				//if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
-				return out.nutsbnStroke_[bn.lvl] || "#777";
-			})
-			.style("stroke-width", function (bn) {
-				bn = bn.properties;
-				if (bn.co === "T") return out.nutsbnStrokeWidth_.co;
-				if(bn.lvl>0) return out.nutsbnStrokeWidth_[bn.lvl];
-				//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
-				return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
-			});
+		if (nutsbn) {
+			nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
+			zg.append("g").attr("id", "g_nutsbn")
+				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.selectAll("path").data(nutsbn).enter()
+				.append("path").attr("d", path)
+				.attr("class", function (bn) {
+					bn = bn.properties;
+					if (bn.co === "T") return "bn_co";
+					const cl = ["bn_" + bn.lvl];
+					//if (bn.oth === "T") cl.push("bn_oth");
+					return cl.join(" ");
+				})
+				.style("stroke", function (bn) {
+					bn = bn.properties;
+					if (bn.co === "T") return out.nutsbnStroke_.co || "#1f78b4";
+					//if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
+					return out.nutsbnStroke_[bn.lvl] || "#777";
+				})
+				.style("stroke-width", function (bn) {
+					bn = bn.properties;
+					if (bn.co === "T") return out.nutsbnStrokeWidth_.co;
+					if (bn.lvl > 0) return out.nutsbnStrokeWidth_[bn.lvl];
+					//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
+					return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
+				});
 		}
 
 		//prepare group for proportional symbols, with nuts region centroids
-		if(withCenterPoints) {
+		if (withCenterPoints) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			gcp.selectAll("circle")
-			.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
-			.enter() //.filter(function (d) { return d.properties.val; })
-			.append("circle")
-			.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-			.attr("r", 1)
-			.attr("class", "symbol")
-			.style("fill", "gray")
-			.on("mouseover", function (rg) {
-				select(this).style("fill", out.nutsrgSelFillSty_);
-				if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
-			}).on("mousemove", function () {
-				if (tooltip) tooltip.mousemove();
-			}).on("mouseout", function () {
-				select(this).style("fill", out.psFill_);
-				if (tooltip) tooltip.mouseout();
-			});
+				.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+				.enter() //.filter(function (d) { return d.properties.val; })
+				.append("circle")
+				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+				.attr("r", 1)
+				.attr("class", "symbol")
+				.style("fill", "gray")
+				.on("mouseover", function (rg) {
+					select(this).style("fill", out.nutsrgSelFillSty_);
+					if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+				}).on("mousemove", function () {
+					if (tooltip) tooltip.mousemove();
+				}).on("mouseout", function () {
+					select(this).style("fill", out.psFill_);
+					if (tooltip) tooltip.mouseout();
+				});
 		}
 
 		//title
 		if (out.title()) {
 			//define default position
-			if(!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()]);
+			if (!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()]);
 			//draw title
 			out.svg().append("text").attr("id", "title").attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
@@ -409,7 +415,7 @@ export const mapTemplate = function (withCenterPoints) {
 				.style("font-size", out.titleFontSize())
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
-			}
+		}
 
 		//bottom text
 		if (out.bottomText())
@@ -499,7 +505,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//index stat values by NUTS id.
 		out._statDataIndex = {};
-		for(const id in out.statData_) {
+		for (const id in out.statData_) {
 			const value = out.statData_[id];
 			if (value.value != 0 && !value.value) continue;
 			let v = value.value;
@@ -512,7 +518,7 @@ export const mapTemplate = function (withCenterPoints) {
 		out.updateStyle();
 
 		//update legend, if any
-		if(out.legend_) out.legend().update();
+		if (out.legend_) out.legend().update();
 
 		return out;
 	}
@@ -540,7 +546,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
-    /**
+	/**
 	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
 	 * This applies only for stat data retrieved from Eurostat API.
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
@@ -639,7 +645,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
  */
 export const getURLParameters = function () {
 	const ps = {};
-	const p = ["w", "h","x", "y", "z", "s", "lvl", "time", "proj", "geo", "ny", "lg", "sl", "clnb"];
+	const p = ["w", "h", "x", "y", "z", "s", "lvl", "time", "proj", "geo", "ny", "lg", "sl", "clnb"];
 	for (let i = 0; i < p.length; i++)
 		ps[p[i]] = getURLParameterByName(p[i]);
 	return ps;

@@ -16,6 +16,7 @@ export const map = function () {
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
+	out.legend_ = lgps.legendProportionalSymbols(out);
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
@@ -32,19 +33,19 @@ export const map = function () {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
-	//override of some special getters/setters
-    out.legend = function (v) {
+	out.legend = function (config) {
 		if (!arguments.length) {
 			//create legend if needed
 			if(!out.legend_) out.legend_ = lgps.legendProportionalSymbols(out);
 			return out.legend_;
 		}
+		for (let key in config) {
+			out.legend_[key] = config[key];
+		  }
 		//setter: link map and legend
-		out.legend_ = v; v.map(out);
+		// out.legend_ = v; v.map(out);
 		return out;
 	};
-
-
 
 	//@override
 	out.updateClassification = function () {

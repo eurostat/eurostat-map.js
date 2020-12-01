@@ -10,51 +10,39 @@ export const legend = function (map) {
 	out.map_ = map;
 
 	//the SVG 'g' element where to make the legend
-	out.gId_ = "legend_" + Math.round(10e15*Math.random());
-	out.g_ = undefined;
+	out.gId_ = "legend_" + Math.round(10e15 * Math.random());
+	out.g_ = null;
 
 	//the legend element dimension
-	out.width_ = undefined;
-	out.height_ = undefined;
+	out.width = null;
+	out.height = null;
 
 	//the legend box
-	out.boxMargin_ = 10;
-	out.boxPadding_ = 10;
-	out.boxCornerRad_ = 10;
-	out.boxFill_ = "#eeeeee";
-	out.boxOpacity_ = 0.5;
+	out.boxMargin = 10;
+	out.boxPadding = 10;
+	out.boxCornerRad = 10;
+	out.boxFill = "#eeeeee";
+	out.boxOpacity = 0.5;
 
-	out.fontFamily_ = "Helvetica, Arial, sans-serif";
+	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText_ = "Legend";
-	out.titleFontSize_ = 17;
-	out.titleWidth_ = 140;
+	out.titleText = "Legend";
+	out.titleFontSize = 17;
+	out.titleWidth = 140;
 
 	//legeng element labels
-	out.labelFontSize_ = 13;
-	out.labelDelim_ = " - ";
-	out.labelWrap_ = 140;
-	out.labelDecNb_ = 2;
-	out.labelOffset_ = 5;
+	out.labelFontSize = 13;
+	out.labelDelim = " - ";
+	out.labelWrap = 140;
+	out.labelDecNb = 2;
+	out.labelOffset = 5;
 
 	//TODO: move those to the legends where it is used, only?
-	out.ascending_ = true;
-	out.shapeWidth_ = 15;
-	out.shapeHeight_ = 13;
-	out.shapePadding_ = 2;
-
-	/**
-	 * Definition of getters/setters for all previously defined attributes.
-	 * Each method follow the same pattern:
-	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
-	 *  - To get the attribute value, call the method without argument.
-	 *  - To set the attribute value, call the same method with the new value as single argument.
-	*/
-	for (const att in out)
-		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out.map(); };
-	//note that setters do not return the legend element itself, but the map element. This makes map definitions simpler with chaining.
-
+	out.ascending = true;
+	out.shapeWidth = 15;
+	out.shapeHeight = 13;
+	out.shapePadding = 2;
 
 
 	/**
@@ -63,17 +51,17 @@ export const legend = function (map) {
 
 
 	/**
-	 * Build legeng element.
+	 * Build legend element.
 	 */
 	out.build = function () {
 
 		//set SVG group
 		//TODO use d3.create ?
-		out.g( select("#" + out.gId()) );
+		out.g_ = select("#" + out.gId_);
 
 		//set size
-		if(!out.width_) out.width_ = out.computeWidth();
-		if(!out.height_) out.height_ = out.computeHeight();
+		if (!out.width) out.width = out.computeWidth();
+		if (!out.height) out.height = out.computeHeight();
 	}
 
 	/**
@@ -89,7 +77,7 @@ export const legend = function (map) {
 	 * Return a default value for the legend width.
 	 * This is an abstract method.
 	 */
-	out.computeWidth = function() {
+	out.computeWidth = function () {
 		console.log("Legend computeWidth not implemented")
 		return 100;
 	}
@@ -98,7 +86,7 @@ export const legend = function (map) {
 	 * Return a default value for the legend height.
 	 * This is an abstract method.
 	 */
-	out.computeHeight = function() {
+	out.computeHeight = function () {
 		console.log("Legend computeHeight not implemented")
 		return 100;
 	}

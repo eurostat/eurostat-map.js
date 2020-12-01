@@ -28,10 +28,15 @@
             .tooltipShowFlags(false)
 
             .showLegend(true)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
-            //.legend().height(210)
-            //.legend().width(190)
+            .legend(
+                {
+                    titleText: "Population change from 2015 to 2016 : in ‰)",
+                    width: 200,
+                    height: 220,
+                    labelDecNb: 0,
+                    labelDelim: "to",
+                }
+            )
 
             .build();
     </script>

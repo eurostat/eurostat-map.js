@@ -12,6 +12,7 @@ export const map = function () {
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
 	out.noDataFillStyle_ = "lightgray";
+	out.legend_ = lgct.legendCategorical(out);
 
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
@@ -31,16 +32,25 @@ export const map = function () {
 	});
 
 	//override of some special getters/setters
-    out.legend = function (v) {
+    out.legend = function (config) {
 		if (!arguments.length) {
 			//create legend if needed
-			if(!out.legend_) out.legend_ = lgct.legendCategorical(out);
+			if(!out.legend_) {
+				out.legend_ = lgct.legendCategorical(out);
+			}
 			return out.legend_;
 		}
+
+		for (let key in config) {
+			out.legend_[key] = config[key];
+		  }
+
 		//setter: link map and legend
-		out.legend_ = v; v.map(out);
+		// out.legend_ = v; 
+		// v.map(out);
 		return out;
 	};
+
 
 
 	//@override

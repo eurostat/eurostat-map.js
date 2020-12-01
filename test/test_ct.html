@@ -22,9 +22,12 @@
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
 
             .showLegend(true)
-            .legend().labelDecNb(0)
-            .legend().height(110)
-            .legend().width(130)
+            .legend({
+                labelDecNb: 0,
+                height: 110,
+                width: 125
+            })
+
 
             .build();
     </script>

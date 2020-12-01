@@ -8,14 +8,14 @@ import * as lg from '../core/legend';
  * @param {*} map 
  */
 export const legendCategorical = function (map) {
-	const out = lg.legend(map);
+	const legendConfig = lg.legend(map);
 
 	//@override
-	out.update = function() {
-		const m = out.map();
+	legendConfig.update = function () {
+		const m = legendConfig.map_;
 		const cla = m.classifier();
 		const claInv = m.classifierInverse();
-        const g = out.g();
+		const g = legendConfig.g_;
 
 		const svgMap = m.svg();
 
@@ -23,28 +23,28 @@ export const legendCategorical = function (map) {
 		g.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
-			.attr("rx", out.boxCornerRad()).attr("ry", out.boxCornerRad())
-			.attr("width", out.width_).attr("height", out.height_)
-			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
+		g.append("rect").attr("id", "legendBR").attr("x", -legendConfig.boxPadding).attr("y", -legendConfig.titleFontSize - legendConfig.boxPadding + 6)
+			.attr("rx", legendConfig.boxCornerRad).attr("ry", legendConfig.boxCornerRad)
+			.attr("width", legendConfig.width).attr("height", legendConfig.height)
+			.style("fill", legendConfig.boxFill).style("opacity", legendConfig.boxOpacity);
 
 		//define legend
 		//see http://d3-legend.susielu.com/#color
 		const d3Legend = legendColor()
-			.title(out.titleText_)
-			.titleWidth(out.titleWidth_)
+			.title(legendConfig.titleText)
+			.titleWidth(legendConfig.titleWidth)
 			.useClass(true)
 			.scale(cla)
-			.ascending(out.ascending_)
-			.shapeWidth(out.shapeWidth_)
-			.shapeHeight(out.shapeHeight_)
-			.shapePadding(out.shapePadding_)
-			.labels( function (d) {
+			.ascending(legendConfig.ascending)
+			.shapeWidth(legendConfig.shapeWidth)
+			.shapeHeight(legendConfig.shapeHeight)
+			.shapePadding(legendConfig.shapePadding)
+			.labels(function (d) {
 				return m.classToText() ? m.classToText()[claInv(d.i)] || claInv(d.i) : claInv(d.i);
 			})
-			.labelDelimiter(out.labelDelim_)
-			.labelOffset(out.labelOffset_)
-			.labelWrap(out.labelWrap_)
+			.labelDelimiter(legendConfig.labelDelim)
+			.labelOffset(legendConfig.labelOffset)
+			.labelWrap(legendConfig.labelWrap)
 			.on("cellover", function (ecl) {
 				ecl = cla(ecl);
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
@@ -72,19 +72,19 @@ export const legendCategorical = function (map) {
 				if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
 				return m.classToFillStyleCT()[claInv(ecl)];
 			});
-		g.select(".legendTitle").style("font-size", out.titleFontSize_);
-		g.selectAll("text.label").style("font-size", out.labelFontSize_);
-		g.style("font-family", out.fontFamily_);
+		g.select(".legendTitle").style("font-size", legendConfig.titleFontSize);
+		g.selectAll("text.label").style("font-size", legendConfig.labelFontSize);
+		g.style("font-family", legendConfig.fontFamily);
 	}
 
 	//@override
-	out.computeWidth = function() {
-		return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
+	legendConfig.computeWidth = function () {
+		return legendConfig.boxPadding * 2 + Math.max(legendConfig.titleWidth, legendConfig.shapeWidth + legendConfig.labelOffset + legendConfig.labelWrap);
 	}
 	//@override
-	out.computeHeight = function() {
-		return out.boxPadding_ * 2 + out.titleFontSize_ + out.shapeHeight_ + (1 + out.shapeHeight_ + out.shapePadding_) * (out.map().clnb() - 1) + 12;
+	legendConfig.computeHeight = function () {
+		return legendConfig.boxPadding * 2 + legendConfig.titleFontSize + legendConfig.shapeHeight + (1 + legendConfig.shapeHeight + legendConfig.shapePadding) * (legendConfig.map_.clnb_ - 1) + 12;
 	}
 
-	return out;
+	return legendConfig;
 }

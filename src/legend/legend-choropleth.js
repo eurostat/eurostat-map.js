@@ -10,47 +10,53 @@ import * as lg from '../core/legend';
  */
 export const legendChoropleth = function (map) {
 
-	const out = lg.legend(map);
+	const legendConfig = lg.legend(map);
 
 	//@override
-	out.update = function() {
-		const m = out.map();
-        const svgMap = m.svg();
-        const g = out.g();
+	legendConfig.update = function () {
+		const m = legendConfig.map_;
+		const svgMap = m.svg();
+		const g = legendConfig.g_;
 
 		//remove previous content
 		g.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
-			.attr("rx", out.boxCornerRad()).attr("ry", out.boxCornerRad())
-			.attr("width", out.width_).attr("height", out.height_)
-			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
+		g.append("rect")
+			.attr("id", "legendBR")
+			.attr("x", -legendConfig.boxPadding)
+			.attr("y", -legendConfig.titleFontSize - legendConfig.boxPadding + 6)
+			.attr("rx", legendConfig.boxCornerRad)
+			.attr("ry", legendConfig.boxCornerRad)
+			.attr("width", legendConfig.width)
+			.attr("height", legendConfig.height)
+			.style("fill", legendConfig.boxFill)
+			.style("opacity", legendConfig.boxOpacity);
 
 		//define legend
 		//see http://d3-legend.susielu.com/#color
 		const d3Legend = legendColor()
-			.title(out.titleText_)
-			.titleWidth(out.titleWidth_)
+			.title(legendConfig.titleText)
+			.titleWidth(legendConfig.titleWidth)
 			.useClass(true)
 			.scale(m.classifier())
-			.ascending(out.ascending_)
-			.shapeWidth(out.shapeWidth_)
-			.shapeHeight(out.shapeHeight_)
-			.shapePadding(out.shapePadding_)
-			.labelFormat(format(".0" + out.labelDecNb_ + "f"))
+			.ascending(legendConfig.ascending)
+			.shapeWidth(legendConfig.shapeWidth)
+			.shapeHeight(legendConfig.shapeHeight)
+			.shapePadding(legendConfig.shapePadding)
+			.labelFormat(format(".0" + legendConfig.labelDecNb + "f"))
 			//.labels(d3.legendHelpers.thresholdLabels)
-			.labels( function (d) {
-					if (d.i === 0)
-						return "< " + d.generatedLabels[d.i].split(d.labelDelimiter)[1];
-					else if (d.i === d.genLength - 1)
-						return ">= " + d.generatedLabels[d.i].split(d.labelDelimiter)[0];
-					else
-						return d.generatedLabels[d.i]
-					})
-			.labelDelimiter(out.labelDelim_)
-			.labelOffset(out.labelOffset_)
-			.labelWrap(out.labelWrap_)
+			.labels(function (d) {
+				if (d.i === 0)
+					return "< " + d.generatedLabels[d.i].split(d.labelDelimiter)[1];
+				else if (d.i === d.genLength - 1)
+					return ">= " + d.generatedLabels[d.i].split(d.labelDelimiter)[0];
+				else
+					return d.generatedLabels[d.i]
+			})
+			.labelDelimiter(legendConfig.labelDelim)
+			.labelOffset(legendConfig.labelOffset)
+			.labelWrap(legendConfig.labelWrap)
 			//.labelAlign("end") //?
 			//.classPrefix("from ")
 			//.orient("vertical")
@@ -83,19 +89,19 @@ export const legendChoropleth = function (map) {
 			//.attr("stroke", "black")
 			//.attr("stroke-width", 0.5)
 			;
-		g.select(".legendTitle").style("font-size", out.titleFontSize_);
-		g.selectAll("text.label").style("font-size", out.labelFontSize_);
-		g.style("font-family", out.fontFamily_);
+		g.select(".legendTitle").style("font-size", legendConfig.titleFontSize);
+		g.selectAll("text.label").style("font-size", legendConfig.labelFontSize);
+		g.style("font-family", legendConfig.fontFamily);
 	}
 
 	//@override
-	out.computeWidth = function() {
-		return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.shapeWidth_ + out.labelOffset_ + out.labelWrap_);
+	legendConfig.computeWidth = function () {
+		return legendConfig.boxPadding * 2 + Math.max(legendConfig.titleWidth, legendConfig.shapeWidth + legendConfig.labelOffset + legendConfig.labelWrap);
 	}
 	//@override
-	out.computeHeight = function() {
-		return out.boxPadding_ * 2 + out.titleFontSize_ + (out.shapeHeight_ + out.shapePadding_ + 8) * (out.map().clnb());
+	legendConfig.computeHeight = function () {
+		return legendConfig.boxPadding * 2 + legendConfig.titleFontSize + (legendConfig.shapeHeight + legendConfig.shapePadding + 8) * (legendConfig.map_.clnb_);
 	}
 
-	return out;
+	return legendConfig;
 }

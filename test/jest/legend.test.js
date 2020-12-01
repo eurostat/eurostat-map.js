@@ -9,7 +9,7 @@ const path = require("path")
 test('separated legend', async () => {
     let browser = await puppeteer.launch({
         headless: true,
-     //sloMo: 80,
+        //sloMo: 80,
         args: ["--window-size=1000,1000"]
     })
 
@@ -29,16 +29,16 @@ test('separated legend', async () => {
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .build()
-        ;
+            .build();
 
-        const lg = map.legend();
-        lg.gId("legend");
-        lg.titleText("Population density (people/km²)");
-        lg.labelDecNb(0);
-        lg.height(210);
-        lg.width(190);
-        lg.build();
+        const lg = map.legend({
+            gId: "legend",
+            titleText: "Population density (people/km²)",
+            labelDecNb: 0,
+            height: 210,
+            width: 190
+        }).build();
+
     });
 
     // we're done; close the browser

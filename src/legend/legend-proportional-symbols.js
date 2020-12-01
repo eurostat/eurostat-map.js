@@ -8,48 +8,48 @@ import * as lg from '../core/legend';
  * @param {*} map 
  */
 export const legendProportionalSymbols = function (map) {
-	const out = lg.legend(map);
+	const legendConfig = lg.legend(map);
 
 	//attributes
-	out.cellNb_ = 4;
-	out.cellNb = function (v) { if (!arguments.length) return out["cellNb_"]; out["cellNb_"] = v; return out.map(); }
+	legendConfig.cellNb_ = 4;
+	legendConfig.cellNb = function (v) { if (!arguments.length) return legendConfig["cellNb_"]; legendConfig["cellNb_"] = v; return legendConfig.map(); }
 
 
 
 	//@override
-	out.update = function() {
-		const m = out.map();
+	legendConfig.update = function () {
+		const m = legendConfig.map_;
 		//const svgMap = m.svg();
-        const g = out.g();
+		const g = legendConfig.g_;
 
 		//remove previous content
 		g.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding_).attr("y", -out.titleFontSize_ - out.boxPadding_ + 6)
-			.attr("rx", out.boxCornerRad()).attr("ry", out.boxCornerRad())
-			.attr("width", out.width_).attr("height", out.height_)
-			.style("fill", out.boxFill_).style("opacity", out.boxOpacity_);
+		g.append("rect").attr("id", "legendBR").attr("x", -legendConfig.boxPadding).attr("y", -legendConfig.titleFontSize - legendConfig.boxPadding + 6)
+			.attr("rx", legendConfig.boxCornerRad).attr("ry", legendConfig.boxCornerRad)
+			.attr("width", legendConfig.width).attr("height", legendConfig.height)
+			.style("fill", legendConfig.boxFill).style("opacity", legendConfig.boxOpacity);
 
 		//TODO better choose circle sizes. Rounded values.
 		//define legend
 		//see http://d3-legend.susielu.com/#size
 		const d3Legend = legendSize()
-			.title(out.titleText_)
-			.titleWidth(out.titleWidth_)
+			.title(legendConfig.titleText)
+			.titleWidth(legendConfig.titleWidth)
 			.scale(m.classifier())
-			.cells(out.cellNb_ + 1)
+			.cells(legendConfig.cellNb + 1)
 			.cellFilter(function (d) { if (!d.data) return false; return true; })
 			.orient("vertical")
-			.ascending(out.ascending_)
+			.ascending(legendConfig.ascending)
 			.shape("circle") //"rect", "circle", or "line"
-			.shapePadding(out.shapePadding_)
+			.shapePadding(legendConfig.shapePadding)
 			//.classPrefix("prefix")
 			.labels(function (d) { return d.generatedLabels[d.i] })
 			//.labelAlign("middle") //?
-			.labelFormat(format("." + out.labelDecNb_ + "f"))
-			.labelOffset(out.labelOffset_)
-			.labelWrap(out.labelWrap_)
+			.labelFormat(format("." + legendConfig.labelDecNb + "f"))
+			.labelOffset(legendConfig.labelOffset)
+			.labelWrap(legendConfig.labelWrap)
 			;
 
 		//make legend
@@ -62,19 +62,19 @@ export const legendProportionalSymbols = function (map) {
 			.style("stroke", m.psStroke())
 			.style("stroke-width", m.psStrokeWidth());
 
-		g.select(".legendTitle").style("font-size", out.titleFontSize_);
-		g.selectAll("text.label").style("font-size", out.labelFontSize_);
-		g.style("font-family", out.fontFamily_);
+		g.select(".legendTitle").style("font-size", legendConfig.titleFontSize);
+		g.selectAll("text.label").style("font-size", legendConfig.labelFontSize);
+		g.style("font-family", legendConfig.fontFamily);
 	}
 
 	//@override
-	out.computeWidth = function() {
-		return out.boxPadding_ * 2 + Math.max(out.titleWidth_, out.psMaxSize_ + out.labelOffset_ + out.labelWrap_);
+	legendConfig.computeWidth = function () {
+		return legendConfig.boxPadding * 2 + Math.max(legendConfig.titleWidth, legendConfig.map_.psMaxSize_ + legendConfig.labelOffset + legendConfig.labelWrap);
 	}
 	//@override
-	out.computeHeight = function() {
-		return out.boxPadding_ * 2 + out.titleFontSize_ + (m.psMaxSize() * 0.7 + out.shapePadding_) * (out.cellNb_) + 35;
+	legendConfig.computeHeight = function () {
+		return legendConfig.boxPadding * 2 + legendConfig.titleFontSize + (legendConfig.map_.psMaxSize_ * 0.7 + legendConfig.shapePadding) * (legendConfig.cellNb) + 35;
 	}
 
-	return out;
+	return legendConfig;
 }
