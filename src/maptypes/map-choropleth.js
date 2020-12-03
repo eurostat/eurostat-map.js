@@ -9,7 +9,7 @@ import * as lgch from '../legend/legend-choropleth';
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.mapTemplate();
+	const out = mt.statMapTemplate();
 
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];

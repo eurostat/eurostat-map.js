@@ -7,7 +7,7 @@ import * as lgct from '../legend/legend-categorical';
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.mapTemplate();
+	const out = mt.statMapTemplate();
 
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;

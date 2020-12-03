@@ -14,7 +14,7 @@ import * as tp from '../lib/eurostat-tooltip';
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const mapTemplate = function (withCenterPoints) {
+export const statMapTemplate = function (withCenterPoints) {
 	//TODO decompose it: extract map template, extract statData. Enable several statData (as dict).
 
 	const out = {};

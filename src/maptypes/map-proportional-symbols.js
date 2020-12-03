@@ -6,7 +6,7 @@ import * as lgps from '../legend/legend-proportional-symbols';
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.mapTemplate(true);
+	const out = mt.statMapTemplate(true);
 
 	//out.psShape_ = CIRCLE; //TODO specify other shapes than simply circles
 	out.psMaxSize_ = 30;
