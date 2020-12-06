@@ -592,10 +592,10 @@ export const statMapTemplate = function (withCenterPoints) {
 
 
 /**
- * Default positions and width (in projection unit) for territories and projections.
+ * Default geocenter positions and width (in projection unit) for territories and projections.
  */
 const _defaultPosition = {
-	//"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
+	"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
 	//TODO add others
 }
 
