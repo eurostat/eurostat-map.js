@@ -586,6 +586,19 @@ export const statMapTemplate = function (withCenterPoints) {
 		return out;
 	};
 
+
+	out.exportMapToSVG = function () {
+		var svgData = out.svg_.node().outerHTML;
+		var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+		var svgUrl = URL.createObjectURL(svgBlob);
+		var downloadLink = document.createElement("a");
+		downloadLink.href = svgUrl;
+		downloadLink.download = "eurostatmap.svg";
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		document.body.removeChild(downloadLink);
+	}
+
 	return out;
 }
 
@@ -596,7 +609,7 @@ export const statMapTemplate = function (withCenterPoints) {
  * Default geocenter positions and width (in projection unit) for territories and projections.
  */
 const _defaultPosition = {
-	"EUR_3035":{ geoCenter:[4970000,3350000], widthGeo:5200000 },
+	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
 	//TODO add others
 }
 

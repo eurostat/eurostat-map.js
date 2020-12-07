@@ -10,7 +10,7 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap
+        let myMap = eurostatmap
             .map("ch")
             .title("Population in Europe")
             //.NUTSyear(2021)
@@ -39,6 +39,10 @@
             )
 
             .build();
+
+        setTimeout(() => {
+            myMap.exportMapToSVG();
+        }, 6000)
     </script>
 </body>
 

@@ -21,10 +21,9 @@
     "build/eurostatmap.min.js"
   ],
   "scripts": {
-    "start": "webpack-dev-server --open --watch",
-    "build-dev": "webpack --config webpack.config.dev.js",
+    "start": "webpack --config webpack.config.dev.js",
+    "server": "webpack-dev-server --open --watch",
     "build-prod": "webpack --config webpack.config.prod.js",
-    "server": "webpack-dev-server --open",
     "test": "jest"
   },
   "dependencies": {
