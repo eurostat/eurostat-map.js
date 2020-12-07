@@ -9,7 +9,7 @@ const path = require("path")
 test('choropleth with threshold scale', async () => {
     let browser = await puppeteer.launch({
         headless: true,
-     //sloMo: 80,
+        //sloMo: 80,
         args: ["--window-size=1000,1000"]
     })
 
@@ -21,7 +21,7 @@ test('choropleth with threshold scale', async () => {
     await page.evaluate(_ => {
         // these will be executed within test.html, that was loaded before
         //builds test map in test.html
-            eurostatmap
+        eurostatmap
             .map("ch")
             .svgId("testMap")
             .svgId("mapCH")
@@ -33,8 +33,15 @@ test('choropleth with threshold scale', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .showLegend(true)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
+            .legend(
+                {
+                    titleText: "Population density test",
+                    width: 200,
+                    height: 220,
+                    labelDecNb: 0,
+                    labelDelim: "to",
+                }
+            )
             .build();
     });
 

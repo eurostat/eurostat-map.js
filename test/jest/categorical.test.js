@@ -9,7 +9,7 @@ const path = require("path")
 test('urban/rural categorical map with csvDataSource', async () => {
     let browser = await puppeteer.launch({
         headless: true,
-     //sloMo: 80,
+        //sloMo: 80,
         args: ["--window-size=1000,1000"]
     })
 
@@ -22,20 +22,22 @@ test('urban/rural categorical map with csvDataSource', async () => {
         // these will be executed within test.html, that was loaded before.
         //builds map in test.html
         eurostatmap
-        .map("ct")
-        .svgId("testMap")
-        .title("NUTS urban/rural typology")
-        .scale("60M")
-        .NUTSyear(2013)
-        .nutsLvl(3)
-        .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
-        .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
-        .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-        .showLegend(true)
-        .legend().labelDecNb(0)
-        .legend().height(110)
-        .legend().width(130)
-        .build();
+            .map("ct")
+            .svgId("testMap")
+            .title("NUTS urban/rural typology")
+            .scale("60M")
+            .NUTSyear(2013)
+            .nutsLvl(3)
+            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
+            .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
+            .showLegend(true)
+            .legend({
+                labelDecNb: 0,
+                height: 110,
+                width: 125
+            })
+            .build();
     });
 
     // we're done; close the browser

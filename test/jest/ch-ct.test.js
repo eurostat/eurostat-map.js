@@ -9,7 +9,7 @@ const path = require("path")
 test('choropleth and categorical maps', async () => {
     let browser = await puppeteer.launch({
         headless: true,
-     //sloMo: 80,
+        //sloMo: 80,
         args: ["--window-size=1000,1000"]
     })
 
@@ -32,8 +32,12 @@ test('choropleth and categorical maps', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .showLegend(true)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
+            .legend(
+                {
+                    titleText: "test",
+                    labelDecNb: 0,
+                }
+            )
             .build();
 
         eurostatmap
@@ -48,9 +52,12 @@ test('choropleth and categorical maps', async () => {
             .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
             .showLegend(true)
-            .legend().labelDecNb(0)
-            .legend().height(110)
-            .legend().width(130)
+            .legend(
+                {
+                    titleText: "test",
+                    labelDecNb: 0,
+                }
+            )
             .build();
     });
 

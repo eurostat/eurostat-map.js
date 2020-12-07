@@ -9,7 +9,7 @@ const path = require("path")
 test('proportional symbol map', async () => {
     let browser = await puppeteer.launch({
         headless: true,
-     //sloMo: 80,
+        //sloMo: 80,
         args: ["--window-size=1000,1000"]
     })
 
@@ -22,20 +22,22 @@ test('proportional symbol map', async () => {
         // these will be executed within test.html, that was loaded before
         //builds test map in test.html
         eurostatmap.map("ps")
-        .svgId("testMap1")
-        .datasetCode("demo_r_pjangrp3")
-        .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
-        .psMaxSize(25)
-        .psStrokeWidth(0.3)
-        .unitText("inhabitants")
-        .tooltipShowFlags("long")
-        .showLegend(true)
-        .legend().titleText("Population")
-        .legend().cellNb(6)
-        .legend().labelDecNb(0)
-        .legend().height(200)
-        .legend().width(140)
-        .build();
+            .svgId("testMap1")
+            .datasetCode("demo_r_pjangrp3")
+            .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
+            .psMaxSize(25)
+            .psStrokeWidth(0.3)
+            .unitText("inhabitants")
+            .tooltipShowFlags("long")
+            .showLegend(true)
+            .legend({
+                titleText: "Population",
+                cellNb: 6,
+                labelDecNb: 0,
+                height: 200,
+                width: 140
+            })
+            .build();
     });
 
     // we're done; close the browser
