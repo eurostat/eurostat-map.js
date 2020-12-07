@@ -1,5 +1,7 @@
 ## Testing with Jest
 
+The following tests are what Travis will run, in order to have the build:passing badge on the root readme.md page.
+
 - All .test.js files are executed by the command `npm test` using the template "test.html"
 - Each test is run in a separate, headless version of chrome.
 - New tests should have their own .test.js file, pointing to test.html.
