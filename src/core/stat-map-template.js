@@ -195,6 +195,7 @@ export const statMapTemplate = function (withCenterPoints) {
 			lg.build();
 
 			//set position
+			//TODO this need to be changed when abandonning d3-legend dependancy
 			const dx = out.width() - lg.width;
 			const dy = lg.boxPadding + lg.titleFontSize;
 			lgg.attr("transform", "translate(" + dx + "," + dy + ")");

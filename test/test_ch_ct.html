@@ -23,9 +23,12 @@
             .tooltipShowFlags(false)
 
             .showLegend(true)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
-
+            .legend(
+                {
+                    titleText: "Population density (people/km²)",
+                    labelDecNb: 0,
+                }
+            )
             .build();
 
         eurostatmap
@@ -41,10 +44,13 @@
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
 
             .showLegend(true)
-            .legend().labelDecNb(0)
-            .legend().height(110)
-            .legend().width(130)
-
+            .legend(
+                {
+                    height: 110,
+                    width: 130,
+                    labelDecNb: 0,
+                }
+            )
             .build();
     </script>
 </body>
