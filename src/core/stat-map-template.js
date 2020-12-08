@@ -587,9 +587,13 @@ export const statMapTemplate = function (withCenterPoints) {
 	};
 
 
+	/**
+	 * @function exportMapToSVG
+	 * @description Exports the current map with styling to SVG and downloads it
+	 * 
+	 */
 	out.exportMapToSVG = function () {
-		var svgData = out.svg_.node().outerHTML;
-		var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+		let svgBlob = serialize(out.svg_.node());
 		var svgUrl = URL.createObjectURL(svgBlob);
 		var downloadLink = document.createElement("a");
 		downloadLink.href = svgUrl;
@@ -599,9 +603,68 @@ export const statMapTemplate = function (withCenterPoints) {
 		document.body.removeChild(downloadLink);
 	}
 
+	/**
+	 * @function exportMapToPNG
+	 * @description Exports the current map with styling to PNG and downloads it
+	 * 
+	 */
+	out.exportMapToPNG = function () {
+		let canvasPromise = rasterize(out.svg_.node());
+		canvasPromise.then((canvasBlob) => {
+			var canvasUrl = URL.createObjectURL(canvasBlob);
+			var downloadLink = document.createElement("a");
+			downloadLink.href = canvasUrl;
+			downloadLink.download = "eurostatmap.png";
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+		})
+	}
 	return out;
 }
 
+// adapted from https://observablehq.com/@mbostock/saving-svg
+// turns svg into blob
+function serialize(svg) {
+	const xmlns = "http://www.w3.org/2000/xmlns/";
+	const xlinkns = "http://www.w3.org/1999/xlink";
+	const svgns = "http://www.w3.org/2000/svg";
+	svg = svg.cloneNode(true);
+	const fragment = window.location.href + "#";
+	const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT, null, false);
+	while (walker.nextNode()) {
+		for (const attr of walker.currentNode.attributes) {
+			if (attr.value.includes(fragment)) {
+				attr.value = attr.value.replace(fragment, "#");
+			}
+		}
+	}
+	svg.setAttributeNS(xmlns, "xmlns", svgns);
+	svg.setAttributeNS(xmlns, "xmlns:xlink", xlinkns);
+	const serializer = new window.XMLSerializer;
+	const string = serializer.serializeToString(svg);
+	return new Blob([string], { type: "image/svg+xml" });
+};
+
+// adapted from https://observablehq.com/@mbostock/saving-sv
+//svg to canvas blob promise
+function rasterize(svg) {
+	let resolve, reject;
+	const promise = new Promise((y, n) => (resolve = y, reject = n));
+	const image = new Image;
+	image.onerror = reject;
+	image.onload = () => {
+		const rect = svg.getBoundingClientRect();
+		const canvas = document.createElement('canvas');
+		canvas.width = rect.width;
+		canvas.height = rect.height;
+		const context = canvas.getContext('2d');
+		context.drawImage(image, 0, 0, rect.width, rect.height);
+		context.canvas.toBlob(resolve);
+	};
+	image.src = URL.createObjectURL(serialize(svg));
+	return promise;
+}
 
 
 
