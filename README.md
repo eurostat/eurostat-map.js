@@ -29,7 +29,11 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 
 The library is built as a UMD module so it can be imported:
 - In Node.js, with ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
+<<<<<<< HEAD
 - In a HTML page, with ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). This will use the latest version. To rely on a specific version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z/build/eurostatmap.min.js"></script>`` instead, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
+=======
+- In a HTML page, with ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). This will use the latest version. To rely on a fixed specific version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>`` instead, where *X.Y.Z* is a version number among [those ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
+>>>>>>> 20f4d33336feec38fb083e434965a145e31923fe
 
 ### Map creation
 
@@ -252,7 +256,7 @@ Maps based on [NUTS regions](http://ec.europa.eu/eurostat/web/nuts/overview) rel
 | | |
 |-|-|
 | *contributors* | [<img src="https://github.com/jgaffuri.png" height="40" />](https://github.com/jgaffuri) [<img src="https://github.com/JoeWDavies.png" height="40" />](https://github.com/JoeWDavies) |
-| *version* | 2 |
+| *version* | 2 (see [npm](https://www.npmjs.com/package/eurostat-map?activeTab=versions)) |
 | *status* | Since 2018 |
 | *license* | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE) |
 
