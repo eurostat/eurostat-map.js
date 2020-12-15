@@ -7,7 +7,7 @@ import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL, flags } from '../lib/eurostat-base';
 import { getBBOXAsGeoJSON, csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
-
+import { symbol } from 'd3-shape';
 
 /**
  * Build an empty map template.
@@ -99,6 +99,10 @@ export const statMapTemplate = function (withCenterPoints) {
 	out.lg_ = "en";
 	out.transitionDuration_ = 800;
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+
+	//proportional symbol shape configuration
+	out.psShape_ = "circle"; //had to be specified here because geometries are built in this file
+
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
@@ -386,23 +390,45 @@ export const statMapTemplate = function (withCenterPoints) {
 		if (withCenterPoints) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
-			gcp.selectAll("circle")
-				.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
-				.enter() //.filter(function (d) { return d.properties.val; })
-				.append("circle")
-				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-				.attr("r", 1)
-				.attr("class", "symbol")
-				.style("fill", "gray")
-				.on("mouseover", function (rg) {
-					select(this).style("fill", out.nutsrgSelFillSty_);
-					if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
-				}).on("mousemove", function () {
-					if (tooltip) tooltip.mousemove();
-				}).on("mouseout", function () {
-					select(this).style("fill", out.psFill_);
-					if (tooltip) tooltip.mouseout();
-				});
+			//allow for different symbols
+			if (out.psShape_ == "circle") {
+				gcp.selectAll("circle")
+					.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+					.enter() //.filter(function (d) { return d.properties.val; })
+					.append("circle")
+					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+					.attr("r", 1)
+					.attr("class", "symbol")
+					.style("fill", "gray")
+					.on("mouseover", function (rg) {
+						select(this).style("fill", out.nutsrgSelFillSty_);
+						if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+					}).on("mousemove", function () {
+						if (tooltip) tooltip.mousemove();
+					}).on("mouseout", function () {
+						select(this).style("fill", out.psFill_);
+						if (tooltip) tooltip.mouseout();
+					});
+			} else if (out.psShape_ == "rect") {
+				gcp.selectAll("rect")
+					.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+					.enter() //.filter(function (d) { return d.properties.val; })
+					.append("rect")
+					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+					.attr("width", 10)
+					.attr("height", 1)
+					.attr("class", "symbol")
+					.style("fill", "gray")
+					.on("mouseover", function (rg) {
+						select(this).style("fill", out.nutsrgSelFillSty_);
+						if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+					}).on("mousemove", function () {
+						if (tooltip) tooltip.mousemove();
+					}).on("mouseout", function () {
+						select(this).style("fill", out.psFill_);
+						if (tooltip) tooltip.mouseout();
+					});
+			}
 		}
 
 		//title

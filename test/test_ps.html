@@ -16,10 +16,11 @@
 
         eurostatmap.map("ps")
             //.width(900)
+            .nutsLvl(1)
             .datasetCode("demo_r_pjangrp3")
             .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
-
-            .psMaxSize(25)
+            .psShape("rect") //https://github.com/d3/d3-shape#symbols
+            .psMaxRadius(25)
             //.psStrokeWidth(3)
             //.psStroke("red")
 
