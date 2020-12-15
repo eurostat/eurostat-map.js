@@ -14,7 +14,9 @@ export const legendProportionalSymbols = function (map) {
 	legendConfig.cellNb_ = 4;
 	legendConfig.cellNb = function (v) { if (!arguments.length) return legendConfig["cellNb_"]; legendConfig["cellNb_"] = v; return legendConfig.map(); }
 
-
+	// user-define d3 format function
+	legendConfig.format_ = null
+	legendConfig.format = function (v) { if (!arguments.length) return legendConfig["format_"]; legendConfig["format_"] = v; return legendConfig.map(); }
 
 	//@override
 	legendConfig.update = function () {
@@ -34,6 +36,7 @@ export const legendProportionalSymbols = function (map) {
 		//TODO better choose circle sizes. Rounded values.
 		//define legend
 		//see http://d3-legend.susielu.com/#size
+
 		const d3Legend = legendSize()
 			.title(legendConfig.titleText)
 			.titleWidth(legendConfig.titleWidth)
@@ -47,7 +50,7 @@ export const legendProportionalSymbols = function (map) {
 			//.classPrefix("prefix")
 			.labels(function (d) { return d.generatedLabels[d.i] })
 			//.labelAlign("middle") //?
-			.labelFormat(format("." + legendConfig.labelDecNb + "f"))
+			.labelFormat(legendConfig.format || format("." + legendConfig.labelDecNb + "f"))
 			.labelOffset(legendConfig.labelOffset)
 			.labelWrap(legendConfig.labelWrap)
 			;

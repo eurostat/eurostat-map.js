@@ -9,7 +9,11 @@
 <body>
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
+    <script src="https://d3js.org/d3-format.v2.min.js"></script>
+
     <script>
+        let format = d3.format(".2s");
+
         eurostatmap.map("ps")
             //.width(900)
             .datasetCode("demo_r_pjangrp3")
@@ -23,11 +27,12 @@
 
             .showLegend(true)
             .legend({
-                titleText:"Population",
-                cellNb:6,
-                labelDecNb:0,
-                height:200,
-                width:140
+                titleText: "Population",
+                cellNb: 6,
+                labelDecNb: 0,
+                height: 200,
+                width: 140,
+                format: format
             })
             .build();
     </script>
