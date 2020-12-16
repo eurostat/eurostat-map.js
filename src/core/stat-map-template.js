@@ -390,46 +390,26 @@ export const statMapTemplate = function (withCenterPoints) {
 		if (withCenterPoints) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
-			//allow for different symbols
-			if (out.psShape_ == "circle") {
-				gcp.selectAll("circle")
-					.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
-					.enter() //.filter(function (d) { return d.properties.val; })
-					.append("circle")
-					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-					.attr("r", 1)
-					.attr("class", "symbol")
-					.style("fill", "gray")
-					.on("mouseover", function (rg) {
-						select(this).style("fill", out.nutsrgSelFillSty_);
-						if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
-					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
-					}).on("mouseout", function () {
-						select(this).style("fill", out.psFill_);
-						if (tooltip) tooltip.mouseout();
-					});
-			} else if (out.psShape_ == "rect") {
-				gcp.selectAll("rect")
-					.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
-					.enter() //.filter(function (d) { return d.properties.val; })
-					.append("rect")
-					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-					.attr("width", 10)
-					.attr("height", 1)
-					.attr("class", "symbol")
-					.style("fill", "gray")
-					.on("mouseover", function (rg) {
-						select(this).style("fill", out.nutsrgSelFillSty_);
-						if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
-					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
-					}).on("mouseout", function () {
-						select(this).style("fill", out.psFill_);
-						if (tooltip) tooltip.mouseout();
-					});
-			}
+			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+			gcp.selectAll("g")
+				.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
+				.enter() //.filter(function (d) { return d.properties.val; })
+				.append("g")
+				.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+				//.attr("r", 1)
+				.attr("class", "symbol")
+				.style("fill", "gray")
+				.on("mouseover", function (rg) {
+					select(this).style("fill", out.nutsrgSelFillSty_);
+					if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+				}).on("mousemove", function () {
+					if (tooltip) tooltip.mousemove();
+				}).on("mouseout", function () {
+					select(this).style("fill", out.psFill_);
+					if (tooltip) tooltip.mouseout();
+				});
 		}
+
 
 		//title
 		if (out.title()) {

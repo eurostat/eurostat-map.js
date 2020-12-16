@@ -11,7 +11,7 @@ export const map = function () {
 
 	out.psMaxRadius_ = 30;
 	out.psMinRadius_ = 0.8; //for circle
-	out.psMinWidth_ = 5; //for rect, etc
+	out.psWidth_ = 5; //for rect, etc
 	out.psMinHeight_ = 5;
 	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
@@ -78,8 +78,8 @@ export const map = function () {
 
 		//set circle radius depending on stat value
 		if (out.psShape_ == "circle") {
-			out.svg().select("#g_ps").selectAll("circle.symbol")
-
+			out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("circle")
 				//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
 				.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
@@ -94,11 +94,14 @@ export const map = function () {
 				})
 		} else if (out.psShape_ == "rect") {
 			let statVal;
-			out.svg().select("#g_ps").selectAll("rect.symbol")
-				.style("fill", out.psFill())
+			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("rect");
+
+			rect.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
+				.attr("width", out.psWidth_)
 				.attr("height", function (rg) {
 					const sv = out.getStat(rg.properties.id);
 					if (!sv || !sv.value) {
@@ -111,10 +114,12 @@ export const map = function () {
 				})
 				.attr('transform', function () {
 					let bRect = this.getBoundingClientRect();
-					return `translate(${bRect.x - (this.getAttribute('width'))}` +
-						`, ${bRect.y - (this.getAttribute('height'))})`;
+					//console.log(bRect)
+					return `translate(${-this.getAttribute('width') / 2}` +
+						`, -${this.getAttribute('height')})`;
 				})
 				.transition().duration(out.transitionDuration())
+		} else {
 
 		}
 
