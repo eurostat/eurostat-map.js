@@ -12,8 +12,8 @@ export const map = function () {
 	out.psMaxRadius_ = 30;
 	out.psMinRadius_ = 0.8; //for circle
 	out.psMinWidth_ = 5; //for rect, etc
-	out.psMinHeight_ = 10;
-	out.psMaxHeight_ = 100;
+	out.psMinHeight_ = 5;
+	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04";
 	out.psFillOpacity_ = 0.7;
@@ -93,18 +93,29 @@ export const map = function () {
 					return out.classifier()(+sv.value);
 				})
 		} else if (out.psShape_ == "rect") {
+			let statVal;
 			out.svg().select("#g_ps").selectAll("rect.symbol")
 				.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
-
-				.transition().duration(out.transitionDuration())
 				.attr("height", function (rg) {
 					const sv = out.getStat(rg.properties.id);
-					if (!sv || !sv.value) return 0;
-					return out.classifier()(+sv.value);
+					if (!sv || !sv.value) {
+						statVal = 0;
+						return 0;
+					}
+					let v = out.classifier()(+sv.value);
+					statVal = v;
+					return v;
 				})
+				.attr('transform', function () {
+					let bRect = this.getBoundingClientRect();
+					return `translate(${bRect.x - (this.getAttribute('width'))}` +
+						`, ${bRect.y - (this.getAttribute('height'))})`;
+				})
+				.transition().duration(out.transitionDuration())
+
 		}
 
 		return out;
