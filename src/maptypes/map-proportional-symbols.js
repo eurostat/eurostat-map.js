@@ -10,8 +10,8 @@ export const map = function () {
 	const out = mt.statMapTemplate(true);
 
 	out.psShape_ = "circle"; // accepted values: circle, rect, square, star, diamond, wye, cross
-	out.psMaxRadius_ = 30;
-	out.psMinRadius_ = 0.8; //for circle
+	out.psMaxSize_ = 30;
+	out.psMinSize_ = 0.8; //for circle
 	out.psWidth_ = 5; //for rect
 	out.psMinHeight_ = 5;
 	out.psMaxHeight_ = 150;
@@ -32,7 +32,7 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxRadius_", "psMinRadius_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_"]
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
@@ -59,7 +59,7 @@ export const map = function () {
 		if (out.psShape_ == "rect") {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
 		} else {
-			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinRadius_ * 0.5, out.psMaxRadius_ * 0.5]));
+			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]));
 		}
 		return out;
 	};
@@ -70,7 +70,7 @@ export const map = function () {
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
-		//set circle radius depending on stat value
+		//set circle Size depending on stat value
 		if (out.psShape_ == "circle") {
 			out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("circle")
