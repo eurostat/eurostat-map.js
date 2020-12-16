@@ -1,7 +1,7 @@
 import { scaleSqrt } from "d3-scale";
 import * as mt from '../core/stat-map-template';
 import * as lgps from '../legend/legend-proportional-symbols';
-
+import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
 export const map = function () {
 
@@ -9,9 +9,10 @@ export const map = function () {
 	//create map object to return, using the template
 	const out = mt.statMapTemplate(true);
 
+	out.psShape_ = "circle"; // accepted values: circle, rect, square, star, diamond, wye, cross
 	out.psMaxRadius_ = 30;
 	out.psMinRadius_ = 0.8; //for circle
-	out.psWidth_ = 5; //for rect, etc
+	out.psWidth_ = 5; //for rect
 	out.psMinHeight_ = 5;
 	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
@@ -59,7 +60,6 @@ export const map = function () {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
 		} else {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinRadius_ * 0.5, out.psMaxRadius_ * 0.5]));
-
 		}
 		return out;
 	};
@@ -69,12 +69,6 @@ export const map = function () {
 	//@override
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
-
-
-		console.log(out.psStrokeWidth_)
-		console.log(out.psStrokeWidth())
-
-		//let square = d3.symbol().type(d3.symbolSquare).size(x);
 
 		//set circle radius depending on stat value
 		if (out.psShape_ == "circle") {
@@ -93,7 +87,6 @@ export const map = function () {
 					return out.classifier()(+sv.value);
 				})
 		} else if (out.psShape_ == "rect") {
-			let statVal;
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
 
@@ -105,11 +98,9 @@ export const map = function () {
 				.attr("height", function (rg) {
 					const sv = out.getStat(rg.properties.id);
 					if (!sv || !sv.value) {
-						statVal = 0;
 						return 0;
 					}
 					let v = out.classifier()(+sv.value);
-					statVal = v;
 					return v;
 				})
 				.attr('transform', function () {
@@ -120,7 +111,45 @@ export const map = function () {
 				})
 				.transition().duration(out.transitionDuration())
 		} else {
+			// d3.symbol symbols
+			// circle, cross, star, triangle, diamond, square, wye
 
+			let path = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("path");
+
+			let symbolType;
+			if (out.psShape_ == "cross") {
+				symbolType = symbolCross;
+			} else if (out.psShape_ == "square") {
+				symbolType = symbolSquare;
+			} else if (out.psShape_ == "diamond") {
+				symbolType = symbolDiamond;
+			} else if (out.psShape_ == "triangle") {
+				symbolType = symbolTriangle;
+			} else if (out.psShape_ == "star") {
+				symbolType = symbolStar;
+			} else if (out.psShape_ == "wye") {
+				symbolType = symbolWye;
+			} else {
+				symbolType = symbolCircle;
+			}
+
+
+			path.attr("d", rg => {
+				const sv = out.getStat(rg.properties.id);
+				let size;
+				if (!sv || !sv.value) {
+					size = 0;
+				} else {
+					size = out.classifier()(+sv.value);
+				}
+
+				return symbol().type(symbolType).size(size * size)()
+			})
+				.style("fill", out.psFill())
+				.style("fill-opacity", out.psFillOpacity())
+				.style("stroke", out.psStroke())
+				.style("stroke-width", out.psStrokeWidth())
 		}
 
 		return out;

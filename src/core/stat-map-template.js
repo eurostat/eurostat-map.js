@@ -7,7 +7,7 @@ import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL, flags } from '../lib/eurostat-base';
 import { getBBOXAsGeoJSON, csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
-import { symbol } from 'd3-shape';
+
 
 /**
  * Build an empty map template.
@@ -99,9 +99,6 @@ export const statMapTemplate = function (withCenterPoints) {
 	out.lg_ = "en";
 	out.transitionDuration_ = 800;
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
-
-	//proportional symbol shape configuration
-	out.psShape_ = "circle"; //had to be specified here because geometries are built in this file
 
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
