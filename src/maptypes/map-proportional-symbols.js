@@ -5,7 +5,6 @@ import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTri
 
 export const map = function () {
 
-
 	//create map object to return, using the template
 	const out = mt.statMapTemplate(true);
 
@@ -118,26 +117,6 @@ export const map = function () {
 			let path = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("path");
 
-			let symbolType;
-			if (out.psShape_ == "cross") {
-				symbolType = symbolCross;
-			} else if (out.psShape_ == "square") {
-				symbolType = symbolSquare;
-			} else if (out.psShape_ == "diamond") {
-				symbolType = symbolDiamond;
-			} else if (out.psShape_ == "triangle") {
-				symbolType = symbolTriangle;
-			} else if (out.psShape_ == "star") {
-				symbolType = symbolStar;
-			} else if (out.psShape_ == "wye") {
-				symbolType = symbolWye;
-			} else if (out.psShape_ == "custom") {
-				symbolType = symbolWye;
-			} else {
-				symbolType = symbolCircle;
-			}
-
-
 			path.attr("d", rg => {
 				const sv = out.getStat(rg.properties.id);
 				let size;
@@ -149,6 +128,7 @@ export const map = function () {
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()
 				} else {
+					let symbolType = getSymbolType(out.psShape_)
 					return symbol().type(symbolType).size(size * size)()
 				}
 
@@ -162,6 +142,32 @@ export const map = function () {
 		return out;
 	};
 
-
 	return out;
+}
+
+
+/**
+* @function getSymbolType
+* @description returns a d3 symbol from a shape name
+* @param {String} psShape
+*/
+export const getSymbolType = function (psShape) {
+
+	let symbolType;
+	if (psShape == "cross") {
+		symbolType = symbolCross;
+	} else if (psShape == "square") {
+		symbolType = symbolSquare;
+	} else if (psShape == "diamond") {
+		symbolType = symbolDiamond;
+	} else if (psShape == "triangle") {
+		symbolType = symbolTriangle;
+	} else if (psShape == "star") {
+		symbolType = symbolStar;
+	} else if (psShape == "wye") {
+		symbolType = symbolWye;
+	} else {
+		symbolType = symbolCircle;
+	}
+	return symbolType;
 }

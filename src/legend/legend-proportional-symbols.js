@@ -1,6 +1,9 @@
-import { legendSize } from "d3-svg-legend";
+import { legendSize, legendSymbol } from "d3-svg-legend";
 import { format } from "d3-format";
+import { scaleOrdinal } from "d3-scale";
 import * as lg from '../core/legend';
+import { getSymbolType } from "../maptypes/map-proportional-symbols";
+import { symbol } from 'd3-shape';
 
 /**
  * A legend for proportional symbol map
@@ -37,23 +40,81 @@ export const legendProportionalSymbols = function (map) {
 		//define legend
 		//see http://d3-legend.susielu.com/#size
 
-		const d3Legend = legendSize()
-			.title(legendConfig.titleText)
-			.titleWidth(legendConfig.titleWidth)
-			.scale(m.classifier())
-			.cells(legendConfig.cellNb + 1)
-			.cellFilter(function (d) { if (!d.data) return false; return true; })
-			.orient("vertical")
-			.ascending(legendConfig.ascending)
-			.shape("circle") //"rect", "circle", or "line"
-			.shapePadding(legendConfig.shapePadding)
-			//.classPrefix("prefix")
-			.labels(function (d) { return d.generatedLabels[d.i] })
-			//.labelAlign("middle") //?
-			.labelFormat(legendConfig.format || format("." + legendConfig.labelDecNb + "f"))
-			.labelOffset(legendConfig.labelOffset)
-			.labelWrap(legendConfig.labelWrap)
-			;
+		let d3Legend
+
+		// use legendSize() for custom d3 shapes
+		if (legendConfig.map_.psShape_ == "custom") {
+
+			let domain = m.classifier_.domain();
+			let shape = legendConfig.map_.psCustomShape_;
+			let values = [domain[1] / 10, domain[1] / 2, domain[1]]
+			let sizes = [
+				m.classifier_(values[0]),
+				m.classifier_(values[1]),
+				m.classifier_(values[2])
+			];
+			var symbolScale = scaleOrdinal()
+				.domain(values)
+				.range([
+					shape.size(sizes[0] * sizes[0])(),
+					shape.size(sizes[1] * sizes[1])(),
+					shape.size(sizes[2] * sizes[2])()
+				]);
+
+
+			d3Legend = legendSymbol()
+				.scale(symbolScale)
+				.orient("horizontal")
+				.labelWrap(30)
+				.title(legendConfig.titleText)
+				.titleWidth(legendConfig.titleWidth)
+				//.scale(m.classifier())
+				.cells(legendConfig.cellNb + 1)
+				.cellFilter(function (d) { if (!d.data) return false; return true; })
+				.orient("vertical")
+				.ascending(legendConfig.ascending)
+				//.shape("circle") //"rect", "circle", or "line"
+				.shapePadding(legendConfig.shapePadding)
+				//.classPrefix("prefix")
+				.labels(function (d) { return d.generatedLabels[d.i] })
+				//.labelAlign("middle") //?
+				.labelFormat(legendConfig.format || format(",." + legendConfig.labelDecNb + "r"))
+				.labelOffset(legendConfig.labelOffset)
+				.labelWrap(legendConfig.labelWrap)
+				;
+
+		} else {
+
+			d3Legend = legendSize()
+				.title(legendConfig.titleText)
+				.titleWidth(legendConfig.titleWidth)
+				.scale(m.classifier())
+				.cells(legendConfig.cellNb + 1)
+				.cellFilter(function (d) { if (!d.data) return false; return true; })
+				.orient("vertical")
+				.ascending(legendConfig.ascending)
+				//.shape("circle") //"rect", "circle", or "line"
+				.shapePadding(legendConfig.shapePadding)
+				//.classPrefix("prefix")
+				.labels(function (d) { return d.generatedLabels[d.i] })
+				//.labelAlign("middle") //?
+				.labelFormat(legendConfig.format || format("." + legendConfig.labelDecNb + "f"))
+				.labelOffset(legendConfig.labelOffset)
+				.labelWrap(legendConfig.labelWrap)
+				;
+
+			if (legendConfig.map_.psShape_ !== "circle") {
+
+				if (legendConfig.map_.psCustomShape_) {
+
+				} else {
+					let symbolType = getSymbolType(legendConfig.map_.psShape_)
+					d3Legend.shape("path", symbol().type(symbolType)())
+				}
+			} else {
+				d3Legend.shape("circle")
+			}
+		}
 
 		//make legend
 		g.call(d3Legend);
