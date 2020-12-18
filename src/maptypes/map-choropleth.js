@@ -2,14 +2,14 @@ import { select } from "d3-selection";
 import { min, max } from "d3-array";
 import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { interpolateYlOrBr } from "d3-scale-chromatic";
-import * as mt from '../core/stat-map-template';
+import * as mt from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
 
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate();
+	const out = mt.statMap();
 
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];

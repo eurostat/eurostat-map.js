@@ -1,5 +1,5 @@
 import { scaleSqrt } from "d3-scale";
-import * as mt from '../core/stat-map-template';
+import * as mt from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
@@ -7,7 +7,7 @@ export const map = function () {
 
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate(true);
+	const out = mt.statMap(true);
 
 	out.psShape_ = "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
 	out.psCustomShape_ = null; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
