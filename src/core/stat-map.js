@@ -17,6 +17,7 @@ export const statMap = function (withCenterPoints) {
 	const out = mt.mapTemplate(withCenterPoints);
 
 
+	const stat = sd.statData();
 
 
 	//TODO move that to stat-data - make array here
