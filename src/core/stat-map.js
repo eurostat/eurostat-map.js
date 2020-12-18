@@ -12,6 +12,7 @@ export const statMap = function (withCenterPoints) {
 
 	const out = mt.mapTemplate(withCenterPoints);
 
+	//the statistical data
 	//TODO Enable several statData. Make that a dictionnary.
 	out.stat_ = sd.statData();
 
@@ -24,13 +25,11 @@ export const statMap = function (withCenterPoints) {
 	out.lg_ = "en";
 	out.transitionDuration_ = 800;
 
-
-	//TODO test pattern map
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () { };
 
-		/**
+	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
 	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
@@ -44,9 +43,12 @@ export const statMap = function (withCenterPoints) {
 	);
 
 
-	//TODO others
-	out.datasetCode = function(v) { if (!arguments.length) return out.stat_.datasetCode_; out.stat_.datasetCode_ = v; return out; };
-
+	//for stat data
+	["datasetCode_", "filters_", "precision_", "csvDataSource_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out.stat_[att]; out.stat_[att] = v; return out; };
+		}
+	);
 
 
 	/**
