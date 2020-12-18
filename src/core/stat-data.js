@@ -55,7 +55,7 @@ export const statData = function () {
 					//decode stat data
 					const jsd = JSONstat(data___);
 					//get time
-					jsonStatTime = JSONstat(data___).Dimension("time");
+					jsonStatTime = JSONstat(data___).Dimension("time").id[0];
 					//index
 					out.data_ = jsonstatToIndex(jsd);
 					//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
@@ -85,9 +85,7 @@ export const statData = function () {
 		const t = out.filters_.time;
 		if (t) return t;
 		if (!out.data_) return;
-		t = jsonStatTime; //TODO test and simplify?
-		if (!t || !t.id || t.id.length == 0) return;
-		return t.id[0]
+		return jsonStatTime;
 	};
 
 
