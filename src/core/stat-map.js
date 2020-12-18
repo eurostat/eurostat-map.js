@@ -320,6 +320,8 @@ export const statMap = function (withCenterPoints) {
 	return out;
 }
 
+
+
 // adapted from https://observablehq.com/@mbostock/saving-svg
 // turns svg into blob
 function serialize(svg) {
@@ -404,6 +406,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 /**
  * Retrieve some URL parameters, which could be then reused as map definition parameters.
  * This allow a quick map customisation by simply adding and changing some URL parameters.
+ * See map method: setFromURL(...)
  */
 export const getURLParameters = function () {
 	const ps = {};
