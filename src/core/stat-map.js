@@ -6,6 +6,7 @@ import { feature } from "topojson-client";
 import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL, flags } from '../lib/eurostat-base';
 import { getBBOXAsGeoJSON, csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
+import * as mt from './map-template';
 import * as tp from '../lib/eurostat-tooltip';
 
 
@@ -17,7 +18,7 @@ import * as tp from '../lib/eurostat-tooltip';
 export const statMap = function (withCenterPoints) {
 	//TODO decompose it: extract map template, extract statData. Enable several statData (as dict).
 
-	const out = {};
+	const out = mt.mapTemplate(withCenterPoints);
 
 	/**
 	* Create attributes and set default values
