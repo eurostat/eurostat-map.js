@@ -244,6 +244,7 @@ export const statMap = function (withCenterPoints) {
 
 
 
+	//TODO decompose with stat-data
 	/**
 	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
 	 * This applies only for stat data retrieved from Eurostat API.
