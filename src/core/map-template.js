@@ -90,7 +90,7 @@ export const mapTemplate = function (withCenterPoints) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	for (const att in out)
-		out[att.substring(0, att.length - 1)] = (v) => { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 
 	/**

@@ -1,6 +1,6 @@
-import { json, csv } from "d3-fetch";
+import { csv } from "d3-fetch";
 import JSONstat from "jsonstat-toolkit";
-import { getEstatDataURL, flags } from '../lib/eurostat-base';
+import { flags } from '../lib/eurostat-base';
 import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 import * as mt from './map-template';
 import * as sd from './stat-data';
@@ -17,7 +17,7 @@ export const statMap = function (withCenterPoints) {
 	const out = mt.mapTemplate(withCenterPoints);
 
 	//TODO make that an array
-	out.stat = sd.statData();
+	out.stat_ = sd.statData();
 
 	//legend
 	out.showLegend_ = false;
@@ -34,10 +34,22 @@ export const statMap = function (withCenterPoints) {
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () { };
 
+		/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["stat_", "showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		}
+	);
+
 
 	//TODO others
-	out.datasetCode = (v) => { if (!arguments.length) return out.stat.datasetCode_; out.stat.datasetCode_ = v; return out; };
-	//out.datasetCode = (v) => { if (!arguments.length) return out.stat.datasetCode_; out.stat.datasetCode_ = v; return out; };
+	out.datasetCode = function(v) { if (!arguments.length) return out.stat_.datasetCode_; out.stat_.datasetCode_ = v; return out; };
 
 
 
@@ -87,7 +99,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateGeoData = function () {
 		out.updateGeoMT( ()=>{
 			//if statistical figures are available, update the map with these values
-			if (!out.statData_) return;
+			if (!out.stat_.statData_) return;
 			out.updateStatValues();
 		});
 		return out;
@@ -104,24 +116,15 @@ export const statMap = function (withCenterPoints) {
 	out.updateStatData = function () {
 
 		//erase previous data
-		out.statData_ = null;
+		out.stat_.statData_ = null;
 
 		if (out.csvDataSource_ == null) {
 			//for statistical data to retrieve from Eurostat API
-
-			//set precision
-			out.filters_["precision"] = out.precision_;
-			//select only required geo groups, depending on the specified nuts level
-			out.filters_["geoLevel"] = out.nutsLvl_ + "" === "0" ? "country" : "nuts" + out.nutsLvl_;
-			//force filtering of euro-geo-aggregates
-			out.filters_["filterNonGeo"] = 1;
-
-			//retrieve stat data from Eurostat API
-			json(getEstatDataURL(out.datasetCode_, out.filters_)).then(
+			out.stat_.getStatDataPromise(out.nutsLvl_).then(
 				function (data___) {
 
 					//decode stat data
-					out.statData_ = jsonstatToIndex(JSONstat(data___));
+					out.stat_.statData_ = jsonstatToIndex(JSONstat(data___));
 
 					//if geodata are already there, refresh the map with stat values
 					if (!out._geoData) return;
@@ -135,7 +138,7 @@ export const statMap = function (withCenterPoints) {
 				function (data___) {
 
 					//decode stat data
-					out.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+					out.stat.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
 
 					//if geodata are already there, refresh the map with stat values
 					if (!out._geoData) return;
@@ -156,13 +159,13 @@ export const statMap = function (withCenterPoints) {
 
 		//index stat values by NUTS id.
 		//TODO extract that to stat-data
-		out._statDataIndex = {};
-		for (const id in out.statData_) {
-			const value = out.statData_[id];
+		out.stat_._statDataIndex = {};
+		for (const id in out.stat_.statData_) {
+			const value = out.stat_.statData_[id];
 			if (value.value != 0 && !value.value) continue;
 			let v = value.value;
 			if (!isNaN(+v)) { v = +v; value.value = +v; }
-			out._statDataIndex[id] = value;
+			out.stat_._statDataIndex[id] = value;
 		}
 
 		//update classification and styles
@@ -208,8 +211,8 @@ export const statMap = function (withCenterPoints) {
 		const t = out.filters_.time;
 		if (t) return t;
 		//TODO extract generic part
-		if (!out.statData_) return;
-		t = out.statData_.Dimension("time");
+		if (!out.stat.statData_) return;
+		t = out.stat.statData_.Dimension("time");
 		if (!t || !t.id || t.id.length == 0) return;
 		return t.id[0]
 	};
@@ -333,7 +336,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
-	const sv = map.getStat(rg.properties.id);
+	const sv = map.stat().getStat(rg.properties.id);
 	if (!sv || (sv.value != 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");

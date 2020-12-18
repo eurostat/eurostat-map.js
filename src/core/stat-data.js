@@ -1,3 +1,5 @@
+import { json } from "d3-fetch";
+import { getEstatDataURL, flags } from '../lib/eurostat-base';
 
 /**
  * A statistical dataset, to be used for a statistical map.
@@ -19,6 +21,24 @@ export const statData = function () {
 	 * @param {*} nutsId 
 	 */
 	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
+
+
+
+		/**
+	 * Return promise for Nuts2JSON topojson data.
+	 */
+	out.getStatDataPromise = function(nutsLvl) {
+
+		//set precision
+		out.filters_["precision"] = out.precision_;
+		//select only required geo groups, depending on the specified nuts level
+		out.filters_["geoLevel"] = nutsLvl + "" === "0" ? "country" : "nuts" + nutsLvl;
+		//force filtering of euro-geo-aggregates
+		out.filters_["filterNonGeo"] = 1;
+
+		//retrieve stat data from Eurostat API
+		return json(getEstatDataURL(out.datasetCode_, out.filters_))
+	}
 
 
 

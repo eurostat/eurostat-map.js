@@ -32,9 +32,9 @@ export const map = function () {
 	*/
 	["classifMethod_", "threshold_", "makeClassifNice_", "clnb_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = (v) => { if (!arguments.length) return out[att]; out[att] = v; return out; };
-		});
-
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		}
+	);
 
 	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
@@ -81,7 +81,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.getStat(rg.properties.id);
+				const sv = out.stat().getStat(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
