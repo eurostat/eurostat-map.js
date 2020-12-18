@@ -12,11 +12,10 @@ import * as sd from './stat-data';
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
 export const statMap = function (withCenterPoints) {
-	//TODO decompose it: extract map template, extract statData. Enable several statData (as dict).
 
 	const out = mt.mapTemplate(withCenterPoints);
 
-	//TODO make that an array
+	//TODO Enable several statData. Make that a dictionnary.
 	out.stat_ = sd.statData();
 
 	//legend
@@ -158,15 +157,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateStatValues = function () {
 
 		//index stat values by NUTS id.
-		//TODO extract that to stat-data
-		out.stat_._statDataIndex = {};
-		for (const id in out.stat_.statData_) {
-			const value = out.stat_.statData_[id];
-			if (value.value != 0 && !value.value) continue;
-			let v = value.value;
-			if (!isNaN(+v)) { v = +v; value.value = +v; }
-			out.stat_._statDataIndex[id] = value;
-		}
+		out.stat_.buildIndex();
 
 		//update classification and styles
 		out.updateClassification();

@@ -23,6 +23,20 @@ export const statData = function () {
 	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
 
 
+	/**
+	 * 
+	 */
+	out.buildIndex = function() {
+		//index stat values by NUTS id.
+		out._statDataIndex = {};
+		for (const id in out.statData_) {
+			const value = out.statData_[id];
+			if (value.value != 0 && !value.value) continue;
+			let v = value.value;
+			if (!isNaN(+v)) { v = +v; value.value = +v; }
+			out._statDataIndex[id] = value;
+		}
+	}
 
 		/**
 	 * Return promise for Nuts2JSON topojson data.
