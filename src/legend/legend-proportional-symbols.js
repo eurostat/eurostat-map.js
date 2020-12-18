@@ -46,6 +46,7 @@ export const legendProportionalSymbols = function (map) {
 			// use legendSize() with custom scale for d3 shapes
 			let domain = m.classifier_.domain();
 			let shape;
+			let cells = legendConfig.cellNb + 1;
 
 			if (legendConfig.map_.psShape_ == "custom") {
 				shape = legendConfig.map_.psCustomShape_;
@@ -54,7 +55,11 @@ export const legendProportionalSymbols = function (map) {
 				shape = symbol().type(symbolType);
 			}
 
-			let values = [domain[1] / 10, domain[1] / 2, domain[1]]
+			let values = [
+				domain[1] / 10,
+				domain[1] / 2,
+				domain[1]
+			];
 			let sizes = [
 				m.classifier_(values[0]),
 				m.classifier_(values[1]),
@@ -71,6 +76,7 @@ export const legendProportionalSymbols = function (map) {
 
 			d3Legend = legendSymbol()
 				.scale(symbolScale)
+				.labelFormat(".,2r")
 				;
 
 		} else {
