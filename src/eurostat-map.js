@@ -1,7 +1,7 @@
 import * as mapch from './maptypes/map-choropleth';
 import * as mapps from './maptypes/map-proportional-symbols';
 import * as mapct from './maptypes/map-categorical';
-import * as mt from './core/stat-map-template';
+import * as mt from './core/stat-map';
 
 /**
  * Function returning a eurostat-map object.
@@ -16,7 +16,7 @@ export const map = function (type) {
 	if(type == "ps") return mapps.map();
 
 	console.log("Unexpected map type: " + type);
-	return mt.statMapTemplate(true);
+	return mt.statMap(true);
 };
 
 

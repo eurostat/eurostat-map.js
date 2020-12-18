@@ -1,13 +1,13 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
-import * as mt from '../core/stat-map-template';
+import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
 
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate();
+	const out = smap.statMap();
 
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
