@@ -3,6 +3,7 @@ import JSONstat from "jsonstat-toolkit";
 import { getEstatDataURL, flags } from '../lib/eurostat-base';
 import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 import * as mt from './map-template';
+import * as sd from './stat-data';
 
 
 /**
@@ -15,12 +16,32 @@ export const statMap = function (withCenterPoints) {
 
 	const out = mt.mapTemplate(withCenterPoints);
 
+
+
+
+	//TODO move that to stat-data - make array here
+
 	//stat data
 	out.datasetCode_ = "demo_r_d3dens";
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
 	out.csvDataSource_ = null;
 	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+	/**
+	 * Statistical data, indexed by nuts id.
+	 */
+	out._statDataIndex;
+
+	/**
+	 * Return the stat value {value,status} from a nuts id, using the index.
+	 * @param {*} nutsId 
+	 */
+	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
+
+
+
+
+
 
 	//legend
 	out.showLegend_ = false;
@@ -54,20 +75,6 @@ export const statMap = function (withCenterPoints) {
 	// 	return out;
 	// };
 
-	/**
-	 * Private attributes
-	 */
-
-	/**
-	 * Statistical data, indexed by nuts id.
-	 */
-	out._statDataIndex;
-
-	/**
-	 * Return the stat value {value,status} from a nuts id, using the index.
-	 * @param {*} nutsId 
-	 */
-	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
 
 
 	/**
