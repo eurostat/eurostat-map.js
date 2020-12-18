@@ -106,6 +106,30 @@ export const mapTemplate = function (withCenterPoints) {
 	}
 
 
+	/**
+	 * 
+	 */
+	out.updateGeoMT = function (callback) {
+
+		//erase previous data
+		out._geoData = null;
+
+		//get geo data from Nuts2json API
+		out.getGeoDataPromise().then(function (geo___) {
+				out._geoData = geo___;
+
+				//build map template
+				out.buildMapTemplate();
+
+				//callback
+				callback();
+			});
+		return out;
+	}
+
+
+
+
     /**
 	 * Build a map object.
 	 */

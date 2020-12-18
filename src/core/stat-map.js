@@ -121,21 +121,11 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateGeoData = function () {
-
-		//erase previous data
-		out._geoData = null;
-
-		//get geo data from Nuts2json API
-		out.getGeoDataPromise().then(function (geo___) {
-				out._geoData = geo___;
-
-				//build map template
-				out.buildMapTemplate();
-
-				//if statistical figures are available, update the map with these values
-				if (!out.statData_) return;
-				out.updateStatValues();
-			});
+		out.updateGeoMT( ()=>{
+			//if statistical figures are available, update the map with these values
+			if (!out.statData_) return;
+			out.updateStatValues();
+		});
 		return out;
 	}
 
