@@ -22,7 +22,7 @@ export const statMap = function (withCenterPoints) {
 
 	//other
 	out.noDataText_ = "No data available";
-	out.lg_ = "en";
+	out.lg_ = "en"; //TODO not used? Use it in stat-data ?
 	out.transitionDuration_ = 800;
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image

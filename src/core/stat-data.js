@@ -17,14 +17,11 @@ export const statData = function () {
 	out.data_ = null;
 	let jsonStatTime = undefined;
 
-
 	/**
 	 * Return the stat value {value,status} from a nuts id, using the index.
 	 * @param {*} nutsId 
 	 */
 	out.getStat = (nutsId) => out.data_ ? out.data_[nutsId] : undefined;
-
-
 
 	/**
 	 * Return promise for Nuts2JSON topojson data.
@@ -77,8 +74,6 @@ export const statData = function () {
 		return out;
 	}
 
-
-
 	/**
 	 * Retrieve the time stamp of the dataset.
 	*/
@@ -89,8 +84,5 @@ export const statData = function () {
 		return jsonStatTime;
 	};
 
-
-
     return out;
 }
-
