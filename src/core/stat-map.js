@@ -77,9 +77,6 @@ export const statMap = function (withCenterPoints) {
 			lgg.attr("transform", "translate(" + dx + "," + dy + ")");
 		}
 
-		//set tooltip text
-		out.tooltipText( tooltipTextDefaultFunction );
-
 		//retrieve geo data
 		out.updateGeoData();
 
@@ -225,6 +222,10 @@ export const statMap = function (withCenterPoints) {
 			document.body.removeChild(downloadLink);
 		})
 	}
+
+	//set tooltip text
+	out.tooltipText_ = tooltipTextDefaultFunction;
+
 	return out;
 }
 
