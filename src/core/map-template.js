@@ -1,3 +1,4 @@
+import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
 import { select, event } from "d3-selection";
 import { geoIdentity, geoPath } from "d3-geo";
@@ -89,6 +90,20 @@ export const mapTemplate = function (withCenterPoints) {
 	out._geoData;
 
 
+	/**
+	 * Return promise for Nuts2JSON topojson data.
+	 */
+	out.getGeoDataPromise = function() {
+		const buf = [];
+		buf.push(out.nuts2jsonBaseURL_);
+		buf.push(out.NUTSyear_);
+		if(out.geo_ != "EUR") buf.push("/" + this.geo_ );
+		buf.push("/"); buf.push(out.proj_);
+		buf.push("/"); buf.push(out.scale_);
+		buf.push("/"); buf.push(out.nutsLvl_);
+		buf.push(".json");
+		return json(buf.join(""));
+	}
 
 
     /**
@@ -345,6 +360,8 @@ export const mapTemplate = function (withCenterPoints) {
 
     return out;
 }
+
+
 
 /**
  * Default geocenter positions and width (in projection unit) for territories and projections.

@@ -53,6 +53,7 @@ export const statMap = function (withCenterPoints) {
 	out.transitionDuration_ = 800;
 
 
+	//TODO test pattern map
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () { };
@@ -125,8 +126,7 @@ export const statMap = function (withCenterPoints) {
 		out._geoData = null;
 
 		//get geo data from Nuts2json API
-		json(out.nuts2jsonBaseURL_ + out.NUTSyear_ + (out.geo_ === "EUR" ? "" : "/" + this.geo_) + "/" + out.proj_ + "/" + out.scale_ + "/" + out.nutsLvl_ + ".json")
-			.then(function (geo___) {
+		out.getGeoDataPromise().then(function (geo___) {
 				out._geoData = geo___;
 
 				//build map template
