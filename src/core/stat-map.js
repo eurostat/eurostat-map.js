@@ -97,7 +97,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateGeoData = function () {
 		out.updateGeoMT( ()=>{
 			//if stat data are already there, update the map with these values
-			if (!out.stat_.statDataIndex_) return;
+			if (!out.stat().data_) return;
 			out.updateStatValues();
 		});
 		return out;
@@ -108,7 +108,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
-		out.stat_.updateStatDataB(out.nutsLvl(), ()=>{
+		out.stat().updateStatDataB(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out._geoData) return;
 			out.updateStatValues();
