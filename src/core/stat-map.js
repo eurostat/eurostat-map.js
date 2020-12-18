@@ -16,33 +16,8 @@ export const statMap = function (withCenterPoints) {
 
 	const out = mt.mapTemplate(withCenterPoints);
 
-
-	const stat = sd.statData();
-
-
-	//TODO move that to stat-data - make array here
-
-	//stat data
-	out.datasetCode_ = "demo_r_d3dens";
-	out.filters_ = { lastTimePeriod: 1 };
-	out.precision_ = 2;
-	out.csvDataSource_ = null;
-	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-	/**
-	 * Statistical data, indexed by nuts id.
-	 */
-	out._statDataIndex;
-
-	/**
-	 * Return the stat value {value,status} from a nuts id, using the index.
-	 * @param {*} nutsId 
-	 */
-	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
-
-
-
-
-
+	//TODO make that an array
+	out.stat = sd.statData();
 
 	//legend
 	out.showLegend_ = false;
@@ -59,23 +34,10 @@ export const statMap = function (withCenterPoints) {
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () { };
 
-	/**
-	 * Definition of getters/setters for all previously defined attributes.
-	 * Each method follow the same pattern:
-	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
-	 *  - To get the attribute value, call the method without argument.
-	 *  - To set the attribute value, call the same method with the new value as single argument.
-	*/
-	for (const att in out)
-		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
-	//override legend accesor
-	// out.legend = function (v) {
-	// 	for (let key in v) {
-	// 		out.legend_[key] = v[key];
-	// 	}
-	// 	return out;
-	// };
+	//TODO others
+	out.datasetCode = (v) => { if (!arguments.length) return out.stat.datasetCode_; out.stat.datasetCode_ = v; return out; };
+	//out.datasetCode = (v) => { if (!arguments.length) return out.stat.datasetCode_; out.stat.datasetCode_ = v; return out; };
 
 
 
@@ -85,6 +47,7 @@ export const statMap = function (withCenterPoints) {
 	 */
 	out.build = function () {
 
+		//build map template base
 		out.buildMapTemplateBase();
 
 		//add additional filters for fill patterns for example
@@ -184,7 +147,6 @@ export const statMap = function (withCenterPoints) {
 
 
 
-
 	/**
 	 * Update the map with new stat data.
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
@@ -193,6 +155,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateStatValues = function () {
 
 		//index stat values by NUTS id.
+		//TODO extract that to stat-data
 		out._statDataIndex = {};
 		for (const id in out.statData_) {
 			const value = out.statData_[id];

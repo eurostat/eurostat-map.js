@@ -32,7 +32,7 @@ export const map = function () {
 	*/
 	["classifMethod_", "threshold_", "makeClassifNice_", "clnb_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = (v) => { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 

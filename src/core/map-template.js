@@ -75,13 +75,22 @@ export const mapTemplate = function (withCenterPoints) {
 
 	//tooltip
 	//the function returning the tooltip text
-	out.tooltipText_ = function (rg) { return rg.properties.na; };
+	out.tooltipText_ = rg => { return rg.properties.na; };
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
 
-
     out.zoomExtent_ = [1, 5];
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	for (const att in out)
+		out[att.substring(0, att.length - 1)] = (v) => { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 
 	/**
