@@ -15,32 +15,18 @@ export const statData = function () {
 	out.precision_ = 2;
     out.csvDataSource_ = null; //TODO decompose CSV and jsonstat types?
     //TODO still needed? keep only index?
-	out.statData_ = null;   //TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-	out._statDataIndex;
+	out.statData_ = null;
+	out.statDataIndex_ = null;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id, using the index.
 	 * @param {*} nutsId 
 	 */
-	out.getStat = (nutsId) => out._statDataIndex ? out._statDataIndex[nutsId] : undefined;
+	out.getStat = (nutsId) => out.statDataIndex_ ? out.statDataIndex_[nutsId] : undefined;
+
 
 
 	/**
-	 * 
-	 */
-	out.buildIndex = function() {
-		//index stat values by NUTS id.
-		out._statDataIndex = {};
-		for (const id in out.statData_) {
-			const value = out.statData_[id];
-			if (value.value != 0 && !value.value) continue;
-			let v = value.value;
-			if (!isNaN(+v)) { v = +v; value.value = +v; }
-			out._statDataIndex[id] = value;
-		}
-	}
-
-		/**
 	 * Return promise for Nuts2JSON topojson data.
 	 */
 	out.getStatDataPromise = function(nutsLvl) {
@@ -69,6 +55,8 @@ export const statData = function () {
 
 					//decode stat data
 					out.statData_ = jsonstatToIndex(JSONstat(data___));
+					//TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+					out.statDataIndex_ = buildIndex( out.statData_ );
 
 					callback();
 				});
@@ -81,6 +69,8 @@ export const statData = function () {
 
 					//decode stat data
 					out.stat.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+					//TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
+					out.statDataIndex_ = buildIndex( out.statData_ );
 
 					callback();
 				});
@@ -89,5 +79,40 @@ export const statData = function () {
 	}
 
 
+
+	/**
+	 * Retrieve the time stamp of the dataset.
+	*/
+	out.getTime = function () {
+		const t = out.filters_.time;
+		if (t) return t;
+		if (!out.statData_) return;
+		t = out.statData_.Dimension("time");
+		if (!t || !t.id || t.id.length == 0) return;
+		return t.id[0]
+	};
+
+
+
     return out;
+}
+
+
+
+
+//TODO: move to em-util
+/**
+ * 
+ */
+const buildIndex = function(jsonStatData) {
+	//index stat values by NUTS id.
+	const ind = {};
+	for (const id in jsonStatData) {
+		const value = jsonStatData[id];
+		if (value.value != 0 && !value.value) continue;
+		let v = value.value;
+		if (!isNaN(+v)) { v = +v; value.value = +v; }
+		ind[id] = value;
+	}
+	return ind;
 }

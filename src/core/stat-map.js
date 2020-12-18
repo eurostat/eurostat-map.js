@@ -96,8 +96,8 @@ export const statMap = function (withCenterPoints) {
 	 */
 	out.updateGeoData = function () {
 		out.updateGeoMT( ()=>{
-			//if statistical figures are available, update the map with these values
-			if (!out.stat_.statData_) return;
+			//if stat data are already there, update the map with these values
+			if (!out.stat_.statDataIndex_) return;
 			out.updateStatValues();
 		});
 		return out;
@@ -124,10 +124,6 @@ export const statMap = function (withCenterPoints) {
 	 * If the stat data sources have changed, call *updateStatData* instead.
 	 */
 	out.updateStatValues = function () {
-
-		//index stat values by NUTS id.
-		//TODO remove that after statData/indexData change?
-		out.stat_.buildIndex();
 
 		//update classification and styles
 		out.updateClassification();
@@ -169,13 +165,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
 	*/
 	out.getTime = function () {
-		const t = out.filters_.time;
-		if (t) return t;
-		//TODO extract generic part
-		if (!out.stat.statData_) return;
-		t = out.stat.statData_.Dimension("time");
-		if (!t || !t.id || t.id.length == 0) return;
-		return t.id[0]
+		return out.stat().getTime();
 	};
 
 
