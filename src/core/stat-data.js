@@ -17,6 +17,7 @@ export const statData = function () {
 	out.data_ = null;
 	let jsonStatTime = undefined;
 
+
 	/**
 	 * Return the stat value {value,status} from a nuts id, using the index.
 	 * @param {*} nutsId 
