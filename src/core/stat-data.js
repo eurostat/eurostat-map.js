@@ -14,9 +14,8 @@ export const statData = function () {
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
     out.csvDataSource_ = null; //TODO decompose CSV and jsonstat types?
-    //TODO still needed? keep only index?
-	out.statData_ = null;
 	out.statDataIndex_ = null;
+	let jsonStatTime = undefined;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id, using the index.
@@ -46,17 +45,19 @@ export const statData = function () {
 	out.updateStatDataB = function (nutsLvl, callback) {
 
 		//erase previous data
-		out.statData_ = null;
+		out.statDataIndex_ = null;
 
 		if (out.csvDataSource_ == null) {
 			//for statistical data to retrieve from Eurostat API
 			out.getStatDataPromise(nutsLvl).then(
 				function (data___) {
 
+					//TODO overlap in indexing?
 					//decode stat data
-					out.statData_ = jsonstatToIndex(JSONstat(data___));
+					const s = jsonstatToIndex(JSONstat(data___));
+					jsonStatTime = JSONstat(data___).Dimension("time");
 					//TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-					out.statDataIndex_ = buildIndex( out.statData_ );
+					out.statDataIndex_ = buildIndex(s);
 
 					callback();
 				});
@@ -67,10 +68,12 @@ export const statData = function () {
 			csv(out.csvDataSource_.url).then(
 				function (data___) {
 
+					//TODO overlap in indexing?
 					//decode stat data
-					out.stat.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+					const s = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+					//TODO directly indexed? Test and debug.
 					//TODO: may use https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md ?
-					out.statDataIndex_ = buildIndex( out.statData_ );
+					out.statDataIndex_ = buildIndex( s );
 
 					callback();
 				});
@@ -86,8 +89,8 @@ export const statData = function () {
 	out.getTime = function () {
 		const t = out.filters_.time;
 		if (t) return t;
-		if (!out.statData_) return;
-		t = out.statData_.Dimension("time");
+		if (!out.statDataIndex_) return;
+		t = jsonStatTime; //TODO test and simplify?
 		if (!t || !t.id || t.id.length == 0) return;
 		return t.id[0]
 	};
@@ -101,6 +104,7 @@ export const statData = function () {
 
 
 //TODO: move to em-util
+//TODO: double indexing?
 /**
  * 
  */
