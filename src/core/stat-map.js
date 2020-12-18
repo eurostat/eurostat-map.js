@@ -13,7 +13,7 @@ export const statMap = function (withCenterPoints) {
 	const out = mt.mapTemplate(withCenterPoints);
 
 	//the statistical data
-	//TODO Enable several statData. Make that a dictionnary.
+	//TODO Enable several statData. Make that a dictionary.
 	out.stat_ = sd.statData();
 
 	//legend
@@ -158,7 +158,6 @@ export const statMap = function (withCenterPoints) {
 
 
 
-	//TODO decompose with stat-data
 	/**
 	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
 	 * This applies only for stat data retrieved from Eurostat API.
