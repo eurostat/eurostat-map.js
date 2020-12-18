@@ -1,5 +1,7 @@
-import { json } from "d3-fetch";
-import { getEstatDataURL, flags } from '../lib/eurostat-base';
+import { json, csv } from "d3-fetch";
+import { getEstatDataURL } from '../lib/eurostat-base';
+import JSONstat from "jsonstat-toolkit";
+import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 
 /**
  * A statistical dataset, to be used for a statistical map.
@@ -54,6 +56,37 @@ export const statData = function () {
 		return json(getEstatDataURL(out.datasetCode_, out.filters_))
 	}
 
+
+	out.updateStatDataB = function (nutsLvl, callback) {
+
+		//erase previous data
+		out.statData_ = null;
+
+		if (out.csvDataSource_ == null) {
+			//for statistical data to retrieve from Eurostat API
+			out.getStatDataPromise(nutsLvl).then(
+				function (data___) {
+
+					//decode stat data
+					out.statData_ = jsonstatToIndex(JSONstat(data___));
+
+					callback();
+				});
+		} else {
+			//for statistical data to retrieve from custom CSV file
+
+			//retrieve csv data
+			csv(out.csvDataSource_.url).then(
+				function (data___) {
+
+					//decode stat data
+					out.stat.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+
+					callback();
+				});
+		}
+		return out;
+	}
 
 
     return out;

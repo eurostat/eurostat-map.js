@@ -1,7 +1,4 @@
-import { csv } from "d3-fetch";
-import JSONstat from "jsonstat-toolkit";
 import { flags } from '../lib/eurostat-base';
-import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 import * as mt from './map-template';
 import * as sd from './stat-data';
 
@@ -104,46 +101,16 @@ export const statMap = function (withCenterPoints) {
 		return out;
 	}
 
-
-
-
-
 	/**
 	 * Update the map with new stat data sources.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
-
-		//erase previous data
-		out.stat_.statData_ = null;
-
-		if (out.csvDataSource_ == null) {
-			//for statistical data to retrieve from Eurostat API
-			out.stat_.getStatDataPromise(out.nutsLvl_).then(
-				function (data___) {
-
-					//decode stat data
-					out.stat_.statData_ = jsonstatToIndex(JSONstat(data___));
-
-					//if geodata are already there, refresh the map with stat values
-					if (!out._geoData) return;
-					out.updateStatValues();
-				});
-		} else {
-			//for statistical data to retrieve from custom CSV file
-
-			//retrieve csv data
-			csv(out.csvDataSource_.url).then(
-				function (data___) {
-
-					//decode stat data
-					out.stat.statData_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
-
-					//if geodata are already there, refresh the map with stat values
-					if (!out._geoData) return;
-					out.updateStatValues();
-				});
-		}
+		out.stat_.updateStatDataB(out.nutsLvl(), ()=>{
+			//if geodata are already there, refresh the map with stat values
+			if (!out._geoData) return;
+			out.updateStatValues();
+		});
 		return out;
 	}
 
@@ -157,6 +124,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateStatValues = function () {
 
 		//index stat values by NUTS id.
+		//TODO remove that after statData/indexData change?
 		out.stat_.buildIndex();
 
 		//update classification and styles
