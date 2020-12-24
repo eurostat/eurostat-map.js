@@ -10,21 +10,56 @@ export const statData = function () {
 
 	const out = {};
 
-	out.datasetCode_ = "demo_r_d3dens";
-	out.filters_ = { lastTimePeriod: 1 };
-	out.precision_ = 2;
-    out.csvDataSource_ = null; //TODO decompose CSV and jsonstat types?
+	/**
+	 * The statistical values, indexed by NUTS id.
+	 * Each stat value is an object {value,status}.
+	 */
 	out.data_ = null;
-	let jsonStatTime = undefined;
 
 	/**
-	 * Return the stat value {value,status} from a nuts id, using the index.
+	 * Return the stat value {value,status} from a nuts id.
 	 * @param {*} nutsId 
 	 */
 	out.getStat = (nutsId) => out.data_ ? out.data_[nutsId] : undefined;
 
 	/**
-	 * Return promise for Nuts2JSON topojson data.
+	 * Return the stat value from a nuts id.
+	 * @param {*} nutsId 
+	 */
+	out.getStatValue = (nutsId) => { const s=out.getStat(nutsId); return s?s.value:undefined; };
+
+	/**
+	 * Set a stat value from a nuts id.
+	 * The format of the new stat can be either {value,status} or a the value only.
+	 * 
+	 * @param {*} nutsId 
+	 * @param {*} stat 
+	 */
+	out.setStat = (nutsId, stat) => {
+		out.data_ = out.data_ || {};
+		const s = out.data_[nutsId];
+		if(s)
+			if(stat.value) { s.value = stat.value; s.status = stat.status; }
+			else s.value = stat;
+		else
+			out.data_[nutsId] = stat.value? stat : {value:stat};
+	}
+
+
+	//information for stat data retrieved from Eurobase
+	out.datasetCode_ = "demo_r_d3dens";
+	out.filters_ = { lastTimePeriod: 1 };
+	out.precision_ = 2;
+	let jsonStatTime = undefined;
+
+	//information for stat data retrieved from CSV file
+	out.csvDataSource_ = null;
+
+	//TODO decompose CSV and jsonstat types?
+
+
+	/**
+	 * Return promise for Eurobase jsonstat data.
 	 */
 	out.getStatDataPromise = function(nutsLvl) {
 
