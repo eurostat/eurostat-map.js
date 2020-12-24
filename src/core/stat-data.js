@@ -45,6 +45,13 @@ export const statData = function () {
 			out.data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
 	}
 
+	/**
+	 * Return all stat values as an array.
+	 * This can be used to classify the values.
+	 */
+	out.getStatValuesAsArray = function() {
+		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s));
+	}
 
 
 	/**
