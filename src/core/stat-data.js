@@ -60,7 +60,7 @@ export const statData = function () {
 	}
 
 
-	//TODO decompose into Eurobase/jsonstat and CSV types?
+	//TODO decompose into Eurobase/jsonstat and CSV types ?
 
 
 	/**
@@ -86,8 +86,7 @@ export const statData = function () {
 		return json(getEstatDataURL(out.datasetCode_, out.filters_))
 	}
 
-	//for statistical data to retrieve from Eurostat API
-	//TODO document
+	//for eurobase statistical data to retrieve from Eurostat API
 	const updateEurobase = function (nutsLvl, callback) {
 		//erase previous data
 		out.data_ = null;
@@ -135,8 +134,7 @@ export const statData = function () {
 		return csv(out.csvDataSource_.url)
 	}
 
-	//for statistical data to retrieve from custom CSV file
-	//TODO document
+	//for statistical data to retrieve from CSV file
 	const updateCSV = function (callback) {
 		//erase previous data
 		out.data_ = null;
@@ -150,5 +148,7 @@ export const statData = function () {
 		});
 	}
 
-    return out;
+
+
+	return out;
 }
