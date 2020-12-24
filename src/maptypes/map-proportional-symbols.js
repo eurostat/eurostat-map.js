@@ -55,7 +55,7 @@ export const map = function () {
 	//@override
 	out.updateClassification = function () {
 		//get max value
-		const maxValue = Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
+		const maxValue = out.stat().getMax();
 		//define classifier
 		if (out.psShape_ == "rectangle") {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
