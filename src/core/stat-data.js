@@ -19,15 +19,6 @@ export const statData = function (opts) {
 	out.data_ = opts.data;
 
 	/**
-	 * The type of stat dataset among:
-	 * 'eurostat' for eurostat data
-	 * 'csv' for CSV data
-	 * other values, for user defined values
-	 */
-	out.type_ = opts.type;
-
-
-	/**
 	 * Return the stat value {value,status} from a nuts id.
 	 * @param {*} nutsId 
 	 */
@@ -108,8 +99,8 @@ export const statData = function (opts) {
 	 * @param {*} callback 
 	 */
 	out.updateB = function (nutsLvl, callback) {
-		if (out.type_ == "eurostat") updateEurobase(nutsLvl, callback);
-		else if (out.type_ == "csv") updateCSV(callback);
+		if (out.datasetCode_ == "eurostat") updateEurobase(nutsLvl, callback);
+		else if (out.csvDataSource_) updateCSV(callback);
 		return out;
 	}
 
