@@ -1,13 +1,13 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
-import * as mt from '../core/stat-map-template';
+import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
 
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate();
+	const out = smap.statMap();
 
 	out.classToFillStyleCT_ = undefined;
 	out.classToText_ = undefined;
@@ -61,7 +61,7 @@ export const map = function () {
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get domain: unique values
-		const dom = Object.values(out._statDataIndex).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+		const dom = Object.values(out.stat().data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
 
 		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));
@@ -70,7 +70,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.getStat(rg.properties.id);
+				const sv = out.stat().getStat(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
@@ -109,7 +109,7 @@ export const map = function () {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//get stat value
-		const sv = out.getStat(rg.properties.id);
+		const sv = out.stat().getStat(rg.properties.id);
 		//case when no data available
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);

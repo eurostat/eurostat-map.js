@@ -2,14 +2,14 @@ import { select } from "d3-selection";
 import { min, max } from "d3-array";
 import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { interpolateYlOrBr } from "d3-scale-chromatic";
-import * as mt from '../core/stat-map-template';
+import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
 
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate();
+	const out = smap.statMap();
 
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];
@@ -32,9 +32,9 @@ export const map = function () {
 	*/
 	["classifMethod_", "threshold_", "makeClassifNice_", "clnb_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
-		});
-
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		}
+	);
 
 	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
@@ -65,11 +65,11 @@ export const map = function () {
 		//use suitable classification type
 		if (out.classifMethod_ === "quantile") {
 			//https://github.com/d3/d3-scale#quantile-scales
-			const statValues = Object.values(out._statDataIndex).map(s => s.value).filter(s => (s == 0 || s));
+			const statValues = Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s));
 			out.classifier(scaleQuantile().domain(statValues).range(getA(out.clnb_)));
 		} else if (out.classifMethod_ === "equinter") {
 			//https://github.com/d3/d3-scale#quantize-scales
-			const statValues = Object.values(out._statDataIndex).map(s => s.value).filter(s => (s == 0 || s));
+			const statValues = Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s));
 			out.classifier(scaleQuantize().domain([min(statValues), max(statValues)]).range(getA(out.clnb_)));
 			if (out.makeClassifNice_) classif.nice();
 		} else if (out.classifMethod_ === "threshold") {
@@ -81,7 +81,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.getStat(rg.properties.id);
+				const sv = out.stat().getStat(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
