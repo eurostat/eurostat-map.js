@@ -139,7 +139,7 @@ export const map = function () {
 
 
 			path.attr("d", rg => {
-				const sv = out.stat().getStat(rg.properties.id);
+				const sv = out.stat().get(rg.properties.id);
 				let size;
 				if (!sv || !sv.value) {
 					size = 0;

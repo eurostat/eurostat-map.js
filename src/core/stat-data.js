@@ -20,13 +20,13 @@ export const statData = function () {
 	 * Return the stat value {value,status} from a nuts id.
 	 * @param {*} nutsId 
 	 */
-	out.getStat = (nutsId) => out.data_ ? out.data_[nutsId] : undefined;
+	out.get = (nutsId) => out.data_ ? out.data_[nutsId] : undefined;
 
 	/**
 	 * Return the stat value from a nuts id.
 	 * @param {*} nutsId 
 	 */
-	out.getStatValue = (nutsId) => { const s=out.getStat(nutsId); return s?s.value:undefined; };
+	out.getValue = (nutsId) => { const s=out.get(nutsId); return s?s.value:undefined; };
 
 	/**
 	 * Set a stat value from a nuts id.
@@ -35,7 +35,7 @@ export const statData = function () {
 	 * @param {*} nutsId 
 	 * @param {*} stat 
 	 */
-	out.setStat = (nutsId, stat) => {
+	out.set = (nutsId, stat) => {
 		out.data_ = out.data_ || {};
 		const s = out.data_[nutsId];
 		if(s)
@@ -52,7 +52,7 @@ export const statData = function () {
 	 * Return all stat values as an array.
 	 * This can be used to classify the values.
 	 */
-	out.getStatValuesAsArray = function() {
+	out.getArray = function() {
 		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s));
 	}
 
@@ -60,7 +60,7 @@ export const statData = function () {
 	 * Return stat unique values.
 	 * This can be used for categorical maps.
 	 */
-	out.getStatUniqueValues = function() {
+	out.getUniqueValues = function() {
 		return Object.values(out.data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
 	}
 
@@ -86,7 +86,7 @@ export const statData = function () {
 	 * @param {*} nutsLvl 
 	 * @param {*} callback 
 	 */
-	out.updateStatDataB = function (nutsLvl, callback) {
+	out.updateB = function (nutsLvl, callback) {
 		if (out.csvDataSource_ == null) updateEurobase(nutsLvl, callback);
 		else updateCSV(callback);
 		return out;
@@ -144,7 +144,7 @@ export const statData = function () {
 	*/
 	out.getTime = function () {
 		const t = out.filters_.time;
-		if (t) return t;
+		if (t) return t;up
 		if (!out.data_) return;
 		return jsonStatTime;
 	};

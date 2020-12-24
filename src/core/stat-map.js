@@ -105,7 +105,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
-		out.stat().updateStatDataB(out.nutsLvl(), ()=>{
+		out.stat().updateB(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out._geoData) return;
 			out.updateStatValues();
@@ -287,7 +287,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
-	const sv = map.stat().getStat(rg.properties.id);
+	const sv = map.stat().get(rg.properties.id);
 	if (!sv || (sv.value != 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");

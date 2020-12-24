@@ -61,7 +61,7 @@ export const map = function () {
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get domain: unique values
-		const dom = out.stat().getStatUniqueValues();
+		const dom = out.stat().getUniqueValues();
 
 		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));
@@ -70,7 +70,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.stat().getStat(rg.properties.id);
+				const sv = out.stat().get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
@@ -109,7 +109,7 @@ export const map = function () {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//get stat value
-		const sv = out.stat().getStat(rg.properties.id);
+		const sv = out.stat().get(rg.properties.id);
 		//case when no data available
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);

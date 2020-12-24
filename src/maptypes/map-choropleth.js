@@ -65,11 +65,11 @@ export const map = function () {
 		//use suitable classification type
 		if (out.classifMethod_ === "quantile") {
 			//https://github.com/d3/d3-scale#quantile-scales
-			const statValues = out.stat().getStatValuesAsArray();
+			const statValues = out.stat().getArray();
 			out.classifier(scaleQuantile().domain(statValues).range(getA(out.clnb_)));
 		} else if (out.classifMethod_ === "equinter") {
 			//https://github.com/d3/d3-scale#quantize-scales
-			const statValues = out.stat().getStatValuesAsArray();
+			const statValues = out.stat().getArray();
 			out.classifier(scaleQuantize().domain([min(statValues), max(statValues)]).range(getA(out.clnb_)));
 			if (out.makeClassifNice_) classif.nice();
 		} else if (out.classifMethod_ === "threshold") {
@@ -81,7 +81,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.stat().getStat(rg.properties.id);
+				const sv = out.stat().get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
