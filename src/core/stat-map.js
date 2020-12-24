@@ -15,6 +15,7 @@ export const statMap = function (withCenterPoints) {
 	//the statistical data
 	//TODO Enable several statData. Make that a dictionary.
 	out.stat_ = sd.statData();
+	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
 
 	//legend
 	out.showLegend_ = false;
@@ -36,19 +37,19 @@ export const statMap = function (withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stat_", "showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
+	["showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
 
 
-	//for stat data
+	/*/for stat data
 	["datasetCode_", "filters_", "precision_", "csvDataSource_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out.stat_[att]; out.stat_[att] = v; return out; };
 		}
-	);
+	);*/
 
 
 	/**
@@ -105,7 +106,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
-		out.stat().updateStatDataB(out.nutsLvl(), ()=>{
+		out.stat().updateB(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out._geoData) return;
 			out.updateStatValues();
@@ -287,7 +288,7 @@ const tooltipTextDefaultFunction = function (rg, map) {
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//case when no data available
-	const sv = map.stat().getStat(rg.properties.id);
+	const sv = map.stat().get(rg.properties.id);
 	if (!sv || (sv.value != 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");
