@@ -79,13 +79,13 @@ export const statData = function (opts) {
 	 * Get max value.
 	 */
 	out.getMax = function() {
-		return Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
+		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
 	}
 	/**
 	 * Get min value.
 	 */
 	out.getMin = function() {
-		return Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
+		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
 	}
 
 
