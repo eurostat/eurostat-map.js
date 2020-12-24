@@ -45,6 +45,9 @@ export const statData = function () {
 			out.data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
 	}
 
+
+
+
 	/**
 	 * Return all stat values as an array.
 	 * This can be used to classify the values.
@@ -59,6 +62,19 @@ export const statData = function () {
 	 */
 	out.getStatUniqueValues = function() {
 		return Object.values(out.data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+	}
+
+	/**
+	 * Get max value.
+	 */
+	out.getMax = function() {
+		return Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
+	}
+	/**
+	 * Get min value.
+	 */
+	out.getMin = function() {
+		return Object.values(out.stat().data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
 	}
 
 
