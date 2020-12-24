@@ -15,6 +15,7 @@ export const statMap = function (withCenterPoints) {
 	//the statistical data
 	//TODO Enable several statData. Make that a dictionary.
 	out.stat_ = sd.statData();
+	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
 
 	//legend
 	out.showLegend_ = false;
@@ -36,7 +37,7 @@ export const statMap = function (withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stat_", "showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
+	["showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
