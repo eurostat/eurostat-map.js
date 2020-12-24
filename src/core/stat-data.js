@@ -32,10 +32,9 @@ export const statData = function (opts) {
 
 	/**
 	 * Set a stat value from a nuts id.
-	 * The format of the new stat can be either {value,status} or a the value only.
 	 * 
 	 * @param {*} nutsId 
-	 * @param {*} stat 
+	 * @param {*} stat The new statistical data. The format can be either {value:34.324,status:"e"} or a the value only.
 	 */
 	out.set = (nutsId, stat) => {
 		out.data_ = out.data_ || {};
@@ -51,7 +50,7 @@ export const statData = function (opts) {
 	/**
 	 * Set statistical data, already indexed by nutsId.
 	 * 
-	 * @param {*} data Something like { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
+	 * @param {*} data Something like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
 	 */
 	out.setData = (data) => {
 		Object.keys(data).forEach( (nutsId) => out.set(nutsId, data[nutsId]) );
@@ -114,7 +113,7 @@ export const statData = function (opts) {
 	*/
 
 	/** The Eurobase dataset code */
-	out.eurostatDatasetCode_ = opts.eurostatDatasetCode_;
+	out.eurostatDatasetCode_ = opts.eurostatDatasetCode;
 	/** The Eurobase code */
 	out.filters_ = opts.filters || { lastTimePeriod: 1 };
 	out.precision_ = opts.precision || 2;
