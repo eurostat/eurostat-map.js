@@ -61,7 +61,7 @@ export const map = function () {
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get domain: unique values
-		const dom = Object.values(out.stat().data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+		const dom = out.stat().getStatUniqueValues();
 
 		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));

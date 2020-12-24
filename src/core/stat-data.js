@@ -53,6 +53,16 @@ export const statData = function () {
 		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s));
 	}
 
+	/**
+	 * Return stat unique values.
+	 * This can be used for categorical maps.
+	 */
+	out.getStatUniqueValues = function() {
+		return Object.values(out.data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+	}
+
+
+
 
 	/**
 	 * Retrieve stat data from remote data sources.
