@@ -127,6 +127,14 @@ export const statData = function () {
 	*/
 	out.csvDataSource_ = null;
 
+
+	/**
+	 * Return promise for CSV data.
+	 */
+	const getCSVPromise = function(nutsLvl) {
+		return csv(out.csvDataSource_.url)
+	}
+
 	//for statistical data to retrieve from custom CSV file
 	//TODO document
 	const updateCSV = function (callback) {
@@ -134,7 +142,7 @@ export const statData = function () {
 		out.data_ = null;
 
 		//retrieve csv data
-		csv(out.csvDataSource_.url).then(
+		getCSVPromise().then(
 			function (data___) {
 				//decode stat data
 				out.data_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
