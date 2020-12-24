@@ -120,9 +120,9 @@ export const statData = function (opts) {
 	/**
 	 * Eurobase/jsonstat data source
 	*/
-	out.datasetCode_ = opts.datasetCode || "demo_r_d3dens";
-	out.filters_ = opts.filters || { lastTimePeriod: 1 };
-	out.precision_ = opts.precision || 2;
+	out.datasetCode_ = opts.datasetCode; //|| "demo_r_d3dens";
+	out.filters_ = opts.filters; //|| { lastTimePeriod: 1 };
+	out.precision_ = opts.precision; //|| 2;
 	let jsonStatTime = undefined;
 
 	/**
