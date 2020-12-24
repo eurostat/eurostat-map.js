@@ -8,7 +8,7 @@ import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
  * @param {*} opts 
  */
 export const statData = function (opts) {
-	opts = opts || { datasetCode:"demo_r_d3dens" };
+	opts = opts || { eurostatDatasetCode:"demo_r_d3dens" };
 
 	const out = {};
 
@@ -99,8 +99,8 @@ export const statData = function (opts) {
 	 * @param {*} callback 
 	 */
 	out.updateB = function (nutsLvl, callback) {
-		if (out.datasetCode_ == "eurostat") updateEurobase(nutsLvl, callback);
-		else if (out.csvDataSource_) updateCSV(callback);
+		if (out.eurostatDatasetCode_) updateEurobase(nutsLvl, callback);
+		else if (out.csvURL_) updateCSV(callback);
 		return out;
 	}
 
@@ -110,8 +110,12 @@ export const statData = function (opts) {
 
 	/**
 	 * Eurobase/jsonstat data source
+	 * See https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request
 	*/
-	out.datasetCode_ = opts.datasetCode;
+
+	/** The Eurobase dataset code */
+	out.eurostatDatasetCode_ = opts.eurostatDatasetCode_;
+	/** The Eurobase code */
 	out.filters_ = opts.filters || { lastTimePeriod: 1 };
 	out.precision_ = opts.precision || 2;
 	let jsonStatTime = undefined;
@@ -128,7 +132,7 @@ export const statData = function (opts) {
 		out.filters_["filterNonGeo"] = 1;
 
 		//retrieve stat data from Eurostat API
-		return json(getEstatDataURL(out.datasetCode_, out.filters_))
+		return json(getEstatDataURL(out.eurostatDatasetCode_, out.filters_))
 	}
 
 	//for eurobase statistical data to retrieve from Eurostat API
@@ -169,14 +173,19 @@ export const statData = function (opts) {
 	/**
 	 * CSV data source
 	*/
-	out.csvDataSource_ = opts.csvDataSource;
 
+	/** The CSV file URL */
+	out.csvURL_ = opts.csvURL;
+	/** The CSV column with the NUTS ids */
+	out.geoCol_ = opts.geoCol || "geo";
+	/** The CSV column with the statistical values */
+	out.valueCol_ = opts.valueCol || "value";
 
 	/**
 	 * Return promise for CSV data.
 	 */
 	const getCSVPromise = function(nutsLvl) {
-		return csv(out.csvDataSource_.url)
+		return csv(out.csvURL_)
 	}
 
 	//for statistical data to retrieve from CSV file
@@ -188,7 +197,7 @@ export const statData = function (opts) {
 		getCSVPromise().then(
 			function (data___) {
 				//decode stat data
-				out.data_ = csvToIndex(data___, out.csvDataSource_.geoCol, out.csvDataSource_.valueCol);
+				out.data_ = csvToIndex(data___, out.geoCol_, out.valueCol_);
 				callback();
 		});
 	}
