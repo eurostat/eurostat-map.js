@@ -5,8 +5,10 @@ import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 
 /**
  * A statistical dataset, to be used for a statistical map.
+ * @param {*} opts 
  */
-export const statData = function () {
+export const statData = function (opts) {
+	opts = opts || {};
 
 	const out = {};
 
@@ -14,7 +16,16 @@ export const statData = function () {
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
 	 */
-	out.data_ = null;
+	out.data_ = opts.data;
+
+	/**
+	 * The type of stat dataset among:
+	 * 'eurostat' for eurostat data
+	 * 'csv' for CSV data
+	 * other values, for user defined values
+	 */
+	out.type_ = opts.type;
+
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
@@ -43,8 +54,18 @@ export const statData = function () {
 			else s.value = isNaN(+stat)?stat:+stat;
 		else
 			out.data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
+		return out;
 	}
 
+	/**
+	 * Set statistical data, already indexed by nutsId.
+	 * 
+	 * @param {*} data Something like { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
+	 */
+	out.setData = (data) => {
+		Object.keys(data).forEach( (nutsId) => out.set(nutsId, data[nutsId]) );
+		return out;
+	}
 
 
 
@@ -87,8 +108,8 @@ export const statData = function () {
 	 * @param {*} callback 
 	 */
 	out.updateB = function (nutsLvl, callback) {
-		if (out.csvDataSource_ == null) updateEurobase(nutsLvl, callback);
-		else updateCSV(callback);
+		if (out.type_ == "eurostat") updateEurobase(nutsLvl, callback);
+		else if (out.type_ == "csv") updateCSV(callback);
 		return out;
 	}
 
@@ -99,9 +120,9 @@ export const statData = function () {
 	/**
 	 * Eurobase/jsonstat data source
 	*/
-	out.datasetCode_ = "demo_r_d3dens";
-	out.filters_ = { lastTimePeriod: 1 };
-	out.precision_ = 2;
+	out.datasetCode_ = opts.datasetCode || "demo_r_d3dens";
+	out.filters_ = opts.filters || { lastTimePeriod: 1 };
+	out.precision_ = opts.precision || 2;
 	let jsonStatTime = undefined;
 
 	/**
@@ -157,7 +178,7 @@ export const statData = function () {
 	/**
 	 * CSV data source
 	*/
-	out.csvDataSource_ = null;
+	out.csvDataSource_ = opts.csvDataSource;
 
 
 	/**
@@ -180,8 +201,6 @@ export const statData = function () {
 				callback();
 		});
 	}
-
-
 
 	return out;
 }

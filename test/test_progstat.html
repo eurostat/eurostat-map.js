@@ -11,11 +11,18 @@
     <script src="../build/eurostatmap.js"></script>
     <script>
         const map = eurostatmap.map("ch");
-        map.nutsLvl(0);
-        map.stat().set("FR",700)
-        map.build();
 
-        //map.updateStatValues()
+        map.nutsLvl(0);
+        //map.stat().set("FR",100)
+        //map.stat().set("LU",500)
+        //map.stat().set("DE",400)
+        //map.stat().set("IT",600)
+        map.stat().setData({
+            "FR": 10,
+            "DE": 7,
+            "UK": 12,
+        })
+        map.build();
 
 </script>
 </body>
