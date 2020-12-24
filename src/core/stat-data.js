@@ -54,8 +54,8 @@ export const statData = function () {
 	 * @param {*} callback 
 	 */
 	out.updateStatDataB = function (nutsLvl, callback) {
-		if (out.csvDataSource_ == null) updateStatEurobase(nutsLvl, callback);
-		else updateStatCSV(callback);
+		if (out.csvDataSource_ == null) updateEurobase(nutsLvl, callback);
+		else updateCSV(callback);
 		return out;
 	}
 
@@ -71,15 +71,28 @@ export const statData = function () {
 	out.precision_ = 2;
 	let jsonStatTime = undefined;
 
+	/**
+	 * Return promise for Eurobase/jsonstat data.
+	 */
+	const getEurobasePromise = function(nutsLvl) {
+		//set precision
+		out.filters_["precision"] = out.precision_;
+		//select only required geo groups, depending on the specified nuts level
+		out.filters_["geoLevel"] = nutsLvl + "" === "0" ? "country" : "nuts" + nutsLvl;
+		//force filtering of euro-geo-aggregates
+		out.filters_["filterNonGeo"] = 1;
 
+		//retrieve stat data from Eurostat API
+		return json(getEstatDataURL(out.datasetCode_, out.filters_))
+	}
 
 	//for statistical data to retrieve from Eurostat API
 	//TODO document
-	const updateStatEurobase = function (nutsLvl, callback) {
+	const updateEurobase = function (nutsLvl, callback) {
 		//erase previous data
 		out.data_ = null;
 
-		out.getStatDataPromise(nutsLvl).then(
+		getEurobasePromise(nutsLvl).then(
 			function (data___) {
 
 				//decode stat data
@@ -116,7 +129,7 @@ export const statData = function () {
 
 	//for statistical data to retrieve from custom CSV file
 	//TODO document
-	const updateStatCSV = function (callback) {
+	const updateCSV = function (callback) {
 		//erase previous data
 		out.data_ = null;
 
