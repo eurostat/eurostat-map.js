@@ -5,6 +5,8 @@ import { select } from "d3-selection";
  * A legend is provided as an independant g element to be nested within a SVG image.
 */
 export const legend = function (map) {
+
+	//build legend object
 	const out = {};
 
 	out.map_ = map;
