@@ -8,10 +8,11 @@ import * as lg from '../core/legend';
  * 
  * @param {*} map 
  */
-export const legendChoropleth = function (map) {
+export const legendChoropleth = function (map, config) {
+	config = config || {};
 
 	//build generic legend object for the map
-	const out = lg.legend(map);
+	const out = lg.legend(map, config);
 
 	//@override
 	out.update = function () {

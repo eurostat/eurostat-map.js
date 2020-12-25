@@ -7,17 +7,18 @@ import * as lg from '../core/legend';
  * 
  * @param {*} map 
  */
-export const legendProportionalSymbols = function (map) {
+export const legendProportionalSymbols = function (map, config) {
+	config = config || {};
 
 	//build generic legend object for the map
-	const out = lg.legend(map);
+	const out = lg.legend(map, config);
 
 	//attributes
-	out.cellNb_ = 4;
+	out.cellNb_ = config.cellNb || 4;
 	out.cellNb = function (v) { if (!arguments.length) return out["cellNb_"]; out["cellNb_"] = v; return out.map(); }
 
 	// user-define d3 format function
-	out.format_ = null
+	out.format_ = config.format || null
 	out.format = function (v) { if (!arguments.length) return out["format_"]; out["format_"] = v; return out.map(); }
 
 	//@override
