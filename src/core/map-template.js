@@ -79,7 +79,7 @@ export const mapTemplate = function (withCenterPoints) {
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
 
-    out.zoomExtent_ = [1, 5];
+    out.zoomExtent_ = [1,1];
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
 	/**
