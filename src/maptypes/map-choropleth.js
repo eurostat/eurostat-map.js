@@ -18,7 +18,6 @@ export const map = function () {
 	out.colorFun_ = interpolateYlOrBr;
 	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
 	out.noDataFillStyle_ = "lightgray";
-	out.legend_ = lgch.legendChoropleth(out)
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
@@ -39,19 +38,7 @@ export const map = function () {
 	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
-	out.legend = function (config) {
-		if (!arguments.length) {
-			//create legend if needed
-			if (!out.legend_) out.legend_ = lgch.legendChoropleth(out);
-			return out.legend_;
-		} else {
-			//overwrite legend config properties
-			for (let key in config) {
-				out.legend_[key] = config[key];
-			}
-		}
-		return out;
-	};
+
 
 	//@override
 	out.updateClassification = function () {
@@ -106,6 +93,12 @@ export const map = function () {
 
 		return out;
 	};
+
+
+	//@override
+	out.getLegendConstructor = function() {
+		return lgch.legendChoropleth;
+	}
 
 
 	return out;

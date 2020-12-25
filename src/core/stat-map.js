@@ -1,6 +1,7 @@
 import { flags } from '../lib/eurostat-base';
 import * as mt from './map-template';
 import * as sd from './stat-data';
+import * as lg from './legend';
 
 
 /**
@@ -29,7 +30,7 @@ export const statMap = function (withCenterPoints) {
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function () { };
+	out.filtersDefinitionFun_ = function() { };
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -38,18 +39,29 @@ export const statMap = function (withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["showLegend_", "legend_", "noDataText_", "lg_", "transitionDuration_"]
+	["showLegend_", "noDataText_", "lg_", "transitionDuration_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
+
+	//override of some special getters/setters
+    out.legend = function (config) {
+		if (!arguments.length) {
+			//create legend if needed
+			if(!out.legend_)
+				out.legend_ = out.getLegendConstructor()(out, config);
+			return out.legend_;
+		}
+		return out;
+	};
 
 
 	/**
 	 * Build a map object.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */
-	out.build = function () {
+	out.build = function() {
 
 		//build map template base
 		out.buildMapTemplateBase();
@@ -60,7 +72,7 @@ export const statMap = function (withCenterPoints) {
 		//legend element
 		if (out.showLegend()) {
 			//create legend element
-			const lg = out.legend_;
+			const lg = out.legend();
 			const lgg = out.svg().append("g").attr("id", lg.gId_);
 			lg.build();
 
@@ -85,7 +97,7 @@ export const statMap = function (withCenterPoints) {
 	 * Update the map with new geo data.
 	 * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
 	 */
-	out.updateGeoData = function () {
+	out.updateGeoData = function() {
 		out.updateGeoMT( ()=>{
 			//if stat data are already there, update the map with these values
 			if (!out.stat().data_) return;
@@ -98,7 +110,7 @@ export const statMap = function (withCenterPoints) {
 	 * Update the map with new stat data sources.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
-	out.updateStatData = function () {
+	out.updateStatData = function() {
 		out.stat().retrieveFromRemote(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out._geoData) return;
@@ -114,7 +126,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
 	 * If the stat data sources have changed, call *updateStatData* instead.
 	 */
-	out.updateStatValues = function () {
+	out.updateStatValues = function() {
 
 		//update classification and styles
 		out.updateClassification();
@@ -131,7 +143,7 @@ export const statMap = function (withCenterPoints) {
 	 * Update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	 */
-	out.updateClassification = function () {
+	out.updateClassification = function() {
 		console.log("Map updateClassification function not implemented")
 		return out;
 	}
@@ -142,11 +154,19 @@ export const statMap = function (withCenterPoints) {
 	 * Update the map after styling attributes have been changed.
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	 */
-	out.updateStyle = function () {
+	out.updateStyle = function() {
 		console.log("Map updateStyle function not implemented")
 		return out;
 	}
 
+	/**
+	 * Abstract method.
+	 * Function which return the legend constructor function for the map.
+	 */
+	out.getLegendConstructor = function() {
+		console.log("Map getLegendConstructor function not implemented")
+		return lg.legend;
+	}
 
 
 	/**
