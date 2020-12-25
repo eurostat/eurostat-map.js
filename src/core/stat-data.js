@@ -10,6 +10,7 @@ import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 export const statData = function (config) {
 	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
 
+	//build stat data object
 	const out = {};
 
 	/**

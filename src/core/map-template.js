@@ -14,6 +14,7 @@ import * as tp from '../lib/eurostat-tooltip';
  */
 export const mapTemplate = function (withCenterPoints) {
 
+	//build map template object
 	const out = {};
 
 	/**
