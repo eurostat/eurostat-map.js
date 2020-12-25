@@ -106,7 +106,7 @@ export const statMap = function (withCenterPoints) {
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function () {
-		out.stat().updateB(out.nutsLvl(), ()=>{
+		out.stat().retrieveFromRemote(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out._geoData) return;
 			out.updateStatValues();

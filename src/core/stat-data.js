@@ -7,8 +7,8 @@ import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
  * A statistical dataset, to be used for a statistical map.
  * @param {*} opts 
  */
-export const statData = function (opts) {
-	opts = opts || { eurostatDatasetCode:"demo_r_d3dens" };
+export const statData = function (config) {
+	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
 
 	const out = {};
 
@@ -16,7 +16,7 @@ export const statData = function (opts) {
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
 	 */
-	out.data_ = opts.data;
+	out.data_ = config.data;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
@@ -97,7 +97,7 @@ export const statData = function (opts) {
 	 * @param {*} nutsLvl 
 	 * @param {*} callback 
 	 */
-	out.updateB = function (nutsLvl, callback) {
+	out.retrieveFromRemote = function (nutsLvl, callback) {
 		if (out.eurostatDatasetCode_) updateEurobase(nutsLvl, callback);
 		else if (out.csvURL_) updateCSV(callback);
 		return out;
@@ -113,10 +113,10 @@ export const statData = function (opts) {
 	*/
 
 	/** The Eurobase dataset code */
-	out.eurostatDatasetCode_ = opts.eurostatDatasetCode;
+	out.eurostatDatasetCode_ = config.eurostatDatasetCode;
 	/** The Eurobase code */
-	out.filters_ = opts.filters || { lastTimePeriod: 1 };
-	out.precision_ = opts.precision || 2;
+	out.filters_ = config.filters || { lastTimePeriod: 1 };
+	out.precision_ = config.precision || 2;
 	let jsonStatTime = undefined;
 
 	/**
@@ -174,11 +174,11 @@ export const statData = function (opts) {
 	*/
 
 	/** The CSV file URL */
-	out.csvURL_ = opts.csvURL;
+	out.csvURL_ = config.csvURL;
 	/** The CSV column with the NUTS ids */
-	out.geoCol_ = opts.geoCol || "geo";
+	out.geoCol_ = config.geoCol || "geo";
 	/** The CSV column with the statistical values */
-	out.valueCol_ = opts.valueCol || "value";
+	out.valueCol_ = config.valueCol || "value";
 
 	/**
 	 * Return promise for CSV data.
