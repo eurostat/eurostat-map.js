@@ -10,10 +10,11 @@ import * as sd from './stat-data';
  */
 export const statMap = function (withCenterPoints) {
 
+	//build stat map from map template
 	const out = mt.mapTemplate(withCenterPoints);
 
 	//the statistical data
-	//TODO Enable several statData. Make that a dictionary.
+	//TODO Enable several statData. Make that a dictionary. Or array?
 	out.stat_ = sd.statData();
 	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
 
