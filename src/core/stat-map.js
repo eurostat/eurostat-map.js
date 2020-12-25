@@ -45,14 +45,6 @@ export const statMap = function (withCenterPoints) {
 	);
 
 
-	/*/for stat data
-	["datasetCode_", "filters_", "precision_", "csvDataSource_"]
-		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out.stat_[att]; out.stat_[att] = v; return out; };
-		}
-	);*/
-
-
 	/**
 	 * Build a map object.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
