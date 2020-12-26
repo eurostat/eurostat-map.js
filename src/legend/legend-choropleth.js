@@ -102,7 +102,7 @@ export const legendChoropleth = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.shapeHeight + out.shapePadding + 8) * (out.map.clnb_);
+		return out.boxPadding * 2 + out.titleFontSize + (out.shapeHeight + out.shapePadding + 8) * (out.map.clnb());
 	}
 
 	return out;
