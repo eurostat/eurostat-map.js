@@ -53,7 +53,7 @@ export const legendProportionalSymbols = function (map, config) {
 			//.classPrefix("prefix")
 			.labels(function (d) { return d.generatedLabels[d.i] })
 			//.labelAlign("middle") //?
-			.labelFormat(out.format || format("." + out.labelDecNb + "f"))
+			.labelFormat(out.format() || format("." + out.labelDecNb + "f"))
 			.labelOffset(out.labelOffset)
 			.labelWrap(out.labelWrap)
 			;
