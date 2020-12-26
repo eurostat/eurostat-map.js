@@ -86,7 +86,9 @@ export const legendCategorical = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + out.shapeHeight + (1 + out.shapeHeight + out.shapePadding) * (out.map.clnb() - 1) + 12;
+		//get number of categories
+		const nb = out.map.classToFillStyleCT()? Object.keys(out.map.classToFillStyleCT()).length : 4;
+		return out.boxPadding * 2 + out.titleFontSize + out.shapeHeight + (1 + out.shapeHeight + out.shapePadding) * nb + 12;
 	}
 
 	return out;

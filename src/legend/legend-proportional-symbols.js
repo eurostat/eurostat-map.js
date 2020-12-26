@@ -79,7 +79,7 @@ export const legendProportionalSymbols = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize() * 0.7 + out.shapePadding) * (out.cellNb) + 35;
+		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize() * 0.7 + out.shapePadding) * (out.cellNb()) + 35;
 	}
 
 	return out;

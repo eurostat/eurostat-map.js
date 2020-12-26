@@ -9,8 +9,11 @@ export const map = function () {
 	//create map object to return, using the template
 	const out = smap.statMap();
 
+	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
 	out.classToFillStyleCT_ = undefined;
+	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
 	out.classToText_ = undefined;
+	/** The color for non data regions */
 	out.noDataFillStyle_ = "lightgray";
 
 	//the classifier: a function which return a class number from a stat value.
