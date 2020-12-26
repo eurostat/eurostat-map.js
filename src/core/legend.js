@@ -11,7 +11,7 @@ export const legend = function (map, config) {
 	const out = {};
 
 	//link map to legend
-	out.map_ = map;
+	out.map = map;
 
 	//the SVG 'g' element where to make the legend
 	out.gId_ = config.gId || "legend_" + Math.round(10e15 * Math.random());

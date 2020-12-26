@@ -16,7 +16,7 @@ export const legendChoropleth = function (map, config) {
 
 	//@override
 	out.update = function () {
-		const m = out.map_;
+		const m = out.map;
 		const svgMap = m.svg();
 		const g = out.g_;
 
@@ -102,7 +102,7 @@ export const legendChoropleth = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.shapeHeight + out.shapePadding + 8) * (out.map_.clnb_);
+		return out.boxPadding * 2 + out.titleFontSize + (out.shapeHeight + out.shapePadding + 8) * (out.map.clnb_);
 	}
 
 	return out;

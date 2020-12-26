@@ -15,7 +15,7 @@ export const legendCategorical = function (map, config) {
 
 	//@override
 	out.update = function () {
-		const m = out.map_;
+		const m = out.map;
 		const cla = m.classifier();
 		const claInv = m.classifierInverse();
 		const g = out.g_;
@@ -86,7 +86,7 @@ export const legendCategorical = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + out.shapeHeight + (1 + out.shapeHeight + out.shapePadding) * (out.map_.clnb_ - 1) + 12;
+		return out.boxPadding * 2 + out.titleFontSize + out.shapeHeight + (1 + out.shapeHeight + out.shapePadding) * (out.map.clnb_ - 1) + 12;
 	}
 
 	return out;

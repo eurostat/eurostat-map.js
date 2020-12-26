@@ -23,7 +23,7 @@ export const legendProportionalSymbols = function (map, config) {
 
 	//@override
 	out.update = function () {
-		const m = out.map_;
+		const m = out.map;
 		//const svgMap = m.svg();
 		const g = out.g_;
 
@@ -75,11 +75,11 @@ export const legendProportionalSymbols = function (map, config) {
 
 	//@override
 	out.computeWidth = function () {
-		return out.boxPadding * 2 + Math.max(out.titleWidth, out.map_.psMaxSize_ + out.labelOffset + out.labelWrap);
+		return out.boxPadding * 2 + Math.max(out.titleWidth, out.map.psMaxSize_ + out.labelOffset + out.labelWrap);
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.map_.psMaxSize_ * 0.7 + out.shapePadding) * (out.cellNb) + 35;
+		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize_ * 0.7 + out.shapePadding) * (out.cellNb) + 35;
 	}
 
 	return out;
