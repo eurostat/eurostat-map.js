@@ -1,18 +1,20 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
-import * as mt from '../core/stat-map-template';
+import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
 
 export const map = function () {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate();
+	const out = smap.statMap();
 
+	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
 	out.classToFillStyleCT_ = undefined;
+	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
 	out.classToText_ = undefined;
+	/** The color for non data regions */
 	out.noDataFillStyle_ = "lightgray";
-	out.legend_ = lgct.legendCategorical(out);
 
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
@@ -31,27 +33,6 @@ export const map = function () {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
-	//override of some special getters/setters
-    out.legend = function (config) {
-		if (!arguments.length) {
-			//create legend if needed
-			if(!out.legend_) {
-				out.legend_ = lgct.legendCategorical(out);
-			}
-			return out.legend_;
-		}
-
-		for (let key in config) {
-			out.legend_[key] = config[key];
-		  }
-
-		//setter: link map and legend
-		// out.legend_ = v; 
-		// v.map(out);
-		return out;
-	};
-
-
 
 	//@override
 	out.updateClassification = function () {
@@ -61,7 +42,7 @@ export const map = function () {
 		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
 
 		//get domain: unique values
-		const dom = Object.values(out._statDataIndex).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+		const dom = out.stat().getUniqueValues();
 
 		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));
@@ -70,7 +51,7 @@ export const map = function () {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.getStat(rg.properties.id);
+				const sv = out.stat().get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
@@ -98,6 +79,13 @@ export const map = function () {
 	};
 
 
+
+	//@override
+	out.getLegendConstructor = function() {
+		return lgct.legendCategorical;
+	}
+
+
 	/**
 	 * Specific function for tooltip text.
 	 * 
@@ -109,7 +97,7 @@ export const map = function () {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//get stat value
-		const sv = out.getStat(rg.properties.id);
+		const sv = out.stat().get(rg.properties.id);
 		//case when no data available
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);

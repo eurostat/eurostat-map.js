@@ -4,45 +4,49 @@ import { select } from "d3-selection";
  * A eurostat-map legend. This is an abstract method.
  * A legend is provided as an independant g element to be nested within a SVG image.
 */
-export const legend = function (map) {
+export const legend = function (map, config) {
+	config = config || {};
+
+	//build legend object
 	const out = {};
 
-	out.map_ = map;
+	//link map to legend
+	out.map = map;
 
 	//the SVG 'g' element where to make the legend
-	out.gId_ = "legend_" + Math.round(10e15 * Math.random());
+	out.gId_ = config.gId || "legend_" + Math.round(10e15 * Math.random());
 	out.g_ = null;
 
 	//the legend element dimension
-	out.width = null;
-	out.height = null;
+	out.width = config.width || null;
+	out.height = config.height || null;
 
 	//the legend box
-	out.boxMargin = 10;
-	out.boxPadding = 10;
-	out.boxCornerRad = 10;
-	out.boxFill = "#eeeeee";
-	out.boxOpacity = 0.5;
+	out.boxMargin = config.boxMargin || 10;
+	out.boxPadding = config.boxPadding || 10;
+	out.boxCornerRad = config.boxCornerRad || 10;
+	out.boxFill = config.boxFill || "#eeeeee";
+	out.boxOpacity = config.boxOpacity || 0.5;
 
-	out.fontFamily = "Helvetica, Arial, sans-serif";
+	out.fontFamily = config.fontFamily || "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText = "Legend";
-	out.titleFontSize = 17;
-	out.titleWidth = 140;
+	out.titleText = config.titleText || "Legend";
+	out.titleFontSize = config.titleFontSize || 17;
+	out.titleWidth = config.titleWidth || 140;
 
 	//legeng element labels
-	out.labelFontSize = 13;
-	out.labelDelim = " - ";
-	out.labelWrap = 140;
-	out.labelDecNb = 2;
-	out.labelOffset = 5;
+	out.labelFontSize = config.labelFontSize || 13;
+	out.labelDelim = config.labelDelim || " - ";
+	out.labelWrap = config.labelWrap || 140;
+	out.labelDecNb = config.labelDecNb || 2;
+	out.labelOffset = config.labelOffset || 5;
 
 	//TODO: move those to the legends where it is used, only?
-	out.ascending = true;
-	out.shapeWidth = 15;
-	out.shapeHeight = 13;
-	out.shapePadding = 2;
+	out.ascending = (config.ascending == undefined)? true : config.ascending;
+	out.shapeWidth = config.shapeWidth || 15;
+	out.shapeHeight = config.shapeHeight || 13;
+	out.shapePadding = config.shapePadding || 2;
 
 
 	/**

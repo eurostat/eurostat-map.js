@@ -23,14 +23,12 @@ test('proportional symbol map', async () => {
         //builds test map in test.html
         eurostatmap.map("ps")
             .svgId("testMap1")
-            .datasetCode("demo_r_pjangrp3")
-            .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
+            .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
             .psMaxSize(25)
             .psStrokeWidth(0.3)
             .unitText("inhabitants")
             .tooltipShowFlags("long")
-            .showLegend(true)
-            .legend({
+            .withLegend({
                 titleText: "Population",
                 cellNb: 6,
                 labelDecNb: 0,

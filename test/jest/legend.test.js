@@ -21,24 +21,22 @@ test('separated legend', async () => {
     await page.evaluate(_ => {
         // these will be executed within test.html, that was loaded before
         //builds test map in test.html
-        const map = eurostatmap
+        eurostatmap
             .map("ch")
             .width(500)
             .scale("60M")
-            .datasetCode("demo_r_d3dens")
+            .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
+            .withLegend({
+              gId: "legend",
+              titleText: "Population density (people/km²)",
+              labelDecNb: 0,
+              height: 210,
+              width: 190
+            })
             .build();
-
-        const lg = map.legend({
-            gId: "legend",
-            titleText: "Population density (people/km²)",
-            labelDecNb: 0,
-            height: 210,
-            width: 190
-        }).build();
-
     });
 
     // we're done; close the browser

@@ -188,15 +188,17 @@ A proportional symbol map shows symbols (typically circles) **sized** in proport
 
 To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
 
-| Method                             | Type   | Default value | Description                                                    |
-| ---------------------------------- | ------ | ------------- | -------------------------------------------------------------- |
-| *map*.**psMaxSize**([*value*])     | number | *30*          | The maximum size of the symbol, in pixel.                      |
-| *map*.**psMinSize**([*value*])     | number | *0.8*         | The minimum size of the symbol, for non null values, in pixel. |
-| *map*.**psMinValue**([*value*])    | number | *0*           | The minimum value of the range domain.                         |
-| *map*.**psFill**([*value*])        | String | *"#B45F04"*   | The fill color or pattern of the symbol.                       |
-| *map*.**psFillOpacity**([*value*]) | number | *0.7*         | The opacity of the symbol, from 0 to 1.                        |
-| *map*.**psStroke**([*value*])      | String | *"#fff"*      | The stroke color of the symbol.                                |
-| *map*.**psStrokeWidth**([*value*]) | number | *0.3*         | The width of the stroke.                                       |
+| Method                             | Type   | Default value | Description                                                                                             |
+| ---------------------------------- | ------ | ------------- | ------------------------------------------------------------------------------------------------------- |
+| *map*.**psShape**([*value*])       | string | *circle*      | The shape of the symbol. Accepted values: circle, square, star, cross, diamond, triangle, wye or custom |
+| *map*.**psCustomShape**([*value*]) | Object | null          | A custom symbol to be used with d3.symbol. See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT    |
+| *map*.**psMaxSize**([*value*])     | number | *30*          | The maximum size of the symbol, in pixels.                                                              |
+| *map*.**psMinSize**([*value*])     | number | *0.8*         | The minimum size of the symbol, for non null values, in pixels.                                         |
+| *map*.**psMinValue**([*value*])    | number | *0*           | The minimum value of the range domain.                                                                  |
+| *map*.**psFill**([*value*])        | String | *"#B45F04"*   | The fill color or pattern of the symbol.                                                                |
+| *map*.**psFillOpacity**([*value*]) | number | *0.7*         | The opacity of the symbol, from 0 to 1.                                                                 |
+| *map*.**psStroke**([*value*])      | String | *"#fff"*      | The stroke color of the symbol.                                                                         |
+| *map*.**psStrokeWidth**([*value*]) | number | *0.3*         | The width of the stroke.                                                                                |
 
 ### For categorical maps
 
@@ -214,7 +216,7 @@ To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The fol
 
 | Method                                    | Type     | Default value         | Description                                                                                                                                                                                                                                                                                                                                                         |
 | ----------------------------------------- | -------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| *map*.**zoomExtent**([*value*])           | Array    | *[1,5]*               | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming.                                                                                                                                                                            |
+| *map*.**zoomExtent**([*value*])           | Array    | *[1,1]*               | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to null or *[1,1]* to forbid zooming.                                                                                                                                                                            |
 | *map*.**noDataText**([*value*])           | String   | *"No data available"* | The text to show for regions where no data is available.                                                                                                                                                                                                                                                                                                            |
 | *map*.**lg**([*value*])                   | String   | *"en"*                | The language code, for multilingual maps.                                                                                                                                                                                                                                                                                                                           |
 | *map*.**transitionDuration**([*value*])   | int      | *800*                 | When updating statistical figures, the map style changes progressively. This parameter sets the duration of this transition, in ms.                                                                                                                                                                                                                                 |

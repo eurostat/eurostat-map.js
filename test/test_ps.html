@@ -10,24 +10,39 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script src="https://d3js.org/d3-format.v2.min.js"></script>
+    <!-- for custom symbol -->
+    <script src="https://d3js.org/d3-path.v2.min.js"></script>
+    <script src="https://d3js.org/d3-shape.v2.min.js"></script>
 
     <script>
         let format = d3.format(".2s");
 
+        //Custom Semi Circle, accurate center and size
+        let customShapeCircle = {
+            draw: function (context, size) {
+                let r = Math.sqrt(2 * size / Math.PI);
+                let orgin = (4 * r) / (3 * Math.PI); //the orgin of the circle, not of the symbol
+                context.arc(0, -orgin, r, Math.PI, 2 * Math.PI, true);
+                context.closePath();
+            }
+        }
+
+        let customCircle = d3.symbol().type(customShapeCircle);
+
         eurostatmap.map("ps")
             //.width(900)
-            .datasetCode("demo_r_pjangrp3")
-            .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
-
+            .nutsLvl(1)
+            .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
+            .psShape("custom") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
+            .psCustomShape(customCircle)
             .psMaxSize(25)
+            .psFill("red")
             //.psStrokeWidth(3)
             //.psStroke("red")
 
             .unitText("inhabitants")
             .tooltipShowFlags("long")
-
-            .showLegend(true)
-            .legend({
+            .withLegend({
                 titleText: "Population",
                 cellNb: 6,
                 labelDecNb: 0,
