@@ -83,10 +83,15 @@ export const mapTemplate = function (withCenterPoints) {
     out.zoomExtent_ = [1,1];
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
+
 	//insets to show. List of geo codes. Ex.: 
 	out.insets_ = [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
+
+	out.insetPadding_ = 10;
+	out.insetSize_ = 100;
+
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -189,7 +194,7 @@ export const mapTemplate = function (withCenterPoints) {
 		for(let i=0; i<out.insets_.length; i++) {
 			const geo = out.insets_[i];
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
-				.attr("transform", "translate(" + (20) + "," + (10+i*110) + ")");
+				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*out.insetSize_) + ")");
 			const geoSvgId = "inset"+geo+(Math.random().toString(36).substring(7));
 			const insetSvg = ggeo.append("svg").attr("id", geoSvgId);
 			const insetTemplate = getInsetTemplate(geo, insetSvg, geoSvgId);
@@ -444,8 +449,8 @@ export const mapTemplate = function (withCenterPoints) {
 		mt.bottomText_ = "";
 		mt.botTxtTooltipTxt_ = "";
 		mt.zoomExtent_ = [1,3];
-		mt.width_ = 100;
-		mt.height_ = 100;
+		mt.width_ = out.insetSize_;
+		mt.height_ = out.insetSize_;
 		return mt;
 	}
 
