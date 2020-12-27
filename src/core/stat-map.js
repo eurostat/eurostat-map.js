@@ -2,6 +2,7 @@ import { flags } from '../lib/eurostat-base';
 import * as mt from './map-template';
 import * as sd from './stat-data';
 import * as lg from './legend';
+import { select } from 'd3';
 
 
 /**
@@ -69,7 +70,12 @@ export const statMap = function (withCenterPoints) {
 		if (out.legend()) {
 			//create legend element
 			const lg = out.legend();
-			const lgg = out.svg().append("g").attr("id", lg.gId_);
+
+			//get legend group
+			let lgg = select("#"+lg.gId_);
+			//if does not exist, create it
+			if(lgg.size() == 0) lgg = out.svg().append("g").attr("id", lg.gId_);
+
 			lg.build();
 
 			//set position
@@ -334,4 +340,3 @@ export const getURLParameters = function () {
 		ps[p[i]] = getURLParameterByName(p[i]);
 	return ps;
 };
-
