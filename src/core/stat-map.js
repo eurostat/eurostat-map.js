@@ -121,7 +121,7 @@ export const statMap = function (withCenterPoints) {
 	out.updateStatData = function() {
 		out.stat().retrieveFromRemote(out.nutsLvl(), ()=>{
 			//if geodata are already there, refresh the map with stat values
-			if (!out._geoData) return;
+			if (!out.isGeoReady()) return;
 			out.updateStatValues();
 		});
 		return out;

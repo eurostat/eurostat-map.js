@@ -97,13 +97,22 @@ export const mapTemplate = function (withCenterPoints) {
 	*/
 	for (const att in out)
 		out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+	//TODO apply that to inset components as well
 
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
 	 */
-	out._geoData;
+	let geoData = undefined;
 
+	/** */
+	out.isGeoReady = function() {
+		if(!geoData) return false;
+		//recursive call to inset components
+		for(const geo in out.insetTemplates_)
+			if( !out.insetTemplates_[geo].isReady ) return false;
+		return true;
+	}
 
 	/**
 	 * Return promise for Nuts2JSON topojson data.
@@ -120,18 +129,17 @@ export const mapTemplate = function (withCenterPoints) {
 		return json(buf.join(""));
 	}
 
-
 	/**
 	 * 
 	 */
 	out.updateGeoMT = function (callback) {
 
 		//erase previous data
-		out._geoData = null;
+		geoData = null;
 
 		//get geo data from Nuts2json API
 		out.getGeoDataPromise().then(function (geo___) {
-				out._geoData = geo___;
+				geoData = geo___;
 
 				//build map template
 				out.buildMapTemplate();
@@ -139,6 +147,11 @@ export const mapTemplate = function (withCenterPoints) {
 				//callback
 				callback();
 			});
+
+		//recursive call to inset components
+		for(const geo in out.insetTemplates_)
+			out.insetTemplates_[geo].updateGeoMT(callback);
+
 		return out;
 	}
 
@@ -210,11 +223,11 @@ export const mapTemplate = function (withCenterPoints) {
 		const dp = _defaultPosition[out.geo() + "_" + out.proj()];
 		if (!out.geoCenter())
 			if (dp) out.geoCenter(dp.geoCenter);
-			else out.geoCenter([0.5 * (out._geoData.bbox[0] + out._geoData.bbox[2]), 0.5 * (out._geoData.bbox[1] + out._geoData.bbox[3])]);
+			else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])]);
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
 		if (!out.pixSize())
 			if (dp) out.pixSize(dp.widthGeo / out.width());
-			else out.pixSize(Math.min((out._geoData.bbox[2] - out._geoData.bbox[0]) / out.width_, (out._geoData.bbox[3] - out._geoData.bbox[1]) / out.height_));
+			else out.pixSize(Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_));
 
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
@@ -223,11 +236,11 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 		//decode topojson to geojson
-		const gra = feature(out._geoData, out._geoData.objects.gra).features;
-		const nutsRG = feature(out._geoData, out._geoData.objects.nutsrg).features;
-		const nutsbn = feature(out._geoData, out._geoData.objects.nutsbn).features;
-		const cntrg = feature(out._geoData, out._geoData.objects.cntrg).features;
-		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
+		const gra = feature(geoData, geoData.objects.gra).features;
+		const nutsRG = feature(geoData, geoData.objects.nutsrg).features;
+		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
+		const cntrg = feature(geoData, geoData.objects.cntrg).features;
+		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
 		//prepare drawing group
 		const zg = out.svg().select("#zoomgroup"+out.geo_);
