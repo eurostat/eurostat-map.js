@@ -217,11 +217,11 @@ export const mapTemplate = function (withCenterPoints) {
 		if (out.zoomExtent()) {
 			svg.call(zoom()
 				.scaleExtent(out.zoomExtent())
-				.on('zoom', function (a, b, c) {
+				.on('zoom', function () {
 					const k = event.transform.k;
 					const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
 					for (let i = 0; i < cs.length; i++)
-						svg.selectAll("." + cs[i]).style("stroke-width", function (d) {
+						out.svg().selectAll("." + cs[i]).style("stroke-width", function (d) {
 							return (1 / k) + "px";
 						});
 					zg.attr("transform", event.transform);
