@@ -31,10 +31,8 @@ test('choropleth and categorical maps', async () => {
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "test",
+            .withLegend({
+                titleText: "test",
                     labelDecNb: 0,
                 }
             )
@@ -51,10 +49,8 @@ test('choropleth and categorical maps', async () => {
             .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
             .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "test",
+            .withLegend({
+                titleText: "test",
                     labelDecNb: 0,
                 }
             )

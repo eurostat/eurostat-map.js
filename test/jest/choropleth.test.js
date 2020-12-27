@@ -32,10 +32,8 @@ test('choropleth with threshold scale', async () => {
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "Population density test",
+            .withLegend({
+                titleText: "Population density test",
                     width: 200,
                     height: 220,
                     labelDecNb: 0,

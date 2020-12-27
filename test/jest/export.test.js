@@ -28,10 +28,8 @@ test('exporting map as SVG', async () => {
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "Population change from 2015 to 2016 : in ‰)",
+            .withLegend({
+                titleText: "Population change from 2015 to 2016 : in ‰)",
                     width: 200,
                     height: 220,
                     labelDecNb: 0,

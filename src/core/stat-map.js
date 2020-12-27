@@ -20,7 +20,6 @@ export const statMap = function (withCenterPoints) {
 	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
 
 	//legend
-	out.showLegend_ = false;
 	out.legend_ = undefined;
 
 	//other
@@ -39,20 +38,17 @@ export const statMap = function (withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["showLegend_", "noDataText_", "lg_", "transitionDuration_"]
+	["legend_", "noDataText_", "lg_", "transitionDuration_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
 
-	//override of some special getters/setters
-    out.legend = function (config) {
-		if (!arguments.length) {
-			//create legend if needed
-			if(!out.legend_)
-				out.legend_ = out.getLegendConstructor()(out, config);
-			return out.legend_;
-		}
+
+	//prepare legend
+	out.withLegend = function (config) {
+		//create legend
+		out.legend_ = out.getLegendConstructor()(out, config);
 		return out;
 	};
 
@@ -70,7 +66,7 @@ export const statMap = function (withCenterPoints) {
 		out.filtersDefinitionFun_(out.svg(), out.clnb_);
 
 		//legend element
-		if (out.showLegend()) {
+		if (out.legend()) {
 			//create legend element
 			const lg = out.legend();
 			const lgg = out.svg().append("g").attr("id", lg.gId_);
@@ -197,7 +193,7 @@ export const statMap = function (withCenterPoints) {
 		if (opts.geo) out.geo(opts.geo);
 		if (opts.ny) out.NUTSyear(opts.ny);
 		if (opts.lg) out.lg(opts.lg);
-		if (opts.sl) out.showLegend(opts.sl);
+		if (opts.sl) out.withLegend({});
 		if (opts.clnb) out.clnb(+opts.clnb);
 		return out;
 	};

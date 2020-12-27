@@ -13,13 +13,10 @@ export const legendProportionalSymbols = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
 
-	//attributes
-	out.cellNb_ = config.cellNb || 4;
-	out.cellNb = function (v) { if (!arguments.length) return out["cellNb_"]; out["cellNb_"] = v; return out.map; }
-
+	//number of elements in the legend
+	out.cellNb = config.cellNb || 4;
 	// user-define d3 format function
-	out.format_ = config.format || null
-	out.format = function (v) { if (!arguments.length) return out["format_"]; out["format_"] = v; return out.map; }
+	out.format = config.format || null
 
 	//@override
 	out.update = function () {
@@ -53,7 +50,7 @@ export const legendProportionalSymbols = function (map, config) {
 			//.classPrefix("prefix")
 			.labels(function (d) { return d.generatedLabels[d.i] })
 			//.labelAlign("middle") //?
-			.labelFormat(out.format() || format("." + out.labelDecNb + "f"))
+			.labelFormat(out.format || format("." + out.labelDecNb + "f"))
 			.labelOffset(out.labelOffset)
 			.labelWrap(out.labelWrap)
 			;
@@ -79,7 +76,7 @@ export const legendProportionalSymbols = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize() * 0.7 + out.shapePadding) * (out.cellNb()) + 35;
+		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize() * 0.7 + out.shapePadding) * (out.cellNb) + 35;
 	}
 
 	return out;
