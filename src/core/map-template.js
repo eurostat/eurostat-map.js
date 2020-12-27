@@ -83,9 +83,9 @@ export const mapTemplate = function (withCenterPoints) {
     out.zoomExtent_ = [1,1];
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
-	//insets to show
+	//insets to show. List of geo codes. Ex.: 
 	out.insets_ = [];
-	//inset templates
+	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
 
 	/**
@@ -182,15 +182,20 @@ export const mapTemplate = function (withCenterPoints) {
 		const dg = svg.insert("g", ":first-child").attr("id", "drawing");
 
 		//create main zoom group
-		const zg = dg.insert("g", ":first-child").attr("id", "zoomgroup"+out.geo_);
+		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
 
 		//insets
-		const ing = dg.insert("g", ":first-child").attr("id", "insetsgroup");
+		const ing = dg.append("g").attr("id", "insetsgroup");
 		for(let i=0; i<out.insets_.length; i++) {
 			const geo = out.insets_[i];
-			const ggeo = ing.insert("g", ":first-child").attr("id", "zoomgroup"+geo);
-			ggeo.attr("transform", "translate(" + (20) + "," + (10+i*110) + ")");
-			out.insetTemplates_[geo] = getInsetTemplate(geo);
+			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
+				.attr("transform", "translate(" + (20) + "," + (10+i*110) + ")");
+			const geoSvgId = "inset"+geo+(Math.random().toString(36).substring(7));
+			const insetSvg = ggeo.append("svg").attr("id", geoSvgId);
+			const insetTemplate = getInsetTemplate(geo, insetSvg, geoSvgId);
+			out.insetTemplates_[geo] = insetTemplate;
+			//recursive call
+			insetTemplate.buildMapTemplateBase();
 		}
 
 		//make drawing group zoomable
@@ -423,20 +428,22 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 	/** Build template for inset, based on main one */
-	const getInsetTemplate = function(geo) {
+	const getInsetTemplate = function(geo, insetSvg, geoSvgId) {
 		const mt = mapTemplate(withCenterPoints);
 
 		//copy attributes
-		["nutsLvl_", "NUTSyear_", "scale_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
+		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
+		mt.svg_ = insetSvg;
+		mt.svgId_ = geoSvgId;
 		mt.geo_ = geo;
 		mt.proj_ = _defaultCRS[geo];
+		mt.scale_ = "03M";
 		mt.title_ = "";
 		mt.bottomText_ = "";
 		mt.botTxtTooltipTxt_ = "";
 		mt.zoomExtent_ = [1,3];
-		mt.svgId_ = "map"+geo;
 		mt.width_ = 100;
 		mt.height_ = 100;
 		return mt;
