@@ -118,7 +118,7 @@ export const mapTemplate = function (withCenterPoints) {
 		if(!geoData) return false;
 		//recursive call to inset components
 		for(const geo in out.insetTemplates_)
-			if( !out.insetTemplates_[geo].isReady ) return false;
+			if( !out.insetTemplates_[geo].isGeoReady() ) return false;
 		return true;
 	}
 
