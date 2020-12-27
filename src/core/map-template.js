@@ -45,6 +45,9 @@ export const mapTemplate = function (withCenterPoints) {
 	out.titleFontWeight_ = "bold";
 
 	//template default style
+	//frame
+	out.frameStroke_ = "#222";
+	out.frameStrokeWidth_ = 2;
 	//nuts
 	out.nutsrgFillStyle_ = "#eee";
 	out.nutsrgSelFillSty_ = "purple";
@@ -202,6 +205,13 @@ export const mapTemplate = function (withCenterPoints) {
 			//recursive call
 			insetTemplate.buildMapTemplateBase();
 		}
+
+		//draw frame
+		dg.append("rect").attr("id", "frame"+out.geo_).attr("x", 0).attr("y", 0)
+			.attr("width", out.width_).attr("height", out.height_)
+			.style("stroke-width", out.frameStrokeWidth_)
+			.style("stroke", out.frameStroke_)
+			.style("fill", "none");
 
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
