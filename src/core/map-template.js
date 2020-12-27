@@ -90,7 +90,7 @@ export const mapTemplate = function (withCenterPoints) {
 	out.insetTemplates_ = {};
 
 	out.insetPadding_ = 10;
-	out.insetSize_ = 100;
+	out.insetSize_ = 60;
 
 
 	/**
@@ -194,7 +194,7 @@ export const mapTemplate = function (withCenterPoints) {
 		for(let i=0; i<out.insets_.length; i++) {
 			const geo = out.insets_[i];
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
-				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*out.insetSize_) + ")");
+				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*(out.insetPadding_+out.insetSize_)) + ")");
 			const geoSvgId = "inset"+geo+(Math.random().toString(36).substring(7));
 			const insetSvg = ggeo.append("svg").attr("id", geoSvgId);
 			const insetTemplate = getInsetTemplate(geo, insetSvg, geoSvgId);
@@ -472,7 +472,7 @@ const _defaultPosition = {
  * Defaule CRS for each geo area
  */
 const _defaultCRS = {
-	"EUR":"3035",          
+	"EUR":"3035",
 	"PT20":"32626",
 	"PT30":"32628",
 	"IC":"32628",
@@ -482,9 +482,9 @@ const _defaultCRS = {
 	"CARIB":"32620",
 	"RE":"32740",
 	"YT":"32738",
-	"MT":"3035",          
+	"MT":"3035",
 	"LI":"3035",
-	"IS":"3035",          
+	"IS":"3035",
 	"SJ_SV":"3035",
-	"SJ_JM":"3035",          
+	"SJ_JM":"3035",
 };
