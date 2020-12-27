@@ -83,6 +83,9 @@ export const mapTemplate = function (withCenterPoints) {
     out.zoomExtent_ = [1,1];
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
+	//insets to show
+	out.insets_ = [];
+
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:

@@ -53,6 +53,12 @@ export const statMap = function (withCenterPoints) {
 		return out;
 	};
 
+	//specify insets to show
+	out.withInsets = function (config) {
+		out.insets_ = config || ["MQ","IS"];
+		return out;
+	};
+
 
 	/**
 	 * Build a map object.
