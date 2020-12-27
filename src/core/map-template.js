@@ -175,11 +175,10 @@ export const mapTemplate = function (withCenterPoints) {
 		const ing = dg.insert("g", ":first-child").attr("id", "insetsgroup");
 		for(let i=0; i<out.insets_.length; i++) {
 			const geo = out.insets_[i];
-			ing.insert("g", ":first-child").attr("id", "zoomgroup"+geo);
-			//TODO set size and position ?
+			const ggeo = ing.insert("g", ":first-child").attr("id", "zoomgroup"+geo);
+			ggeo.attr("transform", "translate(" + (20) + "," + (10+i*110) + ")");
 			out.insetTemplates_[geo] = getInsetTemplate(geo);
 		}
-		console.log(out.insetTemplates_);
 
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
