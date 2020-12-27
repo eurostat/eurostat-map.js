@@ -85,6 +85,8 @@ export const mapTemplate = function (withCenterPoints) {
 
 	//insets to show
 	out.insets_ = [];
+	//inset templates
+	out.insetTemplates_ = {};
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -142,7 +144,6 @@ export const mapTemplate = function (withCenterPoints) {
 
 
 
-
     /**
 	 * Build a map object.
 	 */
@@ -165,7 +166,20 @@ export const mapTemplate = function (withCenterPoints) {
 				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 
 		//create drawing group, as first child
-		const zg = svg.insert("g", ":first-child").attr("id", "zoomgroup");
+		const dg = svg.insert("g", ":first-child").attr("id", "drawing");
+
+		//create main zoom group
+		const zg = dg.insert("g", ":first-child").attr("id", "zoomgroup"+out.geo_);
+
+		//insets
+		const ing = dg.insert("g", ":first-child").attr("id", "insetsgroup");
+		for(let i=0; i<out.insets_.length; i++) {
+			const geo = out.insets_[i];
+			ing.insert("g", ":first-child").attr("id", "zoomgroup"+geo);
+			//TODO set size and position ?
+			out.insetTemplates_[geo] = getInsetTemplate(geo);
+		}
+		console.log(out.insetTemplates_);
 
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
@@ -217,7 +231,7 @@ export const mapTemplate = function (withCenterPoints) {
 		const cntbn = feature(out._geoData, out._geoData.objects.cntbn).features;
 
 		//prepare drawing group
-		const zg = out.svg().select("#zoomgroup");
+		const zg = out.svg().select("#zoomgroup"+out.geo_);
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
@@ -395,7 +409,29 @@ export const mapTemplate = function (withCenterPoints) {
         return out;
 	};
 
-    return out;
+
+	/** Build template for inset, based on main one */
+	const getInsetTemplate = function(geo) {
+		const mt = mapTemplate(withCenterPoints);
+
+		//copy attributes
+		["nutsLvl_", "NUTSyear_", "scale_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
+		.forEach(function (att) { mt[att] = out[att]; });
+
+		mt.geo_ = geo;
+		mt.proj_ = _defaultCRS[geo];
+		mt.title_ = "";
+		mt.bottomText_ = "";
+		mt.botTxtTooltipTxt_ = "";
+		mt.zoomExtent_ = [1,3];
+		mt.svgId_ = "map"+geo;
+		mt.width_ = 100;
+		mt.height_ = 100;
+		return mt;
+	}
+
+
+	return out;
 }
 
 
@@ -407,3 +443,24 @@ const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
 	//TODO add others
 }
+
+/**
+ * Defaule CRS for each geo area
+ */
+const _defaultCRS = {
+	"EUR":"3035",          
+	"PT20":"32626",
+	"PT30":"32628",
+	"IC":"32628",
+	"GF":"32622",
+	"GP":"32620",
+	"MQ":"32620",
+	"CARIB":"32620",
+	"RE":"32740",
+	"YT":"32738",
+	"MT":"3035",          
+	"LI":"3035",
+	"IS":"3035",          
+	"SJ_SV":"3035",
+	"SJ_JM":"3035",          
+};
