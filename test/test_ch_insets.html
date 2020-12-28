@@ -13,7 +13,8 @@
         eurostatmap
             .map("ch")
             .withInsets()
-            //.withInsets(["GF"]).insetSize(200).insetZoomExtent([0,99999])
+            //.withInsets([{geo:"GF"}]).insetSize(200).insetZoomExtent([0,99999])
+            //.geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
             .build();
     </script>
 </body>
