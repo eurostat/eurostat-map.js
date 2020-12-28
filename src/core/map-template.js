@@ -71,12 +71,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.graticuleStrokeWidth_ = config.graticuleStrokeWidth || 1;
 
     //default copyright and disclaimer text
-	out.bottomText_ = config.bottomText || "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
+	out.bottomText_ = config.bottomText == undefined ? "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat" : config.bottomText; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
 	out.botTxtFontSize_ = config.botTxtFontSize || 12;
 	out.botTxtFill_ = config.botTxtFill || "black";
 	out.botTxtFontFamily_ = config.botTxtFontFamily || "Helvetica, Arial, sans-serif";
 	out.botTxtPadding_ = config.botTxtPadding || 10;
-	out.botTxtTooltipTxt_ = config.botTxtTooltipTxt || "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
+	out.botTxtTooltipTxt_ = config.botTxtTooltipTxt == undefined ? "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue." : config.botTxtTooltipTxt;
 
 	//tooltip
 	//the function returning the tooltip text
@@ -93,8 +93,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * The map template has a recursive structure.
 	 */
 
-	//insets to show. Ex.: {"MT":config, "LI":config, "PT20":config}
-	out.insetsConfig_ = config.insetsConfig || {};
+	//insets to show, as a list of map template configs. Ex.: [{geo:"MT"},{geo:"LI"},{geo:"PT20"}]
+	out.insetsConfig_ = config.insetsConfig || [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
 
@@ -217,19 +217,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//insets
 		const ing = dg.append("g").attr("id", "insetsgroup");
-		let i=0;
-		for(const geo in out.insetsConfig_) {
-			const config = out.insetsConfig_[geo];
-			config.geo = geo;
-			config.svgId = config.svgId || "inset"+geo+(Math.random().toString(36).substring(7));
+		for(let i=0; i<out.insetsConfig_.length; i++) {
+			const config = out.insetsConfig_[i];
+			config.svgId = config.svgId || "inset"+config.geo+(Math.random().toString(36).substring(7));
 
-			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
+			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo)
 				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*(out.insetPadding_+out.insetSize_)) + ")");
-			i++;
 			const insetSvg = ggeo.append("svg").attr("id", config.svgId);
 
 			const it = getInsetTemplate(config, insetSvg);
-			out.insetTemplates_[geo] = it;
+			out.insetTemplates_[config.geo] = it;
 			//recursive call
 			it.buildMapTemplateBase();
 		}
@@ -481,9 +478,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetSize_;
 		config.height = config.height || out.insetSize_;
-
-
-		console.log(config);
 
 		const mt = mapTemplate(config, withCenterPoints);
 		mt.svg_ = insetSvg;
