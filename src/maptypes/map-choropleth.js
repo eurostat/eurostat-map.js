@@ -6,10 +6,11 @@ import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
 
-export const map = function () {
+export const map = function (config) {
+	config = config || {};
 
 	//create map object to return, using the template
-	const out = smap.statMap();
+	const out = smap.statMap(config);
 
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	out.threshold_ = [0];

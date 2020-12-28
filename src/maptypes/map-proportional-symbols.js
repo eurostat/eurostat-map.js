@@ -3,11 +3,11 @@ import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
-export const map = function () {
-
+export const map = function (config) {
+	config = config || {};
 
 	//create map object to return, using the template
-	const out = smap.statMap(true);
+	const out = smap.statMap(config, true);
 
 	out.psShape_ = "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
 	out.psCustomShape_ = null; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT

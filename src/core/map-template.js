@@ -12,7 +12,8 @@ import * as tp from '../lib/eurostat-tooltip';
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const mapTemplate = function (withCenterPoints) {
+export const mapTemplate = function (config, withCenterPoints) {
+	config = config || {};
 
 	//build map template object
 	const out = {};
@@ -87,14 +88,21 @@ export const mapTemplate = function (withCenterPoints) {
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
 
-	//insets to show. List of geo codes. Ex.: 
-	out.insets_ = [];
+	/**
+	 * Insets.
+	 * The map template has a recursive structure.
+	 */
+
+	//insets to show. List of geo codes. Ex.: ["MT","LI","PT20"]
+	out.insetsConfig_ = [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
+
 	out.insetPadding_ = 5;
 	out.insetSize_ = 50;
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
+
 
 
 	/**
@@ -209,8 +217,8 @@ export const mapTemplate = function (withCenterPoints) {
 
 		//insets
 		const ing = dg.append("g").attr("id", "insetsgroup");
-		for(let i=0; i<out.insets_.length; i++) {
-			const geo = out.insets_[i];
+		for(let i=0; i<out.insetsConfig_.length; i++) {
+			const geo = out.insetsConfig_[i];
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
 				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*(out.insetPadding_+out.insetSize_)) + ")");
 			const geoSvgId = "inset"+geo+(Math.random().toString(36).substring(7));
@@ -459,7 +467,7 @@ export const mapTemplate = function (withCenterPoints) {
 
 	/** Build template for inset, based on main one */
 	const getInsetTemplate = function(geo, insetSvg, geoSvgId) {
-		const mt = mapTemplate(withCenterPoints);
+		const mt = mapTemplate(null, withCenterPoints); //TODO
 
 		//copy attributes
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]

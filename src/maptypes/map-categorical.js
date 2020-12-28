@@ -4,10 +4,11 @@ import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
 
-export const map = function () {
+export const map = function (config) {
+	config = config || {};
 
 	//create map object to return, using the template
-	const out = smap.statMap();
+	const out = smap.statMap(config);
 
 	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
 	out.classToFillStyleCT_ = undefined;

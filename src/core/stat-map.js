@@ -10,10 +10,11 @@ import { select } from 'd3';
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const statMap = function (withCenterPoints) {
+export const statMap = function (config, withCenterPoints) {
+	config = config || {};
 
 	//build stat map from map template
-	const out = mt.mapTemplate(withCenterPoints);
+	const out = mt.mapTemplate(config, withCenterPoints);
 
 	//the statistical data
 	//TODO Enable several statData. Make that a dictionary. Or array?
@@ -55,7 +56,7 @@ export const statMap = function (withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		out.insets_ = config || ["IC", "GP", "MQ", "GF", "RE", "YT", "MT", "PT20", "PT30", "LI"];
+		out.insetsConfig_ = config || ["IC", "GP", "MQ", "GF", "RE", "YT", "MT", "PT20", "PT30", "LI"];
 		return out;
 	};
 
