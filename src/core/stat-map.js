@@ -247,6 +247,8 @@ export const statMap = function (withCenterPoints) {
 
 	//set tooltip text
 	out.tooltipText( tooltipTextDefaultFunction );
+	for(const geo in out.insetTemplates_)
+		out.insetTemplates_[geo].tooltipText( tooltipTextDefaultFunction );
 
 	return out;
 }
@@ -299,7 +301,8 @@ function rasterize(svg) {
 
 
 /**
- * Get a text tooltip text.
+ * Default function for tooltip text, for statistical maps.
+ * It simply shows the name of the region and the statistical value.
  * 
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
