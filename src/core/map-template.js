@@ -497,14 +497,13 @@ const _defaultPosition = {
 	"RE_32740": { geoCenter: [348011, 7661627], widthGeo: 100000 },
 	"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 50000 },
 	"MT_3035": { geoCenter: [4719755, 1441701], widthGeo: 50000 },
-	//"PT20_32626": { geoCenter: [0,0], widthGeo: 100000 },
+	"PT20_32626": { geoCenter: [397418, 4271471], widthGeo: 750000 },
 	"PT30_32628": { geoCenter: [333586, 3622706], widthGeo: 150000 },
 	"LI_3035": { geoCenter: [4287060, 2672000], widthGeo: 30000 },
 	"IS_3035": { geoCenter: [3011804, 4960000], widthGeo: 600000 },
 	"SJ_SV_3035": { geoCenter: [4570000, 6160156], widthGeo: 600000 },
 	"SJ_JM_3035": { geoCenter: [3647762, 5408300], widthGeo: 70000 },
 	"CARIB_32620": { geoCenter: [636345, 1669439], widthGeo: 1000000 },
-	//TODO add others
 }
 
 /**
