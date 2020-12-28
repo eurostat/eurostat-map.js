@@ -246,7 +246,7 @@ export const statMap = function (withCenterPoints) {
 	}
 
 	//set tooltip text
-	out.tooltipText_ = tooltipTextDefaultFunction;
+	out.tooltipText(tooltipTextDefaultFunction);
 
 	return out;
 }

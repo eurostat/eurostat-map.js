@@ -92,8 +92,8 @@ export const mapTemplate = function (withCenterPoints) {
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
 
-	out.insetPadding_ = 10;
-	out.insetSize_ = 60;
+	out.insetPadding_ = 5;
+	out.insetSize_ = 50;
 
 
 	/**
