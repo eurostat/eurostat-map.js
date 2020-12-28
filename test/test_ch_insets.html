@@ -13,6 +13,7 @@
     <svg id="map4"></svg>
     <svg id="inset4_1"></svg>
     <svg id="inset4_2"></svg>
+    <svg id="map5"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
         eurostatmap
@@ -31,7 +32,7 @@
             .map("ch")
             .svgId("map3")
             .width(400)
-            .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
+            .geo("LI").scale("01M").withInsets([{geo:"MQ",scale:"01M"}]).insetSize(200).insetZoomExtent([0,99999])
             .build();
         eurostatmap
             .map("ch")
@@ -40,7 +41,13 @@
             .geo("LI").scale("01M").withInsets([{geo:"MT",svgId:"inset4_1"},{geo:"GP",svgId:"inset4_2"}]).insetSize(80).insetZoomExtent([0,99999])
             .build();
 
-        //TODO test inset in inset
+        /*/TODO test inset in inset
+        eurostatmap
+            .map("ch")
+            .svgId("map5")
+            .width(250)
+            .geo("LI").scale("01M").withInsets([{geo:"YT"}]).insetSize(80).insetZoomExtent([0,99999])
+            .build();*/
     </script>
 </body>
 
