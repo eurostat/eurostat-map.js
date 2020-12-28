@@ -489,6 +489,7 @@ export const mapTemplate = function (withCenterPoints) {
  */
 const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
+	//"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 100000 },
 	//TODO add others
 }
 
