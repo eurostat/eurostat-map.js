@@ -220,11 +220,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo+(Math.random().toString(36).substring(7));
-
-			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo)
-				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*(out.insetPadding_+out.insetSize_)) + ")");
+			const x = config.x || out.insetPadding_;
+			const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
+			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
+			//TODO create SVG if needed
 			const insetSvg = ggeo.append("svg").attr("id", config.svgId);
-
 			const it = getInsetTemplate(config, insetSvg);
 			out.insetTemplates_[config.geo] = it;
 			//recursive call

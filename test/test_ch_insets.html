@@ -7,15 +7,29 @@
 </head>
 
 <body>
-    <svg id="map"></svg>
+    <svg id="map1"></svg>
+    <svg id="map2"></svg>
+    <svg id="map3"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
         eurostatmap
             .map("ch")
+            .svgId("map1")
+            .width(600)
             .withInsets()
-            //.withInsets([{geo:"GF"}]).insetSize(200).insetZoomExtent([0,99999])
-            //.geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
             .build();
+        eurostatmap
+            .map("ch")
+            .svgId("map2")
+            .width(600)
+            .withInsets([{geo:"GF"}]).insetSize(200).insetZoomExtent([0,99999])
+            //.build();
+        eurostatmap
+            .map("ch")
+            .svgId("map3")
+            .width(600)
+            .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
+            //.build();
     </script>
 </body>
 
