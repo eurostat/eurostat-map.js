@@ -496,7 +496,7 @@ const _defaultPosition = {
 	"GF_32622": { geoCenter: [266852, 444074], widthGeo: 500000 },
 	"RE_32740": { geoCenter: [348011, 7661627], widthGeo: 100000 },
 	"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 50000 },
-	//"MT_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	"MT_3035": { geoCenter: [4719755, 1441701], widthGeo: 50000 },
 	//"PT20_32626": { geoCenter: [0,0], widthGeo: 100000 },
 	//"PT30_32628": { geoCenter: [0,0], widthGeo: 100000 },
 	"LI_3035": { geoCenter: [4287060, 2672000], widthGeo: 30000 },
