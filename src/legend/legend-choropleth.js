@@ -18,13 +18,13 @@ export const legendChoropleth = function (map, config) {
 	out.update = function () {
 		const m = out.map;
 		const svgMap = m.svg();
-		const g = out.g_;
+		const svg = out.svg_;
 
 		//remove previous content
-		g.selectAll("*").remove();
+		svg.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect")
+		svg.append("rect")
 			.attr("id", "legendBR")
 			.attr("x", -out.boxPadding)
 			.attr("y", -out.titleFontSize - out.boxPadding + 6)
@@ -74,10 +74,10 @@ export const legendChoropleth = function (map, config) {
 			});
 
 		//make legend
-		g.call(d3Legend);
+		svg.call(d3Legend);
 
 		//apply style to legend elements
-		g.selectAll(".swatch")
+		svg.selectAll(".swatch")
 			.attr("ecl", function () {
 				const ecl = select(this).attr("class").replace("swatch ", "");
 				if (!ecl || ecl === "nd") return "nd";
@@ -91,9 +91,9 @@ export const legendChoropleth = function (map, config) {
 			//.attr("stroke", "black")
 			//.attr("stroke-width", 0.5)
 			;
-		g.select(".legendTitle").style("font-size", out.titleFontSize);
-		g.selectAll("text.label").style("font-size", out.labelFontSize);
-		g.style("font-family", out.fontFamily);
+		svg.select(".legendTitle").style("font-size", out.titleFontSize);
+		svg.selectAll("text.label").style("font-size", out.labelFontSize);
+		svg.style("font-family", out.fontFamily);
 	}
 
 	//@override

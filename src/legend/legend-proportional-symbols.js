@@ -22,13 +22,13 @@ export const legendProportionalSymbols = function (map, config) {
 	out.update = function () {
 		const m = out.map;
 		//const svgMap = m.svg();
-		const g = out.g_;
+		const svg = out.svg_;
 
 		//remove previous content
-		g.selectAll("*").remove();
+		svg.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
+		svg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
 			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
 			.attr("width", out.width).attr("height", out.height)
 			.style("fill", out.boxFill).style("opacity", out.boxOpacity);
@@ -56,18 +56,18 @@ export const legendProportionalSymbols = function (map, config) {
 			;
 
 		//make legend
-		g.call(d3Legend);
+		svg.call(d3Legend);
 
 		//apply style to legend elements
-		g.selectAll(".swatch")
+		svg.selectAll(".swatch")
 			.style("fill", m.psFill())
 			.style("fill-opacity", m.psFillOpacity())
 			.style("stroke", m.psStroke())
 			.style("stroke-width", m.psStrokeWidth());
 
-		g.select(".legendTitle").style("font-size", out.titleFontSize);
-		g.selectAll("text.label").style("font-size", out.labelFontSize);
-		g.style("font-family", out.fontFamily);
+		svg.select(".legendTitle").style("font-size", out.titleFontSize);
+		svg.selectAll("text.label").style("font-size", out.labelFontSize);
+		svg.style("font-family", out.fontFamily);
 	}
 
 	//@override

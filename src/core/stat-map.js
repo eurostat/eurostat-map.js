@@ -75,21 +75,23 @@ export const statMap = function (config, withCenterPoints) {
 
 		//legend element
 		if (out.legend()) {
-			//create legend element
+			//get legend
 			const lg = out.legend();
 
-			//get legend group
-			let lgg = select("#"+lg.gId_);
-			//if does not exist, create it
-			if(lgg.size() == 0) lgg = out.svg().append("g").attr("id", lg.gId_);
+			//get legend svg. If it does not exist, create it within the map
+			let lgSvg = select("#"+lg.svgId_);
+			if(lgSvg.size() == 0) {
+				//get legend position
+				const x = lg.x || out.width() - lg.width;
+				const y = lg.y || lg.boxPadding + lg.titleFontSize;
+
+				//build legend SVG in a new group
+				const lgg = out.svg().append("g").attr("class", "legend")
+					.attr("transform", "translate(" + x + "," + y + ")")
+					.append("svg").attr("id", lg.svgId_);
+			}
 
 			lg.build();
-
-			//set position
-			//TODO this need to be changed when abandonning d3-legend dependancy
-			const dx = out.width() - lg.width;
-			const dy = lg.boxPadding + lg.titleFontSize;
-			lgg.attr("transform", "translate(" + dx + "," + dy + ")");
 		}
 
 		//upgrade inset maps with few methods from main stat map

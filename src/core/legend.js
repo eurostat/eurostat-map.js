@@ -2,7 +2,6 @@ import { select } from "d3-selection";
 
 /**
  * A eurostat-map legend. This is an abstract method.
- * A legend is provided as an independant g element to be nested within a SVG image.
 */
 export const legend = function (map, config) {
 	config = config || {};
@@ -13,13 +12,16 @@ export const legend = function (map, config) {
 	//link map to legend
 	out.map = map;
 
-	//the SVG 'g' element where to make the legend
-	out.gId_ = config.gId || "legend_" + Math.round(10e15 * Math.random());
-	out.g_ = null;
+	//the SVG where to make the legend
+	out.svgId_ = config.svgId || "legend_" + Math.round(10e15 * Math.random());
+	out.svg_ = undefined;
 
 	//the legend element dimension
-	out.width = config.width || null;
-	out.height = config.height || null;
+	out.width = config.width;
+	out.height = config.height;
+	//the legend element position, in case it is embeded within the map SVG
+	out.x = config.x;
+	out.y = config.y;
 
 	//the legend box
 	out.boxMargin = config.boxMargin || 10;
@@ -50,18 +52,12 @@ export const legend = function (map, config) {
 
 
 	/**
-	 * Private variables.
-	 */
-
-
-	/**
 	 * Build legend element.
 	 */
 	out.build = function () {
 
-		//set SVG group
-		//TODO use d3.create ?
-		out.g_ = select("#" + out.gId_);
+		//set SVG element
+		out.svg_ = select("#" + out.svgId_);
 
 		//set size
 		if (!out.width) out.width = out.computeWidth();

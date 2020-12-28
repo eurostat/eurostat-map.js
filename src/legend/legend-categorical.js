@@ -18,15 +18,15 @@ export const legendCategorical = function (map, config) {
 		const m = out.map;
 		const cla = m.classifier();
 		const claInv = m.classifierInverse();
-		const g = out.g_;
+		const svg = out.svg_;
 
 		const svgMap = m.svg();
 
 		//remove previous content
-		g.selectAll("*").remove();
+		svg.selectAll("*").remove();
 
 		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
+		svg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
 			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
 			.attr("width", out.width).attr("height", out.height)
 			.style("fill", out.boxFill).style("opacity", out.boxOpacity);
@@ -61,10 +61,10 @@ export const legendCategorical = function (map, config) {
 			});
 
 		//make legend
-		g.call(d3Legend);
+		svg.call(d3Legend);
 
 		//apply style to legend elements
-		g.selectAll(".swatch")
+		svg.selectAll(".swatch")
 			.attr("ecl", function () {
 				const ecl = select(this).attr("class").replace("swatch ", "");
 				if (!ecl || ecl === "nd") return "nd";
@@ -75,9 +75,9 @@ export const legendCategorical = function (map, config) {
 				if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
 				return m.classToFillStyleCT()[claInv(ecl)];
 			});
-		g.select(".legendTitle").style("font-size", out.titleFontSize);
-		g.selectAll("text.label").style("font-size", out.labelFontSize);
-		g.style("font-family", out.fontFamily);
+		svg.select(".legendTitle").style("font-size", out.titleFontSize);
+		svg.selectAll("text.label").style("font-size", out.labelFontSize);
+		svg.style("font-family", out.fontFamily);
 	}
 
 	//@override
