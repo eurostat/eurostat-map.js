@@ -223,8 +223,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 			const x = config.x || out.insetPadding_;
 			const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
-			//TODO create SVG if needed
-			const insetSvg = ggeo.append("svg").attr("id", config.svgId);
+
+					/*/get svg element. Create it if it does not exists
+		let svg = select("#" + out.svgId());
+		if (svg.size() == 0)
+			svg = select("body").append("svg").attr("id", out.svgId())
+		out.svg(svg);
+*/
+
+const insetSvg = ggeo.append("svg").attr("id", config.svgId);
+
 			const it = getInsetTemplate(config, insetSvg);
 			out.insetTemplates_[config.geo] = it;
 			//recursive call
