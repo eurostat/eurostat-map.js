@@ -11,16 +11,16 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
-	out.classToFillStyleCT_ = undefined;
+	out.classToFillStyleCT_ = config.classToFillStyleCT;
 	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
-	out.classToText_ = undefined;
+	out.classToText_ = config.classToText;
 	/** The color for non data regions */
-	out.noDataFillStyle_ = "lightgray";
+	out.noDataFillStyle_ = config.noDataFillStyle || "lightgray";
 
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = undefined;
+	out.classifier_ = config.classifier;
 	//the inverse classifier: a function returning the category value from the category class (used only for categorical maps).
-	out.classifierInverse_ = undefined;
+	out.classifierInverse_ = config.classifierInverse;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
