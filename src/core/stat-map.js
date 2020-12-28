@@ -55,7 +55,7 @@ export const statMap = function (withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		out.insets_ = config || ["MQ","IS"]; //TODO add default
+		out.insets_ = config || ["GP", "MQ", "GF", "RE", "PT20", "PT30", "IC", "MT", "LI"];
 		return out;
 	};
 
