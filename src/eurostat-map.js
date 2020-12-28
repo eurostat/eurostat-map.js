@@ -6,17 +6,17 @@ import * as mt from './core/stat-map';
 /**
  * Function returning a eurostat-map object.
  */
-export const map = function (type) {
+export const map = function (type, config) {
 
 	//choropleth map
-	if(type == "ch") return mapch.map();
+	if(type == "ch") return mapch.map(config);
 	//categorical map
-	if(type == "ct") return mapct.map();
+	if(type == "ct") return mapct.map(config);
 	//proportionnal symbols map
-	if(type == "ps") return mapps.map();
+	if(type == "ps") return mapps.map(config);
 
 	console.log("Unexpected map type: " + type);
-	return mt.statMap(true);
+	return mt.statMap(config, true);
 };
 
 
