@@ -23,69 +23,69 @@ export const mapTemplate = function (config, withCenterPoints) {
 	*/
 
 	//map
-	out.svgId_ = "map";
-	out.svg_ = undefined;
-	out.width_ = 800;
-	out.height_ = 0;
+	out.svgId_ = config.svgId || "map";
+	out.svg_ = config.svg;
+	out.width_ = config.width || 800;
+	out.height_ = config.height || 0;
 
 	//geographical focus
-	out.nutsLvl_ = 3;
-	out.NUTSyear_ = 2016;
-	out.geo_ = "EUR";
-	out.proj_ = "3035";
-	out.scale_ = "20M"; //TODO better choose automatically ?
-	out.geoCenter_ = undefined;
-	out.pixSize_ = undefined;
+	out.nutsLvl_ = config.nutsLvl || 3;
+	out.NUTSyear_ = config.NUTSyear || 2016;
+	out.geo_ = config.geo || "EUR";
+	out.proj_ = config.proj || "3035";
+	out.scale_ = config.scale || "20M"; //TODO better choose automatically ?
+	out.geoCenter_ = config.geoCenter;
+	out.pixSize_ = config.pixSize;
 
 	//map title
-	out.title_ = "";
-	out.titleFontSize_ = 25;
-	out.titleFill_ = "black";
-	out.titlePosition_ = undefined;
-	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.titleFontWeight_ = "bold";
+	out.title_ = config.title || "";
+	out.titleFontSize_ = config.titleFontSize || 25;
+	out.titleFill_ = config.titleFill || "black";
+	out.titlePosition_ = config.titlePosition;
+	out.titleFontFamily_ = config.titleFontFamily || "Helvetica, Arial, sans-serif";
+	out.titleFontWeight_ = config.titleFontWeight || "bold";
 
 	//template default style
 	//frame
-	out.frameStroke_ = "#222";
-	out.frameStrokeWidth_ = 2;
+	out.frameStroke_ = config.frameStroke || "#222";
+	out.frameStrokeWidth_ = config.frameStrokeWidth || 2;
 	//nuts
-	out.nutsrgFillStyle_ = "#eee";
-	out.nutsrgSelFillSty_ = "purple";
-	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
-	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
+	out.nutsrgFillStyle_ = config.nutsrgFillStyle || "#eee";
+	out.nutsrgSelFillSty_ = config.nutsrgSelFillSty || "purple";
+	out.nutsbnStroke_ = config.nutsbnStroke || { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
+	out.nutsbnStrokeWidth_ = config.nutsbnStrokeWidth || { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
 	//countries
-	out.cntrgFillStyle_ = "lightgray";
-	out.cntrgSelFillSty_ = "darkgray";
-	out.cntbnStroke_ = { def: "#777", co: "#1f78b4" };
-	out.cntbnStrokeWidth_ = { def: 1, co: 1 };
+	out.cntrgFillStyle_ = config.cntrgFillStyle || "lightgray";
+	out.cntrgSelFillSty_ = config.cntrgSelFillSty || "darkgray";
+	out.cntbnStroke_ = config.cntbnStroke || { def: "#777", co: "#1f78b4" };
+	out.cntbnStrokeWidth_ = config.cntbnStrokeWidth || { def: 1, co: 1 };
 	//sea
-	out.seaFillStyle_ = "#b3cde3";
-	out.drawCoastalMargin_ = true;
-	out.coastalMarginColor_ = "white";
-	out.coastalMarginWidth_ = 12;
-	out.coastalMarginStdDev_ = 12;
+	out.seaFillStyle_ = config.seaFillStyle || "#b3cde3";
+	out.drawCoastalMargin_ = config.drawCoastalMargin == undefined? true : config.drawCoastalMargin;
+	out.coastalMarginColor_ = config.coastalMarginColor || "white";
+	out.coastalMarginWidth_ = config.coastalMarginWidth || 12;
+	out.coastalMarginStdDev_ = config.coastalMarginStdDev || 12;
 	//graticule
-	out.drawGraticule_ = true;
-	out.graticuleStroke_ = "gray";
-	out.graticuleStrokeWidth_ = 1;
+	out.drawGraticule_ = config.drawGraticule == undefined? true : config.drawGraticule;
+	out.graticuleStroke_ = config.graticuleStroke || "gray";
+	out.graticuleStrokeWidth_ = config.graticuleStrokeWidth || 1;
 
     //default copyright and disclaimer text
-	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
-	out.botTxtFontSize_ = 12;
-	out.botTxtFill_ = "black";
-	out.botTxtFontFamily_ = "Helvetica, Arial, sans-serif";
-	out.botTxtPadding_ = 10;
-	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
+	out.bottomText_ = config.bottomText || "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
+	out.botTxtFontSize_ = config.botTxtFontSize || 12;
+	out.botTxtFill_ = config.botTxtFill || "black";
+	out.botTxtFontFamily_ = config.botTxtFontFamily || "Helvetica, Arial, sans-serif";
+	out.botTxtPadding_ = config.botTxtPadding || 10;
+	out.botTxtTooltipTxt_ = config.botTxtTooltipTxt || "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
 	//tooltip
 	//the function returning the tooltip text
-	out.tooltipText_ = rg => { return rg.properties.na; };
-	out.tooltipShowFlags_ = "short"; //"short" "long"
-	out.unitText_ = "";
+	out.tooltipText_ = config.tooltipText || (rg => { return rg.properties.na; });
+	out.tooltipShowFlags_ = config.tooltipShowFlags || "short"; //"short" "long"
+	out.unitText_ = config.unitText || "";
 
-    out.zoomExtent_ = null;
-	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+    out.zoomExtent_ = config.zoomExtent;
+	out.nuts2jsonBaseURL_ = config.nuts2jsonBaseURL || "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
 
 	/**
@@ -93,15 +93,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * The map template has a recursive structure.
 	 */
 
-	//insets to show. List of geo codes. Ex.: ["MT","LI","PT20"]
-	out.insetsConfig_ = [];
+	//insets to show. Ex.: {"MT":config, "LI":config, "PT20":config}
+	out.insetsConfig_ = config.insetsConfig || {};
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
 
-	out.insetPadding_ = 5;
-	out.insetSize_ = 50;
-	out.insetZoomExtent_ = [1,3];
-	out.insetScale_ = "03M";
+	out.insetPadding_ = config.insetPadding || 5;
+	out.insetSize_ = config.insetSize || 50;
+	out.insetZoomExtent_ = config.insetZoomExtent || [1,3];
+	out.insetScale_ = config.insetScale || "03M";
 
 
 
@@ -217,16 +217,21 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//insets
 		const ing = dg.append("g").attr("id", "insetsgroup");
-		for(let i=0; i<out.insetsConfig_.length; i++) {
-			const geo = out.insetsConfig_[i];
+		let i=0;
+		for(const geo in out.insetsConfig_) {
+			const config = out.insetsConfig_[geo];
+			config.geo = geo;
+			config.svgId = config.svgId || "inset"+geo+(Math.random().toString(36).substring(7));
+
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+geo)
 				.attr("transform", "translate(" + (out.insetPadding_) + "," + (out.insetPadding_+i*(out.insetPadding_+out.insetSize_)) + ")");
-			const geoSvgId = "inset"+geo+(Math.random().toString(36).substring(7));
-			const insetSvg = ggeo.append("svg").attr("id", geoSvgId);
-			const insetTemplate = getInsetTemplate(geo, insetSvg, geoSvgId);
-			out.insetTemplates_[geo] = insetTemplate;
+			i++;
+			const insetSvg = ggeo.append("svg").attr("id", config.svgId);
+
+			const it = getInsetTemplate(config, insetSvg);
+			out.insetTemplates_[geo] = it;
 			//recursive call
-			insetTemplate.buildMapTemplateBase();
+			it.buildMapTemplateBase();
 		}
 
 		//draw frame
@@ -466,24 +471,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 	/** Build template for inset, based on main one */
-	const getInsetTemplate = function(geo, insetSvg, geoSvgId) {
-		const mt = mapTemplate(null, withCenterPoints); //TODO
+	const getInsetTemplate = function(config, insetSvg) {
+
+		config.proj = config.proj || _defaultCRS[config.geo];
+		config.scale = config.scale || out.insetScale_;
+		config.title = config.title || "";
+		config.bottomText = config.bottomText || "";
+		config.botTxtTooltipTxt = config.botTxtTooltipTxt || "";
+		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
+		config.width = config.width || out.insetSize_;
+		config.height = config.height || out.insetSize_;
+
+
+		console.log(config);
+
+		const mt = mapTemplate(config, withCenterPoints);
+		mt.svg_ = insetSvg;
 
 		//copy attributes
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
-
-		mt.svg_ = insetSvg;
-		mt.svgId_ = geoSvgId;
-		mt.geo_ = geo;
-		mt.proj_ = _defaultCRS[geo];
-		mt.scale_ = out.insetScale_;
-		mt.title_ = "";
-		mt.bottomText_ = "";
-		mt.botTxtTooltipTxt_ = "";
-		mt.zoomExtent_ = out.insetZoomExtent_;
-		mt.width_ = out.insetSize_;
-		mt.height_ = out.insetSize_;
 		return mt;
 	}
 

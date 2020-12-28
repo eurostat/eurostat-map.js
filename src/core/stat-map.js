@@ -25,13 +25,13 @@ export const statMap = function (config, withCenterPoints) {
 	out.legend_ = undefined;
 
 	//other
-	out.noDataText_ = "No data available";
-	out.lg_ = "en"; //TODO not used? Use it in stat-data ?
-	out.transitionDuration_ = 800;
+	out.noDataText_ = config.noDataText || "No data available";
+	out.lg_ = config.lg || "en"; //TODO not used? Use it in stat-data ?
+	out.transitionDuration_ = config.transitionDuration || 800;
 
 	//for maps using special fill patterns, this is the function to define them in the SVG image
 	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function() { };
+	out.filtersDefinitionFun_ = config.filtersDefinitionFun || function() { };
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -56,7 +56,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		out.insetsConfig_ = config || ["IC", "GP", "MQ", "GF", "RE", "YT", "MT", "PT20", "PT30", "LI"];
+		out.insetsConfig_ = config || {"IC":{}, "GP":{}, "MQ":{}, "GF":{}, "RE":{}, "YT":{}, "MT":{}, "PT20":{}, "PT30":{}, "LI":{}};
 		return out;
 	};
 
