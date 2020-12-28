@@ -32,7 +32,7 @@
         eurostatmap.map("ps")
             //.width(900)
             .nutsLvl(1)
-            //.withInsets()
+            .withInsets()
             .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
             .psShape("custom") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
             .psCustomShape(customCircle)

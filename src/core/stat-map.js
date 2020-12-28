@@ -56,7 +56,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		out.insetsConfig_ = config || [{geo:"IC",width:100},{geo:"GP"},{geo:"MQ"},{geo:"GF",scale:"10M"},{geo:"RE"},{geo:"YT"},{geo:"MT"},{geo:"PT20",width:100},{geo:"PT30"},{geo:"LI",scale:"01M"}]
+		out.insetsConfig_ = config || [{geo:"IC",width:80},{geo:"GP"},{geo:"MQ"},{geo:"GF",scale:"10M"},{geo:"RE"},{geo:"YT"},{geo:"MT"},{geo:"PT20",width:80},{geo:"PT30"},{geo:"LI",scale:"01M"}]
 		return out;
 	};
 
