@@ -222,7 +222,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
 
 			//get svg element. Create it if it does not exists
-			let svg = select("#" + config.svgId_);
+			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
 				const x = config.x || out.insetPadding_;
 				const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);

@@ -10,25 +10,34 @@
     <svg id="map1"></svg>
     <svg id="map2"></svg>
     <svg id="map3"></svg>
+    <svg id="map4"></svg>
+    <svg id="inset4_1"></svg>
+    <svg id="inset4_2"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
         eurostatmap
             .map("ch")
             .svgId("map1")
-            .width(600)
+            .width(400)
             .withInsets()
             .build();
         eurostatmap
             .map("ch")
             .svgId("map2")
-            .width(600)
-            .withInsets([{geo:"GF",x:300,y:50}]).insetSize(200).insetZoomExtent([0,99999])
+            .width(400)
+            .withInsets([{geo:"GF",x:200,y:50}]).insetSize(150).insetZoomExtent([0,99999])
             .build();
         eurostatmap
             .map("ch")
             .svgId("map3")
-            .width(600)
+            .width(400)
             .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
+            .build();
+        eurostatmap
+            .map("ch")
+            .svgId("map4")
+            .width(250)
+            .geo("LI").scale("01M").withInsets([{geo:"MT",svgId:"inset4_1"},{geo:"GP",svgId:"inset4_2"}]).insetSize(80).insetZoomExtent([0,99999])
             .build();
 
         //TODO test inset in inset
