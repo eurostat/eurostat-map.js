@@ -224,19 +224,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 			const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
 			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
 
-					/*/get svg element. Create it if it does not exists
-		let svg = select("#" + out.svgId());
-		if (svg.size() == 0)
-			svg = select("body").append("svg").attr("id", out.svgId())
-		out.svg(svg);
-*/
+			//get svg element. Create it if it does not exists
+			let svg = select("#" + config.svgId_);
+			if (svg.size() == 0)
+				ggeo.append("svg").attr("id", config.svgId);
 
-const insetSvg = ggeo.append("svg").attr("id", config.svgId);
-
-			const it = getInsetTemplate(config, insetSvg);
-			out.insetTemplates_[config.geo] = it;
-			//recursive call
-			it.buildMapTemplateBase();
+			//build inset
+			out.insetTemplates_[config.geo] = getInsetTemplate(config).buildMapTemplateBase();
 		}
 
 		//draw frame
@@ -476,7 +470,7 @@ const insetSvg = ggeo.append("svg").attr("id", config.svgId);
 
 
 	/** Build template for inset, based on main one */
-	const getInsetTemplate = function(config, insetSvg) {
+	const getInsetTemplate = function(config) {
 
 		config.proj = config.proj || _defaultCRS[config.geo];
 		config.scale = config.scale || out.insetScale_;
@@ -488,7 +482,6 @@ const insetSvg = ggeo.append("svg").attr("id", config.svgId);
 		config.height = config.height || out.insetSize_;
 
 		const mt = mapTemplate(config, withCenterPoints);
-		mt.svg_ = insetSvg;
 
 		//copy attributes
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
