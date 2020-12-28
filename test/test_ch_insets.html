@@ -22,14 +22,14 @@
             .map("ch")
             .svgId("map2")
             .width(600)
-            .withInsets([{geo:"GF"}]).insetSize(200).insetZoomExtent([0,99999])
-            //.build();
+            .withInsets([{geo:"GF",x:300,y:50}]).insetSize(200).insetZoomExtent([0,99999])
+            .build();
         eurostatmap
             .map("ch")
             .svgId("map3")
             .width(600)
             .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
-            //.build();
+            .build();
     </script>
 </body>
 
