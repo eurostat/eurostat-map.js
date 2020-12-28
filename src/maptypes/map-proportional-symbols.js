@@ -9,20 +9,20 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config, true);
 
-	out.psShape_ = "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
-	out.psCustomShape_ = null; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
-	out.psMaxSize_ = 30;
-	out.psMinSize_ = 0.8; //for circle
-	out.psWidth_ = 5; //for rect
-	out.psMinHeight_ = 5;
-	out.psMaxHeight_ = 150;
-	out.psMinValue_ = 0;
-	out.psFill_ = "#B45F04";
-	out.psFillOpacity_ = 0.7;
-	out.psStroke_ = "#fff";
-	out.psStrokeWidth_ = 0.3;
+	out.psShape_ = config.psShape || "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
+	out.psCustomShape_ = config.psCustomShape || null; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
+	out.psMaxSize_ = config.psMaxSize || 30;
+	out.psMinSize_ = config.psMinSize || 0.8; //for circle
+	out.psWidth_ = config.psWidth || 5; //for rect
+	out.psMinHeight_ = config.psMinHeight || 5;
+	out.psMaxHeight_ = config.psMaxHeight || 150;
+	out.psMinValue_ = config.psMinValue || 0;
+	out.psFill_ = config.psFill || "#B45F04";
+	out.psFillOpacity_ = config.psFillOpacity || 0.7;
+	out.psStroke_ = config.psStroke || "#fff";
+	out.psStrokeWidth_ = config.psStrokeWidth || 0.3;
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = undefined;
+	out.classifier_ = config.classifier || undefined;
 
 
 	/**
