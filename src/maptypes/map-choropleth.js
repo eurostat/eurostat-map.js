@@ -12,15 +12,15 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
-	out.classifMethod_ = "quantile"; // or: equinter, threshold
-	out.threshold_ = [0];
-	out.makeClassifNice_ = true;
-	out.clnb_ = 7;
-	out.colorFun_ = interpolateYlOrBr;
-	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
-	out.noDataFillStyle_ = "lightgray";
+	out.classifMethod_ = config.classifMethod || "quantile"; // or: equinter, threshold
+	out.threshold_ = config.threshold || [0];
+	out.makeClassifNice_ = config.makeClassifNice || true;
+	out.clnb_ = config.clnb || 7;
+	out.colorFun_ = config.colorFun || interpolateYlOrBr;
+	out.classToFillStyleCH_ = config.classToFillStyleCH || getColorLegend(out.colorFun_);
+	out.noDataFillStyle_ = config.noDataFillStyle || "lightgray";
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = undefined;
+	out.classifier_ = config.classifier || undefined;
 
 
 	/**
