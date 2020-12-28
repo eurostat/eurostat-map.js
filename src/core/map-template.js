@@ -490,7 +490,7 @@ export const mapTemplate = function (withCenterPoints) {
  */
 const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
-	"IC_32628": { geoCenter: [443468, 3145647], widthGeo: 500000 },
+	"IC_32628": { geoCenter: [443468, 3145647], widthGeo: 600000 },
 	"GP_32620": { geoCenter: [669498, 1784552], widthGeo: 100000 },
 	"MQ_32620": { geoCenter: [716521, 1621322], widthGeo: 100000 },
 	"GF_32622": { geoCenter: [266852, 444074], widthGeo: 500000 },
@@ -498,7 +498,7 @@ const _defaultPosition = {
 	"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 50000 },
 	"MT_3035": { geoCenter: [4719755, 1441701], widthGeo: 50000 },
 	//"PT20_32626": { geoCenter: [0,0], widthGeo: 100000 },
-	"PT30_32628": { geoCenter: [333586, 3622706], widthGeo: 100000 },
+	"PT30_32628": { geoCenter: [333586, 3622706], widthGeo: 150000 },
 	"LI_3035": { geoCenter: [4287060, 2672000], widthGeo: 30000 },
 	"IS_3035": { geoCenter: [3011804, 4960000], widthGeo: 600000 },
 	"SJ_SV_3035": { geoCenter: [4570000, 6160156], widthGeo: 600000 },
