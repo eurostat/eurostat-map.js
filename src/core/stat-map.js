@@ -91,6 +91,16 @@ export const statMap = function (withCenterPoints) {
 			lgg.attr("transform", "translate(" + dx + "," + dy + ")");
 		}
 
+		//upgrade inset maps with few methods from main stat map
+		for(const geo in out.insetTemplates_) {
+			const inset = out.insetTemplates_[geo];
+			["stat", "legend", "noDataText", "lg", "transitionDuration"]
+			.forEach(function (att) { inset[att] = out[att]; });
+		}
+
+		//set tooltip text
+		out.tooltipText( tooltipTextDefaultFunction );
+
 		//retrieve geo data
 		out.updateGeoData();
 
@@ -244,11 +254,6 @@ export const statMap = function (withCenterPoints) {
 			document.body.removeChild(downloadLink);
 		})
 	}
-
-	//set tooltip text
-	out.tooltipText( tooltipTextDefaultFunction );
-	for(const geo in out.insetTemplates_)
-		out.insetTemplates_[geo].tooltipText( tooltipTextDefaultFunction );
 
 	return out;
 }

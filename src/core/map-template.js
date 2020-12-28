@@ -104,15 +104,23 @@ export const mapTemplate = function (withCenterPoints) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	for (const att in out)
-		out[att.substring(0, att.length - 1)] = function(v) {
-			if (!arguments.length) return out[att];
-			out[att] = v;
-			//recursive call to inset components - TODO: only for some attributes, not all
-			//for(const geo in out.insetTemplates_) {
-				//out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
-			//}
-			return out;
-		};
+		out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+
+	//special ones which affect also the insets
+	["tooltipText_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function(v) {
+				if (!arguments.length) return out[att];
+				out[att] = v;
+				//recursive call to inset components
+				for(const geo in out.insetTemplates_) {
+					out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
+				}
+				return out;
+			};
+		}
+	);
+
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
