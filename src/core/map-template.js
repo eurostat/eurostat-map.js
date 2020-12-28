@@ -83,7 +83,7 @@ export const mapTemplate = function (withCenterPoints) {
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
 
-    out.zoomExtent_ = [1,1];
+    out.zoomExtent_ = null;
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
 
 
@@ -91,9 +91,10 @@ export const mapTemplate = function (withCenterPoints) {
 	out.insets_ = [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
-
 	out.insetPadding_ = 5;
 	out.insetSize_ = 50;
+	out.insetZoomExtent_ = [1,3];
+	out.insetScale_ = "03M";
 
 
 	/**
@@ -468,11 +469,11 @@ export const mapTemplate = function (withCenterPoints) {
 		mt.svgId_ = geoSvgId;
 		mt.geo_ = geo;
 		mt.proj_ = _defaultCRS[geo];
-		mt.scale_ = "03M";
+		mt.scale_ = out.insetScale_;
 		mt.title_ = "";
 		mt.bottomText_ = "";
 		mt.botTxtTooltipTxt_ = "";
-		mt.zoomExtent_ = [1,3];
+		mt.zoomExtent_ = out.insetZoomExtent_;
 		mt.width_ = out.insetSize_;
 		mt.height_ = out.insetSize_;
 		return mt;
@@ -489,7 +490,20 @@ export const mapTemplate = function (withCenterPoints) {
  */
 const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
-	//"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 100000 },
+	//"IC_32628": { geoCenter: [0,0], widthGeo: 100000 },
+	//"GP_32620": { geoCenter: [0,0], widthGeo: 100000 },
+	//"MQ_32620": { geoCenter: [0,0], widthGeo: 100000 },
+	"GF_32622": { geoCenter: [266852, 444074], widthGeo: 500000 },
+	"RE_32740": { geoCenter: [348011, 7661627], widthGeo: 100000 },
+	"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 50000 },
+	//"MT_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	//"PT20_32626": { geoCenter: [0,0], widthGeo: 100000 },
+	//"PT30_32628": { geoCenter: [0,0], widthGeo: 100000 },
+	//"LI_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	//"IS_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	//"SJ_SV_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	//"SJ_JM_3035": { geoCenter: [0,0], widthGeo: 100000 },
+	//"CARIB_32620": { geoCenter: [0,0], widthGeo: 100000 },
 	//TODO add others
 }
 
@@ -498,18 +512,18 @@ const _defaultPosition = {
  */
 const _defaultCRS = {
 	"EUR":"3035",
-	"PT20":"32626",
-	"PT30":"32628",
 	"IC":"32628",
-	"GF":"32622",
 	"GP":"32620",
 	"MQ":"32620",
-	"CARIB":"32620",
+	"GF":"32622",
 	"RE":"32740",
 	"YT":"32738",
 	"MT":"3035",
+	"PT20":"32626",
+	"PT30":"32628",
 	"LI":"3035",
 	"IS":"3035",
 	"SJ_SV":"3035",
 	"SJ_JM":"3035",
+	"CARIB":"32620",
 };
