@@ -1,5 +1,4 @@
 import { select } from "d3-selection";
-import { legendColor } from "d3-svg-legend";
 import { format } from "d3-format";
 import * as lg from '../core/legend';
 
@@ -26,8 +25,8 @@ export const legendChoropleth = function (map, config) {
 		//background rectangle
 		svg.append("rect")
 			.attr("id", "legendBR")
-			.attr("x", -out.boxPadding)
-			.attr("y", -out.titleFontSize - out.boxPadding + 6)
+			.attr("x", 0)
+			.attr("y", 0)
 			.attr("rx", out.boxCornerRad)
 			.attr("ry", out.boxCornerRad)
 			.attr("width", out.width)
@@ -35,6 +34,49 @@ export const legendChoropleth = function (map, config) {
 			.style("fill", out.boxFill)
 			.style("opacity", out.boxOpacity);
 
+		//font
+		svg.style("font-family", out.fontFamily);
+
+		//title
+		svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+		.text(out.titleText)
+		.style("font-size", out.titleFontSize);
+
+		//
+		//TODO ascending/descending
+		for(let i=0; i<m.clnb(); i++) {
+			const y = out.boxPadding + out.titleFontSize + out.boxPadding + i*out.shapeHeight;
+
+			//rectangle
+			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.classToFillStyleCH()(i, m.clnb()))
+			.attr("ecl", i)
+			.on("mouseover", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + i + "']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				select(this).style("fill", m.nutsrgSelFillSty());
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + i + "']");
+				sel.style("fill", function (d) { select(this).attr("fill___"); });
+				select(this).style("fill", m.classToFillStyleCH()(i, m.clnb()));
+			});
+
+			//line
+			if(i>0)
+				svg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.shapeWidth).attr("y2", y)
+				.attr("stroke", "black").attr("stroke-width", 1);
+
+			//label
+			if(i<m.clnb()-1)
+				svg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight+0.5*out.labelFontSize)
+				.text( m.classifier().invertExtent(i)[1] )
+				.style("font-size", out.labelFontSize);
+		}
+
+			/*
 		//define legend
 		//see http://d3-legend.susielu.com/#color
 		const d3Legend = legendColor()
@@ -93,7 +135,7 @@ export const legendChoropleth = function (map, config) {
 			;
 		svg.select(".legendTitle").style("font-size", out.titleFontSize);
 		svg.selectAll("text.label").style("font-size", out.labelFontSize);
-		svg.style("font-family", out.fontFamily);
+		svg.style("font-family", out.fontFamily);*/
 	}
 
 	//@override

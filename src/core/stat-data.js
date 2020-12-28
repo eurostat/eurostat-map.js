@@ -160,7 +160,7 @@ export const statData = function (config) {
 	*/
 	out.getTime = function () {
 		const t = out.filters_.time;
-		if (t) return t;up
+		if (t) return t;
 		if (!out.data_) return;
 		return jsonStatTime;
 	};
