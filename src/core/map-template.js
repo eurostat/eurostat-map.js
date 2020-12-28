@@ -219,15 +219,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const ing = dg.append("g").attr("id", "insetsgroup");
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
-			config.svgId = config.svgId || "inset"+config.geo+(Math.random().toString(36).substring(7));
-			const x = config.x || out.insetPadding_;
-			const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
-			const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
+			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
 
 			//get svg element. Create it if it does not exists
 			let svg = select("#" + config.svgId_);
-			if (svg.size() == 0)
+			if (svg.size() == 0) {
+				const x = config.x || out.insetPadding_;
+				const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
+				const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
+			}
 
 			//build inset
 			out.insetTemplates_[config.geo] = getInsetTemplate(config).buildMapTemplateBase();
