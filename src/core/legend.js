@@ -41,7 +41,7 @@ export const legend = function (map, config) {
 	out.labelFontSize = config.labelFontSize || 12;
 	out.labelDelim = config.labelDelim || " - ";
 	out.labelWrap = config.labelWrap || 140;
-	out.labelDecNb = config.labelDecNb || 2;
+	out.labelDecNb = config.labelDecNb == undefined ? 2 : config.labelDecNb;
 	out.labelOffset = config.labelOffset || 5;
 
 	//TODO: move those to the legends where it is used, only?

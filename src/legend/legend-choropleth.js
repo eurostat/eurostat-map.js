@@ -42,9 +42,11 @@ export const legendChoropleth = function (map, config) {
 		.text(out.titleText)
 		.style("font-size", out.titleFontSize);
 
+		//text format
+		const f = format("." + out.labelDecNb + "f");
+
 		//draw legend elements
 		//TODO ascending/descending
-		//TODO format
 		for(let i=0; i<m.clnb(); i++) {
 			const y = out.boxPadding + out.titleFontSize + out.boxPadding + i*out.shapeHeight;
 
@@ -73,7 +75,7 @@ export const legendChoropleth = function (map, config) {
 			//label
 			if(i<m.clnb()-1)
 				svg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight+0.5*out.labelFontSize)
-				.text( m.classifier().invertExtent(i)[1] )
+				.text( f( m.classifier().invertExtent(i)[1] ) )
 				.style("font-size", out.labelFontSize);
 		}
 
