@@ -8,7 +8,6 @@ import * as lg from '../core/legend';
  * @param {*} map 
  */
 export const legendChoropleth = function (map, config) {
-	config = config || {};
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
@@ -17,7 +16,7 @@ export const legendChoropleth = function (map, config) {
 	out.update = function () {
 		const m = out.map;
 		const svgMap = m.svg();
-		const svg = out.svg_;
+		const svg = out.svg;
 
 		//remove previous content
 		svg.selectAll("*").remove();

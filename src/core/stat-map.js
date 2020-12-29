@@ -87,8 +87,8 @@ export const statMap = function (config, withCenterPoints) {
 			//get legend
 			const lg = out.legend();
 
-			//get legend svg. If it does not exist, create it within the map
-			let lgSvg = select("#"+lg.svgId_);
+			//get legend svg. If it does not exist, create it embeded within the map
+			let lgSvg = select("#"+lg.svgId);
 			if(lgSvg.size() == 0) {
 
 				//get legend position
@@ -97,20 +97,24 @@ export const statMap = function (config, withCenterPoints) {
 				const y = lg.y==undefined? lg.boxPadding : lg.y;
 
 				//build legend SVG in a new group
-				const lgg = out.svg().append("g").attr("class", "legend")
+				out.svg().append("g").attr("class", "legend")
 					.attr("transform", "translate(" + x + "," + y + ")")
-					.append("svg").attr("id", lg.svgId_);
+					.append("svg").attr("id", lg.svgId);
 			}
 
 			lg.build();
 		}
 
 		//upgrade inset maps with few methods from main stat map
+		//TODO find way to get these stuff in a better way
 		for(const geo in out.insetTemplates_) {
 			const inset = out.insetTemplates_[geo];
-			["stat", "legend", "noDataText", "lg", "transitionDuration"]
+			["stat", "legend", "noDataText", "lg", "transitionDuration", "unitText"]
 			.forEach(function (att) { inset[att] = out[att]; });
 		}
+
+		//set tooltip text
+		out.tooltipText(out.tooltipText_);
 
 		//retrieve geo data
 		out.updateGeoData();
@@ -206,31 +210,31 @@ export const statMap = function (config, withCenterPoints) {
 	 * @param {*} map The map element
 	 */
 	out.tooltipText_ = config.tooltipText || function (rg, map) {
-	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
-	//case when no data available
-	const sv = map.stat().get(rg.properties.id);
-	if (!sv || (sv.value != 0 && !sv.value)) {
-		buf.push(map.noDataText_);
-		return buf.join("");
-	}
-	//display value
-	buf.push(sv.value);
-	//unit
-	if (map.unitText_) buf.push(" " + map.unitText_);
-	//flag
-	const f = sv.status;
-	if (f && map.tooltipShowFlags_) {
-		if (map.tooltipShowFlags_ === "short")
-			buf.push(" " + f);
-		else {
-			const f_ = flags[f];
-			buf.push(f_ ? " (" + f_ + ")" : " " + f);
+		const buf = [];
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+		//case when no data available
+		const sv = map.stat().get(rg.properties.id);
+		if (!sv || (sv.value != 0 && !sv.value)) {
+			buf.push(map.noDataText_);
+			return buf.join("");
 		}
-	}
-	return buf.join("");
-};
+		//display value
+		buf.push(sv.value);
+		//unit
+		if (map.unitText()) buf.push(" " + map.unitText());
+		//flag
+		const f = sv.status;
+		if (f && map.tooltipShowFlags_) {
+			if (map.tooltipShowFlags_ === "short")
+				buf.push(" " + f);
+			else {
+				const f_ = flags[f];
+				buf.push(f_ ? " (" + f_ + ")" : " " + f);
+			}
+		}
+		return buf.join("");
+	};
 
 
 

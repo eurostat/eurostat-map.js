@@ -97,13 +97,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetsConfig_ = config.insetsConfig || [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
+	//out.parent = null; TODO ?
 
 	out.insetBoxPosition_ = config.insetBoxPosition;
 	out.insetPadding_ = config.insetPadding || 5;
 	out.insetSize_ = config.insetSize || 50;
 	out.insetZoomExtent_ = config.insetZoomExtent || [1,3];
 	out.insetScale_ = config.insetScale || "03M";
-
 
 
 	/**

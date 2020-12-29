@@ -7,7 +7,6 @@ import * as lg from '../core/legend';
  * @param {*} map 
  */
 export const legendCategorical = function (map, config) {
-	config = config || {};
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
@@ -15,7 +14,7 @@ export const legendCategorical = function (map, config) {
 	//@override
 	out.update = function () {
 		const m = out.map;
-		const svg = out.svg_;
+		const svg = out.svg;
 
 		const svgMap = m.svg();
 

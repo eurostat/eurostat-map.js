@@ -5,10 +5,10 @@ import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util';
 
 /**
  * A statistical dataset, to be used for a statistical map.
- * @param {*} opts 
+ * 
+ * @param {*} config 
  */
 export const statData = function (config) {
-	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
 
 	//build stat data object
 	const out = {};
@@ -17,7 +17,7 @@ export const statData = function (config) {
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
 	 */
-	out.data_ = config.data;
+	out.data_;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
@@ -114,11 +114,11 @@ export const statData = function (config) {
 	*/
 
 	/** The Eurobase dataset code */
-	out.eurostatDatasetCode_ = config.eurostatDatasetCode;
+	out.eurostatDatasetCode_;
 	/** The Eurobase code */
-	out.filters_ = config.filters || { lastTimePeriod: 1 };
-	out.precision_ = config.precision || 2;
-	let jsonStatTime = undefined;
+	out.filters_ = { lastTimePeriod: 1 };
+	out.precision_ = 2;
+	let jsonStatTime;
 
 	/**
 	 * Return promise for Eurobase/jsonstat data.
@@ -175,11 +175,11 @@ export const statData = function (config) {
 	*/
 
 	/** The CSV file URL */
-	out.csvURL_ = config.csvURL;
+	out.csvURL_;
 	/** The CSV column with the NUTS ids */
-	out.geoCol_ = config.geoCol || "geo";
+	out.geoCol_ = "geo";
 	/** The CSV column with the statistical values */
-	out.valueCol_ = config.valueCol || "value";
+	out.valueCol_ = "value";
 
 	/**
 	 * Return promise for CSV data.
@@ -201,6 +201,15 @@ export const statData = function (config) {
 				callback();
 		});
 	}
+
+
+
+	//default config
+	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key+"_"] = config[key];
+
 
 	return out;
 }

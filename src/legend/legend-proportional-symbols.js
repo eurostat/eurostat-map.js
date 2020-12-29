@@ -8,21 +8,25 @@ import * as lg from '../core/legend';
  * @param {*} map 
  */
 export const legendProportionalSymbols = function (map, config) {
-	config = config || {};
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
 
 	//number of elements in the legend
-	out.cellNb = config.cellNb || 4;
+	out.cellNb = 4;
 	// user-define d3 format function
-	out.format = config.format || null
+	out.format;
+
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key] = config[key];
+
 
 	//@override
 	out.update = function () {
 		const m = out.map;
 		//const svgMap = m.svg();
-		const svg = out.svg_;
+		const svg = out.svg;
 
 		//remove previous content
 		svg.selectAll("*").remove();

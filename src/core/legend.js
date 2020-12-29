@@ -4,7 +4,6 @@ import { select } from "d3-selection";
  * A eurostat-map legend. This is an abstract method.
 */
 export const legend = function (map, config) {
-	config = config || {};
 
 	//build legend object
 	const out = {};
@@ -13,43 +12,45 @@ export const legend = function (map, config) {
 	out.map = map;
 
 	//the SVG where to make the legend
-	out.svgId_ = config.svgId || "legend_" + Math.round(10e15 * Math.random());
-	out.svg_ = undefined;
+	out.svgId = "legend_" + Math.round(10e15 * Math.random());
+	out.svg;
 
 	//the legend element dimension
-	out.width = config.width;
-	out.height = config.height;
+	out.width;
+	out.height;
 	//the legend element position, in case it is embeded within the map SVG
-	out.x = config.x;
-	out.y = config.y;
+	out.x;
+	out.y;
 
 	//the legend box
-	out.boxMargin = config.boxMargin || 10;
-	out.boxPadding = config.boxPadding || 7;
-	out.boxCornerRad = config.boxCornerRad || 7;
-	out.boxFill = config.boxFill || "#eeeeee";
-	out.boxOpacity = config.boxOpacity == undefined? 0.5 : config.boxOpacity;
+	out.boxMargin = 10;
+	out.boxPadding = 7;
+	out.boxCornerRad = 7;
+	out.boxFill = "#eeeeee";
+	out.boxOpacity = 0.5;
 
-	out.fontFamily = config.fontFamily || "Helvetica, Arial, sans-serif";
+	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText = config.titleText == undefined? "" : config.titleText;
-	out.titleFontSize = config.titleFontSize == undefined? 15 : config.titleFontSize;
-	out.titleWidth = config.titleWidth || 140;
+	out.titleText = "";
+	out.titleFontSize = 15;
+	out.titleWidth = 140;
 
 	//legeng element labels
-	out.labelFontSize = config.labelFontSize || 12;
-	out.labelDelim = config.labelDelim || " - ";
-	out.labelWrap = config.labelWrap || 140;
-	out.labelDecNb = config.labelDecNb == undefined ? 2 : config.labelDecNb;
-	out.labelOffset = config.labelOffset || 5;
+	out.labelFontSize = 12;
+	out.labelDelim = " - "; //TODO still needed ?
+	out.labelWrap = 140; //TODO still needed?
+	out.labelDecNb = 2;
+	out.labelOffset = 5;
 
 	//TODO: move those to the legends where it is used, only?
-	out.ascending = (config.ascending == undefined)? true : config.ascending;
-	out.shapeWidth = config.shapeWidth || 13;
-	out.shapeHeight = config.shapeHeight || 15;
-	out.shapePadding = config.shapePadding || 5;
+	out.ascending = true;
+	out.shapeWidth = 13;
+	out.shapeHeight = 15;
+	out.shapePadding = 5;
 
+	//override attribute values with config values
+	if(config) for (let key in config) out[key] = config[key];
 
 	/**
 	 * Build legend element.
@@ -57,7 +58,7 @@ export const legend = function (map, config) {
 	out.build = function () {
 
 		//set SVG element
-		out.svg_ = select("#" + out.svgId_);
+		out.svg = select("#" + out.svgId);
 
 		//set size
 		if (!out.width) out.width = out.computeWidth();

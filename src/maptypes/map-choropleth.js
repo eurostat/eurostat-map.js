@@ -5,23 +5,35 @@ import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
-
+/**
+ * Returns a chroropleth map.
+ * 
+ * @param {*} config 
+ */
 export const map = function (config) {
-	config = config || {};
 
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
-	out.classifMethod_ = config.classifMethod || "quantile"; // or: equinter, threshold
-	out.threshold_ = config.threshold || [0];
-	out.makeClassifNice_ = config.makeClassifNice || true;
-	out.clnb_ = config.clnb || 7;
-	out.colorFun_ = config.colorFun || interpolateYlOrBr;
-	out.classToFillStyleCH_ = config.classToFillStyleCH || getColorLegend(out.colorFun_);
-	out.noDataFillStyle_ = config.noDataFillStyle || "lightgray";
+	//the number of classes
+	out.clnb_ = 7;
+	//the classification method
+	out.classifMethod_ = "quantile"; // or: equinter, threshold
+	//the threshold, when the classificatio method is 'threshold'
+	out.threshold_ = [0];
+	//when computed automatically, ensure the threshold are nice rounded values
+	out.makeClassifNice_ = true;
+	//the color function [0,1] -> color
+	out.colorFun_ = interpolateYlOrBr;
+	//a function returning the color from the class i
+	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
+	//style for no data regions
+	out.noDataFillStyle_ = "lightgray";
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = config.classifier || undefined;
+	out.classifier_ = undefined;
 
+	//override attribute values with config values
+	if(config) for (let key in config) out[key+"_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -30,7 +42,7 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classifMethod_", "threshold_", "makeClassifNice_", "clnb_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
+	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
@@ -100,7 +112,6 @@ export const map = function (config) {
 	out.getLegendConstructor = function() {
 		return lgch.legendChoropleth;
 	}
-
 
 	return out;
 }

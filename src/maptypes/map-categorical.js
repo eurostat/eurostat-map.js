@@ -3,22 +3,30 @@ import { scaleOrdinal } from "d3-scale";
 import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
-
+/**
+ * Returns a categorical map.
+ * 
+ * @param {*} config 
+ */
 export const map = function (config) {
-	config = config || {};
 
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
 	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
-	out.classToFillStyleCT_ = config.classToFillStyleCT;
+	out.classToFillStyleCT_;
 	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
-	out.classToText_ = config.classToText;
+	out.classToText_ ;
 	/** The color for non data regions */
-	out.noDataFillStyle_ = config.noDataFillStyle || "lightgray";
-
+	out.noDataFillStyle_ = "lightgray";
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = config.classifier;
+	out.classifier_;
+	//specific tooltip text function
+	out.tooltipText_ = tooltipTextFunCat;
+
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key+"_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -60,7 +68,6 @@ export const map = function (config) {
 	};
 
 
-
 	//@override
 	out.updateStyle = function () {
 
@@ -77,40 +84,41 @@ export const map = function (config) {
 	};
 
 
-
 	//@override
 	out.getLegendConstructor = function() {
 		return lgct.legendCategorical;
 	}
 
 
-	/**
-	 * Specific function for tooltip text.
-	 * 
-	 * @param {*} rg The region to show information on.
-	 * @param {*} map The map element
-	 */
-	out.tooltipText_ = config.tooltipText || function (rg, map) {
-		const buf = [];
-		//region name
-		buf.push("<b>" + rg.properties.na + "</b><br>");
-		//get stat value
-		const sv = out.stat().get(rg.properties.id);
-		//case when no data available
-		if (!sv || (sv.value != 0 && !sv.value)) {
-			buf.push(map.noDataText_);
-			return buf.join("");
-		}
-		const val = sv.value;
-		if (map.classToText_) {
-			const lbl = map.classToText_[val];
-			buf.push(lbl ? lbl : val);
-			return buf.join("");
-		}
-		//display value
-		buf.push(val);
-		return buf.join("");
-	};
-
 	return out;
 }
+
+
+/**
+ * Specific function for tooltip text.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tooltipTextFunCat = function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+	//get stat value
+	const sv = map.stat().get(rg.properties.id);
+	//case when no data available
+	if (!sv || (sv.value != 0 && !sv.value)) {
+		buf.push(map.noDataText_);
+		return buf.join("");
+	}
+	const val = sv.value;
+	//TODO map.classToText_ not defined for inste maps
+	if (map.classToText_) {
+		const lbl = map.classToText_[val];
+		buf.push(lbl ? lbl : val);
+		return buf.join("");
+	}
+	//display value
+	buf.push(val);
+	return buf.join("");
+};
