@@ -103,9 +103,6 @@ export const statMap = function (config, withCenterPoints) {
 			.forEach(function (att) { inset[att] = out[att]; });
 		}
 
-		//set tooltip text
-		out.tooltipText( tooltipTextDefaultFunction );
-
 		//retrieve geo data
 		out.updateGeoData();
 
@@ -190,6 +187,42 @@ export const statMap = function (config, withCenterPoints) {
 		console.log("Map getLegendConstructor function not implemented")
 		return lg.legend;
 	}
+
+
+	/**
+	 * Default function for tooltip text, for statistical maps.
+	 * It simply shows the name of the region and the statistical value.
+	 * 
+	 * @param {*} rg The region to show information on.
+	 * @param {*} map The map element
+	 */
+	out.tooltipText_ = config.tooltipText || function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+	//case when no data available
+	const sv = map.stat().get(rg.properties.id);
+	if (!sv || (sv.value != 0 && !sv.value)) {
+		buf.push(map.noDataText_);
+		return buf.join("");
+	}
+	//display value
+	buf.push(sv.value);
+	//unit
+	if (map.unitText_) buf.push(" " + map.unitText_);
+	//flag
+	const f = sv.status;
+	if (f && map.tooltipShowFlags_) {
+		if (map.tooltipShowFlags_ === "short")
+			buf.push(" " + f);
+		else {
+			const f_ = flags[f];
+			buf.push(f_ ? " (" + f_ + ")" : " " + f);
+		}
+	}
+	return buf.join("");
+};
+
 
 
 	/**
@@ -307,43 +340,6 @@ function rasterize(svg) {
 	image.src = URL.createObjectURL(serialize(svg));
 	return promise;
 }
-
-
-
-/**
- * Default function for tooltip text, for statistical maps.
- * It simply shows the name of the region and the statistical value.
- * 
- * @param {*} rg The region to show information on.
- * @param {*} map The map element
- */
-const tooltipTextDefaultFunction = function (rg, map) {
-	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
-	//case when no data available
-	const sv = map.stat().get(rg.properties.id);
-	if (!sv || (sv.value != 0 && !sv.value)) {
-		buf.push(map.noDataText_);
-		return buf.join("");
-	}
-	//display value
-	buf.push(sv.value);
-	//unit
-	if (map.unitText_) buf.push(" " + map.unitText_);
-	//flag
-	const f = sv.status;
-	if (f && map.tooltipShowFlags_) {
-		if (map.tooltipShowFlags_ === "short")
-			buf.push(" " + f);
-		else {
-			const f_ = flags[f];
-			buf.push(f_ ? " (" + f_ + ")" : " " + f);
-		}
-	}
-	return buf.join("");
-};
-
 
 
 

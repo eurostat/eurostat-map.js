@@ -87,10 +87,10 @@ export const map = function (config) {
 	/**
 	 * Specific function for tooltip text.
 	 * 
-	 * @param {*} rg 
-	 * @param {*} map 
+	 * @param {*} rg The region to show information on.
+	 * @param {*} map The map element
 	 */
-	out.tooltipText_ = function (rg, map) {
+	out.tooltipText_ = config.tooltipText || function (rg, map) {
 		const buf = [];
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
