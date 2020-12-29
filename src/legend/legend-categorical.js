@@ -55,28 +55,38 @@ export const legendCategorical = function (map, config) {
 			//the vertical position of the legend element
 			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
 
+			//prepare mouse over function
+			const mouseoverF = function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				const th = select(this);
+				sel.attr("fill___", function (d) { th.attr("fill"); });
+				th.style("fill", m.nutsrgSelFillSty());
+			}
+
+			//prepare mouse out function
+			const mouseoutF = function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				const th = select(this);
+				sel.style("fill", function (d) { th.attr("fill___"); });
+				th.style("fill", m.classToFillStyleCT()[ecl]);
+			}
+
 			//rectangle
 			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
 			.attr("fill", m.classToFillStyleCT()[ecl_])
-			//.attr("ecl", ecl)
-			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", m.nutsrgSelFillSty());
-				sel.attr("fill___", function (d) { select(this).attr("fill"); });
-				select(this).style("fill", m.nutsrgSelFillSty());
-			})
-			.on("mouseout", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", function (d) { select(this).attr("fill___"); });
-				select(this).style("fill", m.classToFillStyleCT()[ecl]);
-			})
-			.attr("stroke", "black").attr("stroke-width", 0.5);
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", mouseoverF)
+			.on("mouseout", mouseoutF)
 
 			//label
 			svg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5+out.labelFontSize*0.5)
 			.text( m.classToText()[ecl_] )
-			.style("font-size", out.labelFontSize);
+			.style("font-size", out.labelFontSize)
+			.on("mouseover", mouseoverF)
+			.on("mouseout", mouseoutF)
+
 		}
 	}
 

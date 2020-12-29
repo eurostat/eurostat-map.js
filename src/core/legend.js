@@ -28,7 +28,7 @@ export const legend = function (map, config) {
 	out.boxPadding = config.boxPadding || 7;
 	out.boxCornerRad = config.boxCornerRad || 7;
 	out.boxFill = config.boxFill || "#eeeeee";
-	out.boxOpacity = config.boxOpacity || 0.5;
+	out.boxOpacity = config.boxOpacity == undefined? 0.5 : config.boxOpacity;
 
 	out.fontFamily = config.fontFamily || "Helvetica, Arial, sans-serif";
 

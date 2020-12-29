@@ -58,7 +58,6 @@ export const legendChoropleth = function (map, config) {
 			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
 			.attr("fill", m.classToFillStyleCH()(ecl, m.clnb()))
-			//.attr("ecl", ecl)
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
