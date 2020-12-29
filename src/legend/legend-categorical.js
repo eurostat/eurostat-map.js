@@ -1,5 +1,4 @@
 import { select } from "d3-selection";
-import { legendColor } from "d3-svg-legend";
 import * as lg from '../core/legend';
 
 /**
@@ -16,8 +15,6 @@ export const legendCategorical = function (map, config) {
 	//@override
 	out.update = function () {
 		const m = out.map;
-		const cla = m.classifier();
-		const claInv = m.classifierInverse();
 		const svg = out.svg_;
 
 		const svgMap = m.svg();
@@ -25,6 +22,84 @@ export const legendCategorical = function (map, config) {
 		//remove previous content
 		svg.selectAll("*").remove();
 
+		//draw legend box
+		svg.append("rect")
+			.attr("id", "legendBR")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("rx", out.boxCornerRad)
+			.attr("ry", out.boxCornerRad)
+			.attr("width", out.width)
+			.attr("height", out.height)
+			.style("fill", out.boxFill)
+			.style("opacity", out.boxOpacity);
+
+		//set font family
+		svg.style("font-family", out.fontFamily);
+
+		//draw title
+		if(out.titleText)
+			svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+			.text(out.titleText).style("font-size", out.titleFontSize);
+
+		//get classes
+		const ecls = Object.keys(m.classToFillStyleCT());
+
+		//draw legend elements for classes: rectangle + label
+		for(let i=0; i<ecls.length; i++) {
+
+			//the class
+			const ecl = i;
+			const ecl_ = ecls[i];
+
+			//the vertical position of the legend element
+			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
+
+			//rectangle
+			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.classToFillStyleCT()[ecl_])
+			//.attr("ecl", ecl)
+			.on("mouseover", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				select(this).style("fill", m.nutsrgSelFillSty());
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				sel.style("fill", function (d) { select(this).attr("fill___"); });
+				select(this).style("fill", m.classToFillStyleCT()[ecl]);
+			})
+			.attr("stroke", "black").attr("stroke-width", 0.5);
+
+			//label
+			svg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5+out.labelFontSize*0.5)
+			.text( m.classToText()[ecl_] )
+			.style("font-size", out.labelFontSize);
+		}
+	}
+
+	//@override
+	out.computeWidth = function () {
+		//TODO make better: this is not always the real width
+		return out.boxPadding * 2 + Math.max(out.titleWidth, out.shapeWidth + out.labelOffset + out.labelWrap);
+	}
+	//@override
+	out.computeHeight = function () {
+		//get number of categories
+		const nb = out.map.classToFillStyleCT()? Object.keys(out.map.classToFillStyleCT()).length : 6;
+		return out.boxPadding * 2 + (out.titleText? out.titleFontSize + out.boxPadding : 0) + nb*out.shapeHeight + (nb-1)*out.shapePadding;
+	}
+
+	return out;
+}
+
+
+
+
+
+/*
 		//background rectangle
 		svg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
 			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
@@ -77,19 +152,4 @@ export const legendCategorical = function (map, config) {
 			});
 		svg.select(".legendTitle").style("font-size", out.titleFontSize);
 		svg.selectAll("text.label").style("font-size", out.labelFontSize);
-		svg.style("font-family", out.fontFamily);
-	}
-
-	//@override
-	out.computeWidth = function () {
-		return out.boxPadding * 2 + Math.max(out.titleWidth, out.shapeWidth + out.labelOffset + out.labelWrap);
-	}
-	//@override
-	out.computeHeight = function () {
-		//get number of categories
-		const nb = out.map.classToFillStyleCT()? Object.keys(out.map.classToFillStyleCT()).length : 4;
-		return out.boxPadding * 2 + out.titleFontSize + out.shapeHeight + (1 + out.shapeHeight + out.shapePadding) * nb + 12;
-	}
-
-	return out;
-}
+		svg.style("font-family", out.fontFamily);*/

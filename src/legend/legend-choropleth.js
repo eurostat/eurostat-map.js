@@ -51,14 +51,14 @@ export const legendChoropleth = function (map, config) {
 			//the vertical position of the legend element
 			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*out.shapeHeight;
 
-			//the class number, tepending on order
+			//the class number, depending on order
 			const ecl = out.ascending? m.clnb()-i-1 : i;
 
 			//rectangle
 			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
 			.attr("fill", m.classToFillStyleCH()(ecl, m.clnb()))
-			.attr("ecl", ecl)
+			//.attr("ecl", ecl)
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());

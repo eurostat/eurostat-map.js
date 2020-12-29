@@ -48,7 +48,7 @@ export const legend = function (map, config) {
 	out.ascending = (config.ascending == undefined)? true : config.ascending;
 	out.shapeWidth = config.shapeWidth || 13;
 	out.shapeHeight = config.shapeHeight || 15;
-	out.shapePadding = config.shapePadding || 2;
+	out.shapePadding = config.shapePadding || 5;
 
 
 	/**
