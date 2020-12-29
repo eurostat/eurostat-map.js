@@ -8,9 +8,7 @@
 
 <body>
     <svg id="map"></svg>
-    <svg height="210">
-        <g id="legend"></g>
-    </svg>
+    <svg id="legend"></svg>
 
     <script src="../build/eurostatmap.js"></script>
     <script>
@@ -23,11 +21,10 @@
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-              gId: "legend",
-              titleText: "Population density (people/km²)",
+              svgId: "legend",
+              titleText: "Inhab./km²",
               labelDecNb: 0,
-              height: 210,
-              width: 190
+              width: 100,
             })
             .build();
     </script>
