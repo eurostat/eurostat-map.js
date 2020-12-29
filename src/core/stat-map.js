@@ -81,9 +81,11 @@ export const statMap = function (config, withCenterPoints) {
 			//get legend svg. If it does not exist, create it within the map
 			let lgSvg = select("#"+lg.svgId_);
 			if(lgSvg.size() == 0) {
+
 				//get legend position
-				const x = lg.x || out.width() - lg.width;
-				const y = lg.y || lg.boxPadding + lg.titleFontSize;
+				if (!lg.width) lg.width = lg.computeWidth();
+				const x = lg.x || out.width() - lg.width - lg.boxPadding;
+				const y = lg.y || lg.boxPadding;
 
 				//build legend SVG in a new group
 				const lgg = out.svg().append("g").attr("class", "legend")
