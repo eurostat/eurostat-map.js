@@ -19,8 +19,6 @@ export const map = function (config) {
 
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = config.classifier;
-	//the inverse classifier: a function returning the category value from the category class (used only for categorical maps).
-	out.classifierInverse_ = config.classifierInverse;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -29,7 +27,7 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classToFillStyleCT_","classToText_","noDataFillStyle_","classifier_","classifierInverse_"]
+	["classToFillStyleCT_","classToText_","noDataFillStyle_","classifier_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
@@ -47,7 +45,6 @@ export const map = function (config) {
 
 		const rg = getA(dom.length);
 		out.classifier(scaleOrdinal().domain(dom).range(rg));
-		out.classifierInverse(scaleOrdinal().domain(rg).range(dom));
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -73,7 +70,7 @@ export const map = function (config) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyleCT_[out.classifierInverse()(ecl)] || out.noDataFillStyle_ || "gray";
+				return out.classToFillStyleCT_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
 		});
 
 		return out;
