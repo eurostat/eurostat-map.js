@@ -21,10 +21,7 @@
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .withLegend({
-                    titleText: "Population density (people/km²)",
-                    labelDecNb: 0,
-                }
+            .withLegend({ width:60, x:280, y:30, labelDecNb:0, boxFill:"none" }
             )
             .build();
 
@@ -39,12 +36,7 @@
             .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
             .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .withLegend({
-                    height: 110,
-                    width: 130,
-                    labelDecNb: 0,
-                }
-            )
+            .withLegend({ width:100, x:270, y:50, boxFill:"none" })
             .build();
     </script>
 </body>

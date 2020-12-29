@@ -21,7 +21,7 @@
             //.geo("IC").proj("32628")
             //.geo("CARIB").proj("32620").geoCenter([650000, 1783000]).pixSize(800)
             //.geo("MT")
-            .scale("20M")
+            .scale("60M")
             .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
@@ -29,7 +29,7 @@
 
             .withLegend({
                 //boxPadding: 7,
-                boxFill: "none",
+                //boxFill: "none",
                 //titleText: "Density (inh/km²)",
                 //titleText: "",
                 //titleFontSize: 0,
@@ -40,8 +40,8 @@
                 //shapeHeight:15,
                 width: 60,
                 //height: 220,
-                //x:360,
-                //y:30,
+                x:10,
+                y:100,
                 ascending: true,
             })
 
