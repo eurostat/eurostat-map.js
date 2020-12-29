@@ -11,27 +11,27 @@ import { select } from 'd3';
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
 export const statMap = function (config, withCenterPoints) {
-	config = config || {};
 
 	//build stat map from map template
 	const out = mt.mapTemplate(config, withCenterPoints);
 
-	//the statistical data
-	//TODO Enable several statData. Make that a dictionary. Or array?
+	//the statistical data - TODO Enable several statData. Make that a dictionary. Or array?
 	out.stat_ = sd.statData();
-	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
-
 	//legend
 	out.legend_ = undefined;
+	//test for no data case
+	out.noDataText_ = "No data available";
+	//langage - TODO not used? Use it in stat-data ?
+	out.lg_ = "en";
+	//transition time for rendering
+	out.transitionDuration_ = 800;
+	//specific tooltip text function
+	out.tooltipText_ = tootipTextFunStat;
+	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
+	out.filtersDefinitionFun_ = function() { };
 
-	//other
-	out.noDataText_ = config.noDataText || "No data available";
-	out.lg_ = config.lg || "en"; //TODO not used? Use it in stat-data ?
-	out.transitionDuration_ = config.transitionDuration || 800;
-
-	//for maps using special fill patterns, this is the function to define them in the SVG image
-	//	See as-well: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = config.filtersDefinitionFun || function() { };
+	//override attribute values with config values
+	if(config) for (let key in config) out[key+"_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -40,11 +40,14 @@ export const statMap = function (config, withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["legend_", "noDataText_", "lg_", "transitionDuration_"]
+	["legend_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
+
+	//allow definition of stat data with configuration object
+	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
 
 
 	//prepare legend
@@ -203,42 +206,6 @@ export const statMap = function (config, withCenterPoints) {
 
 
 	/**
-	 * Default function for tooltip text, for statistical maps.
-	 * It simply shows the name of the region and the statistical value.
-	 * 
-	 * @param {*} rg The region to show information on.
-	 * @param {*} map The map element
-	 */
-	out.tooltipText_ = config.tooltipText || function (rg, map) {
-		const buf = [];
-		//region name
-		buf.push("<b>" + rg.properties.na + "</b><br>");
-		//case when no data available
-		const sv = map.stat().get(rg.properties.id);
-		if (!sv || (sv.value != 0 && !sv.value)) {
-			buf.push(map.noDataText_);
-			return buf.join("");
-		}
-		//display value
-		buf.push(sv.value);
-		//unit
-		if (map.unitText()) buf.push(" " + map.unitText());
-		//flag
-		const f = sv.status;
-		if (f && map.tooltipShowFlags_) {
-			if (map.tooltipShowFlags_ === "short")
-				buf.push(" " + f);
-			else {
-				const f_ = flags[f];
-				buf.push(f_ ? " (" + f_ + ")" : " " + f);
-			}
-		}
-		return buf.join("");
-	};
-
-
-
-	/**
 	 * Retrieve the time stamp of the map, even if not specified in the dimension initially.
 	 * This applies only for stat data retrieved from Eurostat API.
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
@@ -354,6 +321,41 @@ function rasterize(svg) {
 	return promise;
 }
 
+
+
+	/**
+	 * Default function for tooltip text, for statistical maps.
+	 * It simply shows the name of the region and the statistical value.
+	 * 
+	 * @param {*} rg The region to show information on.
+	 * @param {*} map The map element
+	 */
+	const tootipTextFunStat = function (rg, map) {
+		const buf = [];
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+		//case when no data available
+		const sv = map.stat().get(rg.properties.id);
+		if (!sv || (sv.value != 0 && !sv.value)) {
+			buf.push(map.noDataText_);
+			return buf.join("");
+		}
+		//display value
+		buf.push(sv.value);
+		//unit
+		if (map.unitText()) buf.push(" " + map.unitText());
+		//flag
+		const f = sv.status;
+		if (f && map.tooltipShowFlags_) {
+			if (map.tooltipShowFlags_ === "short")
+				buf.push(" " + f);
+			else {
+				const f_ = flags[f];
+				buf.push(f_ ? " (" + f_ + ")" : " " + f);
+			}
+		}
+		return buf.join("");
+	};
 
 
 /**
