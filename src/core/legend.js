@@ -25,8 +25,8 @@ export const legend = function (map, config) {
 
 	//the legend box
 	out.boxMargin = config.boxMargin || 10;
-	out.boxPadding = config.boxPadding || 10;
-	out.boxCornerRad = config.boxCornerRad || 10;
+	out.boxPadding = config.boxPadding || 7;
+	out.boxCornerRad = config.boxCornerRad || 7;
 	out.boxFill = config.boxFill || "#eeeeee";
 	out.boxOpacity = config.boxOpacity || 0.5;
 
@@ -34,11 +34,11 @@ export const legend = function (map, config) {
 
 	//legend title
 	out.titleText = config.titleText || "Legend";
-	out.titleFontSize = config.titleFontSize || 17;
+	out.titleFontSize = config.titleFontSize || 15;
 	out.titleWidth = config.titleWidth || 140;
 
 	//legeng element labels
-	out.labelFontSize = config.labelFontSize || 13;
+	out.labelFontSize = config.labelFontSize || 12;
 	out.labelDelim = config.labelDelim || " - ";
 	out.labelWrap = config.labelWrap || 140;
 	out.labelDecNb = config.labelDecNb || 2;
@@ -46,8 +46,8 @@ export const legend = function (map, config) {
 
 	//TODO: move those to the legends where it is used, only?
 	out.ascending = (config.ascending == undefined)? true : config.ascending;
-	out.shapeWidth = config.shapeWidth || 15;
-	out.shapeHeight = config.shapeHeight || 13;
+	out.shapeWidth = config.shapeWidth || 13;
+	out.shapeHeight = config.shapeHeight || 15;
 	out.shapePadding = config.shapePadding || 2;
 
 
