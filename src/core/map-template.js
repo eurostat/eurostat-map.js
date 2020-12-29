@@ -216,7 +216,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
 
 		//insets
-		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+(out.width()-120)+",10)")
+		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+(out.width()-175)+",10)")
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
