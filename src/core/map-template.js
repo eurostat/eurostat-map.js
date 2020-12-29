@@ -216,7 +216,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
 
 		//insets
-		const ing = dg.append("g").attr("id", "insetsgroup");
+		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+(out.width()-120)+",10)")
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
@@ -224,8 +224,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//get svg element. Create it if it does not exists
 			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
-				const x = config.x || out.insetPadding_;
-				const y = config.y || out.insetPadding_+i*(out.insetPadding_+out.insetSize_);
+				const x = config.x == undefined? out.insetPadding_ : config.x;
+				const y = config.y == undefined? out.insetPadding_+i*(out.insetPadding_+out.insetSize_) : config.y;
 				const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
 			}

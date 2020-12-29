@@ -56,7 +56,18 @@ export const statMap = function (config, withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		out.insetsConfig_ = config || [{geo:"IC",width:80},{geo:"GP"},{geo:"MQ"},{geo:"GF",scale:"10M"},{geo:"RE"},{geo:"YT"},{geo:"MT"},{geo:"PT20",width:80},{geo:"PT30"},{geo:"LI",scale:"01M"}]
+		out.insetsConfig_ = config || [
+			/*{geo:"IC", x:0, y:0, width:105, height:50 },
+			{geo:"CARIB", x:0, y:55, width: 30, height:100}, {geo:"GF",scale:"10M", x:35, y:55},
+			{geo:"RE", x:55, y:105}, //{geo:"YT", x:55, y:110}*/
+			{geo:"IC", x:0, y:0}, {geo:"GP", x:55, y:0},
+			{geo:"MQ", x:0, y:55}, {geo:"GF",scale:"10M", x:55, y:55},
+			{geo:"RE", x:0, y:110}, {geo:"YT", x:55, y:110},
+			{geo:"PT20", x:0, y:165}, {geo:"PT30", x:55, y:165},
+			{geo:"MT", x:0, y:220}, {geo:"LI",scale:"01M", x:55, y:220},
+			{geo:"SJ_SV", x:0, y:275}, {geo:"SJ_JM",scale:"01M", x:55, y:275},
+			//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:55, y:330}
+		]
 		return out;
 	};
 
