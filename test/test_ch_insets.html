@@ -26,13 +26,15 @@
             .map("ch")
             .svgId("map2")
             .width(400)
-            .withInsets([{geo:"GF",x:200,y:50}]).insetSize(150).insetZoomExtent([0,99999])
+            .withInsets([{geo:"GF"}]).insetSize(150).insetZoomExtent([0,99999])
             .build();
         eurostatmap
             .map("ch")
             .svgId("map3")
             .width(400)
-            .geo("LI").scale("01M").withInsets([{geo:"MQ",scale:"01M"}]).insetSize(200).insetZoomExtent([0,99999])
+            .geo("LI").scale("01M")
+            .withInsets([{geo:"MQ",scale:"01M"}]).insetSize(200).insetZoomExtent([0,99999])
+            .insetBoxPosition([10,10])
             .build();
         eurostatmap
             .map("ch")
