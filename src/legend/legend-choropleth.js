@@ -22,7 +22,7 @@ export const legendChoropleth = function (map, config) {
 		//remove previous content
 		svg.selectAll("*").remove();
 
-		//background rectangle
+		//draw legend box
 		svg.append("rect")
 			.attr("id", "legendBR")
 			.attr("x", 0)
@@ -34,40 +34,44 @@ export const legendChoropleth = function (map, config) {
 			.style("fill", out.boxFill)
 			.style("opacity", out.boxOpacity);
 
-		//font
+		//set font family
 		svg.style("font-family", out.fontFamily);
 
-		//title
-		svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-		.text(out.titleText)
-		.style("font-size", out.titleFontSize);
+		//draw title
+		if(out.titleText)
+			svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+			.text(out.titleText).style("font-size", out.titleFontSize);
 
-		//text format
+		//define format for labels
 		const f = format("." + out.labelDecNb + "f");
 
-		//draw legend elements
-		//TODO ascending/descending
+		//draw legend elements for classes: rectangle + label
 		for(let i=0; i<m.clnb(); i++) {
-			const y = out.boxPadding + out.titleFontSize + out.boxPadding + i*out.shapeHeight;
+
+			//the vertical position of the legend element
+			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*out.shapeHeight;
+
+			//the class number, tepending on order
+			const ecl = out.ascending? m.clnb()-i-1 : i;
 
 			//rectangle
 			svg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
-			.attr("fill", m.classToFillStyleCH()(i, m.clnb()))
-			.attr("ecl", i)
+			.attr("fill", m.classToFillStyleCH()(ecl, m.clnb()))
+			.attr("ecl", ecl)
 			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + i + "']");
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				select(this).style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + i + "']");
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
-				select(this).style("fill", m.classToFillStyleCH()(i, m.clnb()));
+				select(this).style("fill", m.classToFillStyleCH()(ecl, m.clnb()));
 			});
 
-			//line
+			//separation line
 			if(i>0)
 				svg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.shapeWidth).attr("y2", y)
 				.attr("stroke", "black").attr("stroke-width", 1);
@@ -75,9 +79,27 @@ export const legendChoropleth = function (map, config) {
 			//label
 			if(i<m.clnb()-1)
 				svg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight+0.5*out.labelFontSize)
-				.text( f( m.classifier().invertExtent(i)[1] ) )
+				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
 				.style("font-size", out.labelFontSize);
 		}
+	}
+
+	//@override
+	out.computeWidth = function () {
+		//TODO make better: this is not always the real width
+		return out.boxPadding * 2 + Math.max(out.titleWidth, out.shapeWidth + out.labelOffset + out.labelWrap);
+	}
+	//@override
+	out.computeHeight = function () {
+		return out.boxPadding * 2 + (out.titleText? out.titleFontSize + out.boxPadding : 0) + out.shapeHeight * out.map.clnb();
+	}
+
+	return out;
+}
+
+
+
+
 
 			/*
 		//define legend
@@ -139,16 +161,3 @@ export const legendChoropleth = function (map, config) {
 		svg.select(".legendTitle").style("font-size", out.titleFontSize);
 		svg.selectAll("text.label").style("font-size", out.labelFontSize);
 		svg.style("font-family", out.fontFamily);*/
-	}
-
-	//@override
-	out.computeWidth = function () {
-		return out.boxPadding * 2 + Math.max(out.titleWidth, out.shapeWidth + out.labelOffset + out.labelWrap);
-	}
-	//@override
-	out.computeHeight = function () {
-		return out.boxPadding * 3 + out.titleFontSize + out.shapeHeight * out.map.clnb();
-	}
-
-	return out;
-}

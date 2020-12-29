@@ -33,8 +33,8 @@ export const legend = function (map, config) {
 	out.fontFamily = config.fontFamily || "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText = config.titleText || "Legend";
-	out.titleFontSize = config.titleFontSize || 15;
+	out.titleText = config.titleText == undefined? "" : config.titleText;
+	out.titleFontSize = config.titleFontSize == undefined? 15 : config.titleFontSize;
 	out.titleWidth = config.titleWidth || 140;
 
 	//legeng element labels
