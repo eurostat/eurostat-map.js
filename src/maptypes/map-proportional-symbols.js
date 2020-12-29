@@ -26,7 +26,7 @@ export const map = function (config) {
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_;
+	out.classifier_ = undefined;
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];

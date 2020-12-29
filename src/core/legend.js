@@ -13,14 +13,14 @@ export const legend = function (map, config) {
 
 	//the SVG where to make the legend
 	out.svgId = "legend_" + Math.round(10e15 * Math.random());
-	out.svg;
+	out.svg = undefined;
 
 	//the legend element dimension
-	out.width;
-	out.height;
+	out.width = undefined;
+	out.height = undefined;
 	//the legend element position, in case it is embeded within the map SVG
-	out.x;
-	out.y;
+	out.x = undefined;
+	out.y = undefined;
 
 	//the legend box
 	out.boxMargin = 10;

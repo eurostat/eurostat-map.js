@@ -14,13 +14,13 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
-	out.classToFillStyleCT_;
+	out.classToFillStyleCT_ = undefined;
 	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
-	out.classToText_ ;
+	out.classToText_ = undefined;
 	/** The color for non data regions */
 	out.noDataFillStyle_ = "lightgray";
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_;
+	out.classifier_ = undefined;
 	//specific tooltip text function
 	out.tooltipText_ = tooltipTextFunCat;
 

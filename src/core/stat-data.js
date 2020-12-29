@@ -17,7 +17,7 @@ export const statData = function (config) {
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
 	 */
-	out.data_;
+	out.data_ = undefined;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
@@ -114,11 +114,11 @@ export const statData = function (config) {
 	*/
 
 	/** The Eurobase dataset code */
-	out.eurostatDatasetCode_;
+	out.eurostatDatasetCode_ = undefined;
 	/** The Eurobase code */
 	out.filters_ = { lastTimePeriod: 1 };
 	out.precision_ = 2;
-	let jsonStatTime;
+	let jsonStatTime = undefined;
 
 	/**
 	 * Return promise for Eurobase/jsonstat data.
@@ -175,7 +175,7 @@ export const statData = function (config) {
 	*/
 
 	/** The CSV file URL */
-	out.csvURL_;
+	out.csvURL_ = undefined;
 	/** The CSV column with the NUTS ids */
 	out.geoCol_ = "geo";
 	/** The CSV column with the statistical values */

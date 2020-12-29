@@ -15,7 +15,7 @@ export const legendProportionalSymbols = function (map, config) {
 	//number of elements in the legend
 	out.cellNb = 4;
 	// user-define d3 format function
-	out.format;
+	out.format = undefined;
 
 
 	//override attribute values with config values
