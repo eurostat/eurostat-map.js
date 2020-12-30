@@ -96,7 +96,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	out.insetBoxPosition_ = undefined;
 	out.insetPadding_ = 5;
-	out.insetSize_ = 50;
+	out.insetSize_ = 60;
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
 
@@ -216,7 +216,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
 
 		//insets
-		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width()-175, 10];
+		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - 3*out.insetSize() - 4*out.insetPadding(), 2*out.insetPadding()];
 		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+out.insetBoxPosition()[0]+","+out.insetBoxPosition()[1]+")")
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];

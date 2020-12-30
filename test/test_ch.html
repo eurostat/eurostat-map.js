@@ -13,8 +13,8 @@
         eurostatmap
             .map("ch")
             .title("Population in Europe")
-            .withInsets()
-            .width(600)
+            .insetSize(80).withInsets()
+            //.width(600)
             .scale("60M")
             .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
