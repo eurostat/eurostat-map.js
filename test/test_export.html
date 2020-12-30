@@ -20,20 +20,18 @@
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-                    titleText: "Population change from 2015 to 2016 : in ‰)",
-                    width: 200,
-                    height: 220,
-                    labelDecNb: 0,
-                    labelDelim: "to",
-                }
-            )
+                labelDecNb:0,
+                width: 60,
+                x:10, y:100,
+                ascending: true,
+            })
 
             .build();
 
         setTimeout(() => {
             myMap.exportMapToPNG();
             //myMap.exportMapToSVG();
-        }, 4000)
+        }, 5000)
     </script>
 </body>
 
