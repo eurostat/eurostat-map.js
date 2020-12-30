@@ -128,7 +128,7 @@ export const statMap = function (config, withCenterPoints) {
 	out.updateGeoData = function() {
 		out.updateGeoMT( ()=>{
 			//if stat data are already there, update the map with these values
-			if (!out.stat().data_) return;
+			if (!out.stat().isReady()) return;
 			out.updateStatValues();
 		});
 		return out;

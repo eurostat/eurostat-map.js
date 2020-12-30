@@ -17,14 +17,13 @@ export const statData = function (config) {
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
 	 */
-	out.data_ = undefined;
-	//TODO: add function 'isRedy()'make that private.
+	let _data_ = undefined;
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
 	 * @param {*} nutsId 
 	 */
-	out.get = (nutsId) => out.data_ ? out.data_[nutsId] : undefined;
+	out.get = (nutsId) => _data_ ? _data_[nutsId] : undefined;
 
 	/**
 	 * Return the stat value from a nuts id.
@@ -39,13 +38,13 @@ export const statData = function (config) {
 	 * @param {*} stat The new statistical data. The format can be either {value:34.324,status:"e"} or a the value only.
 	 */
 	out.set = (nutsId, stat) => {
-		out.data_ = out.data_ || {};
-		const s = out.data_[nutsId];
+		_data_ = _data_ || {};
+		const s = _data_[nutsId];
 		if(s)
 			if(stat.value) { s.value = stat.value; s.status = stat.status; }
 			else s.value = isNaN(+stat)?stat:+stat;
 		else
-			out.data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
+			_data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
 		return out;
 	}
 
@@ -61,35 +60,29 @@ export const statData = function (config) {
 
 
 
-	/**
-	 * Return all stat values as an array.
-	 * This can be used to classify the values.
-	 */
+	/** Return all stat values as an array. This can be used to classify the values. */
 	out.getArray = function() {
-		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s));
+		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s));
 	}
 
-	/**
-	 * Return stat unique values.
-	 * This can be used for categorical maps.
-	 */
+	/** Return stat unique values. This can be used for categorical maps. */
 	out.getUniqueValues = function() {
-		return Object.values(out.data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+		return Object.values(_data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
 	}
 
-	/**
-	 * Get max value.
-	 */
-	out.getMax = function() {
-		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
-	}
-	/**
-	 * Get min value.
-	 */
+	/** Get min value. */
 	out.getMin = function() {
-		return Object.values(out.data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
+		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
+	}
+	/** Get max value. */
+	out.getMax = function() {
+		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
 	}
 
+	/** Check if the stat data is ready. */
+	out.isReady = function() {
+		return _data_ != undefined;
+	}
 
 
 
@@ -139,7 +132,7 @@ export const statData = function (config) {
 	//for eurobase statistical data to retrieve from Eurostat API
 	const updateEurobase = function (nutsLvl, callback) {
 		//erase previous data
-		out.data_ = null;
+		_data_ = null;
 
 		getEurobasePromise(nutsLvl).then(
 			function (data___) {
@@ -149,7 +142,7 @@ export const statData = function (config) {
 				//get time
 				jsonStatTime = JSONstat(data___).Dimension("time").id[0];
 				//index
-				out.data_ = jsonstatToIndex(jsd);
+				_data_ = jsonstatToIndex(jsd);
 				//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
 
 				callback();
@@ -162,7 +155,7 @@ export const statData = function (config) {
 	out.getTime = function () {
 		const t = out.filters_.time;
 		if (t) return t;
-		if (!out.data_) return;
+		if (!_data_) return;
 		return jsonStatTime;
 	};
 
@@ -192,13 +185,13 @@ export const statData = function (config) {
 	//for statistical data to retrieve from CSV file
 	const updateCSV = function (callback) {
 		//erase previous data
-		out.data_ = null;
+		_data_ = null;
 
 		//retrieve csv data
 		getCSVPromise().then(
 			function (data___) {
 				//decode stat data
-				out.data_ = csvToIndex(data___, out.geoCol_, out.valueCol_);
+				_data_ = csvToIndex(data___, out.geoCol_, out.valueCol_);
 				callback();
 		});
 	}
