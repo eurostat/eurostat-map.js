@@ -59,15 +59,18 @@ export const statMap = function (config, withCenterPoints) {
 
 	//specify insets to show
 	out.withInsets = function (config) {
-		const dd = out.insetSize() + out.insetPadding();
+		const s = out.insetSize(), p = out.insetPadding();
 		out.insetsConfig_ = config || [
-			/*{geo:"IC", x:0, y:0, width:105, height:50 },
-			{geo:"CARIB", x:0, y:55, width: 30, height:100}, {geo:"GF",scale:"10M", x:35, y:55},
-			{geo:"RE", x:55, y:105}, //{geo:"YT", x:55, y:110}*/
-			{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
+			{geo:"IC", x:0, y:0, width:s, height:0.3*s},
+			{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s},
+			{geo:"GF", x:0.5*s, y:0.3*s+p, width:0.5*s, height:0.75*s},{geo:"YT", x:0.5*s, y:1.05*s+p, width:0.25*s, height:0.25*s},{geo:"RE", x:0.75*s, y:1.05*s+p, width:0.25*s, height:0.25*s},
+			{geo:"PT20", x:0, y:1.3*s+2*p, width:0.75*s, height:0.25*s}, {geo:"PT30", x:0.75*s, y:1.3*s+2*p, width:0.25*s, height:0.25*s},
+			{geo:"MT", x:0, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"LI", x:0.25*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
+			{geo:"SJ_SV", x:0.5*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"SJ_JM", x:0.75*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
+			/*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
 			{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},
 			{geo:"PT20", x:0, y:2*dd}, {geo:"PT30", x:dd, y:2*dd}, {geo:"MT", x:2*dd, y:2*dd},
-			{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},
+			{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},*/
 			//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:dd, y:330}
 		]
 		return out;
