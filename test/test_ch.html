@@ -10,7 +10,7 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap
+        const map = eurostatmap
             .map("ch")
             .title("Population in Europe")
             .insetSize(200).withInsets()
@@ -40,6 +40,8 @@
             })
 
             .build();
+
+            setTimeout(() => { console.log(map.pixSize()) }, 5000)
 
     </script>
 </body>
