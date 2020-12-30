@@ -96,7 +96,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	out.insetBoxPosition_ = undefined;
 	out.insetPadding_ = 5;
-	out.insetSize_ = 180;
+	out.insetSize_ = 210;
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
 
