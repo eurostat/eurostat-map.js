@@ -222,7 +222,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
 
-			//get svg element. Create it if it does not exists
+			//get svg element. Create it if it as an embeded SVG if it does not exists
 			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
 				const x = config.x == undefined? out.insetPadding_ : config.x;
@@ -232,7 +232,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}
 
 			//build inset
-			out.insetTemplates_[config.geo] = getInsetTemplate(config).buildMapTemplateBase();
+			out.insetTemplates_[config.geo] = getInsetTemplate(config, out).buildMapTemplateBase();
 		}
 
 		//draw frame
@@ -472,7 +472,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 	/** Build template for inset, based on main one */
-	const getInsetTemplate = function(config) {
+	const getInsetTemplate = function(config, map) {
 
 		config.proj = config.proj || _defaultCRS[config.geo];
 		config.scale = config.scale || out.insetScale_;
@@ -483,11 +483,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.width = config.width || out.insetSize_;
 		config.height = config.height || out.insetSize_;
 
+		//TODO
 		const mt = mapTemplate(config, withCenterPoints);
+
+		//TODO
+		//override attribute values with config values
+		//if(config) for (let key in config) out[key+"_"] = config[key];
 
 		//copy attributes
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
+
+
+		console.log(mt)
+
 		return mt;
 	}
 
@@ -519,7 +528,7 @@ const _defaultPosition = {
 }
 
 /**
- * Defaule CRS for each geo area
+ * Default CRS for each geo area
  */
 const _defaultCRS = {
 	"EUR":"3035",

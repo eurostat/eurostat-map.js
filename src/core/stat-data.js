@@ -18,6 +18,7 @@ export const statData = function (config) {
 	 * Each stat value is an object {value,status}.
 	 */
 	out.data_ = undefined;
+	//TODO: add function 'isRedy()'make that private.
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.

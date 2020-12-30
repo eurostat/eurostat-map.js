@@ -112,7 +112,7 @@ const tooltipTextFunCat = function (rg, map) {
 		return buf.join("");
 	}
 	const val = sv.value;
-	//TODO map.classToText_ not defined for inste maps
+	//TODO map.classToText_ not defined for inset maps
 	if (map.classToText_) {
 		const lbl = map.classToText_[val];
 		buf.push(lbl ? lbl : val);
