@@ -108,14 +108,6 @@ export const statMap = function (config, withCenterPoints) {
 			lg.build();
 		}
 
-		//upgrade inset maps with few methods from main stat map
-		//TODO find way to get these stuff in a better way
-		for(const geo in out.insetTemplates_) {
-			const inset = out.insetTemplates_[geo];
-			["stat", "legend", "noDataText", "lg", "transitionDuration", "unitText"]
-			.forEach(function (att) { inset[att] = out[att]; });
-		}
-
 		//set tooltip text
 		out.tooltipText(out.tooltipText_);
 

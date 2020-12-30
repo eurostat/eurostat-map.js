@@ -226,13 +226,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
 				const x = config.x == undefined? out.insetPadding_ : config.x;
-				const y = config.y == undefined? out.insetPadding_+i*(out.insetPadding_+out.insetSize_) : config.y;
+				const y = config.y == undefined? out.insetPadding_+ i*(out.insetPadding_+out.insetSize_) : config.y;
 				const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
 			}
 
 			//build inset
-			out.insetTemplates_[config.geo] = getInsetTemplate(config, out).buildMapTemplateBase();
+			out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
 		}
 
 		//draw frame
@@ -471,9 +471,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 	};
 
 
-	/** Build template for inset, based on main one */
-	const getInsetTemplate = function(config, map) {
 
+	/** Build template for inset, based on main one */
+	const buildInset = function(config, map) {
+		//TODO find a better way to do that
+
+		//copy map
+		//for(let key__ in map) {
+			//mt[key__] = map[key__];
+		//}
+
+		//const mt = Object.assign({}, map)
+
+		const mt = mapTemplate(config, withCenterPoints);
+
+		//define default values for inset configs
+		config = config || {};
 		config.proj = config.proj || _defaultCRS[config.geo];
 		config.scale = config.scale || out.insetScale_;
 		config.title = config.title || "";
@@ -482,20 +495,25 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetSize_;
 		config.height = config.height || out.insetSize_;
+		config.insetsConfig = config.insetsConfig || [];
+		config.insetTemplates = config.insetTemplates || {};
 
-		//TODO
-		const mt = mapTemplate(config, withCenterPoints);
+		//apply config values for inset
+		for (let key in config) mt[key+"_"] = config[key];
 
-		//TODO
-		//override attribute values with config values
-		//if(config) for (let key in config) out[key+"_"] = config[key];
+		/*
+		mt.stat_ = null;
+		mt.legend_ = null;
+		mt.filtersDefinitionFun_ = null;
+		mt.tooltipText_ = null;*/
 
-		//copy attributes
+		//copy template attributes
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
-
-		console.log(mt)
+		//copy template attributes
+		["stat", "legend", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
+		.forEach(function (att) { mt[att] = out[att]; });
 
 		return mt;
 	}
