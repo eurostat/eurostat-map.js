@@ -71,7 +71,7 @@ export const map = function (config) {
 			//https://github.com/d3/d3-scale#quantize-scales
 			const statValues = out.stat().getArray();
 			out.classifier(scaleQuantize().domain([min(statValues), max(statValues)]).range(getA(out.clnb_)));
-			if (out.makeClassifNice_) classif.nice();
+			if (out.makeClassifNice_) out.classifier().nice();
 		} else if (out.classifMethod_ === "threshold") {
 			//https://github.com/d3/d3-scale#threshold-scales
 			out.clnb(out.threshold_.length + 1);
