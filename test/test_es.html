@@ -23,7 +23,8 @@
                 geoCenter: [3220000,1970000],
                 pixSize: 2900,
                 unitText: "%",
-                classifMethod: "equinter",
+                //classifMethod: "equinter", clnb: 15,
+                classifMethod: "threshold", threshold: [4,6,8,10,12,14,16,18,20,21],
             })
             .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } } )
             .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([335,345])
