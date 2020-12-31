@@ -26,17 +26,16 @@ test('urban/rural categorical map with csvDataSource', async () => {
         eurostatmap
             .map("ch")
             .svgId("testMap2")
-            .withInsets([{geo:"GF"}]).insetSize(200).insetZoomExtent([0,99999])
+            .withInsets([{geo:"GF"}]).insetBoxWidth(200).insetZoomExtent([0,99999])
             .build();
 
         eurostatmap
             .map("ch")
             .svgId("testMap3")
-            .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetSize(200).insetZoomExtent([0,99999])
+            .geo("LI").scale("01M").withInsets([{geo:"EUR",scale:"60M"}]).insetBoxWidth(200).insetZoomExtent([0,99999])
             .build();
     });
 
-    // we're done; close the browser
     await browser.close();
 
 })
