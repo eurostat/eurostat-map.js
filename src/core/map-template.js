@@ -275,7 +275,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])]);
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
 		if (!out.pixSize())
-			if (dp) out.pixSize(dp.widthGeo / out.width());
+			if (dp) out.pixSize(dp.pixSize);
 			else out.pixSize(Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_));
 
 		//SVG drawing function
@@ -528,22 +528,23 @@ export const mapTemplate = function (config, withCenterPoints) {
  * Default geocenter positions and width (in projection unit) for territories and projections.
  */
 const _defaultPosition = {
-	"EUR_3035": { geoCenter: [4970000, 3350000], widthGeo: 5200000 },
-	"IC_32628": { geoCenter: [443468, 3145647], widthGeo: 600000 },
-	"GP_32620": { geoCenter: [669498, 1784552], widthGeo: 100000 },
-	"MQ_32620": { geoCenter: [716521, 1621322], widthGeo: 100000 },
-	"GF_32622": { geoCenter: [266852, 444074], widthGeo: 500000 },
-	"RE_32740": { geoCenter: [348011, 7661627], widthGeo: 100000 },
-	"YT_32738": { geoCenter: [516549, 8583920], widthGeo: 50000 },
-	"MT_3035": { geoCenter: [4719755, 1441701], widthGeo: 50000 },
-	"PT20_32626": { geoCenter: [397418, 4271471], widthGeo: 750000 },
-	"PT30_32628": { geoCenter: [333586, 3622706], widthGeo: 150000 },
-	"LI_3035": { geoCenter: [4287060, 2672000], widthGeo: 30000 },
-	"IS_3035": { geoCenter: [3011804, 4960000], widthGeo: 600000 },
-	"SJ_SV_3035": { geoCenter: [4570000, 6160156], widthGeo: 600000 },
-	"SJ_JM_3035": { geoCenter: [3647762, 5408300], widthGeo: 70000 },
-	"CARIB_32620": { geoCenter: [636345, 1669439], widthGeo: 1000000 },
+	"EUR_3035": { geoCenter: [4970000, 3350000], pixSize: 6800 },
+	"IC_32628": { geoCenter: [443468, 3145647], pixSize: 2400 },
+	"GP_32620": { geoCenter: [669498, 1784552], pixSize: 400 },
+	"MQ_32620": { geoCenter: [716521, 1621322], pixSize: 400 },
+	"GF_32622": { geoCenter: [266852, 444074], pixSize: 2000 },
+	"RE_32740": { geoCenter: [348011, 7661627], pixSize: 400 },
+	"YT_32738": { geoCenter: [516549, 8583920], pixSize: 200 },
+	"MT_3035": { geoCenter: [4719755, 1441701], pixSize: 200 },
+	"PT20_32626": { geoCenter: [397418, 4271471], pixSize: 3000 },
+	"PT30_32628": { geoCenter: [333586, 3622706], pixSize: 600 },
+	"LI_3035": { geoCenter: [4287060, 2672000], pixSize: 120 },
+	"IS_3035": { geoCenter: [3011804, 4960000], pixSize: 2400 },
+	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 2400 },
+	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 280 },
+	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 4000 },
 }
+
 
 /**
  * Default CRS for each geo area

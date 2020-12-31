@@ -61,6 +61,7 @@ export const statMap = function (config, withCenterPoints) {
 	out.withInsets = function (config) {
 		const s = out.insetSize(), p = out.insetPadding();
 		out.insetsConfig_ = config || [
+			//TODO hide graticule
 			{geo:"IC", x:0, y:0, width:s, height:0.3*s, pixSize:3900},
 			{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s, pixSize:3900},
 			{geo:"GF", x:0.5*s, y:0.3*s+p, width:0.5*s, height:0.75*s, pixSize:3900},{geo:"YT", x:0.5*s, y:1.05*s+p, width:0.25*s, height:0.25*s, pixSize:2000},{geo:"RE", x:0.75*s, y:1.05*s+p, width:0.25*s, height:0.25*s, pixSize:2000},
