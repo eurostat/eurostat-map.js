@@ -14,19 +14,22 @@
         const map = eurostatmap
             .map("ch", {
                 title: "Population in Spain",
+                titleFill: "#333",
+                titlePosition: [30,37],
                 scale: "10M",
                 geoCenter: [3220000,1970000],
                 pixSize: 1700,
                 stats: { eurostatDatasetCode:"demo_r_d3dens" },
-                unitText: "people/km²",
+                unitText: "inhabitants/km²",
                 tooltipShowFlags: false,
                 classifMethod: "threshold", threshold: [40, 70, 100, 150, 300, 800],
             })
-            .withInsets([{ geo:"IC", pixSize:1700, width:320, height:150, title:"Canary islands", titleFontSize:15 }]).insetBoxPosition([470,520])
-            .withLegend( {labelDecNb:0, width: 60, x:20, y:100 } )
+            .withInsets([{ geo:"IC", pixSize:1700, width:320, height:150, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([470,520])
+            .withLegend( {labelDecNb:0, width: 60, x:20, y:100, boxOpacity:0 } )
             .build();
 
             //set title with date
+            //TODO make callback mechanisme fro this kind of actions to launch after the map is loaded
             setTimeout(() => {
                 map.title(map.title() + " in " + map.getTime());
             }, 2000)
