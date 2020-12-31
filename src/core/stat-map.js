@@ -47,7 +47,7 @@ export const statMap = function (config, withCenterPoints) {
 	);
 
 	//allow definition of stat data with configuration object
-	out.stat = function(opts) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(opts); return out; }
+	out.stat = function(config) { if (!arguments.length) return out.stat_; out.stat_ = sd.statData(config); return out; }
 
 	//prepare legend
 	out.withLegend = function (config) {

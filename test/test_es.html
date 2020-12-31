@@ -13,7 +13,7 @@
 
         const map = eurostatmap
             .map("ch", {
-                title: "Population in Spain",
+                title: "Unemployment in Spain",
                 width: 550,
                 heiht: 550,
                 nutsLvl: 2,
@@ -22,13 +22,11 @@
                 scale: "10M",
                 geoCenter: [3220000,1970000],
                 pixSize: 2900,
-                stats: { eurostatDatasetCode:"demo_r_d3dens" },
-                unitText: "inhabitants/km²",
-                tooltipShowFlags: false,
-                classifMethod: "threshold", threshold: [40, 70, 100, 150, 300, 800],
+                unitText: "%",
             })
+            .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y_GE25", sex: "T", unit: "PC" } } )
             .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([335,345])
-            .withLegend( {labelDecNb:0, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Inhab./km²" } )
+            .withLegend( {labelDecNb:1, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)" } )
             .build();
 
             //set title with date
