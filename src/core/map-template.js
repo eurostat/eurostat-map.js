@@ -218,6 +218,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//insets
 		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetSize() - 2*out.insetPadding(), 2*out.insetPadding()];
 		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+out.insetBoxPosition()[0]+","+out.insetBoxPosition()[1]+")")
+		//if needed, use default inset setting
+		if(out.insetsConfig_ === "use_default") out.insetsConfig_ = defaultInsetConfig(out.insetSize(), out.insetPadding());
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
@@ -527,21 +529,44 @@ export const mapTemplate = function (config, withCenterPoints) {
 /** Default geocenter positions and pixSize (for default width = 800px) for territories and projections. */
 const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], pixSize: 6800 },
-	"IC_32628": { geoCenter: [443468, 3145647], pixSize: 2400 },
-	"GP_32620": { geoCenter: [669498, 1784552], pixSize: 400 },
-	"MQ_32620": { geoCenter: [716521, 1621322], pixSize: 400 },
-	"GF_32622": { geoCenter: [266852, 444074], pixSize: 2000 },
-	"RE_32740": { geoCenter: [348011, 7661627], pixSize: 400 },
-	"YT_32738": { geoCenter: [516549, 8583920], pixSize: 200 },
-	"MT_3035": { geoCenter: [4719755, 1441701], pixSize: 200 },
-	"PT20_32626": { geoCenter: [397418, 4271471], pixSize: 3000 },
-	"PT30_32628": { geoCenter: [333586, 3622706], pixSize: 600 },
-	"LI_3035": { geoCenter: [4287060, 2672000], pixSize: 120 },
-	"IS_3035": { geoCenter: [3011804, 4960000], pixSize: 2400 },
-	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 2400 },
-	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 280 },
-	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 4000 },
+	"IC_32628": { geoCenter: [443468, 3145647], pixSize: 1000 },
+	"GP_32620": { geoCenter: [669498, 1784552], pixSize: 130 },
+	"MQ_32620": { geoCenter: [716521, 1621322], pixSize: 130 },
+	"GF_32622": { geoCenter: [266852, 444074], pixSize: 500 },
+	"RE_32740": { geoCenter: [348011, 7661627], pixSize: 130 },
+	"YT_32738": { geoCenter: [516549, 8583920], pixSize: 70 },
+	"MT_3035": { geoCenter: [4719755, 1441701], pixSize: 70 },
+	"PT20_32626": { geoCenter: [397418, 4271471], pixSize: 1500 },
+	"PT30_32628": { geoCenter: [333586, 3622706], pixSize: 150 },
+	"LI_3035": { geoCenter: [4287060, 2672000], pixSize: 40 },
+	"IS_3035": { geoCenter: [3011804, 4960000], pixSize: 700 },
+	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 800 },
+	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 100 },
+	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 500 },
 }
+
+/**
+ * Default inset setting.
+ * @param {*} s The width of the inset box
+ * @param {*} p The padding
+ */
+const defaultInsetConfig = function(s,p) {
+	//TODO hide graticule ? drawGraticule:false
+	return [
+	{geo:"IC", x:0, y:0, width:s, height:0.3*s},
+	{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s},
+	{geo:"GF", x:0.5*s, y:0.3*s+p, width:0.5*s, height:0.75*s },{geo:"YT", x:0.5*s, y:1.05*s+p, width:0.25*s, height:0.25*s },{geo:"RE", x:0.75*s, y:1.05*s+p, width:0.25*s, height:0.25*s },
+	{geo:"PT20", x:0, y:1.3*s+2*p, width:0.75*s, height:0.25*s }, {geo:"PT30", x:0.75*s, y:1.3*s+2*p, width:0.25*s, height:0.25*s },
+	{geo:"MT", x:0, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"LI", x:0.25*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
+	{geo:"SJ_SV", x:0.5*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"SJ_JM", x:0.75*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
+	/*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
+	{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},
+	{geo:"PT20", x:0, y:2*dd}, {geo:"PT30", x:dd, y:2*dd}, {geo:"MT", x:2*dd, y:2*dd},
+	{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},*/
+	//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:dd, y:330}
+	]
+}
+
 
 
 /** Default CRS for each geo area */
