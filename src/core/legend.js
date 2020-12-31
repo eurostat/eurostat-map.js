@@ -23,12 +23,14 @@ export const legend = function (map, config) {
 	out.y = undefined;
 
 	//the legend box
+	//TODO: move legend box drawing to generic build function ?
 	out.boxMargin = 10;
 	out.boxPadding = 7;
 	out.boxCornerRad = 7;
 	out.boxFill = "#eeeeee";
 	out.boxOpacity = 0.5;
 
+	//font
 	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
@@ -36,7 +38,7 @@ export const legend = function (map, config) {
 	out.titleFontSize = 15;
 	out.titleWidth = 140;
 
-	//legeng element labels
+	//legend element labels
 	out.labelFontSize = 12;
 	out.labelDelim = " - "; //TODO still needed ?
 	out.labelWrap = 140; //TODO still needed?
@@ -61,6 +63,7 @@ export const legend = function (map, config) {
 		out.svg = select("#" + out.svgId);
 
 		//set size
+		//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
 		if (!out.width) out.width = out.computeWidth();
 		if (!out.height) out.height = out.computeHeight();
 	}
@@ -74,6 +77,7 @@ export const legend = function (map, config) {
 		return out;
 	};
 
+	//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
 	/**
 	 * Return a default value for the legend width.
 	 * This is an abstract method.
@@ -83,6 +87,7 @@ export const legend = function (map, config) {
 		return 100;
 	}
 
+	//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
 	/**
 	 * Return a default value for the legend height.
 	 * This is an abstract method.

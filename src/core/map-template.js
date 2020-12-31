@@ -28,7 +28,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.NUTSyear_ = 2016;
 	out.geo_ = "EUR";
 	out.proj_ = "3035";
-	out.scale_ = "20M"; //TODO better choose automatically ?
+	out.scale_ = "20M"; //TODO choose automatically, depending on map size and geo extent ?
 	out.geoCenter_ = undefined;
 	out.pixSize_ = undefined;
 
@@ -130,6 +130,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 	);
 
+	//title getter and setter
+	out.title = function(v) {
+		if (!arguments.length) return out.title_;
+		out.title_ = v;
+		if(out.svg()) out.svg().select("#title"+out.geo()).text(v);
+		return out;
+	};
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
@@ -437,7 +444,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//define default position
 			if (!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()]);
 			//draw title
-			out.svg().append("text").attr("id", "title").attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
+			out.svg().append("text").attr("id", "title"+out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
 				.style("font-family", out.titleFontFamily())
 				.style("font-size", out.titleFontSize())
