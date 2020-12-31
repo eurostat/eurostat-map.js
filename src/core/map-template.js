@@ -491,18 +491,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config = config || {};
 		config.proj = config.proj || _defaultCRS[config.geo];
 		config.scale = config.scale || out.insetScale_;
-		config.title = config.title || "";
 		config.bottomText = config.bottomText || "";
 		config.botTxtTooltipTxt = config.botTxtTooltipTxt || "";
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetBoxWidth_;
 		config.height = config.height || out.insetBoxWidth_;
-		config.drawGraticule = (config.drawGraticule == undefined)? out.drawGraticule_ : config.drawGraticule;
 		config.insetsConfig = config.insetsConfig || [];
 		config.insetTemplates = config.insetTemplates || {};
-
-		//apply config values for inset
-		for (let key in config) mt[key+"_"] = config[key];
 
 		/*
 		mt.stat_ = null;
@@ -517,6 +512,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//copy template attributes
 		["stat", "legend", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
 		.forEach(function (att) { mt[att] = out[att]; });
+
+		//apply config values for inset
+		for (let key in config) mt[key+"_"] = config[key];
 
 		return mt;
 	}

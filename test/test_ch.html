@@ -14,7 +14,6 @@
             .map("ch")
             .title("Population in Europe")
             .withInsets()
-            //.width(600)
             .scale("60M")
             .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
@@ -22,21 +21,9 @@
             .tooltipShowFlags(false)
 
             .withLegend({
-                //boxPadding: 7,
-                //boxFill: "none",
-                //titleText: "Density (inh/km²)",
-                //titleText: "",
-                //titleFontSize: 0,
-                //labelFontSize: 12,
-                //labelOffset:5,
                 labelDecNb:0,
-                //shapeWidth:13,
-                //shapeHeight:15,
                 width: 60,
-                //height: 220,
-                x:10,
-                y:100,
-                ascending: true,
+                x:20, y:200,
             })
 
             .build();
