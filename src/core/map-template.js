@@ -275,7 +275,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])]);
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
 		if (!out.pixSize())
-			if (dp) out.pixSize(dp.pixSize);
+			if (dp) out.pixSize(dp.pixSize * 800/out.width());
 			else out.pixSize(Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_));
 
 		//SVG drawing function
