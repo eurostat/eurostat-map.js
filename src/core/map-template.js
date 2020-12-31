@@ -497,6 +497,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetBoxWidth_;
 		config.height = config.height || out.insetBoxWidth_;
+		config.drawGraticule = (config.drawGraticule == undefined)? out.drawGraticule_ : config.drawGraticule;
 		config.insetsConfig = config.insetsConfig || [];
 		config.insetTemplates = config.insetTemplates || {};
 
@@ -510,7 +511,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		mt.tooltipText_ = null;*/
 
 		//copy template attributes
-		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "drawGraticule_", "graticuleStroke_", "graticuleStrokeWidth_"]
+		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy template attributes
@@ -551,10 +552,9 @@ const _defaultPosition = {
  * @param {*} p The padding
  */
 const defaultInsetConfig = function(s,p) {
-	//TODO hide graticule ? drawGraticule:false
-	return [
-	{geo:"IC", x:0, y:0, width:s, height:0.3*s},
-	{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s},
+	const out = [
+	{geo:"IC", x:0, y:0, width:s, height:0.3*s },
+	{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s },
 	{geo:"GF", x:0.5*s, y:0.3*s+p, width:0.5*s, height:0.75*s },{geo:"YT", x:0.5*s, y:1.05*s+p, width:0.25*s, height:0.25*s },{geo:"RE", x:0.75*s, y:1.05*s+p, width:0.25*s, height:0.25*s },
 	{geo:"PT20", x:0, y:1.3*s+2*p, width:0.75*s, height:0.25*s }, {geo:"PT30", x:0.75*s, y:1.3*s+2*p, width:0.25*s, height:0.25*s },
 	{geo:"MT", x:0, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"LI", x:0.25*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
@@ -564,7 +564,10 @@ const defaultInsetConfig = function(s,p) {
 	{geo:"PT20", x:0, y:2*dd}, {geo:"PT30", x:dd, y:2*dd}, {geo:"MT", x:2*dd, y:2*dd},
 	{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},*/
 	//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:dd, y:330}
-	]
+	];
+	//hide graticule for insets
+	for(let i=0; i<out.length; i++) out[i].drawGraticule = false;
+	return out;
 }
 
 
