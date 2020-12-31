@@ -14,17 +14,20 @@
         const map = eurostatmap
             .map("ch", {
                 title: "Population in Spain",
+                width: 550,
+                heiht: 550,
+                nutsLvl: 2,
                 titleFill: "#333",
                 titlePosition: [20,37],
                 scale: "10M",
                 geoCenter: [3220000,1970000],
-                pixSize: 1700,
+                pixSize: 2900,
                 stats: { eurostatDatasetCode:"demo_r_d3dens" },
                 unitText: "inhabitants/km²",
                 tooltipShowFlags: false,
                 classifMethod: "threshold", threshold: [40, 70, 100, 150, 300, 800],
             })
-            .withInsets([{ geo:"IC", pixSize:1700, width:320, height:150, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([470,520])
+            .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([330,340])
             .withLegend( {labelDecNb:0, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Inhab./km²" } )
             .build();
 
