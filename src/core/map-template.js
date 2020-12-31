@@ -95,8 +95,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//out.parent = null; TODO ?
 
 	out.insetBoxPosition_ = undefined;
-	out.insetPadding_ = 5;
-	out.insetSize_ = 210;
+	out.insetBoxPadding_ = 5;
+	out.insetBoxWidth_ = 210;
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
 
@@ -216,10 +216,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
 
 		//insets
-		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetSize() - 2*out.insetPadding(), 2*out.insetPadding()];
+		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2*out.insetBoxPadding(), 2*out.insetBoxPadding()];
 		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+out.insetBoxPosition()[0]+","+out.insetBoxPosition()[1]+")")
 		//if needed, use default inset setting
-		if(out.insetsConfig_ === "use_default") out.insetsConfig_ = defaultInsetConfig(out.insetSize(), out.insetPadding());
+		if(out.insetsConfig_ === "use_default") out.insetsConfig_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding());
 		for(let i=0; i<out.insetsConfig_.length; i++) {
 			const config = out.insetsConfig_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
@@ -227,8 +227,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//get svg element. Create it if it as an embeded SVG if it does not exists
 			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
-				const x = config.x == undefined? out.insetPadding_ : config.x;
-				const y = config.y == undefined? out.insetPadding_+ i*(out.insetPadding_+out.insetSize_) : config.y;
+				const x = config.x == undefined? out.insetBoxPadding_ : config.x;
+				const y = config.y == undefined? out.insetBoxPadding_+ i*(out.insetBoxPadding_+out.insetBoxWidth_) : config.y;
 				const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
 			}
@@ -495,8 +495,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.bottomText = config.bottomText || "";
 		config.botTxtTooltipTxt = config.botTxtTooltipTxt || "";
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
-		config.width = config.width || out.insetSize_;
-		config.height = config.height || out.insetSize_;
+		config.width = config.width || out.insetBoxWidth_;
+		config.height = config.height || out.insetBoxWidth_;
 		config.insetsConfig = config.insetsConfig || [];
 		config.insetTemplates = config.insetTemplates || {};
 
