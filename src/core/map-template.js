@@ -524,9 +524,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 
-/**
- * Default geocenter positions and width (in projection unit) for territories and projections.
- */
+/** Default geocenter positions and pixSize (for default width = 800px) for territories and projections. */
 const _defaultPosition = {
 	"EUR_3035": { geoCenter: [4970000, 3350000], pixSize: 6800 },
 	"IC_32628": { geoCenter: [443468, 3145647], pixSize: 2400 },
@@ -546,9 +544,7 @@ const _defaultPosition = {
 }
 
 
-/**
- * Default CRS for each geo area
- */
+/** Default CRS for each geo area */
 const _defaultCRS = {
 	"EUR":"3035",
 	"IC":"32628",
