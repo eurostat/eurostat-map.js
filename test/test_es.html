@@ -15,7 +15,7 @@
             .map("ch", {
                 title: "Population in Spain",
                 titleFill: "#333",
-                titlePosition: [30,37],
+                titlePosition: [20,37],
                 scale: "10M",
                 geoCenter: [3220000,1970000],
                 pixSize: 1700,
@@ -25,7 +25,7 @@
                 classifMethod: "threshold", threshold: [40, 70, 100, 150, 300, 800],
             })
             .withInsets([{ geo:"IC", pixSize:1700, width:320, height:150, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([470,520])
-            .withLegend( {labelDecNb:0, width: 60, x:20, y:100, boxOpacity:0 } )
+            .withLegend( {labelDecNb:0, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Inhab./km²" } )
             .build();
 
             //set title with date
@@ -34,6 +34,11 @@
                 map.title(map.title() + " in " + map.getTime());
             }, 2000)
 
+
+/*
+Youth unemployment rate, 2019 (%, share of labour force aged 15-24 years, by NUTS 2 regions)
+Source: Eurostat, lfst_r_lfu3rt
+*/
     </script>
 </body>
 

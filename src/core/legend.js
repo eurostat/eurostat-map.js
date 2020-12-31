@@ -34,7 +34,7 @@ export const legend = function (map, config) {
 	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText = "";
+	out.title = "";
 	out.titleFontSize = 15;
 	out.titleWidth = 140;
 

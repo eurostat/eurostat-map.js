@@ -37,9 +37,9 @@ export const legendCategorical = function (map, config) {
 		svg.style("font-family", out.fontFamily);
 
 		//draw title
-		if(out.titleText)
+		if(out.title)
 			svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-			.text(out.titleText).style("font-size", out.titleFontSize);
+			.text(out.title).style("font-size", out.titleFontSize);
 
 		//get classes
 		const ecls = Object.keys(m.classToFillStyleCT());
@@ -52,7 +52,7 @@ export const legendCategorical = function (map, config) {
 			const ecl_ = ecls[i];
 
 			//the vertical position of the legend element
-			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
 
 			//prepare mouse over function
 			const mouseoverF = function () {
@@ -98,7 +98,7 @@ export const legendCategorical = function (map, config) {
 	out.computeHeight = function () {
 		//get number of categories
 		const nb = out.map.classToFillStyleCT()? Object.keys(out.map.classToFillStyleCT()).length : 6;
-		return out.boxPadding * 2 + (out.titleText? out.titleFontSize + out.boxPadding : 0) + nb*out.shapeHeight + (nb-1)*out.shapePadding;
+		return out.boxPadding * 2 + (out.title? out.titleFontSize + out.boxPadding : 0) + nb*out.shapeHeight + (nb-1)*out.shapePadding;
 	}
 
 	return out;
@@ -118,7 +118,7 @@ export const legendCategorical = function (map, config) {
 		//define legend
 		//see http://d3-legend.susielu.com/#color
 		const d3Legend = legendColor()
-			.title(out.titleText)
+			.title(out.title)
 			.titleWidth(out.titleWidth)
 			.useClass(true)
 			.scale(cla)

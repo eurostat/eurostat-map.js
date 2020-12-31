@@ -37,9 +37,9 @@ export const legendChoropleth = function (map, config) {
 		svg.style("font-family", out.fontFamily);
 
 		//draw title
-		if(out.titleText)
+		if(out.title)
 			svg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-			.text(out.titleText).style("font-size", out.titleFontSize);
+			.text(out.title).style("font-size", out.titleFontSize);
 
 		//define format for labels
 		const f = format("." + out.labelDecNb + "f");
@@ -48,7 +48,7 @@ export const legendChoropleth = function (map, config) {
 		for(let i=0; i<m.clnb(); i++) {
 
 			//the vertical position of the legend element
-			const y = out.boxPadding + (out.titleText? out.titleFontSize + out.boxPadding : 0) + i*out.shapeHeight;
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*out.shapeHeight;
 
 			//the class number, depending on order
 			const ecl = out.ascending? m.clnb()-i-1 : i;
@@ -89,7 +89,7 @@ export const legendChoropleth = function (map, config) {
 	}
 	//@override
 	out.computeHeight = function () {
-		return out.boxPadding * 2 + (out.titleText? out.titleFontSize + out.boxPadding : 0) + out.shapeHeight * out.map.clnb();
+		return out.boxPadding * 2 + (out.title? out.titleFontSize + out.boxPadding : 0) + out.shapeHeight * out.map.clnb();
 	}
 
 	return out;
@@ -103,7 +103,7 @@ export const legendChoropleth = function (map, config) {
 		//define legend
 		//see http://d3-legend.susielu.com/#color
 		const d3Legend = legendColor()
-			.title(out.titleText)
+			.title(out.title)
 			.titleWidth(out.titleWidth)
 			.useClass(true)
 			.scale(m.classifier())

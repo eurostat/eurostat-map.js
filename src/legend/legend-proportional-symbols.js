@@ -42,7 +42,7 @@ export const legendProportionalSymbols = function (map, config) {
 		//see http://d3-legend.susielu.com/#size
 
 		const d3Legend = legendSize()
-			.title(out.titleText)
+			.title(out.title)
 			.titleWidth(out.titleWidth)
 			.scale(m.classifier())
 			.cells(out.cellNb + 1)
