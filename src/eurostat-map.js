@@ -5,8 +5,11 @@ import * as mt from './core/stat-map';
 
 /**
  * Function returning a eurostat-map object.
+ * 
+ * @param {*} type The type of map ('ch' for choropleth, etc.)
+ * @param {*} config The configuration object. Ex.: { title: "Map title", geoCenter: [233,654], ...}
  */
-export const map = function (type, config) {
+ export const map = function (type, config) {
 
 	//choropleth map
 	if(type == "ch") return mapch.map(config);
@@ -14,6 +17,8 @@ export const map = function (type, config) {
 	if(type == "ct") return mapct.map(config);
 	//proportionnal symbols map
 	if(type == "ps") return mapps.map(config);
+	//add new map types here
+	//if(type == "XX") return mapXX.map(config);
 
 	console.log("Unexpected map type: " + type);
 	return mt.statMap(config, true);
