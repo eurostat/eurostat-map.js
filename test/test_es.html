@@ -27,14 +27,15 @@
                 tooltipShowFlags: false,
                 classifMethod: "threshold", threshold: [40, 70, 100, 150, 300, 800],
             })
-            .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([330,340])
+            .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([335,345])
             .withLegend( {labelDecNb:0, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Inhab./km²" } )
             .build();
 
             //set title with date
             //TODO make callback mechanisme fro this kind of actions to launch after the map is loaded
             setTimeout(() => {
-                map.title(map.title() + " in " + map.getTime());
+                if(map.getTime())
+                    map.title(map.title() + " in " + map.getTime());
             }, 2000)
 
 
