@@ -24,7 +24,7 @@
                 pixSize: 2900,
                 unitText: "%",
             })
-            .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y_GE25", sex: "T", unit: "PC" } } )
+            .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } } )
             .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([335,345])
             .withLegend( {labelDecNb:1, width: 60, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)" } )
             .build();
@@ -36,12 +36,6 @@
                     map.title(map.title() + " in " + map.getTime());
             }, 2000)
 
-
-/*
-Unemployment rates by sex, age and NUTS 2 regions (%) (lfst_r_lfu3rt)
-Youth unemployment rate, 2019 (%, share of labour force aged 15-24 years, by NUTS 2 regions)
-Source: Eurostat, lfst_r_lfu3rt
-*/
     </script>
 </body>
 
