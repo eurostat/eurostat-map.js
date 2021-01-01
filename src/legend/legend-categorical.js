@@ -23,6 +23,8 @@ export const legendCategorical = function (map, config) {
 	out.labelOffset = 5;
 	//show no data
 	out.noData = true;
+	//no data label text
+	out.noDataText = "No data";
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key] = config[key];
@@ -96,7 +98,33 @@ export const legendCategorical = function (map, config) {
 
 		}
 
-		//TODO add 'no data' legend box
+		//'no data' legend box
+		if(out.noData) {
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + ecls.length*(out.shapeHeight + out.shapePadding);
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.noDataFillStyle() )
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				select(this).style("fill", m.nutsrgSelFillSty());
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				sel.style("fill", function (d) { select(this).attr("fill___"); });
+				select(this).style("fill", m.noDataFillStyle());
+			});
+
+			//'no data' label
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
+			.text(out.noDataText)
+			.style("font-size", out.labelFontSize);
+		}
 
 		//set legend box dimensions
 		out.setBoxDimension();

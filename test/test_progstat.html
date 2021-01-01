@@ -12,6 +12,7 @@
     <script>
         const map = eurostatmap.map("ch");
         map.nutsLvl(0);
+        map.withLegend({ x:600, y:20 });
 
         map.stat({})
         map.stat().set("LU",500)

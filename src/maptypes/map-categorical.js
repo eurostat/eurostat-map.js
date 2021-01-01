@@ -18,7 +18,7 @@ export const map = function (config) {
 	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
 	out.classToText_ = undefined;
 	/** The color for non data regions */
-	out.noDataFillStyle_ = "lightgray";
+	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 	//specific tooltip text function
