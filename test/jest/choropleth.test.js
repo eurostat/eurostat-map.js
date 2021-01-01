@@ -33,11 +33,9 @@ test('choropleth with threshold scale', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-                titleText: "Population density test",
-                    width: 200,
-                    height: 220,
-                    labelDecNb: 0,
-                    labelDelim: "to",
+                title: "Population density test",
+                labelDecNb: 0,
+                labelDelim: "to",
                 }
             )
             .build();

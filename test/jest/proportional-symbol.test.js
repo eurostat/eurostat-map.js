@@ -29,11 +29,9 @@ test('proportional symbol map', async () => {
             .unitText("inhabitants")
             .tooltipShowFlags("long")
             .withLegend({
-                titleText: "Population",
+                title: "Population",
                 cellNb: 6,
                 labelDecNb: 0,
-                height: 200,
-                width: 140
             })
             .build();
     });

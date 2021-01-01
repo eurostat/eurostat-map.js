@@ -29,13 +29,10 @@ test('exporting map as SVG', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-                titleText: "Population change from 2015 to 2016 : in ‰)",
-                    width: 200,
-                    height: 220,
-                    labelDecNb: 0,
-                    labelDelim: "to",
-                }
-            )
+                title: "Population change from 2015 to 2016 : in ‰)",
+                labelDecNb: 0,
+                labelDelim: "to",
+            })
             .build();
 
         setTimeout(() => {

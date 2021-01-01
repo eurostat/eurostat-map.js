@@ -33,8 +33,6 @@ test('urban/rural categorical map with csvDataSource', async () => {
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
             .withLegend({
                 labelDecNb: 0,
-                height: 110,
-                width: 125
             })
             .build();
     });

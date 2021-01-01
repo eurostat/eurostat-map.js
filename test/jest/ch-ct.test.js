@@ -32,7 +32,7 @@ test('choropleth and categorical maps', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-                titleText: "test",
+                title: "test",
                     labelDecNb: 0,
                 }
             )
@@ -50,7 +50,7 @@ test('choropleth and categorical maps', async () => {
             .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
             .withLegend({
-                titleText: "test",
+                title: "test",
                     labelDecNb: 0,
                 }
             )

@@ -30,11 +30,8 @@ test('separated legend', async () => {
             .unitText("people/km²")
             .tooltipShowFlags(false)
             .withLegend({
-              gId: "legend",
-              titleText: "Population density (people/km²)",
+              title: "Population density (people/km²)",
               labelDecNb: 0,
-              height: 210,
-              width: 190
             })
             .build();
     });
