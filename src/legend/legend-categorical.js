@@ -11,11 +11,25 @@ export const legendCategorical = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
 
+	//the width of the legend box elements
+	out.shapeWidth = 13;
+	//the height of the legend box elements
+	out.shapeHeight = 15;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key] = config[key];
+
+
 	//@override
 	out.update = function () {
 		const m = out.map;
 		const lgg = out.lgg;
-
 		const svgMap = m.svg();
 
 		//remove previous content
@@ -24,13 +38,13 @@ export const legendCategorical = function (map, config) {
 		//draw legend background box
 		out.makeBackgroundBox();
 
-		//set font family
-		lgg.style("font-family", out.fontFamily);
-
 		//draw title
 		if(out.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 			.text(out.title).style("font-size", out.titleFontSize);
+
+		//set font family
+		lgg.style("font-family", out.fontFamily);
 
 		//get classes
 		const ecls = Object.keys(m.classToFillStyleCT());

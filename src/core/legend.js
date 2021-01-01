@@ -34,13 +34,12 @@ export const legend = function (map, config) {
 	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
-	//TODO: move title to generic build function ?
 	out.title = "";
 	out.titleFontSize = 15;
 	out.titleWidth = 140;
 
 	//legend element labels
-	//TODO: move those to the legends where it is used, only?
+	/*/TODO: move those to the legends where it is used, only?
 	out.labelFontSize = 12;
 	out.labelDelim = " - "; //TODO still needed ?
 	out.labelWrap = 140; //TODO still needed?
@@ -49,10 +48,7 @@ export const legend = function (map, config) {
 	out.ascending = true;
 	out.shapeWidth = 13;
 	out.shapeHeight = 15;
-	out.shapePadding = 5;
-
-	//override attribute values with config values
-	if(config) for (let key in config) out[key] = config[key];
+	out.shapePadding = 5;*/
 
 	/**
 	 * Build legend element.
