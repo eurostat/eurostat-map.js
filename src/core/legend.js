@@ -14,10 +14,11 @@ export const legend = function (map, config) {
 	//the SVG where to make the legend
 	out.svgId = "legend_" + Math.round(10e15 * Math.random());
 	out.svg = undefined;
+	out.lgg = undefined;
 
 	//the legend element dimension
-	out.width = undefined;
-	out.height = undefined;
+	//out.width = undefined;
+	//out.height = undefined;
 	//the legend element position, in case it is embeded within the map SVG
 	out.x = undefined;
 	out.y = undefined;
@@ -61,11 +62,7 @@ export const legend = function (map, config) {
 
 		//set SVG element
 		out.svg = select("#" + out.svgId);
-
-		//set size
-		//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
-		if (!out.width) out.width = out.computeWidth();
-		if (!out.height) out.height = out.computeHeight();
+		out.lgg = out.svg.append("g").attr("id", "g_" + out.svgId);
 	}
 
 	/**
@@ -77,24 +74,16 @@ export const legend = function (map, config) {
 		return out;
 	};
 
-	//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
 	/**
-	 * Return a default value for the legend width.
-	 * This is an abstract method.
+	 * Ensure the legend box has suitable dimensions to fit to all legend graphic elements
 	 */
-	out.computeWidth = function () {
-		console.log("Legend computeWidth not implemented")
-		return 100;
-	}
-
-	//TODO use instead https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement/getBBox
-	/**
-	 * Return a default value for the legend height.
-	 * This is an abstract method.
-	 */
-	out.computeHeight = function () {
-		console.log("Legend computeHeight not implemented")
-		return 100;
+	out.setBoxDimension = function() {
+		//get legend bounding box
+		const bb = out.lgg.node().getBBox({stroke:true});
+		//apply legend bounding box to legend box
+		const p = out.boxPadding;
+		out.svg.select("#legendBR")
+			.attr("x",bb.x-p).attr("y",bb.y-p).attr("width", bb.width+2*p).attr("height", bb.height+2*p)
 	}
 
 	return out;

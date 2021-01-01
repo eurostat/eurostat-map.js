@@ -26,15 +26,14 @@ export const legendProportionalSymbols = function (map, config) {
 	out.update = function () {
 		const m = out.map;
 		//const svgMap = m.svg();
-		const svg = out.svg;
+		const lgg = out.lgg;
 
 		//remove previous content
-		svg.selectAll("*").remove();
+		lgg.selectAll("*").remove();
 
 		//background rectangle
-		svg.append("rect").attr("id", "legendBR").attr("x", -out.boxPadding).attr("y", -out.titleFontSize - out.boxPadding + 6)
+		lgg.append("rect").attr("id", "legendBR")
 			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
-			.attr("width", out.width).attr("height", out.height)
 			.style("fill", out.boxFill).style("opacity", out.boxOpacity);
 
 		//TODO better choose circle sizes. Rounded values.
@@ -60,27 +59,21 @@ export const legendProportionalSymbols = function (map, config) {
 			;
 
 		//make legend
-		svg.call(d3Legend);
+		lgg.call(d3Legend);
 
 		//apply style to legend elements
-		svg.selectAll(".swatch")
+		lgg.selectAll(".swatch")
 			.style("fill", m.psFill())
 			.style("fill-opacity", m.psFillOpacity())
 			.style("stroke", m.psStroke())
 			.style("stroke-width", m.psStrokeWidth());
 
-		svg.select(".legendTitle").style("font-size", out.titleFontSize);
-		svg.selectAll("text.label").style("font-size", out.labelFontSize);
-		svg.style("font-family", out.fontFamily);
-	}
+		lgg.select(".legendTitle").style("font-size", out.titleFontSize);
+		lgg.selectAll("text.label").style("font-size", out.labelFontSize);
+		lgg.style("font-family", out.fontFamily);
 
-	//@override
-	out.computeWidth = function () {
-		return out.boxPadding * 2 + Math.max(out.titleWidth, out.map.psMaxSize() + out.labelOffset + out.labelWrap);
-	}
-	//@override
-	out.computeHeight = function () {
-		return out.boxPadding * 2 + out.titleFontSize + (out.map.psMaxSize() * 0.7 + out.shapePadding) * (out.cellNb) + 35;
+		//set legend box dimensions
+		out.setBoxDimension();
 	}
 
 	return out;

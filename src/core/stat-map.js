@@ -86,8 +86,7 @@ export const statMap = function (config, withCenterPoints) {
 			if(lgSvg.size() == 0) {
 
 				//get legend position
-				if (!lg.width) lg.width = lg.computeWidth();
-				const x = lg.x==undefined? out.width() - lg.width - lg.boxPadding : lg.x;
+				const x = lg.x==undefined? out.width() - 100 - lg.boxPadding : lg.x;
 				const y = lg.y==undefined? lg.boxPadding : lg.y;
 
 				//build legend SVG in a new group
