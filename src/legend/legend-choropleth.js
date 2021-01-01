@@ -83,7 +83,6 @@ export const legendChoropleth = function (map, config) {
 				.attr("stroke", "black").attr("stroke-width", 1);
 
 			//label
-			//TODO use .attr("text-anchor", "middle")
 			if(i<m.clnb()-1)
 				lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight)
 				.attr("alignment-baseline", "middle")

@@ -85,7 +85,8 @@ export const legendCategorical = function (map, config) {
 			.on("mouseout", mouseoutF)
 
 			//label
-			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5+out.labelFontSize*0.5)
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
 			.text( m.classToText()[ecl_] )
 			.style("font-size", out.labelFontSize)
 			.on("mouseover", mouseoverF)
