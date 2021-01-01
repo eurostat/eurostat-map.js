@@ -34,10 +34,8 @@ export const legendProportionalSymbols = function (map, config) {
 		//? necessary. But should become obsolete when abandonning "d3-svg-legend"
 		lgg.attr("transform", "translate(20,10)")
 
-		//background rectangle
-		lgg.append("rect").attr("id", "legendBR")
-			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
-			.style("fill", out.boxFill).style("opacity", out.boxOpacity);
+		//draw legend background box
+		out.makeBackgroundBox();
 
 		//TODO better choose circle sizes. Rounded values.
 		//define legend

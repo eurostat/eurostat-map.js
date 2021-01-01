@@ -24,7 +24,6 @@ export const legend = function (map, config) {
 	out.y = undefined;
 
 	//the legend box
-	//TODO: move legend box drawing to generic build function ?
 	out.boxMargin = 10;
 	out.boxPadding = 7;
 	out.boxCornerRad = 7;
@@ -73,6 +72,17 @@ export const legend = function (map, config) {
 		return out;
 	};
 
+
+
+	/** Draw legend background box */
+	out.makeBackgroundBox = function(){
+		out.lgg.append("rect")
+			.attr("id", "legendBR")
+			.attr("rx", out.boxCornerRad)
+			.attr("ry", out.boxCornerRad)
+			.style("fill", out.boxFill)
+			.style("opacity", out.boxOpacity);
+	}	
 
 	/**
 	 * Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements

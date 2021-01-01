@@ -21,13 +21,8 @@ export const legendChoropleth = function (map, config) {
 		//remove previous content
 		lgg.selectAll("*").remove();
 
-		//draw legend box
-		lgg.append("rect")
-			.attr("id", "legendBR")
-			.attr("rx", out.boxCornerRad)
-			.attr("ry", out.boxCornerRad)
-			.style("fill", out.boxFill)
-			.style("opacity", out.boxOpacity);
+		//draw legend background box
+		out.makeBackgroundBox();
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
