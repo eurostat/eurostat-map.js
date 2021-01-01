@@ -34,6 +34,7 @@
                 coastalMarginColor : "#bbb",
                 drawGraticule : false,
             })
+            //TODO find a way to specify that also in config object
             .colorFun(d3.interpolateBlues)
             .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } } )
             .withInsets([{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }]).insetBoxPosition([335,345])
@@ -41,7 +42,7 @@
             .build();
 
             //set title with date
-            //TODO make callback mechanisme fro this kind of actions to launch after the map is loaded
+            //TODO make callback mechanisme for this kind of actions to be launchad after the map build is complete
             setTimeout(() => {
                 if(map.getTime())
                     map.title(map.title() + " in " + map.getTime());
