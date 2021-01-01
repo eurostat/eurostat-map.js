@@ -35,18 +35,18 @@ export const legend = function (map, config) {
 	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
+	//TODO: move title to generic build function ?
 	out.title = "";
 	out.titleFontSize = 15;
 	out.titleWidth = 140;
 
 	//legend element labels
+	//TODO: move those to the legends where it is used, only?
 	out.labelFontSize = 12;
 	out.labelDelim = " - "; //TODO still needed ?
 	out.labelWrap = 140; //TODO still needed?
 	out.labelDecNb = 2;
 	out.labelOffset = 5;
-
-	//TODO: move those to the legends where it is used, only?
 	out.ascending = true;
 	out.shapeWidth = 13;
 	out.shapeHeight = 15;
@@ -59,8 +59,7 @@ export const legend = function (map, config) {
 	 * Build legend element.
 	 */
 	out.build = function () {
-
-		//set SVG element
+		//set SVG element and add main drawing group
 		out.svg = select("#" + out.svgId);
 		out.lgg = out.svg.append("g").attr("id", "g_" + out.svgId);
 	}
@@ -74,13 +73,14 @@ export const legend = function (map, config) {
 		return out;
 	};
 
+
 	/**
-	 * Ensure the legend box has suitable dimensions to fit to all legend graphic elements
+	 * Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements
 	 */
 	out.setBoxDimension = function() {
-		//get legend bounding box
+		//get legend elements bounding box
 		const bb = out.lgg.node().getBBox({stroke:true});
-		//apply legend bounding box to legend box
+		//apply to legend box dimensions
 		const p = out.boxPadding;
 		out.svg.select("#legendBR")
 			.attr("x",bb.x-p).attr("y",bb.y-p).attr("width", bb.width+2*p).attr("height", bb.height+2*p)

@@ -31,6 +31,9 @@ export const legendProportionalSymbols = function (map, config) {
 		//remove previous content
 		lgg.selectAll("*").remove();
 
+		//? necessary. But should become obsolete when abandonning "d3-svg-legend"
+		lgg.attr("transform", "translate(20,10)")
+
 		//background rectangle
 		lgg.append("rect").attr("id", "legendBR")
 			.attr("rx", out.boxCornerRad).attr("ry", out.boxCornerRad)
