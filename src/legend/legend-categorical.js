@@ -21,6 +21,8 @@ export const legendCategorical = function (map, config) {
 	out.labelFontSize = 12;
 	//the distance between the legend box elements to the corresponding text label
 	out.labelOffset = 5;
+	//show no data
+	out.noData = true;
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key] = config[key];
@@ -93,6 +95,8 @@ export const legendCategorical = function (map, config) {
 			.on("mouseout", mouseoutF)
 
 		}
+
+		//TODO add 'no data' legend box
 
 		//set legend box dimensions
 		out.setBoxDimension();
