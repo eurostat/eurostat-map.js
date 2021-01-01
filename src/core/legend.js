@@ -16,9 +16,6 @@ export const legend = function (map, config) {
 	out.svg = undefined;
 	out.lgg = undefined;
 
-	//the legend element dimension
-	//out.width = undefined;
-	//out.height = undefined;
 	//the legend element position, in case it is embeded within the map SVG
 	out.x = undefined;
 	out.y = undefined;
@@ -38,21 +35,7 @@ export const legend = function (map, config) {
 	out.titleFontSize = 15;
 	out.titleWidth = 140;
 
-	//legend element labels
-	/*/TODO: move those to the legends where it is used, only?
-	out.labelFontSize = 12;
-	out.labelDelim = " - "; //TODO still needed ?
-	out.labelWrap = 140; //TODO still needed?
-	out.labelDecNb = 2;
-	out.labelOffset = 5;
-	out.ascending = true;
-	out.shapeWidth = 13;
-	out.shapeHeight = 15;
-	out.shapePadding = 5;*/
-
-	/**
-	 * Build legend element.
-	 */
+	/** Build legend. */
 	out.build = function () {
 		//set SVG element and add main drawing group
 		out.svg = select("#" + out.svgId);
@@ -61,7 +44,7 @@ export const legend = function (map, config) {
 
 	/**
 	 * Update the legend element.
-	 * This is an abstract method.
+	 * This is an abstract method to be defined for each specific legend.
 	 */
 	out.update = function () {
 		console.log("Legend update function not implemented")
@@ -80,9 +63,7 @@ export const legend = function (map, config) {
 			.style("opacity", out.boxOpacity);
 	}	
 
-	/**
-	 * Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements
-	 */
+	/** Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements */
 	out.setBoxDimension = function() {
 		//get legend elements bounding box
 		const bb = out.lgg.node().getBBox({stroke:true});

@@ -14,9 +14,18 @@ export const legendProportionalSymbols = function (map, config) {
 
 	//number of elements in the legend
 	out.cellNb = 4;
+	//the order of the legend elements. Set to false to invert.
+	out.ascending = true;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
 	// user-define d3 format function
 	out.format = undefined;
-
+	//the number of decimal for the legend labels
+	out.labelDecNb = 2;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key] = config[key];
