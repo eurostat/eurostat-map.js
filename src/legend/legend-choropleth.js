@@ -85,7 +85,8 @@ export const legendChoropleth = function (map, config) {
 			//label
 			//TODO use .attr("text-anchor", "middle")
 			if(i<m.clnb()-1)
-				lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight+0.5*out.labelFontSize)
+				lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight)
+				.attr("alignment-baseline", "middle")
 				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
 				.style("font-size", out.labelFontSize);
 		}
