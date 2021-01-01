@@ -92,7 +92,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetsConfig_ = [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
-	//out.parent = null; TODO ?
 
 	out.insetBoxPosition_ = undefined;
 	out.insetBoxPadding_ = 5;
