@@ -254,15 +254,9 @@ Maps based on [NUTS regions](http://ec.europa.eu/eurostat/web/nuts/overview) rel
 |                |                                                                                                                                                                                       |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | *contributors* | [<img src="https://github.com/jgaffuri.png" height="40" />](https://github.com/jgaffuri) [<img src="https://github.com/JoeWDavies.png" height="40" />](https://github.com/JoeWDavies) |
-<<<<<<< HEAD
 | *version* | 2 (see [npm](https://www.npmjs.com/package/eurostat-map?activeTab=versions)) |
-| *status* | Since 2018 |
-| *license* | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE) |
-=======
-| *version*      | 2                                                                                                                                                                                     |
-| *status*       | Since 2018                                                                                                                                                                            |
-| *license*      | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE)                                                                                                                 |
->>>>>>> 1f3d120238b3d3c18add3a39f4b01aed106f1b5a
+| *status*    | Since 2018  |
+| *license*      | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE)    |
 
 
 ## Support and contribution
