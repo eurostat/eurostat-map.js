@@ -68,6 +68,8 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 ### Statistical data
 
+TODO update that. Add programmatically defined values.
+
 Specify the statistical data to show on the map.
 
 | Method                             | Type   | Default value            | Description                                                                                                                                                                                                                                                                       |
@@ -90,6 +92,16 @@ Choose a title for your map.
 | *map*.**titlePosition**([*value*])   | Array ([x,y]) | auto                           | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontFamily**([*value*]) | String        | "Helvetica, Arial, sans-serif" | The title font.                                                                                     |
 | *map*.**titleFontWeight**([*value*]) | String        | "bold"                         | The title font weight.                                                                              |
+
+### Map frame
+
+Choose the style of the map frame.
+
+| Method                               | Type          | Default value                  | Description                                                                                         |
+| ------------------------------------ | ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| *map*.**frameStroke**([*value*])      | Color        | "#222"    | Color of the map frame                         |
+| *map*.**frameStrokeWidth**([*value*])   | number    | 2         | The map frame stroke width              |
+
 
 ### Tooltip
 
