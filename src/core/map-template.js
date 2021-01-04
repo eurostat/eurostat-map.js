@@ -40,16 +40,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 
+	//frame
+	out.frameStroke_ = "#222";
+	out.frameStrokeWidth_ = 2;
+
 	//tooltip
 	//the function returning the tooltip text
 	out.tooltipText_ = (rg => { return rg.properties.na; });
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 	out.unitText_ = "";
 
+
 	//template default style
-	//frame
-	out.frameStroke_ = "#222";
-	out.frameStrokeWidth_ = 2;
 	//nuts
 	out.nutsrgFillStyle_ = "#eee";
 	out.nutsrgSelFillSty_ = "purple";

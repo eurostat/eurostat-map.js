@@ -136,9 +136,27 @@ Specify specific map styles.
 | *map*.**graticuleStroke**([*value*])      | String  | *"gray"*                                                             | The stroke style of the graticule.                                                                                                                    |
 | *map*.**graticuleStrokeWidth**([*value*]) | number  | *1*                                                                  | The stroke width of the graticule.                                                                                                                    |
 
-### Legend
 
-Specify the legend content and appearence.
+### Bottom text
+
+Specify the note text to be shown at the bottom of the map.
+
+| Method                                 | Type   | Default value                    | Description                                                                                                         |
+| -------------------------------------- | ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| *map*.**bottomText**([*value*])        | String | *Some default text*              | The text. Note that the default value is mandatory.                                                                 |
+| *map*.**botTxtFontSize**([*value*])    | int    | *12*                             | The font size.                                                                                                      |
+| *map*.**botTxtFill**([*value*])        | String | *"black"*                        | The text color.                                                                                                     |
+| *map*.**botTxtFontFamily**([*value*])  | String | *"Helvetica, Arial, sans-serif"* | The font family.                                                                                                    |
+| *map*.**botTxtPadding**([*value*])     | number | *10*                             | The padding, in pixel.                                                                                              |
+| *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message.  | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
+
+
+
+
+---------------
+
+TODO to be removed - moved to different map types.
+
 
 | Method                                            | Type    | Default value                    | Description                                                             |
 | ------------------------------------------------- | ------- | -------------------------------- | ----------------------------------------------------------------------- |
@@ -165,18 +183,9 @@ Specify the legend content and appearence.
 | *map*.***legendConfig***.shapeHeight([*value*])   | int     | *13*                             | The cell heigth (used for choropleth maps only).                        |
 | *map*.***legendConfig***.shapePadding([*value*])  | int     | *2*                              | The distance between 2 cells, in pixel.                                 |
 
-### Bottom text
+------------
 
-Specify the note text to be shown at the bottom of the map.
 
-| Method                                 | Type   | Default value                    | Description                                                                                                         |
-| -------------------------------------- | ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| *map*.**bottomText**([*value*])        | String | *Some default text*              | The text. Note that the default value is mandatory.                                                                 |
-| *map*.**botTxtFontSize**([*value*])    | int    | *12*                             | The font size.                                                                                                      |
-| *map*.**botTxtFill**([*value*])        | String | *"black"*                        | The text color.                                                                                                     |
-| *map*.**botTxtFontFamily**([*value*])  | String | *"Helvetica, Arial, sans-serif"* | The font family.                                                                                                    |
-| *map*.**botTxtPadding**([*value*])     | number | *10*                             | The padding, in pixel.                                                                                              |
-| *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message.  | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 
 ### For choropleth maps
 
