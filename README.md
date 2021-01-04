@@ -50,7 +50,7 @@ Once the map parameters have been set or changed, the map needs to be built or u
 | --------------------------- | ------ | ------------- | ------------------------------------------------------------------------------------------------------ |
 | *map*.**svgId**([*value*])  | String | *"map"*       | The id of the SVG element of the HTML page where to draw the map.                                      |
 | *map*.**width**([*value*])  | int    | *800*         | The width of the map, in pixel.                                                                        |
-| *map*.**height**([*value*]) | int    | *auto*        | The height of the map, in pixel. If not specified, the width is set automatically as 85% of the width. |
+| *map*.**height**([*value*]) | int    | *auto*        | The height of the map, in pixel. If not specified, the height is set automatically as 85% of the width. |
 
 ### Map geography
 
@@ -64,7 +64,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 | *map*.**proj**([*value*])      | String        | *"3035"*      | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory.                                                                                                                                                       |
 | *map*.**scale**([*value*])     | String        | *"20M"*       | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
 | *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto*        | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically.                                                                                                                                    |
-| *map*.**pixSize**([*value*])   | number        | *auto*        | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, this value is computed automatically to show the map extent.                                                                                                                                  |
+| *map*.**pixSize**([*value*])   | number        | *auto*        | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, this value is computed automatically to show the map extent. |
 
 ### Statistical data
 
@@ -95,7 +95,7 @@ Choose a title for your map.
 
 ### Map frame
 
-Choose the style of the map frame.
+Choose the style of the map frame (the rectangle around the map).
 
 | Method                               | Type          | Default value                  | Description                                                                                         |
 | ------------------------------------ | ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- |
@@ -109,7 +109,7 @@ The tooltip is the little rectangle showing information on the map feature under
 
 | Method                                | Type     | Default value | Description                                                                                                                                                                                                                                                                                                                                |
 | ------------------------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| *map*.**tooltipText**([*value*])      | Function | auto          | A function returning the text to show in a tooltip which appears when the mouse passes over map features. Set to *null* if no tooltip is needed.                                                                                                                                                                                           |
+| *map*.**tooltipText**([*value*])      | Function | auto          | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
 | *map*.**tooltipShowFlags**([*value*]) | String   | *"short"*     | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
 | *map*.**unitText**([*value*])         | String   | *""*          | The text of the unit to show in the tooltip.                                                                                                                                                                                                                                                                                               |
 
