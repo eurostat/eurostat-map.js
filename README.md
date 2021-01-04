@@ -176,6 +176,14 @@ Specify the note text to be shown at the bottom of the map.
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message.  | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 
 
+### Insets
+
+TODO
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+|  |  |  |  |
+
 
 
 ---------------
