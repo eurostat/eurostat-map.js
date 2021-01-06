@@ -295,6 +295,16 @@ After changing some parameters, one of the following methods need to be executed
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
 
+### Map export
+
+The map can be exported as a PNG image or SVG using the following methods.
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**exportMapToPNG**()     | *this*  | Export the map as a PNG image.   |
+| *map*.**exportMapToSVG**()     | *this*  | Export the map as a SVG image.   |
+
+
 ## Technical details
 
 Maps based on [NUTS regions](http://ec.europa.eu/eurostat/web/nuts/overview) rely on [Nuts2json API](https://github.com/eurostat/Nuts2json) and [TopoJSON](https://github.com/mbostock/topojson/wiki) format. Statistical data are accessed using [Eurostat REST webservice](http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request) for [JSON-stat](https://json-stat.org/) data. The data are decoded and queried using [JSON-stat library](https://json-stat.com/). Maps are rendered as SVG maps using [D3.js library](https://d3js.org/).
