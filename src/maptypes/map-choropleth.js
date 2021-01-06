@@ -26,7 +26,7 @@ export const map = function (config) {
 	//the color function [0,1] -> color
 	out.colorFun_ = interpolateYlOrBr;
 	//a function returning the color from the class i
-	out.classToFillStyleCH_ = getColorLegend(out.colorFun_);
+	out.classToFillStyle_ = getColorLegend(out.colorFun_);
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
@@ -42,14 +42,14 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyleCH_", "noDataFillStyle_", "classifier_"]
+	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
 
 	//override of some special getters/setters
-	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyleCH_ = getColorLegend(out.colorFun_); return out; };
+	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyle_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
 
@@ -101,7 +101,7 @@ export const map = function (config) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyleCH_(ecl, out.clnb_);
+				return out.classToFillStyle_(ecl, out.clnb_);
 			});
 
 		return out;

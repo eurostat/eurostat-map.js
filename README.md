@@ -176,20 +176,112 @@ Specify the note text to be shown at the bottom of the map.
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message.  | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 
 
-### Insets
 
-TODO
+### For choropleth maps
+
+A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
+
+To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The following parameters specific to this type of map can then be considered:
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-|  |  |  |  |
+| *map*.**clnb**([*value*]) | int | *7* | The number of classes. When *classifMethod = "threshold"*, this parameter is inferred from the number of breaks specified. |
+| *map*.**classifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshol (see threshold method). |
+| *map*.**threshold**([*value*]) | Array | *[0]* | If *classifMethod = "threshold"*, the breaks of the classification. |
+| *map*.**makeClassifNice**([*value*]) | *boolean* | true | Make nice break values. Works only for *classifMethod = "equinter"*. |
+| *map*.**colorFun**([*value*]) | Function  | *d3.interpolateYlOrBr* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
+| *map*.**classToFillStyle**([*value*]) | Function  | See description | A function returning a fill style for each class number. The default values is the function returned by ``eurostatmap.getColorLegend(colorFun())``. |
+| *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
+
+legend
+	//the order of the legend elements. Set to false to invert.
+	out.ascending = true;
+	//the width of the legend box elements
+	out.shapeWidth = 13;
+	//the height of the legend box elements
+	out.shapeHeight = 15;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//the number of decimal for the legend labels
+	out.labelDecNb = 2;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+	//show no data
+	out.noData = true;
+	//no data label text
+	out.noDataText = "No data";
 
 
 
----------------
 
-TODO to be removed - moved to different map types.
+### For proportional symbol maps
 
+A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
+
+To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**psShape**([*value*])  | string | *circle* | The shape of the symbol. Accepted values: circle, square, star, cross, diamond, triangle, wye or custom |
+| *map*.**psCustomShape**([*value*]) | Object | null          | A custom symbol to be used with d3.symbol. See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT    |
+| *map*.**psMaxSize**([*value*])     | number | *30*          | The maximum size of the symbol, in pixels.   |
+| *map*.**psMinSize**([*value*])     | number | *0.8*         | The minimum size of the symbol, for non null values, in pixels.    |
+| *map*.**psMinValue**([*value*])    | number | *0*           | The minimum value of the range domain.  |
+| *map*.**psFill**([*value*])        | String | *"#B45F04"*   | The fill color or pattern of the symbol.  |
+| *map*.**psFillOpacity**([*value*]) | number | *0.7*         | The opacity of the symbol, from 0 to 1.   |
+| *map*.**psStroke**([*value*])      | String | *"#fff"*      | The stroke color of the symbol.   |
+| *map*.**psStrokeWidth**([*value*]) | number | *0.3*         | The width of the stroke.   |
+
+Legend
+	//number of elements in the legend
+	out.cellNb = 4;
+	//the order of the legend elements. Set to false to invert.
+	out.ascending = true;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	// user-define d3 format function
+	out.format = undefined;
+	//the number of decimal for the legend labels
+	out.labelDecNb = 2;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+
+
+
+
+### For categorical maps
+
+A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html)).
+
+To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The following parameters specific to this type of map can then be considered:
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**classToFillStyle**([*value*]) | Object | null    | An object giving the fill style depending on the class code.        |
+| *map*.**classToText**([*value*])        | Object | null    | An object giving the legend label text depending on the class code. |
+| *map*.**noDataFillStyle**([*value*])    | String | *"lightgray"* | The fill style to be used for regions where no data is available.   |
+
+Legend
+	//the width of the legend box elements
+	out.shapeWidth = 13;
+	//the height of the legend box elements
+	out.shapeHeight = 15;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+	//show no data
+	out.noData = true;
+	//no data label text
+	out.noDataText = "No data";
+
+
+
+----------------------
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -216,55 +308,20 @@ TODO to be removed - moved to different map types.
 | *map*.***legendConfig***.shapeHeight([*value*])   | int     | *13*                             | The cell heigth (used for choropleth maps only). |
 | *map*.***legendConfig***.shapePadding([*value*])  | int     | *2*                              | The distance between 2 cells, in pixel.   |
 
-------------
+------------------------
 
 
 
-### For choropleth maps
 
-A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
+### Insets
 
-To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The following parameters specific to this type of map can then be considered:
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**classifMethod**([*value*])      | String    | *"quantile"*           | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshol (see threshold method). |
-| *map*.**threshold**([*value*])          | Array     | *[0]*                  | If *classifMethod = "threshold"*, the breaks of the classification.                                                                                                |
-| *map*.**makeClassifNice**([*value*])    | *boolean* | true                   | Make nice break values. Works only for *classifMethod = "equinter"*.                                                                                               |
-| *map*.**clnb**([*value*])               | int       | *7*                    | The number of classes. When *classifMethod = "threshold"*, this parameter is inferred from the number of breaks specified.                                         |
-| *map*.**colorFun**([*value*])           | Function  | *d3.interpolateYlOrBr* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/)                                                                  |
-| *map*.**classToFillStyleCH**([*value*]) | Function  | See description        | A function returning a fill style for each class number. The default values is the function returned by ``eurostatmap.getColorLegend(colorFun())``.           |
-| *map*.**noDataFillStyle**([*value*])    | String    | *"lightgray"*          | The fill style to be used for regions where no data is available.    |
-
-### For proportional symbol maps
-
-A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
-
-To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
+TODO
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**psShape**([*value*])  | string | *circle* | The shape of the symbol. Accepted values: circle, square, star, cross, diamond, triangle, wye or custom |
-| *map*.**psCustomShape**([*value*]) | Object | null          | A custom symbol to be used with d3.symbol. See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT    |
-| *map*.**psMaxSize**([*value*])     | number | *30*          | The maximum size of the symbol, in pixels.   |
-| *map*.**psMinSize**([*value*])     | number | *0.8*         | The minimum size of the symbol, for non null values, in pixels.    |
-| *map*.**psMinValue**([*value*])    | number | *0*           | The minimum value of the range domain.  |
-| *map*.**psFill**([*value*])        | String | *"#B45F04"*   | The fill color or pattern of the symbol.  |
-| *map*.**psFillOpacity**([*value*]) | number | *0.7*         | The opacity of the symbol, from 0 to 1.   |
-| *map*.**psStroke**([*value*])      | String | *"#fff"*      | The stroke color of the symbol.   |
-| *map*.**psStrokeWidth**([*value*]) | number | *0.3*         | The width of the stroke.   |
+|  |  |  |  |
 
-### For categorical maps
 
-A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html)).
-
-To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The following parameters specific to this type of map can then be considered:
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**classToFillStyleCT**([*value*]) | Object | null    | An object giving the fill style depending on the class code.        |
-| *map*.**classToText**([*value*])        | Object | null    | An object giving the legend label text depending on the class code. |
-| *map*.**noDataFillStyle**([*value*])    | String | *"lightgray"* | The fill style to be used for regions where no data is available.   |
 
 
 ### Map export

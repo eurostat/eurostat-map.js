@@ -68,7 +68,7 @@ export const legendChoropleth = function (map, config) {
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
-			.attr("fill", m.classToFillStyleCH()(ecl, m.clnb()))
+			.attr("fill", m.classToFillStyle()(ecl, m.clnb()))
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
@@ -78,7 +78,7 @@ export const legendChoropleth = function (map, config) {
 			.on("mouseout", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
-				select(this).style("fill", m.classToFillStyleCH()(ecl, m.clnb()));
+				select(this).style("fill", m.classToFillStyle()(ecl, m.clnb()));
 			});
 
 			//separation line

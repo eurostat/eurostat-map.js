@@ -51,7 +51,7 @@ export const legendCategorical = function (map, config) {
 		lgg.style("font-family", out.fontFamily);
 
 		//get classes
-		const ecls = Object.keys(m.classToFillStyleCT());
+		const ecls = Object.keys(m.classToFillStyle());
 
 		//draw legend elements for classes: rectangle + label
 		for(let i=0; i<ecls.length; i++) {
@@ -77,13 +77,13 @@ export const legendCategorical = function (map, config) {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				const th = select(this);
 				sel.style("fill", function (d) { th.attr("fill___"); });
-				th.style("fill", m.classToFillStyleCT()[ecl]);
+				th.style("fill", m.classToFillStyle()[ecl]);
 			}
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
-			.attr("fill", m.classToFillStyleCT()[ecl_])
+			.attr("fill", m.classToFillStyle()[ecl_])
 			.attr("stroke", "black").attr("stroke-width", 0.5)
 			.on("mouseover", mouseoverF)
 			.on("mouseout", mouseoutF)

@@ -14,7 +14,7 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	/** Fill style for each category/class. Ex.: { urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" } */
-	out.classToFillStyleCT_ = undefined;
+	out.classToFillStyle_ = undefined;
 	/** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
 	out.classToText_ = undefined;
 	/** The color for non data regions */
@@ -35,7 +35,7 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classToFillStyleCT_","classToText_","noDataFillStyle_","classifier_"]
+	["classToFillStyle_","classToText_","noDataFillStyle_","classifier_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
@@ -77,7 +77,7 @@ export const map = function (config) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyleCT_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
+				return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
 		});
 
 		return out;
