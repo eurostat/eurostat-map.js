@@ -48,11 +48,11 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 ## Statistical data
 
-The map statistical data can be accessed with the *map*.**stat**([*value*]) method. The statistical values can be specified in the following ways:
+The map statistical data can be accessed with the *map*.**stat**([*value*]) method. The statistical values can be specified from the following sources.
 
 ### Eurostat database
 
-Specify statistical data to be retrieved automatically from [Eurostat database](https://ec.europa.eu/eurostat/web/main/data/database). The query parameters can be retrieved from [this page](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/generate-new-query).
+Specify statistical data to be retrieved on-the-fly from [Eurostat database](https://ec.europa.eu/eurostat/web/main/data/database). The query parameters can be retrieved from [this page](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/generate-new-query).
 
 Example:
 
@@ -65,9 +65,7 @@ map.stat( {
         sex: "T",
         unit: "PC",
         time: "2019"
-        }
-    }
-);
+}});
 ```
 
 | Parameter | Type | Default value |  Description |
@@ -102,12 +100,25 @@ map.stat( {
 
 ### Custom JS
 
-TODO
+Specify statistical data from JavaScript code, or any kind of JSON data source.
 
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| | | | |
+Example:
 
+```javascript
+map = eurostatmap.map(...);
+
+//initialise stat dataset
+map.stat({})
+
+//specify values one by one
+map.stat().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
+//or in one time. Note that the 'status' can be specified but is not mandatory.
+.setData({
+    "FR": 10,
+    "DE": {value:7,status:"e"},
+    "UK": 12,
+})
+```
 
 ## Choropleth map
 
@@ -246,7 +257,7 @@ Legend
 
 ## Map title
 
-Choose a title for your map.
+Specify the map title, its style and position.
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -292,11 +303,17 @@ Specify specific map styles.
 | *map*.**graticuleStrokeWidth**([*value*]) | number  | *1*     | The stroke width of the graticule.     |
 
 
-
-
 ## Insets
 
-TODO
+Specify the map insets: Which ones, their geographical extent, their position, etc.
+
+Example:
+TODO default
+
+Example:
+TODO advanced
+
+TODO document
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -320,7 +337,7 @@ Specify the note text to be shown at the bottom of the map.
 
 ## Map frame
 
-Choose the style of the map frame (the rectangle around the map).
+Specify the style of the map frame (the rectangle around the map).
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -332,7 +349,7 @@ Choose the style of the map frame (the rectangle around the map).
 
 ## Export
 
-The map can be exported as a PNG image or SVG using the following methods.
+Export the map as a PNG image or a SVG file.
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
