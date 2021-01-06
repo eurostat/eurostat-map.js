@@ -4,7 +4,7 @@
 **Map**<br>[Creation](#map-creation) - [Definition](#map-definition) - [Geography](#map-geography)
 
 **Statistical data**<br>
-[Eurobase](#eurobase) - [CSV](#csv) - [Custom JS](#custom-js)
+[Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
@@ -15,22 +15,20 @@
 
 ## Map creation
 
-Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding with the desired type of map:
+Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding with the desired map type:
 - ``"ch"`` for a [choropleth map](#choropleth-map),
 - ``"ps"`` for a [proportional symbol map](#proportional-symbol-map),
 - ``"ct"`` for a [categorical map](#categorical-map).
 
-The ``map`` can then be customised with the methods listed in the tables below.
-
-Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
+The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
 
 ## Map definition
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**svgId**([*value*])  | String | *"map"*       | The id of the SVG element of the HTML page where to draw the map.                      |
-| *map*.**width**([*value*])  | int    | *800*         | The width of the map, in pixel.                                                                        |
+| *map*.**svgId**([*value*])  | String | *"map"*       | The id of the SVG element of the HTML page where to draw the map.           |
+| *map*.**width**([*value*])  | int    | *800*         | The width of the map, in pixel.       |
 | *map*.**height**([*value*]) | int    | *auto*        | The height of the map, in pixel. If not specified, the height is set automatically as 85% of the width. |
 
 ## Map geography
@@ -44,41 +42,62 @@ Specify the NUTS geometries and the geographical extent of the map.
 | *map*.**geo**([*value*])       | String        | *"EUR"*       | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets).       |
 | *map*.**proj**([*value*])      | String        | *"3035"*      | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory.              |
 | *map*.**scale**([*value*])     | String        | *"20M"*       | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
-| *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto*        | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically.      |
-| *map*.**pixSize**([*value*])   | number        | *auto*        | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, this value is computed automatically to show the map extent. |
-| *map*.**zoomExtent**([*value*])   | Array    | *null*    | The zoom extent. The first value within [0,1] defines the maximum zoom out - the second value within [1,infinity] defines the maximum zoom in. Set to *[1,1]* to forbid zooming and allow paning. Set to *null* to forbid both.  |
+| *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto*        | The geographical coordinates of the position where to center the map view. These coordinates are expected to be expressed in the map projection. If not specified, a position is computed automatically.    |
+| *map*.**pixSize**([*value*])   | number        | *auto*        | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, a value is computed automatically to show the map extent. |
+| *map*.**zoomExtent**([*value*])   | Array    | *null*    | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both.  |
 
 ## Statistical data
 
-Specify the statistical data to show on the map.
+The map statistical data can be accessed with the *map*.**stat**([*value*]) method. The statistical values can be specified in the following ways:
 
-| Method | Type | Default value |  Description |
+### Eurostat database
+
+Specify statistical data to be retrieved automatically from [Eurostat database](https://ec.europa.eu/eurostat/web/main/data/database). The query parameters can be retrieved from [this page](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/generate-new-query).
+
+Example:
+
+```javascript
+map = eurostatmap.map(...);
+map.stat( {
+    eurostatDatasetCode:"lfst_r_lfu3rt",
+    filters:{
+        age: "Y20-64",
+        sex: "T",
+        unit: "PC",
+        time: "2019"
+        }
+    }
+);
+```
+
+| Parameter | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**stat**([*value*]) | Object | |  |
-
-The statistical data can be specified in the following ways:
-- Directly, as Javascript code.
-- Eurobase
-- CSV
-
-
-### Eurobase
-
-TODO
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**datasetCode**([*value*])   | String | *"demo_r_d3dens"*        | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them.                                                                                                                                                     |
-| *map*.**filters**([*value*])   | Object | *{ lastTimePeriod : 1 }* | The Eurostat dimension codes to filter/select the chosen statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) or [here](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to find them.   |
-| *map*.**precision**([*value*])     | int    | *2*     | The precision of the statistical variable to retrieve (number of decimal places). |
+| **datasetCode**   | String | *"demo_r_d3dens"*        | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them.   |
+| **filters** | Object | *{ lastTimePeriod : 1 }* | The Eurostat dimension codes to filter/select the chosen statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) or [here](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to find them.   |
+| **precision** | int    | *2*     | The precision of the statistical variable to retrieve (number of decimal places). |
 
 
 ### CSV
 
-TODO
+Specify statistical data to be retrieved from CSV data.
 
-| Method | Type | Default value |  Description |
+Example:
+
+```javascript
+map = eurostatmap.map(...);
+map.stat( {
+    csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv",
+    geoCol: "NUTS_ID_2013",
+    valueCol: "urban_rural"
+    }
+);
+```
+
+| Parameter | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
+| **csvURL**   | String | undefined | The CSV file URL. |
+| **geoCol** | String | *"geo"* | The CSV column with the NUTS ids. |
+| **valueCol** | String    | *"value"*  | The CSV column with the statistical values. |
 
 
 ### Custom JS
