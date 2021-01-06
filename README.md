@@ -22,17 +22,15 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [NUTS typology as a categorical map](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html))
 - [20 years of GDP change in Europe](https://eurostat.github.io/eurostat-map.js/examples/small_multiple.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/small_multiple.html))
 
-
-## Documentation - API
-
-### Installation
+## Installation
 
 - **Node.js**: With ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
 - **Standalone**: For the latest version, use ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). For a fixed version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z/build/eurostatmap.min.js"></script>``, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
 
 
+## Documentation
 
-
+See the **[API reference](docs/reference.md)**.
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
