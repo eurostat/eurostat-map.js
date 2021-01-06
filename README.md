@@ -47,7 +47,7 @@ Once the map parameters have been set or changed, the map needs to be built or u
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**svgId**([*value*])  | String | *"map"*       | The id of the SVG element of the HTML page where to draw the map.                                      |
+| *map*.**svgId**([*value*])  | String | *"map"*       | The id of the SVG element of the HTML page where to draw the map.                      |
 | *map*.**width**([*value*])  | int    | *800*         | The width of the map, in pixel.                                                                        |
 | *map*.**height**([*value*]) | int    | *auto*        | The height of the map, in pixel. If not specified, the height is set automatically as 85% of the width. |
 
@@ -57,12 +57,12 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**nutsLvl**([*value*])   | int           | *3*           | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases.                                                                                                                                                                         |
-| *map*.**NUTSyear**([*value*])  | int           | *2016*        | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation).                                             |
+| *map*.**nutsLvl**([*value*])   | int           | *3*           | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases.   |
+| *map*.**NUTSyear**([*value*])  | int           | *2016*        | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation).            |
 | *map*.**geo**([*value*])       | String        | *"EUR"*       | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets).       |
-| *map*.**proj**([*value*])      | String        | *"3035"*      | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory.                                                                                                                                                       |
+| *map*.**proj**([*value*])      | String        | *"3035"*      | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory.              |
 | *map*.**scale**([*value*])     | String        | *"20M"*       | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
-| *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto*        | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically.                                                                                                                                    |
+| *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto*        | The geographical coordinates of the position where to center the map view. These coordinates have to be specified in the map projection. If not specified, this position is computed automatically.      |
 | *map*.**pixSize**([*value*])   | number        | *auto*        | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, this value is computed automatically to show the map extent. |
 
 ### Statistical data

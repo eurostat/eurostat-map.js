@@ -40,7 +40,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 
-	//frame
+	//map frame
 	out.frameStroke_ = "#222";
 	out.frameStrokeWidth_ = 2;
 

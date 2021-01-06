@@ -235,6 +235,7 @@ export const statMap = function (config, withCenterPoints) {
 		document.body.appendChild(downloadLink);
 		downloadLink.click();
 		document.body.removeChild(downloadLink);
+		return out;
 	}
 
 	/**
@@ -253,6 +254,7 @@ export const statMap = function (config, withCenterPoints) {
 			downloadLink.click();
 			document.body.removeChild(downloadLink);
 		})
+		return out;
 	}
 
 	return out;
