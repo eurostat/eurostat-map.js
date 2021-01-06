@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
 
 **Map elements and methods**<br>
-[Title](#map-title)<br>[Frame](#map-frame)<br>[Tooltip](#tooltip)<br>[Styling](#styling)<br>[Insets](#insets)<br>[Export](#export)<br>[Miscellaneous](#miscellaneous)<br>[Build & update](#build-and-update)
+[Title](#map-title) - [Frame](#map-frame) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 
 ## Map creation
