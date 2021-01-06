@@ -1,40 +1,29 @@
 
 # eurostat-map.js API reference
 
-- Map creation
-- Map definition
-- Map geography
-- Statistical data
-   - Eurobase
-   - CSV
-   - Custom
+## Map
+[Creation](#map-creation)<br>[Definition](#map-definition)<br>[Geography](#map-geography)
 
-- Choropleth map
-- Proportional symbol map
-- Categorical map
+## Statistical data
+[Eurobase](#eurobase)<br>[CSV](#csv)<br>[Custom JS](#custom-js)
 
-- Map title
-- Map frame
-- Tooltip
-- Styling customisation
-- Insets
-- Export
-- Miscellaneous
-- Build and update
+## Map types
+[Choropleth map](#choropleth-map)<br>[Proportional symbol map](#proportional-symbol-map)<br>[Categorical map](#categorical-map)
 
-
-Note: Most of the methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
-
+## Map elements and methods
+[Title](#map-title)<br>[Frame](#map-frame)<br>[Tooltip](#tooltip)<br>[Styling](#styling)<br>[Insets](#insets)<br>[Export](#export)<br>[Miscellaneous](#miscellaneous)<br>[Build & update](#build-and-update)
 
 
 ## Map creation
 
 Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding with the desired type of map:
-- ``"ch"`` for a [choropleth map](#for-choropleth-maps),
-- ``"ps"`` for a [proportional symbol map](#for-proportional-symbol-maps),
-- ``"ct"`` for a [categorical map](#for-categorical-maps).
+- ``"ch"`` for a [choropleth map](#choropleth-map),
+- ``"ps"`` for a [proportional symbol map](#proportional-symbol-map),
+- ``"ct"`` for a [categorical map](#categorical-map).
 
 The ``map`` can then be customised with the methods listed in the tables below.
+
+Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
 
 ## Map definition
@@ -73,13 +62,6 @@ The statistical data can be specified in the following ways:
 - Eurobase
 - CSV
 
-### Code
-
-TODO
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| | | | |
 
 ### Eurobase
 
@@ -99,6 +81,14 @@ TODO
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
 
+
+### Custom JS
+
+TODO
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| | | | |
 
 
 ## Choropleth map
@@ -260,7 +250,7 @@ The tooltip is the little rectangle showing information on the map feature under
 | *map*.**tooltipShowFlags**([*value*]) | String   | *"short"*     | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
 | *map*.**unitText**([*value*])         | String   | *""*          | The text of the unit to show in the tooltip.                                                                                                                                                                                                                                                                                               |
 
-## Styling customisation
+## Styling
 
 Specify specific map styles.
 

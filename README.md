@@ -30,7 +30,12 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 
 ## Documentation
 
-See the **[API reference](docs/reference.md)**.
+See the **[API reference](docs/reference.md)**:
+- For a [choropleth map](docs/reference.md#choropleth-map),
+- For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
+- For a [categorical map](docs/reference.md#categorical-map).
+
+
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
