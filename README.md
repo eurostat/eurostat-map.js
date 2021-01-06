@@ -266,6 +266,16 @@ To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The fol
 | *map*.**classToText**([*value*])        | Object | null    | An object giving the legend label text depending on the class code. |
 | *map*.**noDataFillStyle**([*value*])    | String | *"lightgray"* | The fill style to be used for regions where no data is available.   |
 
+
+### Map export
+
+The map can be exported as a PNG image or SVG using the following methods.
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**exportMapToPNG**()     | *this*  | Export the map as a PNG image.   |
+| *map*.**exportMapToSVG**()     | *this*  | Export the map as a SVG image.   |
+
 ### Miscellaneous
 
 | Method | Type | Default value |  Description |
@@ -293,16 +303,6 @@ After changing some parameters, one of the following methods need to be executed
 | *map*.**updateStyle**()  | *this* | Update the map when parameters on the styling have changed. |
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
-
-
-### Map export
-
-The map can be exported as a PNG image or SVG using the following methods.
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**exportMapToPNG**()     | *this*  | Export the map as a PNG image.   |
-| *map*.**exportMapToSVG**()     | *this*  | Export the map as a SVG image.   |
 
 
 ## Technical details
