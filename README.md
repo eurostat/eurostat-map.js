@@ -35,8 +35,6 @@ See the **[API reference](docs/reference.md)**:
 - For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
 - For a [categorical map](docs/reference.md#categorical-map).
 
-
-
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
 
@@ -45,13 +43,12 @@ Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/euro
 Maps based on [NUTS regions](http://ec.europa.eu/eurostat/web/nuts/overview) rely on [Nuts2json API](https://github.com/eurostat/Nuts2json) and [TopoJSON](https://github.com/mbostock/topojson/wiki) format. Statistical data are accessed using [Eurostat REST webservice](http://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/rest-request) for [JSON-stat](https://json-stat.org/) data. The data are decoded and queried using [JSON-stat library](https://json-stat.com/). Maps are rendered as SVG maps using [D3.js library](https://d3js.org/).
 
 
-
 ## About
 
 |   |    |
 | ------ | -------- |
 | *contributors* | [<img src="https://github.com/jgaffuri.png" height="40" />](https://github.com/jgaffuri) [<img src="https://github.com/JoeWDavies.png" height="40" />](https://github.com/JoeWDavies) |
-| *version* | 2 (see [npm](https://www.npmjs.com/package/eurostat-map?activeTab=versions)) |
+| *version* | See [npm](https://www.npmjs.com/package/eurostat-map?activeTab=versions) |
 | *status* | Since 2018  |
 | *license* | [EUPL 1.2](https://github.com/eurostat/Nuts2json/blob/master/LICENSE)    |
 
