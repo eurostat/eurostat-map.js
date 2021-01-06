@@ -59,7 +59,7 @@ Example:
 ```javascript
 map = eurostatmap.map(...);
 map.stat( {
-    eurostatDatasetCode:"lfst_r_lfu3rt",
+    eurostatDatasetCode: "lfst_r_lfu3rt",
     filters:{
         age: "Y20-64",
         sex: "T",
@@ -93,7 +93,7 @@ map.stat( {
 
 | Parameter | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| **csvURL**   | String | undefined | The CSV file URL. |
+| **csvURL** | String | undefined | The CSV file URL. |
 | **geoCol** | String | *"geo"* | The CSV column with the NUTS ids. |
 | **valueCol** | String    | *"value"*  | The CSV column with the statistical values. |
 
@@ -381,3 +381,5 @@ After changing some parameters, one of the following methods need to be executed
 | *map*.**updateClassification**() | *this* | Update the map when parameters on the classification have changed. |
 | *map*.**updateStyle**()  | *this* | Update the map when parameters on the styling have changed. |
 
+
+Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
