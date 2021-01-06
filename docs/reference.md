@@ -1,13 +1,13 @@
 
 # eurostat-map.js API reference
 
-**Map**<br>[Creation](#map-creation)<br>[Definition](#map-definition)<br>[Geography](#map-geography)
+**Map**<br>[Creation](#map-creation) - [Definition](#map-definition) - [Geography](#map-geography)
 
 **Statistical data**<br>
-[Eurobase](#eurobase)<br>[CSV](#csv)<br>[Custom JS](#custom-js)
+[Eurobase](#eurobase) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map)<br>[Proportional symbol map](#proportional-symbol-map)<br>[Categorical map](#categorical-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
 
 **Map elements and methods**<br>
 [Title](#map-title)<br>[Frame](#map-frame)<br>[Tooltip](#tooltip)<br>[Styling](#styling)<br>[Insets](#insets)<br>[Export](#export)<br>[Miscellaneous](#miscellaneous)<br>[Build & update](#build-and-update)
