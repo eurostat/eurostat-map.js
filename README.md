@@ -20,6 +20,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [Population map with proportional circles](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html))
 - [Population change ](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html))
 - [NUTS typology as a categorical map](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html))
+- [Focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/spain.html))
 - [20 years of GDP change in Europe](https://eurostat.github.io/eurostat-map.js/examples/small_multiple.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/small_multiple.html))
 
 ## Installation
