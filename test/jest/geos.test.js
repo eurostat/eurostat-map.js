@@ -6,7 +6,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('exporting map as SVG', async () => {
+test('Different geo extent', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,

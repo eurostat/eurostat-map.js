@@ -6,7 +6,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('choropleth and categorical maps', async () => {
+test('Two maps on a single page', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,

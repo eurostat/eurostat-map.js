@@ -4,7 +4,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('urban/rural categorical map with csvDataSource', async () => {
+test('Different inste settings', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,
