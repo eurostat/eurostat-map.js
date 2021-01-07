@@ -26,14 +26,14 @@
             .map("ch")
             .svgId("map2")
             .width(400)
-            .withInsets([{geo:"GF",height:250}]).insetBoxPosition([180,0]).insetZoomExtent([0,99999])
+            .withInsets({geo:"GF",height:250}).insetBoxPosition([180,0]).insetZoomExtent([0,99999])
             .build();
         eurostatmap
             .map("ch")
             .svgId("map3")
             .width(400)
             .geo("LI").scale("01M")
-            .withInsets([{geo:"MQ",scale:"01M"}]).insetBoxWidth(100).insetBoxPosition([0,0]).insetZoomExtent([0,99999])
+            .withInsets({geo:"MQ",scale:"01M"}).insetBoxWidth(100).insetBoxPosition([0,0]).insetZoomExtent([0,99999])
             .insetBoxPosition([10,10])
             .build();
         eurostatmap
@@ -41,7 +41,7 @@
             .svgId("map4")
             .width(250)
             .geo("LI").scale("01M")
-            .withInsets([{geo:"MT",svgId:"inset4_1"},{geo:"GP",svgId:"inset4_2"}]).insetBoxWidth(80).insetZoomExtent([0,99999])
+            .withInsets( {geo:"MT",svgId:"inset4_1"}, {geo:"GP",svgId:"inset4_2"} ).insetBoxWidth(80).insetZoomExtent([0,99999])
             .build();
 
         /*/TODO test inset in inset

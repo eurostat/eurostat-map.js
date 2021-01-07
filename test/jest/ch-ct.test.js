@@ -33,7 +33,7 @@ test('choropleth and categorical maps', async () => {
             .tooltipShowFlags(false)
             .withLegend({
                 title: "test",
-                    labelDecNb: 0,
+                labelDecNb: 0,
                 }
             )
             .build();
@@ -47,11 +47,11 @@ test('choropleth and categorical maps', async () => {
             .NUTSyear(2013)
             .nutsLvl(3)
             .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
-            .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
             .withLegend({
                 title: "test",
-                    labelDecNb: 0,
+                labelDecNb: 0,
                 }
             )
             .build();
