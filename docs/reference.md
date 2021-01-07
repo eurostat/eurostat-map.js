@@ -317,11 +317,10 @@ eurostatmap.map(...)
 To specify more precisely which insets to show, their geographical extent, scale, position, etc., specify the list of insets such as:
 
 ```javascript
-eurostatmap
-.map(...)
+eurostatmap.map(...)
 .insets(
 	{ geo:"MT", scale:"01M", pixSize:3000, title:"Martinique", titleFontSize:16, width:200, height:90, x:0, y:0 },
-	{ geo:"GF", scale:"03M", pixSize:10000, title:"French Guyana", titleFontSize:16, width:200, height:90, x:210, y:0 }
+	{ geo:"GF", scale:"03M", pixSize:10000, title:"French Guyana", titleFontSize:16, width:200, height:90, x:210, y:0 })
 .insetBoxPosition([335,345]);
 );
 ```
