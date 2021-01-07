@@ -326,7 +326,7 @@ eurostatmap
 );
 ```
 
-See [this example with a focus on Spain](../examples/spain.html) (see [the code](../examples/spain.html))
+See [this example with a focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](../examples/spain.html))
 
 Note that a map inset is built as a proper map within a map: It has all properties of a map, and share most of them with its parent map. It is thus possible to define map insets within map insets, following a recursive structure.
 
