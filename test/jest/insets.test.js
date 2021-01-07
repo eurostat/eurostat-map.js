@@ -20,19 +20,19 @@ test('Different inste settings', async () => {
         eurostatmap
             .map("ch")
             .svgId("testMap1")
-            .withInsets()
+            .insets()
             .build();
 
         eurostatmap
             .map("ch")
             .svgId("testMap2")
-            .withInsets({geo:"GF"}).insetBoxWidth(200).insetZoomExtent([0,99999])
+            .insets({geo:"GF"}).insetBoxWidth(200).insetZoomExtent([0,99999])
             .build();
 
         eurostatmap
             .map("ch")
             .svgId("testMap3")
-            .geo("LI").scale("01M").withInsets({geo:"EUR",scale:"60M"}).insetBoxWidth(200).insetZoomExtent([0,99999])
+            .geo("LI").scale("01M").insets({geo:"EUR",scale:"60M"}).insetBoxWidth(200).insetZoomExtent([0,99999])
             .build();
     });
 

@@ -56,13 +56,6 @@ export const statMap = function (config, withCenterPoints) {
 		return out;
 	};
 
-	//specify insets to show
-	out.withInsets = function () {
-		if(!arguments.length) out.insetsConfig_ = "use_default";
-		else if(arguments) out.insetsConfig_ = arguments;
-		return out;
-	};
-
 
 	/**
 	 * Build a map object.

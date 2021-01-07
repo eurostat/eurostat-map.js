@@ -13,7 +13,7 @@
         const map = eurostatmap
             .map("ch")
             .title("Population in Europe")
-            .withInsets()
+            .insets("default")
             .scale("60M")
             .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])

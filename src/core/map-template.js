@@ -91,7 +91,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 */
 
 	//insets to show, as a list of map template configs. Ex.: [{geo:"MT"},{geo:"LI"},{geo:"PT20"}]
-	out.insetsConfig_ = [];
+	out.insets_ = [];
 	//inset templates - each inset is a map-template instance.
 	out.insetTemplates_ = {};
 
@@ -138,6 +138,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if(out.svg()) out.svg().select("#title"+out.geo()).text(v);
 		return out;
 	};
+
+	//insets getter/setter
+	out.insets = function() {
+		if (!arguments.length) return out.insets_;
+		if (arguments.length == 1 && arguments[0] === "default") out.insets_ = "default";
+		else out.insets_ = arguments;
+		return out;
+	}
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
@@ -227,9 +235,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2*out.insetBoxPadding(), 2*out.insetBoxPadding()];
 		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+out.insetBoxPosition()[0]+","+out.insetBoxPosition()[1]+")")
 		//if needed, use default inset setting
-		if(out.insetsConfig_ === "use_default") out.insetsConfig_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding());
-		for(let i=0; i<out.insetsConfig_.length; i++) {
-			const config = out.insetsConfig_[i];
+		if(out.insets_ === "default") out.insets_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding());
+		for(let i=0; i<out.insets_.length; i++) {
+			const config = out.insets_[i];
 			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
 
 			//get svg element. Create it if it as an embeded SVG if it does not exists
@@ -504,7 +512,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetBoxWidth_;
 		config.height = config.height || out.insetBoxWidth_;
-		config.insetsConfig = config.insetsConfig || [];
+		config.insets = config.insets || [];
 		config.insetTemplates = config.insetTemplates || {};
 
 		/*

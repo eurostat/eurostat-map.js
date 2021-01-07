@@ -13,7 +13,7 @@
         let myMap = eurostatmap
             .map("ch")
             .title("Population in Europe")
-            .withInsets().insetBoxWidth(150)
+            .insets("default").insetBoxWidth(150)
             .width(600)
             .scale("20M")
             .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
