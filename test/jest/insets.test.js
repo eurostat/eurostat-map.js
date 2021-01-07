@@ -20,7 +20,7 @@ test('Different inste settings', async () => {
         eurostatmap
             .map("ch")
             .svgId("testMap1")
-            .insets()
+            .insets("default")
             .build();
 
         eurostatmap
