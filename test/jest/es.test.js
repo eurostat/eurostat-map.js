@@ -37,10 +37,11 @@ test('geo focus on spain with custom inset on canary islands', async () => {
             seaFillStyle : "white",
             coastalMarginColor : "#bbb",
             drawGraticule : false,
+            insets : [{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }],
+            insetBoxPosition : [335,345],
         })
-        //.colorFun(d3.interpolateBlues)
+        //.colorFun(d3.interpolateBlues) //TODO fix that
         .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } } )
-        .insets( { geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" } ).insetBoxPosition([335,345])
         .withLegend( {labelDecNb:1, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)", noData: false, } )
         .build();
 
