@@ -320,8 +320,8 @@ To specify more precisely which insets to show, their geographical extent, scale
 eurostatmap
 .map(...)
 .insets(
-	{ geo:"MT", scale:"01M", pixSize:3000,  width:200, height:90, x:0, y:0, title:"Martinique", titleFontSize:16, titleFontWeight:"" },
-	{ geo:"GF", scale:"03M", pixSize:10000, width:200, height:90, x:210, y:0, title:"French Guyana", titleFontSize:16, titleFontWeight:"" }
+	{ geo:"MT", scale:"01M", pixSize:3000, title:"Martinique", titleFontSize:16, width:200, height:90, x:0, y:0 },
+	{ geo:"GF", scale:"03M", pixSize:10000, title:"French Guyana", titleFontSize:16, width:200, height:90, x:210, y:0 }
 .insetBoxPosition([335,345]);
 );
 ```
@@ -332,7 +332,7 @@ Note that a map inset is built as a proper map within a map: It has all properti
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**insets**([*value*]) | Array | [] | The list of insets. Each map inset is described as an object with the map inset attributes. |
+| *map*.**insets**([*values*]) | List | [] | The list of insets. Each map inset is described as an object with the map inset attributes. |
 | *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
 | *map*.**insetBoxPadding**([*value*]) | number | 5 | When several insets are specified within the map, the distance between the different insets. |
 | *map*.**insetBoxWidth**([*value*]) | number | 210 | The default width of the insets box, which are squared by default. |
