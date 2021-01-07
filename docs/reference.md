@@ -305,18 +305,39 @@ Specify specific map styles.
 
 ## Insets
 
-Specify the map insets: Which ones, their geographical extent, their position, etc.
+To add map insets, use the *map*.**insets**([*values*]) method.
 
-Example:
-TODO default
+For default map insets showing European overseas territories and small countries, use simply:
 
-Example:
-TODO advanced
+```javascript
+eurostatmap.map(...)
+.insets("default");
+```
+
+To specify more precisely the map insets to show, their extent, scale, position, etc., specify the list of map templates such as:
+
+```javascript
+eurostatmap
+.map(...)
+.insets( {geo:"MT", scale:"01M", title:"Martinique" }, {geo:"GF", scale:"03M", title:"French Guyana" } );
+```
+Example: Spain.
 
 TODO document
 
+out.insets_ = [];
+out.insetBoxPosition_ = undefined;
+out.insetBoxPadding_ = 5;
+out.insetBoxWidth_ = 210;
+out.insetZoomExtent_ = [1,3];
+out.insetScale_ = "03M";
+
+
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
 |  |  |  |  |
 
 
