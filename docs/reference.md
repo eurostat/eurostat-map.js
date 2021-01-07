@@ -307,39 +307,37 @@ Specify specific map styles.
 
 To add map insets, use the *map*.**insets**([*values*]) method.
 
-For default map insets showing European overseas territories and small countries, use simply:
+For default map insets showing European overseas territories and small countries, use:
 
 ```javascript
 eurostatmap.map(...)
 .insets("default");
 ```
 
-To specify more precisely the map insets to show, their extent, scale, position, etc., specify the list of map templates such as:
+To specify more precisely the map insets to show, their geographical extent, scale, position, etc., specify the list of map templates such as:
 
 ```javascript
 eurostatmap
 .map(...)
-.insets( {geo:"MT", scale:"01M", title:"Martinique" }, {geo:"GF", scale:"03M", title:"French Guyana" } );
+.insets(
+	{ geo:"MT", scale:"01M", pixSize:3000,  width:200, height:90, x:0, y:0, title:"Martinique", titleFontSize:16, titleFontWeight:"" },
+	{ geo:"GF", scale:"03M", pixSize:10000, width:200, height:90, x:210, y:0, title:"French Guyana", titleFontSize:16, titleFontWeight:"" }
+.insetBoxPosition([335,345]);
+);
 ```
+
 Example: Spain.
 
-TODO document
-
-out.insets_ = [];
-out.insetBoxPosition_ = undefined;
-out.insetBoxPadding_ = 5;
-out.insetBoxWidth_ = 210;
-out.insetZoomExtent_ = [1,3];
-out.insetScale_ = "03M";
-
+Note that a map inset is built as a proper map within a map: It has all properties of a map, and share most of them with its parent map. It is thus possible to define map insets within map insets, following a recursive structure.
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-
+| *map*.**insets**([*value*]) | Array | [] | The list of insets. Each map inset is described as an object with the map inset attributes. |
+| *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
+| *map*.**insetBoxPadding**([*value*]) | number | 5 | When several insets are specified within the map, the distance between the different insets. |
+| *map*.**insetBoxWidth**([*value*]) | number | 210 | The default width of the insets box, which are squared by default. |
+| *map*.**insetZoomExtent**([*value*]) | Array | [1,3] | The default zoom extent of the insets. |
+| *map*.**insetScale**([*value*]) | String | "03M" | The default scale of the insets. |
 
 
 ## Bottom text
