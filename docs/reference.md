@@ -314,7 +314,7 @@ eurostatmap.map(...)
 .insets("default");
 ```
 
-To specify more precisely the map insets to show, their geographical extent, scale, position, etc., specify the list of map templates such as:
+To specify more precisely which insets to show, their geographical extent, scale, position, etc., specify the list of insets such as:
 
 ```javascript
 eurostatmap
@@ -326,7 +326,7 @@ eurostatmap
 );
 ```
 
-See [this example with a focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](../examples/spain.html))
+See also [this example with a focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](../examples/spain.html)).
 
 Note that a map inset is built as a proper map within a map: It has all properties of a map, and share most of them with its parent map. It is thus possible to define map insets within map insets, following a recursive structure.
 
