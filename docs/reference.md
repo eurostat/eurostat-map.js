@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
 
 **Map elements and methods**<br>
-[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
+[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 
 ## Map creation
@@ -22,8 +22,11 @@ Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``
 
 The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
+It is also possible to specify the map parameters as an object: ``let map = eurostatmap.map( mapType, { param1: v1, param2: v2} );``. It is equivalent to: ``let map = eurostatmap.map( mapType ).param1(v1).param2(v2);`` 
 
 ## Map definition
+
+Specify the map SVG element.
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
