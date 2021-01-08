@@ -181,7 +181,13 @@ A proportional symbol map shows symbols (typically circles) **sized** in proport
 Example:
 
 ```javascript
-//TODO
+eurostatmap.map("ps")
+	.nutsLvl(1)
+	.stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
+	.psMaxSize(25)
+	.psFill("red")
+	.unitText("inhabitants")
+	.build();
 ```
 
 | Method | Type | Default value | Description |
