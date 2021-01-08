@@ -24,8 +24,7 @@ test('programmatically defined statistics', async () => {
         const map = eurostatmap.map("ch");
         map.nutsLvl(0);
 
-        map.stat({})
-        map.stat().set("LU",500)
+        map.statData().set("LU",500)
         .set("DE",400)
         .set("FR",100)
         .set("IT",600)

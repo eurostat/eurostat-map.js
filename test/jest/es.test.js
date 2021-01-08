@@ -24,6 +24,7 @@ test('geo focus on spain with custom inset on canary islands', async () => {
             width: 550,
             heiht: 550,
             nutsLvl: 2,
+            stat: { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } },
             titleFill: "#333",
             titlePosition: [20,37],
             scale: "10M",
@@ -41,7 +42,6 @@ test('geo focus on spain with custom inset on canary islands', async () => {
             insetBoxPosition : [335,345],
         })
         //.colorFun(d3.interpolateBlues) //TODO fix that
-        .stat( { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: "2019" } } )
         .withLegend( {labelDecNb:1, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)", noData: false, } )
         .build();
 

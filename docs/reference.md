@@ -119,10 +119,6 @@ Example:
 
 ```javascript
 map = eurostatmap.map(...);
-
-//initialise stat dataset
-map.stat({})
-
 //specify values one by one
 map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
 //or in one time. Note that the 'status' can be specified but is not mandatory.
