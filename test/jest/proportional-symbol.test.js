@@ -28,7 +28,7 @@ test('proportional symbol map', async () => {
             .psStrokeWidth(0.3)
             .unitText("inhabitants")
             .tooltipShowFlags("long")
-            .withLegend({
+            .legend({
                 title: "Population",
                 cellNb: 6,
                 labelDecNb: 0,

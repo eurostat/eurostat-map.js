@@ -21,8 +21,6 @@ export const statMap = function (config, withCenterPoints) {
 	//the statistical data, retrieved from the config information
 	out.statData_ = sd.statData();
 
-	//legend
-	out.legend_ = undefined;
 	//test for no data case
 	out.noDataText_ = "No data available";
 	//langage - TODO not used? Use it in stat-data ?
@@ -34,6 +32,12 @@ export const statMap = function (config, withCenterPoints) {
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function() { };
 
+	//legend configuration
+	out.legend_ = undefined;
+	//legend object
+	out.legendObj_ = undefined;
+
+
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
 
@@ -44,18 +48,11 @@ export const statMap = function (config, withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stat_", "statData_", "legend_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_"]
+	["stat_", "statData_", "legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
-
-	//prepare legend
-	out.withLegend = function (config) {
-		//create legend
-		out.legend_ = out.getLegendConstructor()(out, config);
-		return out;
-	};
 
 
 	/**
@@ -71,9 +68,11 @@ export const statMap = function (config, withCenterPoints) {
 		out.filtersDefinitionFun_(out.svg(), out.clnb_);
 
 		//legend element
-		if (out.legend()) {
-			//get legend
-			const lg = out.legend();
+		if ( out.legend() ) {
+
+			//create legend object
+			out.legendObj( out.getLegendConstructor()(out, out.legend()) );
+			const lg = out.legendObj();
 
 			//get legend svg. If it does not exist, create it embeded within the map
 			let lgSvg = select("#"+lg.svgId);
@@ -155,7 +154,7 @@ export const statMap = function (config, withCenterPoints) {
 		out.updateStyle();
 
 		//update legend, if any
-		if (out.legend_) out.legend().update();
+		if (out.legendObj()) out.legendObj().update();
 
 		return out;
 	}
@@ -204,7 +203,7 @@ export const statMap = function (config, withCenterPoints) {
 	/**
 	 * Set some map attributes based on the following URL parameters:
 	 * "w":width, "h":height, "x":xGeoCenter, "y":yGeoCenter, "z":pixGeoSize, "s":scale, "lvl":nuts level, "time":time,
-	 * "proj":CRS, "geo":geo territory, "ny":nuts version, "lg":langage, "sl":show legend, "clnb":class number
+	 * "proj":CRS, "geo":geo territory, "ny":nuts version, "lg":langage, "clnb":class number
 	 */
 	out.setFromURL = function () {
 		const opts = getURLParameters();
@@ -219,7 +218,6 @@ export const statMap = function (config, withCenterPoints) {
 		if (opts.geo) out.geo(opts.geo);
 		if (opts.ny) out.NUTSyear(opts.ny);
 		if (opts.lg) out.lg(opts.lg);
-		if (opts.sl) out.withLegend({});
 		if (opts.clnb) out.clnb(+opts.clnb);
 		return out;
 	};

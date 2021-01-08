@@ -42,7 +42,7 @@ test('geo focus on spain with custom inset on canary islands', async () => {
             insetBoxPosition : [335,345],
         })
         //.colorFun(d3.interpolateBlues) //TODO fix that
-        .withLegend( {labelDecNb:1, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)", noData: false, } )
+        .legend( {labelDecNb:1, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)", noData: false, } )
         .build();
 
         //set title with date

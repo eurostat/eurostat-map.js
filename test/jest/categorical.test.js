@@ -31,7 +31,7 @@ test('urban/rural categorical map with csvDataSource', async () => {
             .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
             .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .withLegend({
+            .legend({
                 labelDecNb: 0,
             })
             .build();

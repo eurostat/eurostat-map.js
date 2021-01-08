@@ -526,7 +526,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy template attributes
-		["stat", "statData", "legend", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
+		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//apply config values for inset
