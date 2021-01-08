@@ -111,7 +111,9 @@ export const statData = function (config) {
 	out.eurostatDatasetCode_ = undefined;
 	/** The Eurobase code */
 	out.filters_ = { lastTimePeriod: 1 };
+	/** The precision (number of decimal places) */
 	out.precision_ = 2;
+	/** The time dimension, as retrieved from the jsonstat data */
 	let jsonStatTime = undefined;
 
 	/**
@@ -197,8 +199,7 @@ export const statData = function (config) {
 	}
 
 
-
-	//default config
+	//use default config
 	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
 
 	//override attribute values with config values
