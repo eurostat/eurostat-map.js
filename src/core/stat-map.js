@@ -31,6 +31,8 @@ export const statMap = function (config, withCenterPoints) {
 	out.tooltipText_ = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function() { };
+	//a callback function to execute when the map is ready
+	out.callback_ = undefined;
 
 	//legend configuration
 	out.legend_ = undefined;
@@ -48,7 +50,7 @@ export const statMap = function (config, withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stat_", "statData_", "legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_"]
+	["stat_", "statData_", "legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_", "callback_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
@@ -113,6 +115,8 @@ export const statMap = function (config, withCenterPoints) {
 			//if stat data are already there, update the map with these values
 			if (!out.statData().isReady()) return;
 			out.updateStatValues();
+			//execute callback function
+			if(out.callback()) out.callback()();
 		});
 		return out;
 	}
@@ -136,6 +140,8 @@ export const statMap = function (config, withCenterPoints) {
 			//if geodata are already there, refresh the map with stat values
 			if (!out.isGeoReady()) return;
 			out.updateStatValues();
+			//execute callback function
+			if(out.callback()) out.callback()();
 		});
 		return out;
 	}
