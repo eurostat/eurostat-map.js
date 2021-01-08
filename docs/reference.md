@@ -390,7 +390,8 @@ Export the map as a PNG image or a SVG file.
 | *map*.**noDataText**([*value*])    | String   | *"No data available"* | The text to show for regions where no data is available.     |
 | *map*.**lg**([*value*])     | String   | *"en"*     | The language code, for multilingual maps.    |
 | *map*.**transitionDuration**([*value*])   | int      | *800*    | When updating statistical figures, the map style changes progressively. This parameter sets the duration of this transition, in ms.    |
-| *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}*       | A function defining SVG filter elements. To be used to defined fill patterns.    |
+| *map*.**filtersDefinitionFun**([*value*]) | Function | *function() {}* | A function defining SVG filter elements. To be used to defined fill patterns.    |
+| *map*.**callback**([*value*]) | Function | *undefined* | A function to execute after the map build is complete. |
 | *map*.**getTime**()    | String   | -     | Return the *time* parameter of the statistical data. When a filter such as *{ lastTimePeriod : 1 }* is used, this method allows a retrieval of the map timestamp.     |
 | *map*.**setFromURL**()      | *this*   | -    | Set some map parameters based on URL parameters: "w" for width, "h" for height, "x" for xGeoCenter, "y" for yGeoCenter, "z" for pixGeoSize, "s" for scale, "lvl" for nuts level, "time" for time, "proj" for the CRS, "geo" for the geographical territory, "ny" for the NUTS version, "lg" for the langage, "sl" to show legend, "clnb" for the number of classes. |
 
