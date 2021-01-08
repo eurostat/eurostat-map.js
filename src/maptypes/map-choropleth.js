@@ -57,25 +57,27 @@ export const map = function (config) {
 	out.updateClassification = function () {
 
 		//simply return the array [0,1,2,3,...,nb-1]
-		//TODO: use 'range' ?
-		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
+		const getA = function (nb) { return [...Array(nb).keys()]; }
 
 		//TODO: make it possible to use continuous color ramps?
 
 		//use suitable classification type
 		if (out.classifMethod_ === "quantile") {
 			//https://github.com/d3/d3-scale#quantile-scales
-			const statValues = out.statData().getArray();
-			out.classifier(scaleQuantile().domain(statValues).range(getA(out.clnb_)));
+			const domain = out.statData().getArray();
+			const range = getA(out.clnb());
+			out.classifier(scaleQuantile().domain(domain).range(range));
 		} else if (out.classifMethod_ === "equinter") {
 			//https://github.com/d3/d3-scale#quantize-scales
-			const statValues = out.statData().getArray();
-			out.classifier(scaleQuantize().domain([min(statValues), max(statValues)]).range(getA(out.clnb_)));
+			const domain = out.statData().getArray();
+			const range = getA(out.clnb());
+			out.classifier(scaleQuantize().domain([min(domain), max(domain)]).range(range));
 			if (out.makeClassifNice_) out.classifier().nice();
 		} else if (out.classifMethod_ === "threshold") {
 			//https://github.com/d3/d3-scale#threshold-scales
-			out.clnb(out.threshold_.length + 1);
-			out.classifier(scaleThreshold().domain(out.threshold_).range(getA(out.clnb_)));
+			out.clnb(out.threshold().length + 1);
+			const range = getA(out.clnb());
+			out.classifier(scaleThreshold().domain(out.threshold()).range(range));
 		}
 
 		//assign class to nuts regions, based on their value

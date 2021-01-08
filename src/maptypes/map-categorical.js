@@ -44,15 +44,14 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 
-		//simply return the array [0,1,2,3,...,nb-1]
-		//TODO: use 'range' ?
-		const getA = function (nb) { const a = []; for (let i = 0; i < nb; i++) a.push(i); return a; }
+		//get domain (unique values)
+		const domain = out.statData().getUniqueValues();
 
-		//get domain: unique values
-		const dom = out.statData().getUniqueValues();
+		//get range [0,1,2,3,...,domain.length-1]
+		const range = [...Array(domain.length).keys()];
 
-		const rg = getA(dom.length);
-		out.classifier(scaleOrdinal().domain(dom).range(rg));
+		//make classifier
+		out.classifier(scaleOrdinal().domain(domain).range(range));
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -112,7 +111,6 @@ const tooltipTextFunCat = function (rg, map) {
 		return buf.join("");
 	}
 	const val = sv.value;
-	//TODO map.classToText_ not defined for inset maps
 	if (map.classToText_) {
 		const lbl = map.classToText_[val];
 		buf.push(lbl ? lbl : val);
