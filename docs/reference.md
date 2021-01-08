@@ -52,7 +52,7 @@ The map statistical data can be accessed with the *map*.**statData**([*value*]) 
 
 | Method | Description |
 | -------- | ------ | ---------- | ----------- |
-| **get**([*nutsId*]) | Return the stat value {value,status} from a nuts id. |
+| **get**([*nutsId*]) | Return the stat value {value,status} from a nuts id. If no argument is specified, returns the entire index. |
 | **getValue**([*nutsId*]) | Return the stat value from a nuts id. |
 | **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only. |
 | **setData**([*index*]) | Set statistical data, already indexed by nutsId. The index has a structure like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...} |

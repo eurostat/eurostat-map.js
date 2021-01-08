@@ -21,9 +21,10 @@ export const statData = function (config) {
 
 	/**
 	 * Return the stat value {value,status} from a nuts id.
+	 * If no argument is specified, returns the entire index.
 	 * @param {*} nutsId 
 	 */
-	out.get = (nutsId) => _data_ ? _data_[nutsId] : undefined;
+	out.get = (nutsId) => !nutsId? _data_ : _data_ ? _data_[nutsId] : undefined;
 
 	/**
 	 * Return the stat value from a nuts id.
@@ -200,7 +201,7 @@ export const statData = function (config) {
 
 
 	//use default config
-	config = config || { eurostatDatasetCode:"demo_r_d3dens" };
+	//config = config || { eurostatDatasetCode:"demo_r_d3dens" };
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];

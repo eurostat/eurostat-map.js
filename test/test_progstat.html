@@ -14,8 +14,8 @@
         map.nutsLvl(0);
         map.withLegend({ x:600, y:20 });
 
-        map.stat({})
-        map.statData().set("LU",500)
+        map.statData()
+        .set("LU",500)
         .set("DE",400)
         .set("FR",100)
         .set("IT",600)
@@ -27,12 +27,8 @@
         .set("IT",200)
         .set("UK",{value:50,status:"p"})
 
-        console.log(map.stat())
-        console.log(map.statData())
-        console.log(map.statData().get("LU"))
-        console.log(map.statData().get("UK"))
-
         map.build();
+
 </script>
 </body>
 

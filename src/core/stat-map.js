@@ -19,7 +19,7 @@ export const statMap = function (config, withCenterPoints) {
 	//the statistical data config
 	out.stat_ = undefined;
 	//the statistical data, retrieved from the config information
-	out.statData_ = sd.statData({});
+	out.statData_ = sd.statData();
 
 	//legend
 	out.legend_ = undefined;
@@ -124,8 +124,11 @@ export const statMap = function (config, withCenterPoints) {
 	 */
 	out.updateStatData = function() {
 
-		//no remote stat data source has been specified: Do not update.
-		//if(!out.stat()) return;
+		//case when no stat data source is specified and stat data where specified
+		if(!out.stat() && out.statData().get()) return;
+
+		//use default data source
+		if(!out.stat()) out.stat( { eurostatDatasetCode:"demo_r_d3dens" } );
 
 		//build stat data object from stat configuration
 		out.statData_ = sd.statData(out.stat());
