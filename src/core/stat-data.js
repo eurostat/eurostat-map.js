@@ -86,6 +86,9 @@ export const statData = function (config) {
 	}
 
 
+	/** Some metadata */
+	out.metadata = undefined;
+
 
 	/**
 	 * Retrieve stat data from remote data sources.
@@ -114,8 +117,6 @@ export const statData = function (config) {
 	out.filters_ = { lastTimePeriod: 1 };
 	/** The precision (number of decimal places) */
 	out.precision_ = 2;
-	/** Some metadata */
-	out.metadata = undefined;
 
 	/**
 	 * Return promise for Eurobase/jsonstat data.
@@ -142,9 +143,11 @@ export const statData = function (config) {
 
 				//decode stat data
 				const jsd = JSONstat(data___);
+
 				//store jsonstat metadata
-				out.metadata = {"label":jsd.label, "href":jsd.href, "source":jsd.source, "updated":jsd.updated, "extension":jsd.extension};
+				out.metadata = {"label": jsd.label, "href": jsd.href, "source": jsd.source, "updated": jsd.updated, "extension": jsd.extension};
 				out.metadata.time = jsd.Dimension("time").id[0];
+
 				//index
 				_data_ = jsonstatToIndex(jsd);
 				//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
@@ -194,8 +197,13 @@ export const statData = function (config) {
 		//retrieve csv data
 		getCSVPromise().then(
 			function (data___) {
+
 				//decode stat data
 				_data_ = csvToIndex(data___, out.geoCol_, out.valueCol_);
+
+				//store some metadata
+				out.metadata = { "href": out.csvURL_ };
+
 				callback();
 		});
 	}
