@@ -41,6 +41,7 @@
                 callback: function() {
                     //set title with date
                     map.title(map.title() + " in " + map.getTime());
+                    console.log(map.statData().metadata);
                 },
             })
             .build();

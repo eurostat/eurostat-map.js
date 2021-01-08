@@ -114,8 +114,8 @@ export const statData = function (config) {
 	out.filters_ = { lastTimePeriod: 1 };
 	/** The precision (number of decimal places) */
 	out.precision_ = 2;
-	/** The time dimension, as retrieved from the jsonstat data */
-	let jsonStatTime = undefined;
+	/** Some metadata */
+	out.metadata = undefined;
 
 	/**
 	 * Return promise for Eurobase/jsonstat data.
@@ -142,8 +142,9 @@ export const statData = function (config) {
 
 				//decode stat data
 				const jsd = JSONstat(data___);
-				//get time
-				jsonStatTime = JSONstat(data___).Dimension("time").id[0];
+				//store jsonstat metadata
+				out.metadata = {"label":jsd.label, "href":jsd.href, "source":jsd.source, "updated":jsd.updated, "extension":jsd.extension};
+				out.metadata.time = jsd.Dimension("time").id[0];
 				//index
 				_data_ = jsonstatToIndex(jsd);
 				//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
@@ -159,7 +160,7 @@ export const statData = function (config) {
 		const t = out.filters_.time;
 		if (t) return t;
 		if (!_data_) return;
-		return jsonStatTime;
+		return out.metadata.time;
 	};
 
 
