@@ -223,12 +223,12 @@ Example:
 
 ```javascript
 eurostatmap.map("ct")
-   .NUTSyear(2013)
-   .nutsLvl(3)
-   .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
-   .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
-   .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-   .build();
+	.NUTSyear(2013)
+	.nutsLvl(3)
+	.stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
+	.classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+	.classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
+	.build();
 ```
 
 | Method | Type | Default value | Description |
@@ -300,12 +300,12 @@ Example:
 
 ```javascript
 map = eurostatmap.map(...)
-.legend({
-	title: "Legend (%)",
-	titleFontSize: "12",
-	x: 10, y: 120,
-	boxFill: "darkgray",
-});
+	.legend({
+		title: "Legend (%)",
+		titleFontSize: "12",
+		x: 10, y: 120,
+		boxFill: "darkgray",
+	});
 ```
 
 | Parameter | Type | Default value | Description |
@@ -366,17 +366,18 @@ For default map insets showing European overseas territories and small countries
 
 ```javascript
 eurostatmap.map(...)
-.insets("default");
+	.insets("default");
 ```
 
 To specify more precisely which insets to show, their geographical extent, scale, position, etc., specify the list of insets such as:
 
 ```javascript
 eurostatmap.map(...)
-.insets(
-	{ geo:"MT", scale:"01M", pixSize:3000, title:"Martinique", titleFontSize:16, width:200, height:90, x:0, y:0 },
-	{ geo:"GF", scale:"03M", pixSize:10000, title:"French Guyana", titleFontSize:16, width:200, height:90, x:210, y:0 })
-.insetBoxPosition([335,345]);
+	.insets(
+		{ geo:"MT", scale:"01M", pixSize:3000, title:"Martinique", titleFontSize:16, width:200, height:90, x:0, y:0 },
+		{ geo:"GF", scale:"03M", pixSize:10000, title:"French Guyana", titleFontSize:16, width:200, height:90, x:210, y:0 }
+	)
+	.insetBoxPosition([335,345]);
 );
 ```
 
