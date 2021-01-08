@@ -514,6 +514,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.height = config.height || out.insetBoxWidth_;
 		config.insets = config.insets || [];
 		config.insetTemplates = config.insetTemplates || {};
+		config.callback = config.callback || undefined;
 
 		/*
 		mt.stat_ = null;
