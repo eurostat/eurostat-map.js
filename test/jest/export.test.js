@@ -33,11 +33,13 @@ test('exporting map as SVG', async () => {
                 labelDecNb: 0,
                 labelDelim: "to",
             })
+            .callback(function() {
+                setTimeout( ()=>{
+                    myMap.exportMapToPNG();
+                    myMap.exportMapToSVG();
+                }, 200);
+            })
             .build();
-
-        setTimeout(() => {
-            myMap.exportMapToSVG();
-        }, 3000)
     });
 
     // we're done; close the browser
