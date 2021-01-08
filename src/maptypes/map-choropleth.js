@@ -26,7 +26,7 @@ export const map = function (config) {
 	//the color function [0,1] -> color
 	out.colorFun_ = interpolateYlOrBr;
 	//a function returning the color from the class i
-	out.classToFillStyle_ = getColorLegend(out.colorFun_);
+	out.classToFillStyle_ = undefined;
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
@@ -95,13 +95,17 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
+		//define style per class
+		if(!out.classToFillStyle())
+			out.classToFillStyle( getColorLegend(out.colorFun()) )
+
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyle_(ecl, out.clnb_);
+				return out.classToFillStyle()(ecl, out.clnb_);
 			});
 
 		return out;

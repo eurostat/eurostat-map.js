@@ -33,6 +33,7 @@ test('geo focus on spain with custom inset on canary islands', async () => {
             unitText: "%",
             //classifMethod: "equinter", clnb: 15,
             classifMethod: "threshold", threshold: [4,6,8,10,12,14,16,18,20,21],
+            //colorFun: d3.interpolateBlues,
             nutsbnStroke: { 0: "#555", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" },
             nutsbnStrokeWidth: { 0: 2.5, 1: 1.5, 2: 1.5, 3: 0.2, oth: 1, co: 1 },
             seaFillStyle: "white",
@@ -46,7 +47,6 @@ test('geo focus on spain with custom inset on canary islands', async () => {
                 map.title(map.title() + " in " + map.getTime());
             },
         })
-        //.colorFun(d3.interpolateBlues) //TODO fix that
         .build();
 
     });
