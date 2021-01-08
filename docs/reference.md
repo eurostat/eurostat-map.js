@@ -12,6 +12,7 @@
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
+Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
 ## Map creation
 
@@ -51,7 +52,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 ## Statistical data
 
-The map statistical data can be accessed with the *map*.**statData**([*value*]) method, which returns an object with the following methods:
+The map statistical data can be accessed with the *map*.**statData**() method, which returns an object with the following methods:
 
 | Method | Description |
 | -------- | ------ |
@@ -61,8 +62,8 @@ The map statistical data can be accessed with the *map*.**statData**([*value*]) 
 | **setData**([*index*]) | Set statistical data, already indexed by nutsId. The index has a structure like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...} |
 | **getArray**() | Return all stat values as an array. This can be used to classify the values. |
 | **getUniqueValues**() | Return stat unique values. This can be used for categorical maps. |
-| **getMin**() | Get min value. |
-| **getMax**() | Get max value. |
+| **getMin**() | Get minimum value. |
+| **getMax**() | Get maximum value. |
 
 The map statistical data source can be accessed with the *map*.**stat**([*value*]) method. Several types of data sources are supported (see sections below).
 
@@ -110,8 +111,8 @@ map.stat( {
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | **csvURL** | String | *undefined* | The CSV file URL. |
-| **geoCol** | String | *"geo"* | The CSV column with the NUTS ids. |
-| **valueCol** | String | *"value"* | The CSV column with the statistical values. |
+| **geoCol** | String | *"geo"* | The column with the NUTS ids. |
+| **valueCol** | String | *"value"* | The column with the statistical values. |
 
 
 ### Custom JS
@@ -136,7 +137,9 @@ map.statData()..setData({
 
 ## Choropleth map
 
-A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
+A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc.
+
+Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
 
 Example:
 
@@ -280,7 +283,7 @@ Specify the style of the map frame (the rectangle around the map).
 
 ## Map legend
 
-Specify the style of the map legend with *map*.**legend**({*parameters*}) with the followign default parameters:
+Specify the style of the map legend with *map*.**legend**({*parameters*}).
 
 Example:
 
