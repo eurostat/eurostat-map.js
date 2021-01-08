@@ -12,13 +12,11 @@
     <script src="https://unpkg.com/eurostat-map"></script>
     <script>
         eurostatmap.map("ch")
-            .width(900)
+        .width(900)
             .title("Population in Europe")
             .titleFontSize(40)
             .titleFill("#444")
             .scale("60M")
-            .datasetCode("demo_r_d3dens")
-            .filters({ time: 2016 })
             .classifMethod("threshold").threshold([35, 50, 80, 100, 140, 180, 300, 500, 1300])
 
             .filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({ patternSize: 5, shape: "circle", bckColor: "white", symbColor: "black" }))
@@ -40,12 +38,12 @@
             .unitText("people/km²")
             .tooltipShowFlags(false)
 
-            .showLegend(true)
-            .legend().titleText("Population density (people/km²)")
-            .legend().labelDecNb(0)
-            .legend().height(260)
-            .legend().width(190)
-
+            .legend({
+                title: "Density - inhab./km²",
+                labelDecNb: 0,
+                x: 700,
+                noData: false,
+            })
             .build();
 
     </script>
