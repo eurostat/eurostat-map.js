@@ -202,23 +202,16 @@ eurostatmap.map("ps")
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
 | *map*.**psStrokeWidth**([*value*]) | number | *0.3* | The width of the stroke. |
 
-Legend
-	//number of elements in the legend
-	out.cellNb = 4;
-	//the order of the legend elements. Set to false to invert.
-	out.ascending = true;
-	//the distance between consecutive legend box elements
-	out.shapePadding = 5;
-	//the font size of the legend label
-	out.labelFontSize = 12;
-	// user-define d3 format function
-	out.format = undefined;
-	//the number of decimal for the legend labels
-	out.labelDecNb = 2;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 5;
+In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
 
-
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **cellNb** | int | *4* | Number of legend elements. |
+| **ascending** | String | *true* | The legend cells order. Set to false to invert. |
+| **shapePadding** | number | *5* | The distance between consecutive legend box elements |
+| **labelFontSize** | int | *13* | The label font size. |
+| **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
+| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
 
 
 ## Categorical map
