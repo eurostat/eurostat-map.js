@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
 
 **Map elements and methods**<br>
-[Title](#map-title) - [Frame](#map-frame) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
+[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 
 ## Map creation
@@ -133,7 +133,12 @@ map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
 
 A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
 
-To create a choropleth map, use ``let map = eurostatmap.map( "ch" );``. The following parameters specific to this type of map can then be considered:
+Example:
+
+```javascript
+//TODO
+```
+
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -170,7 +175,11 @@ legend
 
 A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
 
-To create a proportional symbol map, use ``let map = eurostatmap.map( "ps" );``. The following parameters specific to this type of map can then be considered:
+Example:
+
+```javascript
+//TODO
+```
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -207,7 +216,11 @@ Legend
 
 A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html)).
 
-To create a categorical map, use ``let map = eurostatmap.map( "ct" );``. The following parameters specific to this type of map can then be considered:
+Example:
+
+```javascript
+//TODO
+```
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -233,7 +246,55 @@ Legend
 
 
 
-----------------------
+## Map title
+
+Specify the map title, its style and position.
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**title**([*value*])           | String        | ""          | The title text.   |
+| *map*.**titleFontSize**([*value*])   | int           | 25                             | The title font size.      |
+| *map*.**titleFill**([*value*])       | String        | "black"     | The title text color. |
+| *map*.**titlePosition**([*value*])  | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
+| *map*.**titleFontFamily**([*value*]) | String        | "Helvetica, Arial, sans-serif" | The title font.                           |
+| *map*.**titleFontWeight**([*value*]) | String        | "bold"                         | The title font weight.        |
+
+
+
+## Map frame
+
+Specify the style of the map frame (the rectangle around the map).
+
+| Method | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**frameStroke**([*value*])      | Color        | "#222"    | Color of the map frame                         |
+| *map*.**frameStrokeWidth**([*value*])   | number    | 2         | The map frame stroke width              |
+
+
+
+## Map legend
+
+Specify the style of the map legend with *map*.**legend**({*parameters*}) with the followign default parameters:
+
+| Parameter | Type | Default value |  Description |
+| -------- | ------ | ---------- | ----------- |
+| **svgId** | String | *auto* | The SVG element where to draw the legend. If not specified, an element is automatically built within the map. |
+| **x** | number | *auto* | The legend element X position, in case it is embeded within the map. If not specified, an automatic value is computed. |
+| **y** | number | *auto* | The legend element Y position, in case it is embeded within the map. If not specified, an automatic value is computed. |
+| **boxMargin** |  | *10* | The |
+| **boxPadding** |  | *7* |  |
+| **boxCornerRad** |  | *7* |  |
+| **boxFill** |  | *"#eeeeee"* |  |
+| **boxOpacity** |  | *0.5* |  |
+| **fontFamily** |  | *"Helvetica, Arial, sans-serif"* |  |
+| **title** |  | *""* |  |
+| **titleFontSize** |  |  |  |
+
+CHECK that!!!! | **titleWidth** |  |  |  |
+
+
+
+TODO
 
 | Method | Type | Default value |  Description |
 | -------- | ------ | ---------- | ----------- |
@@ -260,22 +321,6 @@ Legend
 | *map*.***legendConfig***.shapeHeight([*value*])   | int     | *13*                             | The cell heigth (used for choropleth maps only). |
 | *map*.***legendConfig***.shapePadding([*value*])  | int     | *2*                              | The distance between 2 cells, in pixel.   |
 
-------------------------
-
-
-
-## Map title
-
-Specify the map title, its style and position.
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**title**([*value*])           | String        | ""          | The title text.   |
-| *map*.**titleFontSize**([*value*])   | int           | 25                             | The title font size.      |
-| *map*.**titleFill**([*value*])       | String        | "black"     | The title text color. |
-| *map*.**titlePosition**([*value*])  | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
-| *map*.**titleFontFamily**([*value*]) | String        | "Helvetica, Arial, sans-serif" | The title font.                           |
-| *map*.**titleFontWeight**([*value*]) | String        | "bold"                         | The title font weight.        |
 
 
 ## Tooltip
@@ -360,17 +405,6 @@ Specify the note text to be shown at the bottom of the map.
 | *map*.**botTxtFontFamily**([*value*])  | String | *"Helvetica, Arial, sans-serif"* | The font family.    |
 | *map*.**botTxtPadding**([*value*])     | number | *10*                             | The padding, in pixel.      |
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message.  | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
-
-
-## Map frame
-
-Specify the style of the map frame (the rectangle around the map).
-
-| Method | Type | Default value |  Description |
-| -------- | ------ | ---------- | ----------- |
-| *map*.**frameStroke**([*value*])      | Color        | "#222"    | Color of the map frame                         |
-| *map*.**frameStrokeWidth**([*value*])   | number    | 2         | The map frame stroke width              |
-
 
 
 
