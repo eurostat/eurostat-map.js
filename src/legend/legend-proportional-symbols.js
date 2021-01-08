@@ -52,7 +52,6 @@ export const legendProportionalSymbols = function (map, config) {
 
 		const d3Legend = legendSize()
 			.title(out.title)
-			.titleWidth(out.titleWidth)
 			.scale(m.classifier())
 			.cells(out.cellNb + 1)
 			.cellFilter(function (d) { if (!d.data) return false; return true; })

@@ -31,7 +31,6 @@ test('exporting map as SVG', async () => {
             .legend({
                 title: "Population change from 2015 to 2016 : in ‰)",
                 labelDecNb: 0,
-                labelDelim: "to",
             })
             .callback(function() {
                 setTimeout( ()=>{

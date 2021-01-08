@@ -26,7 +26,7 @@ export const legendChoropleth = function (map, config) {
 	out.labelOffset = 5;
 	//show no data
 	out.noData = true;
-	//no data label text
+	//no data text label
 	out.noDataText = "No data";
 
 	//override attribute values with config values

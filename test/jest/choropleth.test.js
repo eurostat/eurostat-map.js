@@ -35,8 +35,7 @@ test('choropleth with threshold scale', async () => {
             .legend({
                 title: "Population density test",
                 labelDecNb: 0,
-                labelDelim: "to",
-                }
+            }
             )
             .build();
     });

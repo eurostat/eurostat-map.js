@@ -33,7 +33,6 @@ export const legend = function (map, config) {
 	//legend title
 	out.title = "";
 	out.titleFontSize = 15;
-	out.titleWidth = 140;
 
 	/** Build legend. */
 	out.build = function () {
