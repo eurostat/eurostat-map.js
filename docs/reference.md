@@ -48,7 +48,20 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 ## Statistical data
 
-The map statistical data can be accessed with the *map*.**stat**([*value*]) method. The statistical values can be specified from the following sources.
+The map statistical data can be accessed with the *map*.**statData**([*value*]) method, which returns an object with the following methods:
+
+| Method | Description |
+| -------- | ------ | ---------- | ----------- |
+| **get**([*nutsId*]) | Return the stat value {value,status} from a nuts id. |
+| **getValue**([*nutsId*]) | Return the stat value from a nuts id. |
+| **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only. |
+| **setData**([*index*]) | Set statistical data, already indexed by nutsId. The index has a structure like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...} |
+| **getArray**() | Return all stat values as an array. This can be used to classify the values. |
+| **getUniqueValues**() | Return stat unique values. This can be used for categorical maps. |
+| **getMin**() | Get min value. |
+| **getMax**() | Get max value. |
+
+The map statistical data source can be accessed with the *map*.**stat**([*value*]) method. Several types of data sources are supported (see sections below).
 
 ### Eurostat database
 
@@ -111,7 +124,7 @@ map = eurostatmap.map(...);
 map.stat({})
 
 //specify values one by one
-map.stat().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
+map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
 //or in one time. Note that the 'status' can be specified but is not mandatory.
 .setData({
     "FR": 10,
