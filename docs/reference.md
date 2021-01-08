@@ -72,13 +72,14 @@ Example:
 ```javascript
 map = eurostatmap.map(...);
 map.stat( {
- eurostatDatasetCode: "lfst_r_lfu3rt",
- filters:{
- age: "Y20-64",
- sex: "T",
- unit: "PC",
- time: "2019"
-}});
+	eurostatDatasetCode: "lfst_r_lfu3rt",
+	filters:{
+		age: "Y20-64",
+		sex: "T",
+		unit: "PC",
+		time: "2019"
+	}
+});
 ```
 
 | Parameter | Type | Default value | Description |
@@ -97,11 +98,10 @@ Example:
 ```javascript
 map = eurostatmap.map(...);
 map.stat( {
- csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv",
- geoCol: "NUTS_ID_2013",
- valueCol: "urban_rural"
- }
-);
+	csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv",
+	geoCol: "NUTS_ID_2013",
+	valueCol: "urban_rural"
+});
 ```
 
 | Parameter | Type | Default value | Description |
@@ -119,13 +119,15 @@ Example:
 
 ```javascript
 map = eurostatmap.map(...);
+
 //specify values one by one
 map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
+
 //or in one time. Note that the 'status' can be specified but is not mandatory.
-.setData({
- "FR": 10,
- "DE": {value:7,status:"e"},
- "UK": 12,
+map.statData()..setData({
+	"FR": 10,
+	"DE": {value:7,status:"e"},
+	"UK": 12,
 })
 ```
 
@@ -137,13 +139,14 @@ Example:
 
 ```javascript
 eurostatmap.map("ch")
-.title("Population in Europe")
-.stat( { eurostatDatasetCode:"demo_r_d3dens" } )
-.classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-.unitText("inhab./km²")
-.tooltipShowFlags(false)
-.legend({ noData:false, labelDecNb:0, x:15, y:160, })
-.build();
+	.title("Population in Europe")
+	.stat( { eurostatDatasetCode:"demo_r_d3dens" } )
+	.classifMethod("threshold")
+	.threshold([50, 75, 100, 150, 300, 850])
+	.unitText("inhab./km²")
+	.tooltipShowFlags(false)
+	.legend({ noData:false, labelDecNb:0, x:15, y:160, })
+	.build();
 ```
 
 | Method | Type | Default value | Description |
@@ -219,7 +222,13 @@ A categorical map shows areas according to categories (or discrete values). Here
 Example:
 
 ```javascript
-//TODO
+eurostatmap.map("ct")
+   .NUTSyear(2013)
+   .nutsLvl(3)
+   .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
+   .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+   .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
+   .build();
 ```
 
 | Method | Type | Default value | Description |
