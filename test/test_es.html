@@ -37,16 +37,13 @@
                 insets: [{ geo:"IC", pixSize:2900, width:200, height:90, title:"Canary islands", titleFontSize:16, titleFontWeight:"" }],
                 insetBoxPosition: [335,345],
                 legend: { labelDecNb:1, x:13, y:60, boxOpacity:0, boxPadding:7, title:"Rate (%)", noData: false, },
+                callback: function() {
+                    //set title with date
+                    map.title(map.title() + " in " + map.getTime());
+                },
             })
             .colorFun(d3.interpolateBlues)
             .build();
-
-            //set title with date
-            //TODO make callback mechanism for this kind of actions to be launchad after the map build is complete
-            setTimeout(() => {
-                if(map.getTime())
-                    map.title(map.title() + " in " + map.getTime());
-            }, 2000)
 
     </script>
 </body>

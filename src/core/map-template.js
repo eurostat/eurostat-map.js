@@ -525,7 +525,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
-		//copy template attributes
+		//copy stat map attributes/methods
 		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
