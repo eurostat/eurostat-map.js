@@ -93,8 +93,8 @@ export const statData = function (config) {
 	 * @param {*} nutsLvl 
 	 * @param {*} callback 
 	 */
-	out.retrieveFromRemote = function (nutsLvl, callback) {
-		if (out.eurostatDatasetCode_) updateEurobase(nutsLvl, callback);
+	out.retrieveFromRemote = function (nutsLvl, lang, callback) {
+		if (out.eurostatDatasetCode_) updateEurobase(nutsLvl, lang, callback);
 		else if (out.csvURL_) updateCSV(callback);
 		return out;
 	}
@@ -120,7 +120,7 @@ export const statData = function (config) {
 	/**
 	 * Return promise for Eurobase/jsonstat data.
 	 */
-	const getEurobasePromise = function(nutsLvl) {
+	const getEurobasePromise = function(nutsLvl, lang) {
 		//set precision
 		out.filters_["precision"] = out.precision_;
 		//select only required geo groups, depending on the specified nuts level
@@ -129,15 +129,15 @@ export const statData = function (config) {
 		out.filters_["filterNonGeo"] = 1;
 
 		//retrieve stat data from Eurostat API
-		return json(getEstatDataURL(out.eurostatDatasetCode_, out.filters_))
+		return json(getEstatDataURL(out.eurostatDatasetCode_, out.filters_, lang))
 	}
 
 	//for eurobase statistical data to retrieve from Eurostat API
-	const updateEurobase = function (nutsLvl, callback) {
+	const updateEurobase = function (nutsLvl, lang, callback) {
 		//erase previous data
 		_data_ = null;
 
-		getEurobasePromise(nutsLvl).then(
+		getEurobasePromise(nutsLvl, lang).then(
 			function (data___) {
 
 				//decode stat data

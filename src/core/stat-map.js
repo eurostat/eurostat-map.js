@@ -23,7 +23,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	//test for no data case
 	out.noDataText_ = "No data available";
-	//langage - TODO not used? Use it in stat-data ?
+	//langage (currently used only for eurostat data API)
 	out.lg_ = "en";
 	//transition time for rendering
 	out.transitionDuration_ = 800;
@@ -136,7 +136,7 @@ export const statMap = function (config, withCenterPoints) {
 		//build stat data object from stat configuration
 		out.statData_ = sd.statData(out.stat());
 
-		out.statData().retrieveFromRemote(out.nutsLvl(), ()=>{
+		out.statData().retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out.isGeoReady()) return;
 			out.updateStatValues();
