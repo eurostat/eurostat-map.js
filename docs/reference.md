@@ -22,7 +22,7 @@ Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``
 
 The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
-It is also possible to specify the map parameters as an object: ``let map = eurostatmap.map( mapType, { param1: v1, param2: v2} );``. It is equivalent to: ``let map = eurostatmap.map( mapType ).param1(v1).param2(v2);`` 
+It is also possible to specify the map parameters as an object: ``let map = eurostatmap.map( mapType, { param1: v1, param2: v2} );``. This is equivalent to: ``let map = eurostatmap.map( mapType ).param1(v1).param2(v2);`` 
 
 ## Map definition
 
@@ -54,7 +54,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 The map statistical data can be accessed with the *map*.**statData**([*value*]) method, which returns an object with the following methods:
 
 | Method | Description |
-| -------- | ------ | ---------- | ----------- |
+| -------- | ------ |
 | **get**([*nutsId*]) | Return the stat value {value,status} from a nuts id. If no argument is specified, returns the entire index. |
 | **getValue**([*nutsId*]) | Return the stat value from a nuts id. |
 | **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only. |
