@@ -106,7 +106,7 @@ map.stat( {
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **csvURL** | String | undefined | The CSV file URL. |
+| **csvURL** | String | *undefined* | The CSV file URL. |
 | **geoCol** | String | *"geo"* | The CSV column with the NUTS ids. |
 | **valueCol** | String | *"value"* | The CSV column with the statistical values. |
 
@@ -208,7 +208,7 @@ In addition to [the default legend parameters](#map-legend), proportional symbol
 | -------- | ------ | ---------- | ----------- |
 | **cellNb** | int | *4* | Number of legend elements. |
 | **ascending** | String | *true* | The legend cells order. Set to false to invert. |
-| **shapePadding** | number | *5* | The distance between consecutive legend box elements |
+| **shapePadding** | number | *5* | The distance between consecutive legend elements |
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
 | **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
@@ -236,33 +236,17 @@ eurostatmap.map("ct")
 | *map*.**classToText**([*value*]) | Object | null | An object giving the legend label text depending on the class code. |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
-Legend
-	//the width of the legend box elements
-	out.shapeWidth = 13;
-	//the height of the legend box elements
-	out.shapeHeight = 15;
-	//the distance between consecutive legend box elements
-	out.shapePadding = 5;
-	//the font size of the legend label
-	out.labelFontSize = 12;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 5;
-	//show no data
-	out.noData = true;
-	//no data label text
-	out.noDataText = "No data";
+In addition to [the default legend parameters](#map-legend), categorical maps have the following specific legend parameters:
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.***legendConfig***.labelFontSize([*value*]) | int | *13* | The label font size. |
-| *map*.***legendConfig***.labelWrap([*value*]) | int | *140* | The label text wrap length, in pixel. |
-| *map*.***legendConfig***.labelDecNb([*value*]) | int | *2* | The number of decimal places to show in text labels. |
-| *map*.***legendConfig***.labelOffset([*value*]) | int | *5* | The number of pixels between the legend shape and its label, in pixel. |
-| *map*.***legendConfig***.ascending([*value*]) | String | *true* | The legend cells order. |
-| *map*.***legendConfig***.shapeWidth([*value*]) | int | *15* | The cell width (used for choropleth maps only). |
-| *map*.***legendConfig***.shapeHeight([*value*]) | int | *13* | The cell heigth (used for choropleth maps only). |
-| *map*.***legendConfig***.shapePadding([*value*]) | int | *2* | The distance between 2 cells, in pixel. |
-
+| **shapeWidth** | int | *15* | The cell width. |
+| **shapeHeight** | int | *13* | The cell heigth. |
+| **shapePadding** | number | *5* | The distance between consecutive legend elements |
+| **labelFontSize** | int | *13* | The label font size. |
+| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
+| **noData** | boolean | *true* | Show 'no data' style. |
+| **noDataText** | Text | *"No data"* | 'No data' text label. |
 
 
 ## Map title
@@ -329,7 +313,7 @@ The tooltip is the little rectangle showing information on the map feature under
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**tooltipText**([*value*]) | Function | auto | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
+| *map*.**tooltipText**([*value*]) | Function | *auto* | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
 | *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
 
@@ -386,12 +370,12 @@ Note that a map inset is built as a proper map within a map: It has all properti
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**insets**([*values*]) | List | [] | The list of insets. Each map inset is described as an object with the map inset attributes. |
+| *map*.**insets**([*values*]) | List | *[]* | The list of insets. Each map inset is described as an object with the map inset attributes. |
 | *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
-| *map*.**insetBoxPadding**([*value*]) | number | 5 | When several insets are specified within the map, the distance between the different insets. |
-| *map*.**insetBoxWidth**([*value*]) | number | 210 | The default width of the insets box, which are squared by default. |
-| *map*.**insetZoomExtent**([*value*]) | Array | [1,3] | The default zoom extent of the insets. |
-| *map*.**insetScale**([*value*]) | String | "03M" | The default scale of the insets. |
+| *map*.**insetBoxPadding**([*value*]) | number | *5* | When several insets are specified within the map, the distance between the different insets. |
+| *map*.**insetBoxWidth**([*value*]) | number | *210* | The default width of the insets box, which are squared by default. |
+| *map*.**insetZoomExtent**([*value*]) | Array | *[1,3]* | The default zoom extent of the insets. |
+| *map*.**insetScale**([*value*]) | String | *"03M"* | The default scale of the insets. |
 
 
 ## Bottom text
