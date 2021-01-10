@@ -102,7 +102,7 @@ Example:
 ```javascript
 map = eurostatmap.map(...);
 map.stat( {
-	csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv",
+	csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/urb_rur_typo.csv",
 	geoCol: "NUTS_ID_2013",
 	valueCol: "urban_rural"
 });
@@ -128,7 +128,7 @@ map = eurostatmap.map(...);
 map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
 
 //or in one time. Note that the 'status' can be specified but is not mandatory.
-map.statData()..setData({
+map.statData().setData({
 	"FR": 10,
 	"DE": {value:7,status:"e"},
 	"UK": 12,
