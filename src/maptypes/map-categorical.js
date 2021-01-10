@@ -19,11 +19,8 @@ export const map = function (config) {
 	out.classToText_ = undefined;
 	/** The color for non data regions */
 	out.noDataFillStyle_ = "darkgray";
-	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = undefined;
 	//specific tooltip text function
 	out.tooltipText_ = tooltipTextFunCat;
-
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
@@ -35,11 +32,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classToFillStyle_","classToText_","noDataFillStyle_","classifier_"]
+	["classToFillStyle_","classToText_","noDataFillStyle_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
+	//the classifier: a function which return a class number from a stat value.
+	let classifier = undefined;
 
 	//@override
 	out.updateClassification = function () {
@@ -51,7 +50,7 @@ export const map = function (config) {
 		const range = [...Array(domain.length).keys()];
 
 		//make classifier
-		out.classifier(scaleOrdinal().domain(domain).range(range));
+		classifier = scaleOrdinal().domain(domain).range(range);
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -60,7 +59,7 @@ export const map = function (config) {
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
-				return +out.classifier_(isNaN(v) ? v : +v);
+				return +classifier(isNaN(v) ? v : +v);
 		})
 
 		return out;
@@ -76,7 +75,7 @@ export const map = function (config) {
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
+				return out.classToFillStyle_[classifier.domain()[ecl]] || out.noDataFillStyle_ || "gray";
 		});
 
 		return out;
