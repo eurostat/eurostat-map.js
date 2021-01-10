@@ -64,12 +64,12 @@ export const map = function (config) {
 		//use suitable classification type
 		if (out.classifMethod_ === "quantile") {
 			//https://github.com/d3/d3-scale#quantile-scales
-			const domain = out.statData().getArray();
+			const domain = out.statData("stat").getArray();
 			const range = getA(out.clnb());
 			out.classifier(scaleQuantile().domain(domain).range(range));
 		} else if (out.classifMethod_ === "equinter") {
 			//https://github.com/d3/d3-scale#quantize-scales
-			const domain = out.statData().getArray();
+			const domain = out.statData("stat").getArray();
 			const range = getA(out.clnb());
 			out.classifier(scaleQuantize().domain([min(domain), max(domain)]).range(range));
 			if (out.makeClassifNice_) out.classifier().nice();
@@ -83,11 +83,11 @@ export const map = function (config) {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.statData().get(rg.properties.id);
+				const sv = out.statData("stat").get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
-				return +out.classifier_(+v);
+				return +out.classifier()(+v);
 			})
 
 		return out;
@@ -106,8 +106,8 @@ export const map = function (config) {
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
-				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyle()(ecl, out.clnb_);
+				if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+				return out.classToFillStyle()(ecl, out.clnb());
 			});
 
 		return out;
@@ -121,7 +121,6 @@ export const map = function (config) {
 
 	return out;
 }
-
 
 
 //build a color legend object

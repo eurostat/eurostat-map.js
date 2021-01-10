@@ -15,11 +15,26 @@ export const statMap = function (config, withCenterPoints) {
 	//build stat map from map template
 	const out = mt.mapTemplate(config, withCenterPoints);
 
-	//TODO Enable several statData. Make that a dictionary. Or array?
+
+	//statistical data
+
 	//the statistical data config
 	out.stat_ = undefined;
+	out.stat = function(v) {
+		if (!arguments.length) return out.stat_;
+		out.stat_ = v;
+		return out;
+	};
+
 	//the statistical data, retrieved from the config information
-	out.statData_ = sd.statData();
+	out.statData_ = { "stat": sd.statData() };
+	out.statData = function(k,v) {
+		if (!arguments.length) return out.statData_.stat;
+		if (!v) return out.statData_[k];
+		out.statData_[k] = v;
+		return out;
+	};
+
 
 	//test for no data case
 	out.noDataText_ = "No data available";
@@ -43,6 +58,7 @@ export const statMap = function (config, withCenterPoints) {
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
 
+
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -50,12 +66,11 @@ export const statMap = function (config, withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stat_", "statData_", "legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_", "callback_"]
+	["legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_", "callback_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
-
 
 	/**
 	 * Build a map object.
@@ -113,7 +128,7 @@ export const statMap = function (config, withCenterPoints) {
 	out.updateGeoData = function() {
 		out.updateGeoMT( ()=>{
 			//if stat data are already there, update the map with these values
-			if (!out.statData().isReady()) return;
+			if (!out.statData("stat").isReady()) return;
 			out.updateStatValues();
 			//execute callback function
 			if(out.callback()) out.callback()();
@@ -128,15 +143,15 @@ export const statMap = function (config, withCenterPoints) {
 	out.updateStatData = function() {
 
 		//case when no stat data source is specified and stat data where specified
-		if(!out.stat() && out.statData().get()) return;
+		if(!out.stat() && out.statData("stat").get()) return;
 
 		//use default data source
 		if(!out.stat()) out.stat( { eurostatDatasetCode:"demo_r_d3dens" } );
 
 		//build stat data object from stat configuration
-		out.statData_ = sd.statData(out.stat());
+		out.statData( "stat", sd.statData(out.stat()) );
 
-		out.statData().retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
+		out.statData("stat").retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out.isGeoReady()) return;
 			out.updateStatValues();
@@ -202,7 +217,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
 	*/
 	out.getTime = function () {
-		return out.statData().getTime();
+		return out.statData("stat").getTime();
 	};
 
 
@@ -327,7 +342,7 @@ function rasterize(svg) {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//case when no data available
-		const sv = map.statData().get(rg.properties.id);
+		const sv = map.statData("stat").get(rg.properties.id);
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);
 			return buf.join("");
