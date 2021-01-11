@@ -22,9 +22,6 @@ export const map = function (config) {
 	//specific tooltip text function
 	out.tooltipText_ = tooltipTextFunCat;
 
-	//override attribute values with config values
-	if(config) for (let key in ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText"]) out[key+"_"] = config[key];
-
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -35,6 +32,11 @@ export const map = function (config) {
 	["classToFillStyle_","classToText_","noDataFillStyle_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+	});
+
+	//override attribute values with config values
+	if(config) ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText"].forEach(function (key) {
+		if(config[key]!=undefined) out[key](config[key]);
 	});
 
 	//the classifier: a function which return a class number from a stat value.

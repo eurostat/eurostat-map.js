@@ -61,12 +61,6 @@ export const statMap = function (config, withCenterPoints) {
 	//legend object
 	out.legendObj_ = undefined;
 
-	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
-	//specific case for stat parameter
-	if(config && config.stat)
-		out.stat_ = config.stat.default? config.stat : {default: config.stat};
-
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -79,6 +73,10 @@ export const statMap = function (config, withCenterPoints) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
 	);
+
+	//override attribute values with config values
+	if(config) for (let key in config)
+		if(out[key] && config[key]!=undefined) out[key](config[key]);
 
 	/**
 	 * Build a map object.

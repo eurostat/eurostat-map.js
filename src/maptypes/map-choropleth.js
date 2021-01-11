@@ -32,9 +32,6 @@ export const map = function (config) {
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
-	//override attribute values with config values
-	if(config) for (let key in ["clnb","classifMethod","threshold","makeClassifNice","colorFun","classToFillStyle","noDataFillStyle"]) out[key+"_"] = config[key];
-
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -45,13 +42,16 @@ export const map = function (config) {
 	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
-		}
-	);
+		});
 
 	//override of some special getters/setters
 	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyle_ = getColorLegend(out.colorFun_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
+	//override attribute values with config values
+	if(config) ["clnb","classifMethod","threshold","makeClassifNice","colorFun","classToFillStyle","noDataFillStyle"].forEach(function (key) {
+		if(config[key]!=undefined) out[key](config[key]);
+	});
 
 	//@override
 	out.updateClassification = function () {

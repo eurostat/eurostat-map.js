@@ -101,11 +101,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
 
-
-	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
-
-
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -143,9 +138,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insets = function() {
 		if (!arguments.length) return out.insets_;
 		if (arguments.length == 1 && arguments[0] === "default") out.insets_ = "default";
+		else if (arguments.length == 1 && Array.isArray(arguments[0])) out.insets_ = arguments[0];
 		else out.insets_ = arguments;
 		return out;
 	}
+
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
