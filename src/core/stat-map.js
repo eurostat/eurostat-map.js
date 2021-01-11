@@ -22,13 +22,13 @@ export const statMap = function (config, withCenterPoints) {
 	//A map can hav several stat datasets. This is a dictionnary of all stat configuration
 	out.stat_ = { "default": undefined };
 	out.stat = function(k, v) {
-		//getter: return the default
+		//no argument: getter - return the default stat
 		if (!arguments.length) return out.stat_["default"];
-		//setter: set the config k with value v
+		//two arguments: setter - set the config k with value v
 		if(arguments.length == 2) { out.stat_[k] = v; return out; }
-		//getter: return the config k
+		//one string argument: getter - return the config k
 		if(typeof k === "string" || k instanceof String) return out.stat_[k];
-		//setter: set the dictionnary
+		//one non-string argument: setter - set the entire dictionnary
 		out.stat_ = k.default? k : { "default": k }
 		return out;
 	};
@@ -36,8 +36,11 @@ export const statMap = function (config, withCenterPoints) {
 	//the statistical data, retrieved from the config information. As a dictionnary.
 	out.statData_ = { "default": sd.statData() };
 	out.statData = function(k, v) {
+		//no argument: getter - return the default statData
 		if (!arguments.length) return out.statData_["default"];
-		if (!v) return out.statData_[k];
+		//one argument: getter
+		if (arguments.length == 1) return out.statData_[k];
+		//setter
 		out.statData_[k] = v;
 		return out;
 	};
@@ -126,6 +129,12 @@ export const statMap = function (config, withCenterPoints) {
 		return out;
 	};
 
+	/** Check if all stat datasets have been loaded */
+	const isStatDataReady = function() {
+		for(let statKey in out.stat_)
+			if (!out.statData(statKey).isReady()) return false;
+		return true;
+	}
 
 	/**
 	 * Update the map with new geo data.
@@ -133,8 +142,11 @@ export const statMap = function (config, withCenterPoints) {
 	 */
 	out.updateGeoData = function() {
 		out.updateGeoMT( ()=>{
-			//if stat data are already there, update the map with these values
-			if (!out.statData("default").isReady()) return;
+
+			//if stat datasets have not been loaded, wait again
+			if (!isStatDataReady()) return;
+
+			//proceed with map construction
 			out.updateStatValues();
 			//execute callback function
 			if(out.callback()) out.callback()();
@@ -148,22 +160,31 @@ export const statMap = function (config, withCenterPoints) {
 	 */
 	out.updateStatData = function() {
 
-		//case when no stat data source is specified and stat data where specified
-		if(!out.stat() && out.statData("default").get()) return;
+		for(let statKey in out.stat_) {
 
-		//use default data source
-		if(!out.stat()) out.stat("default", { eurostatDatasetCode:"demo_r_d3dens" } );
+			//case when no stat data source is specified and stat data where specified
+			if(!out.stat(statKey) && out.statData(statKey).get()) return;
 
-		//build stat data object from stat configuration
-		out.statData( "default", sd.statData(out.stat()) );
+			//use default data source
+			if(!out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode:"demo_r_d3dens" } );
 
-		out.statData("default").retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
-			//if geodata are already there, refresh the map with stat values
-			if (!out.isGeoReady()) return;
-			out.updateStatValues();
-			//execute callback function
-			if(out.callback()) out.callback()();
-		});
+			//build stat data object from stat configuration
+			out.statData( statKey, sd.statData(out.stat(statKey)) );
+
+			out.statData(statKey).retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
+
+				//if geodata has not been loaded, wait again
+				if (!out.isGeoReady()) return;
+				//if stat datasets have not all been loaded, wait again
+				if (!isStatDataReady()) return;
+
+				//proceed with map construction
+				out.updateStatValues();
+				//execute callback function
+				if(out.callback()) out.callback()();
+			});
+		}
+
 		return out;
 	}
 
