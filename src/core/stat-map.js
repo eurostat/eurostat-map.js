@@ -18,8 +18,8 @@ export const statMap = function (config, withCenterPoints) {
 
 	//statistical data
 
-	//the statistical data config.
-	//A map can hav several stat datasets. This is a dictionnary of all stat configuration
+	//the statistical data configuration.
+	//A map can have several stat datasets. This is a dictionnary of all stat configuration
 	out.stat_ = { "default": undefined };
 	out.stat = function(k, v) {
 		//no argument: getter - return the default stat
@@ -82,7 +82,7 @@ export const statMap = function (config, withCenterPoints) {
 		if(out[key] && config[key]!=undefined) out[key](config[key]);
 
 	/**
-	 * Build a map object.
+	 * Build the map.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */
 	out.build = function() {
@@ -120,16 +120,16 @@ export const statMap = function (config, withCenterPoints) {
 		//set tooltip text
 		out.tooltipText(out.tooltipText_);
 
-		//retrieve geo data
+		//launch geo data retrieval
 		out.updateGeoData();
 
-		//retrieve stat data
+		//launch stat data retrieval
 		out.updateStatData();
 
 		return out;
 	};
 
-	/** Check if all stat datasets have been loaded */
+	/** Check if all stat datasets have been loaded. */
 	const isStatDataReady = function() {
 		for(let statKey in out.stat_)
 			if (!out.statData(statKey).isReady()) return false;
@@ -137,7 +137,7 @@ export const statMap = function (config, withCenterPoints) {
 	}
 
 	/**
-	 * Update the map with new geo data.
+	 * Launch map geo data retrieval, and make/update the map once received.
 	 * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateGeoData = function() {
@@ -155,23 +155,25 @@ export const statMap = function (config, withCenterPoints) {
 	}
 
 	/**
-	 * Update the map with new stat data sources.
+	 * Launch map geo stat datasets retrieval, and make/update the map once received.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
 	out.updateStatData = function() {
 
 		for(let statKey in out.stat_) {
 
-			//case when no stat data source is specified and stat data where specified
+			//case when no stat data source is specified and stat data where specified programmatically
 			if(!out.stat(statKey) && out.statData(statKey).get()) return;
 
-			//use default data source
-			if(!out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode:"demo_r_d3dens" } );
+			//if no config is specified, use default data source: population density
+			if(statKey == "default" && !out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode:"demo_r_d3dens" } );
 
-			//build stat data object from stat configuration
-			out.statData( statKey, sd.statData(out.stat(statKey)) );
+			//build stat data object from stat configuration and store it
+			const stdt = sd.statData(out.stat(statKey));
+			out.statData( statKey, stdt );
 
-			out.statData(statKey).retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
+			//launch query
+			stdt.retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
 
 				//if geodata has not been loaded, wait again
 				if (!out.isGeoReady()) return;
@@ -191,7 +193,7 @@ export const statMap = function (config, withCenterPoints) {
 
 
 	/**
-	 * Update the map with new stat data.
+	 * Make/update the map with new stat data.
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
 	 * If the stat data sources have changed, call *updateStatData* instead.
 	 */
@@ -209,7 +211,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	/**
 	 * Abstract method.
-	 * Update the map after classification attributes have been changed.
+	 * Make/update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	 */
 	out.updateClassification = function() {
@@ -220,7 +222,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	/**
 	 * Abstract method.
-	 * Update the map after styling attributes have been changed.
+	 * Make/update the map after styling attributes have been changed.
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	 */
 	out.updateStyle = function() {
