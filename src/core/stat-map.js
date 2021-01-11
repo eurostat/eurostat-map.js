@@ -18,17 +18,22 @@ export const statMap = function (config, withCenterPoints) {
 
 	//statistical data
 
-	//the statistical data config
+	//the statistical data config.
+	//A map can hav several stat datasets. This is a dictionnary of all stat configuration
 	out.stat_ = { "default": undefined };
 	out.stat = function(k, v) {
+		//getter: return the default
 		if (!arguments.length) return out.stat_["default"];
+		//setter: set the config k with value v
 		if(arguments.length == 2) { out.stat_[k] = v; return out; }
+		//getter: return the config k
 		if(typeof k === "string" || k instanceof String) return out.stat_[k];
+		//setter: set the dictionnary
 		out.stat_ = k.default? k : { "default": k }
 		return out;
 	};
 
-	//the statistical data, retrieved from the config information
+	//the statistical data, retrieved from the config information. As a dictionnary.
 	out.statData_ = { "default": sd.statData() };
 	out.statData = function(k, v) {
 		if (!arguments.length) return out.statData_["default"];
