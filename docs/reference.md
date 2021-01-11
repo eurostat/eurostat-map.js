@@ -314,8 +314,10 @@ map = eurostatmap.map(...)
 | **boxFill** | color | *"#eeeeee"* | The legend box fill style. |
 | **boxOpacity** | number | *0.5* | The legend box opacity, from 0 to 1. |
 | **fontFamily** | font | *"Helvetica, Arial, sans-serif"* | The legend font family. |
+| **fontFill** | Color | *"black"* | The legend font color. |
 | **title** | Text | *""* | The legend title. |
 | **titleFontSize** | int | *15* | The legend title font size. |
+| **titleFontWeight** | String | *"normal"* | The legend title font weight. |
 
 
 
