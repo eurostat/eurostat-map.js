@@ -175,9 +175,12 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 | **ascending** | String | *true* | The legend cells order. Set to false to invert. |
 | **shapeWidth** | int | *15* | The cell width. |
 | **shapeHeight** | int | *13* | The cell heigth. |
+| **sepLineLength** | int | *17* | The separation line length. |
+| **sepLineStroke** | int | *"black"* | The separation line color. |
+| **sepLineStrokeWidth** | int | *1* | The separation line width. |
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
-| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
+| **labelOffset** | int | *3* | The distance between the legend box elements to the corresponding text label. |
 | **noData** | boolean | *true* | Show 'no data' style. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
