@@ -23,7 +23,7 @@ export const map = function (config) {
 	out.tooltipText_ = tooltipTextFunCat;
 
 	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
+	if(config) for (let key in ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText"]) out[key+"_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -44,7 +44,7 @@ export const map = function (config) {
 	out.updateClassification = function () {
 
 		//get domain (unique values)
-		const domain = out.statData("stat").getUniqueValues();
+		const domain = out.statData().getUniqueValues();
 
 		//get range [0,1,2,3,...,domain.length-1]
 		const range = [...Array(domain.length).keys()];
@@ -55,7 +55,7 @@ export const map = function (config) {
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
 			.attr("ecl", function (rg) {
-				const sv = out.statData("stat").get(rg.properties.id);
+				const sv = out.statData().get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
@@ -103,7 +103,7 @@ const tooltipTextFunCat = function (rg, map) {
 	//region name
 	buf.push("<b>" + rg.properties.na + "</b><br>");
 	//get stat value
-	const sv = map.statData("stat").get(rg.properties.id);
+	const sv = map.statData().get(rg.properties.id);
 	//case when no data available
 	if (!sv || (sv.value != 0 && !sv.value)) {
 		buf.push(map.noDataText_);

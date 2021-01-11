@@ -29,7 +29,7 @@ export const map = function (config) {
 	out.classifier_ = undefined;
 
 	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
+	if(config) for (let key in ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape"]) out[key+"_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -48,7 +48,7 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 		//get max value
-		const maxValue = out.statData("stat").getMax();
+		const maxValue = out.statData().getMax();
 		//define classifier
 		if (out.psShape_ == "rectangle") {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
@@ -132,7 +132,7 @@ export const map = function (config) {
 
 
 			path.attr("d", rg => {
-				const sv = out.statData("stat").get(rg.properties.id);
+				const sv = out.statData().get(rg.properties.id);
 				let size;
 				if (!sv || !sv.value) {
 					size = 0;

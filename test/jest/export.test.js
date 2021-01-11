@@ -24,7 +24,7 @@ test('exporting map as SVG', async () => {
             .title("Population in Europe")
             .width(600)
             .scale("20M")
-            .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
+            .stat( { default: { eurostatDatasetCode:"demo_r_d3dens" }} )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)

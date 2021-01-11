@@ -19,17 +19,19 @@ export const statMap = function (config, withCenterPoints) {
 	//statistical data
 
 	//the statistical data config
-	out.stat_ = undefined;
-	out.stat = function(v) {
-		if (!arguments.length) return out.stat_;
-		out.stat_ = v;
+	out.stat_ = { "default": undefined };
+	out.stat = function(k, v) {
+		if (!arguments.length) return out.stat_["default"];
+		if(arguments.length == 2) { out.stat_[k] = v; return out; }
+		if(typeof k === "string" || k instanceof String) return out.stat_[k];
+		out.stat_ = k.default? k : { "default": k }
 		return out;
 	};
 
 	//the statistical data, retrieved from the config information
-	out.statData_ = { "stat": sd.statData() };
-	out.statData = function(k,v) {
-		if (!arguments.length) return out.statData_.stat;
+	out.statData_ = { "default": sd.statData() };
+	out.statData = function(k, v) {
+		if (!arguments.length) return out.statData_["default"];
 		if (!v) return out.statData_[k];
 		out.statData_[k] = v;
 		return out;
@@ -54,10 +56,11 @@ export const statMap = function (config, withCenterPoints) {
 	//legend object
 	out.legendObj_ = undefined;
 
-
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
-
+	//specific case for stat parameter
+	if(config && config.stat)
+		out.stat_ = config.stat.default? config.stat : {default: config.stat};
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -128,7 +131,7 @@ export const statMap = function (config, withCenterPoints) {
 	out.updateGeoData = function() {
 		out.updateGeoMT( ()=>{
 			//if stat data are already there, update the map with these values
-			if (!out.statData("stat").isReady()) return;
+			if (!out.statData("default").isReady()) return;
 			out.updateStatValues();
 			//execute callback function
 			if(out.callback()) out.callback()();
@@ -143,15 +146,15 @@ export const statMap = function (config, withCenterPoints) {
 	out.updateStatData = function() {
 
 		//case when no stat data source is specified and stat data where specified
-		if(!out.stat() && out.statData("stat").get()) return;
+		if(!out.stat() && out.statData("default").get()) return;
 
 		//use default data source
-		if(!out.stat()) out.stat( { eurostatDatasetCode:"demo_r_d3dens" } );
+		if(!out.stat()) out.stat("default", { eurostatDatasetCode:"demo_r_d3dens" } );
 
 		//build stat data object from stat configuration
-		out.statData( "stat", sd.statData(out.stat()) );
+		out.statData( "default", sd.statData(out.stat()) );
 
-		out.statData("stat").retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
+		out.statData("default").retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
 			//if geodata are already there, refresh the map with stat values
 			if (!out.isGeoReady()) return;
 			out.updateStatValues();
@@ -217,7 +220,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * This method is useful for example when the data retrieved is the freshest, and one wants to know what this date is, for example to display it in the map title.
 	*/
 	out.getTime = function () {
-		return out.statData("stat").getTime();
+		return out.statData("default").getTime();
 	};
 
 
@@ -342,7 +345,7 @@ function rasterize(svg) {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//case when no data available
-		const sv = map.statData("stat").get(rg.properties.id);
+		const sv = map.statData("default").get(rg.properties.id);
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);
 			return buf.join("");
