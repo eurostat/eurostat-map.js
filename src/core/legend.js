@@ -29,6 +29,7 @@ export const legend = function (map, config) {
 
 	//font
 	out.fontFamily = "Helvetica, Arial, sans-serif";
+	//TODO add parameter for fontFill
 
 	//legend title
 	out.title = "";

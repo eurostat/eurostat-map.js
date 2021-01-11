@@ -83,6 +83,7 @@ export const legendChoropleth = function (map, config) {
 
 			//separation line
 			if(i>0)
+				//TODO: add as parameters: sepLineStroke (darkgray), sepLineStrokeWidth (1), sepLineLength (shapeWidth+3)
 				lgg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.shapeWidth).attr("y2", y)
 				.attr("stroke", "black").attr("stroke-width", 1);
 
