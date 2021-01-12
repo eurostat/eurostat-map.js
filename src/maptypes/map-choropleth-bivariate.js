@@ -20,6 +20,15 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
+	//The color function for variable 1 (from [0,1] to color)
+	out.colorFun1_ = dsc.interpolateBlues;
+	//The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
+	out.exponant1_ = 0.15;
+	//The color function for variable 2 (from [0,1] to color)
+	out.colorFun2_ = dsc.interpolateReds;
+	//The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
+	out.exponant2_ = 0.25;
+
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
@@ -33,59 +42,18 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["noDataFillStyle_", "classifier_"]
+	["colorFun1_", "exponant1_", "colorFun2_", "exponant2_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["noDataFillStyle"].forEach(function (key) {
+	if(config) ["colorFun1", "exponant1", "colorFun2", "exponant2", "noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
 	//@override
 	out.updateClassification = function () {
-
-		/*/simply return the array [0,1,2,3,...,nb-1]
-		const getA = function (nb) { return [...Array(nb).keys()]; }
-
-		//TODO: make it possible to use continuous color ramps?
-
-		//use suitable classification type
-		if (out.classifMethod_ === "quantile") {
-			//https://github.com/d3/d3-scale#quantile-scales
-			const domain = out.statData().getArray();
-			const range = getA(out.clnb());
-			out.classifier(scaleQuantile().domain(domain).range(range));
-		} else if (out.classifMethod_ === "equinter") {
-			//https://github.com/d3/d3-scale#quantize-scales
-			const domain = out.statData().getArray();
-			const range = getA(out.clnb());
-			out.classifier(scaleQuantize().domain([min(domain), max(domain)]).range(range));
-			if (out.makeClassifNice_) out.classifier().nice();
-		} else if (out.classifMethod_ === "threshold") {
-			//https://github.com/d3/d3-scale#threshold-scales
-			out.clnb(out.threshold().length + 1);
-			const range = getA(out.clnb());
-			out.classifier(scaleThreshold().domain(out.threshold()).range(range));
-		}
-
-		//assign class to nuts regions, based on their value
-		out.svg().selectAll("path.nutsrg")
-			.attr("ecl", function (rg) {
-				const sv = out.statData().get(rg.properties.id);
-				if (!sv) return "nd";
-				const v = sv.value;
-				if (v != 0 && !v) return "nd";
-				return +out.classifier()(+v);
-			})
-*/
-		return out;
-	};
-
-
-	//@override
-	out.updateStyle = function () {
 
 		//get stat data
 		const s1 = out.statData("v1");
@@ -93,23 +61,33 @@ export const map = function (config) {
 
 		//define bivariate scale
 		const scale = scaleBivariate(
-			[s1.getMin(), s1.getMax()], dsc.interpolateBlues, 0.15,
-			[s2.getMin(), s2.getMax()], dsc.interpolateReds, 0.25
+			[s1.getMin(), s1.getMax()], out.colorFun1(), out.exponant1(),
+			[s2.getMin(), s2.getMax()], out.colorFun2(), out.exponant2(),
 		);
+
+		//store as classifier
+		out.classifier(scale);
+
+		return out;
+	};
+
+
+	//@override
+	out.updateStyle = function () {
 
 		//apply colors
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
-				const sv1 = s1.getValue(rg.properties.id);
+				const sv1 = out.statData("v1").getValue(rg.properties.id);
 				if(!sv1) return out.noDataFillStyle_;
-				const sv2 = s2.getValue(rg.properties.id);
+				const sv2 = out.statData("v2").getValue(rg.properties.id);
 				if(!sv2) return out.noDataFillStyle_;
-				return scale(sv1, sv2)
+				return out.classifier()(sv1, sv2)
 			})
 		return out;
-	};
 
+	};
 
 	/*/@override
 	out.getLegendConstructor = function() {
