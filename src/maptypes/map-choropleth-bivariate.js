@@ -120,11 +120,22 @@ export const map = function (config) {
 }
 
 
+/**
+ * Return a bivariate classifier.
+ * 
+ * @param {*} domain1 The [min,max] interval of variable 1
+ * @param {*} colorFun1 The color function for variable 1 (from [0,1] to color)
+ * @param {*} exponant1 The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
+ * @param {*} domain2 The [min,max] interval of variable 2
+ * @param {*} colorFun2 The color function for variable 2 (from [0,1] to color)
+ * @param {*} exponant2 The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
+ */
 const scaleBivariate = function(domain1, colorFun1, exponant1, domain2, colorFun2, exponant2) {
 
 	//make color scales
 	const s1 = scalePow().exponent(exponant1).domain(domain1)
 	const s2 = scalePow().exponent(exponant2).domain(domain2)
+	//TODO what happen for negative stat values?
 
 	return function(v1, v2) {
 
