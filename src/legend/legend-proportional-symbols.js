@@ -74,8 +74,8 @@ export const legendProportionalSymbols = function (map, config) {
 				let drawRectangle = (context, size) => {
 					context.moveTo(0, 0)
 					context.lineTo(0, size / 100);
-					context.lineTo(10, size / 100);
-					context.lineTo(10, 0);
+					context.lineTo(out.map.psWidth_, size / 100);
+					context.lineTo(out.map.psWidth_, 0);
 					context.lineTo(0, 0);
 					context.closePath();
 				}
@@ -85,7 +85,6 @@ export const legendProportionalSymbols = function (map, config) {
 				let symbolType = getSymbolType(out.map.psShape_);
 				shape = symbol().type(symbolType);
 			}
-
 
 			let values = [
 				domain[1] / 10,
@@ -108,9 +107,7 @@ export const legendProportionalSymbols = function (map, config) {
 
 
 			d3Legend = legendSymbol()
-				.scale(symbolScale)
-				.labelFormat(".2s")
-				;
+				.scale(symbolScale);
 
 		}
 
@@ -126,7 +123,16 @@ export const legendProportionalSymbols = function (map, config) {
 			//.shape("circle") //"rect", "circle", or "line"
 			.shapePadding(out.shapePadding)
 			//.classPrefix("prefix")
-			.labels(function (d) { return d.generatedLabels[d.i] })
+			.labels(function (d) {
+				//for some reason formatting is not applied to legendSymbol legends
+				let f = out.format || format(",." + out.labelDecNb + "r");
+				if (out.map.psShape_ == "bar" || out.map.psShape_ == "custom") {
+					return f(d.generatedLabels[d.i])
+				} else {
+					return d.generatedLabels[d.i]
+				}
+
+			})
 			//.labelAlign("middle") //?
 			.labelFormat(out.format || format(",." + out.labelDecNb + "r"))
 			.labelOffset(out.labelOffset)
