@@ -25,7 +25,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//geographical focus
 	out.nutsLvl_ = 3;
-	out.NUTSyear_ = 2016;
+	out.nutsYear_ = 2016;
 	out.geo_ = "EUR";
 	out.proj_ = "3035";
 	out.scale_ = "20M"; //TODO choose automatically, depending on pixSize ?
@@ -101,11 +101,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetZoomExtent_ = [1,3];
 	out.insetScale_ = "03M";
 
-
-	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
-
-
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -143,9 +138,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insets = function() {
 		if (!arguments.length) return out.insets_;
 		if (arguments.length == 1 && arguments[0] === "default") out.insets_ = "default";
+		else if (arguments.length == 1 && Array.isArray(arguments[0])) out.insets_ = arguments[0];
 		else out.insets_ = arguments;
 		return out;
 	}
+
 
 	/**
 	 * geo data, as the raw topojson object returned by nuts2json API
@@ -167,7 +164,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.getGeoDataPromise = function() {
 		const buf = [];
 		buf.push(out.nuts2jsonBaseURL_);
-		buf.push(out.NUTSyear_);
+		buf.push(out.nutsYear_);
 		if(out.geo_ != "EUR") buf.push("/" + this.geo_ );
 		buf.push("/"); buf.push(out.proj_);
 		buf.push("/"); buf.push(out.scale_);
@@ -523,7 +520,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		mt.tooltipText_ = null;*/
 
 		//copy template attributes
-		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods

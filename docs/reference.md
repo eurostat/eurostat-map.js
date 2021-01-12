@@ -42,7 +42,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
-| *map*.**NUTSyear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
+| *map*.**nutsYear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
 | *map*.**geo**([*value*]) | String | *"EUR"* | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets). |
 | *map*.**proj**([*value*]) | String | *"3035"* | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory. |
 | *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
@@ -175,9 +175,12 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 | **ascending** | String | *true* | The legend cells order. Set to false to invert. |
 | **shapeWidth** | int | *15* | The cell width. |
 | **shapeHeight** | int | *13* | The cell heigth. |
+| **sepLineLength** | int | *17* | The separation line length. |
+| **sepLineStroke** | int | *"black"* | The separation line color. |
+| **sepLineStrokeWidth** | int | *1* | The separation line width. |
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
-| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
+| **labelOffset** | int | *3* | The distance between the legend box elements to the corresponding text label. |
 | **noData** | boolean | *true* | Show 'no data' style. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
@@ -234,7 +237,7 @@ Example:
 
 ```javascript
 eurostatmap.map("ct")
-	.NUTSyear(2013)
+	.nutsYear(2013)
 	.nutsLvl(3)
 	.stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
 	.classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
@@ -314,8 +317,10 @@ map = eurostatmap.map(...)
 | **boxFill** | color | *"#eeeeee"* | The legend box fill style. |
 | **boxOpacity** | number | *0.5* | The legend box opacity, from 0 to 1. |
 | **fontFamily** | font | *"Helvetica, Arial, sans-serif"* | The legend font family. |
+| **fontFill** | Color | *"black"* | The legend font color. |
 | **title** | Text | *""* | The legend title. |
 | **titleFontSize** | int | *15* | The legend title font size. |
+| **titleFontWeight** | String | *"normal"* | The legend title font weight. |
 
 
 

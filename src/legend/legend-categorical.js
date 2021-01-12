@@ -45,7 +45,9 @@ export const legendCategorical = function (map, config) {
 		//draw title
 		if(out.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-			.text(out.title).style("font-size", out.titleFontSize);
+			.text(out.title)
+			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
@@ -92,7 +94,7 @@ export const legendCategorical = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text( m.classToText()[ecl_] )
-			.style("font-size", out.labelFontSize)
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 			.on("mouseover", mouseoverF)
 			.on("mouseout", mouseoutF)
 
@@ -123,7 +125,7 @@ export const legendCategorical = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize);
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 
 		//set legend box dimensions

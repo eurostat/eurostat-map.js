@@ -14,16 +14,26 @@ export const legendChoropleth = function (map, config) {
 
 	//the order of the legend elements. Set to false to invert.
 	out.ascending = true;
+
 	//the width of the legend box elements
 	out.shapeWidth = 13;
 	//the height of the legend box elements
 	out.shapeHeight = 15;
+
+	//the separation line length
+	out.sepLineLength = 17;
+	//the separation line color
+	out.sepLineStroke = "black";
+	//the separation line width
+	out.sepLineStrokeWidth = 1;
+
 	//the font size of the legend label
 	out.labelFontSize = 12;
 	//the number of decimal for the legend labels
 	out.labelDecNb = 2;
 	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 5;
+	out.labelOffset = 3;
+
 	//show no data
 	out.noData = true;
 	//no data text label
@@ -48,7 +58,9 @@ export const legendChoropleth = function (map, config) {
 		//draw title
 		if(out.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-			.text(out.title).style("font-size", out.titleFontSize);
+			.text(out.title)
+			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
@@ -83,15 +95,15 @@ export const legendChoropleth = function (map, config) {
 
 			//separation line
 			if(i>0)
-				lgg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.shapeWidth).attr("y2", y)
-				.attr("stroke", "black").attr("stroke-width", 1);
+				lgg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.sepLineLength).attr("y2", y)
+				.attr("stroke", out.sepLineStroke).attr("stroke-width", out.sepLineStrokeWidth);
 
 			//label
 			if(i<m.clnb()-1)
-				lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight)
+				lgg.append("text").attr("x", out.boxPadding+Math.max(out.shapeWidth, out.sepLineLength)+out.labelOffset).attr("y", y+out.shapeHeight)
 				.attr("alignment-baseline", "middle")
 				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
-				.style("font-size", out.labelFontSize);
+				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 
 		//'no data' legend box
@@ -119,7 +131,7 @@ export const legendChoropleth = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize);
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 
 		//set legend box dimensions
