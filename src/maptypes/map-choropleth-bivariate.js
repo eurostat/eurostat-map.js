@@ -1,6 +1,6 @@
-//import { select } from "d3-selection";
+import { select } from "d3-selection";
 //import { min, max } from "d3-array";
-//import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
+import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 //import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 //import * as lgch from '../legend/legend-choropleth';
@@ -31,10 +31,10 @@ export const map = function (config) {
 	//the color function [0,1] -> color
 	out.colorFun_ = interpolateYlOrBr;
 	//a function returning the color from the class i
-	out.classToFillStyle_ = undefined;
+	out.classToFillStyle_ = undefined;*/
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
-	//the classifier: a function which return a class number from a stat value.
+	/*/the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 */
 
@@ -102,20 +102,34 @@ export const map = function (config) {
 
 	//@override
 	out.updateStyle = function () {
-/*
+
 		//define style per class
-		if(!out.classToFillStyle())
-			out.classToFillStyle( getColorLegend(out.colorFun()) )
+		//if(!out.classToFillStyle())
+		//	out.classToFillStyle( getColorLegend(out.colorFun()) )
+
+		const colorScale = scaleThreshold()
+		.domain( [ .4, .5, .6 ] )
+		.range( [ "#ca0020", "#f4a582", "#92c5de", "#0571b0" ] );
+
+		var grayScale = scaleThreshold()
+		.domain( [ 50000, 100000, 500000, 1000000 ] )
+		.range( [ .15, .30, .60, .90, 1 ] );
 
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
+			.attr("fill-opacity", 1)
 			.transition().duration(out.transitionDuration())
-			.attr("fill", function () {
-				const ecl = select(this).attr("ecl");
-				if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-				return out.classToFillStyle()(ecl, out.clnb());
-			});
-*/
+			.attr("fill", function (rg) {
+				const sv = out.statData("v2").getValue(rg.properties.id);
+				if(!sv) return out.noDataFillStyle_;
+				return colorScale(sv)
+			})
+			.transition().duration(out.transitionDuration())
+			.attr("fill-opacity", function (rg) {
+				const sv = out.statData("v1").getValue(rg.properties.id);
+				if(!sv) return out.noDataFillStyle_;
+				return grayScale(sv)
+			})
 		return out;
 	};
 

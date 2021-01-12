@@ -12,16 +12,20 @@
     <script>
         const map = eurostatmap
             .map("chbi")
-            .nutsLvl(2)
-            .NUTSyear(2016)
-            .title("Value-by-alpha map test")
-            .insets("default")
+            .nutsLvl(3)
+            .nutsYear(2016)
+            .stat("v1", { eurostatDatasetCode:"nama_10r_3gva", filters:{ nace_r2: "TOTAL", currency: "MIO_EUR", time: "2017" } })
+            .stat("v2", { eurostatDatasetCode:"nama_10r_3gva", filters:{ nace_r2: "A", currency: "MIO_EUR", time: "2017" } })
+            .title("Bivariate choropleth map test")
+            //.insets("default")
             .scale("60M")
             //.classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             //.unitText("people/km²")
             .build();
-/*
+
+            /*
 agr_r_animal
+nuts 2
 UNIT : "THS_HD"
 ANIMALS : "A2000", "A2300", "A2400", "A3100", "A4100", "A4200"
 "bovine", "cows", "buffalo", "pig", "sheep", "goat"
