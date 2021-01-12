@@ -21,13 +21,13 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	//The color function for variable 1 (from [0,1] to color)
-	out.colorFun1_ = (t)=>"black"//alpha(255,255,255)//dsc.interpolateBlues;
+	out.colorFun1_ = dsc.interpolateGreys;
 	//The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	out.exponant1_ = 0.15;
+	out.exponant1_ = 1;
 	//The color function for variable 2 (from [0,1] to color)
-	out.colorFun2_ = dsc.interpolateReds;
+	out.colorFun2_ = dsc.interpolateYlOrRd;
 	//The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	out.exponant2_ = 0.25;
+	out.exponant2_ = 1;
 
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
