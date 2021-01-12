@@ -12,13 +12,22 @@
     <script>
         const map = eurostatmap
             .map("chbi")
+            .nutsLvl(2)
+            .NUTSyear(2016)
             .title("Value-by-alpha map test")
             .insets("default")
             .scale("60M")
             //.classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             //.unitText("people/km²")
             .build();
-    </script>
+/*
+agr_r_animal
+UNIT : "THS_HD"
+ANIMALS : "A2000", "A2300", "A2400", "A3100", "A4100", "A4200"
+"bovine", "cows", "buffalo", "pig", "sheep", "goat"
+*/
+
+</script>
 </body>
 
 </html>
