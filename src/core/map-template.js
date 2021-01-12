@@ -25,7 +25,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//geographical focus
 	out.nutsLvl_ = 3;
-	out.NUTSyear_ = 2016;
+	out.nutsYear_ = 2016;
 	out.geo_ = "EUR";
 	out.proj_ = "3035";
 	out.scale_ = "20M"; //TODO choose automatically, depending on pixSize ?
@@ -164,7 +164,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.getGeoDataPromise = function() {
 		const buf = [];
 		buf.push(out.nuts2jsonBaseURL_);
-		buf.push(out.NUTSyear_);
+		buf.push(out.nutsYear_);
 		if(out.geo_ != "EUR") buf.push("/" + this.geo_ );
 		buf.push("/"); buf.push(out.proj_);
 		buf.push("/"); buf.push(out.scale_);
@@ -520,7 +520,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		mt.tooltipText_ = null;*/
 
 		//copy template attributes
-		["nutsLvl_", "NUTSyear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods
