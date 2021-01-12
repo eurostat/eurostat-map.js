@@ -13,7 +13,7 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config, true);
 
-	out.psShape_ = "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
+	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 0.8; //for circle
@@ -29,7 +29,7 @@ export const map = function (config) {
 	out.classifier_ = undefined;
 
 	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
+	if (config) for (let key in config) out[key + "_"] = config[key];
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -50,7 +50,7 @@ export const map = function (config) {
 		//get max value
 		const maxValue = out.statData().getMax();
 		//define classifier
-		if (out.psShape_ == "rectangle") {
+		if (out.psShape_ == "bar") {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
 		} else {
 			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]));
@@ -76,11 +76,11 @@ export const map = function (config) {
 
 				.transition().duration(out.transitionDuration())
 				.attr("r", function (rg) {
-					const sv = out.getStat(rg.properties.id);
+					const sv = out.statData().get(rg.properties.id);
 					if (!sv || !sv.value) return 0;
 					return out.classifier()(+sv.value);
 				})
-		} else if (out.psShape_ == "rectangle") {
+		} else if (out.psShape_ == "bar") {
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
 
@@ -90,7 +90,7 @@ export const map = function (config) {
 				.style("stroke-width", out.psStrokeWidth())
 				.attr("width", out.psWidth_)
 				.attr("height", function (rg) {
-					const sv = out.getStat(rg.properties.id);
+					const sv = out.statData().get(rg.properties.id);
 					if (!sv || !sv.value) {
 						return 0;
 					}
@@ -157,7 +157,7 @@ export const map = function (config) {
 
 
 	//@override
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		return lgps.legendProportionalSymbols;
 	}
 
