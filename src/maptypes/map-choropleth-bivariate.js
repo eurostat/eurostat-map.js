@@ -6,10 +6,12 @@ import * as smap from '../core/stat-map';
 //import * as lgch from '../legend/legend-choropleth';
 
 /**
- * Returns a value-by-alpha map.
+ * Return a bivariate choropleth map.
  * See:
  * - https://gistbok.ucgis.org/bok-topics/multivariate-mapping
  * - http://andywoodruff.com/blog/how-to-make-a-value-by-alpha-map/ and https://bl.ocks.org/awoodruff/857b5b0bf170b236787b
+ * - https://www.slideshare.net/ESRI/arcgis-extensions?next_slideshow=1
+ * - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3173776/
  * 
  * @param {*} config 
  */

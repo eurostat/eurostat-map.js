@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+        const map = eurostatmap
+            .map("chbi")
+            .title("Value-by-alpha map test")
+            .insets("default")
+            .scale("60M")
+            //.classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
+            //.unitText("people/km²")
+            .build();
+    </script>
+</body>
+
+</html>

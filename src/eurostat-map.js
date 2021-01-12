@@ -1,7 +1,7 @@
 import * as mapch from './maptypes/map-choropleth';
 import * as mapps from './maptypes/map-proportional-symbols';
 import * as mapct from './maptypes/map-categorical';
-import * as mapvba from './maptypes/map-value-by-alpha';
+import * as mapchbi from './maptypes/map-choropleth-bivariate';
 import * as mt from './core/stat-map';
 
 /**
@@ -19,7 +19,7 @@ import * as mt from './core/stat-map';
 	//proportionnal symbols map
 	if(type == "ps") return mapps.map(config);
 	//value-by-alha map
-	if(type == "vba") return mapvba.map(config);
+	if(type == "chbi") return mapchbi.map(config);
 	//add new map types here
 	//if(type == "XX") return mapXX.map(config);
 
