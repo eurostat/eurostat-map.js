@@ -12,6 +12,7 @@ import * as smap from '../core/stat-map';
  * - http://andywoodruff.com/blog/how-to-make-a-value-by-alpha-map/ and https://bl.ocks.org/awoodruff/857b5b0bf170b236787b
  * - https://www.slideshare.net/ESRI/arcgis-extensions?next_slideshow=1
  * - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3173776/
+ * - https://stackoverflow.com/questions/52822286/d3-combine-two-colour-scales-into-one
  * 
  * @param {*} config 
  */
@@ -103,33 +104,32 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
-		//define style per class
-		//if(!out.classToFillStyle())
-		//	out.classToFillStyle( getColorLegend(out.colorFun()) )
-
-		const colorScale = scaleThreshold()
-		.domain( [ .4, .5, .6 ] )
+		/*const colorScale = scaleQuantile()
+		.domain(out.statData("v2").getArray())
 		.range( [ "#ca0020", "#f4a582", "#92c5de", "#0571b0" ] );
 
-		var grayScale = scaleThreshold()
-		.domain( [ 50000, 100000, 500000, 1000000 ] )
-		.range( [ .15, .30, .60, .90, 1 ] );
+		var grayScale = scaleQuantile()
+		.domain(out.statData("v1").getArray())
+		.range( [ .15, .30, .60, .90, 1 ] );*/
 
-		//apply style to nuts regions depending on class
+		const scale = scaleBivariate(out.statData("v1").getArray(), out.statData("v2").getArray());
+
 		out.svg().selectAll("path.nutsrg")
-			.attr("fill-opacity", 1)
+			//.attr("fill-opacity", 1)
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
-				const sv = out.statData("v2").getValue(rg.properties.id);
-				if(!sv) return out.noDataFillStyle_;
-				return colorScale(sv)
+				const sv1 = out.statData("v2").getValue(rg.properties.id);
+				if(!sv1) return out.noDataFillStyle_;
+				const sv2 = out.statData("v2").getValue(rg.properties.id);
+				if(!sv2) return out.noDataFillStyle_;
+				return scale(sv1, sv2)
 			})
-			.transition().duration(out.transitionDuration())
+			/*.transition().duration(out.transitionDuration())
 			.attr("fill-opacity", function (rg) {
 				const sv = out.statData("v1").getValue(rg.properties.id);
 				if(!sv) return out.noDataFillStyle_;
 				return grayScale(sv)
-			})
+			})*/
 		return out;
 	};
 
@@ -142,3 +142,21 @@ export const map = function (config) {
 	return out;
 }
 
+
+const scaleBivariate = function(dom1, dom2) {
+	function scaleBivariate(v1, v2) {
+	  var r = reds(v1);
+	  var b = blues(v2);
+  	  return "rgb("+r+","+((r+b)/2)+","+b+")";
+	}
+  
+	var blues = scaleQuantile()
+	.domain(dom1)
+	.range([255,205,155,105,55])
+  
+	var reds = scaleQuantile()
+	.domain(dom2)
+	.range([255,205,155,105,55])
+  
+	return scaleBivariate;
+  }
