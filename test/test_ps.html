@@ -41,6 +41,8 @@
         .psCustomShape(customCircle)
         .psMaxSize(25)
         .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
         .unitText("inhabitants")
         .tooltipShowFlags("long")
         .legend({
@@ -64,6 +66,8 @@
         .psCustomShape(customCircle)
         .psMaxSize(25)
         .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
         .unitText("inhabitants")
         .tooltipShowFlags("long")
         .legend({
@@ -81,15 +85,17 @@
         .map("ps")
         .width(500)
         .svgId("map2")
-        .nutsLvl(1)
+        .nutsLvl(0)
         .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 } })
         .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
         .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
         .unitText("inhabitants")
         .tooltipShowFlags("long")
         .legend({
           titleText: "Population",
-          cellNb: 6,
+          cellNb: 3,
           labelDecNb: 0,
           height: 300,
           width: 150,

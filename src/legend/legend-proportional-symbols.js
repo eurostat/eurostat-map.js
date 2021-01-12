@@ -72,9 +72,10 @@ export const legendProportionalSymbols = function (map, config) {
 			} else if (out.map.psShape_ == "bar") {
 				//for rectangles, we use a custom d3 symbol
 				let drawRectangle = (context, size) => {
+					let height = Math.sqrt(size);
 					context.moveTo(0, 0)
-					context.lineTo(0, size / 100);
-					context.lineTo(out.map.psWidth_, size / 100);
+					context.lineTo(0, height);
+					context.lineTo(out.map.psWidth_, height);
 					context.lineTo(out.map.psWidth_, 0);
 					context.lineTo(0, 0);
 					context.closePath();
@@ -86,24 +87,21 @@ export const legendProportionalSymbols = function (map, config) {
 				shape = symbol().type(symbolType);
 			}
 
-			let values = [
-				domain[1] / 10,
-				domain[1] / 2,
-				domain[1]
-			];
-			let sizes = [
-				m.classifier_(values[0]),
-				m.classifier_(values[1]),
-				m.classifier_(values[2])
-			];
+			let values = [];
+			let shapes = [];
+			let classNumber = out.cellNb;
+			let maxVal = domain[1];
+			for (let i = classNumber; i > 0; i--) {
+				let val = maxVal / i;
+				values.push(val);
+				let size = m.classifier_(val);
+				shapes.push(shape.size(size * size)());
+			}
+
 			var symbolScale = scaleOrdinal()
 				.domain(values)
-				.range([
-					//d3 symbols
-					shape.size(sizes[0] * sizes[0])(),
-					shape.size(sizes[1] * sizes[1])(),
-					shape.size(sizes[2] * sizes[2])()
-				]);
+				.range(//d3 symbols
+					shapes);
 
 
 			d3Legend = legendSymbol()
