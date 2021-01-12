@@ -1,6 +1,6 @@
 import { select } from "d3-selection";
 //import { min, max } from "d3-array";
-import { scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
+import { scalePow, scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 //import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 //import * as lgch from '../legend/legend-choropleth';
@@ -144,19 +144,13 @@ export const map = function (config) {
 
 
 const scaleBivariate = function(dom1, dom2) {
-	function scaleBivariate(v1, v2) {
-	  var r = reds(v1);
-	  var b = blues(v2);
+
+	var s1 = scalePow().exponent(0.15).domain( [Math.min(...dom1), Math.max(...dom1)] ).range([255,0])
+	var s2 = scalePow().exponent(0.25).domain( [Math.min(...dom2), Math.max(...dom2)] ).range([255,0])
+
+	return function(v1, v2) {
+	  var r = s1(v1);
+	  var b = s2(v2);
   	  return "rgb("+r+","+((r+b)/2)+","+b+")";
 	}
-  
-	var blues = scaleQuantile()
-	.domain(dom1)
-	.range([255,205,155,105,55])
-  
-	var reds = scaleQuantile()
-	.domain(dom2)
-	.range([255,205,155,105,55])
-  
-	return scaleBivariate;
   }
