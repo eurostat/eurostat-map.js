@@ -2,93 +2,74 @@ import { select } from "d3-selection";
 
 /**
  * A eurostat-map legend. This is an abstract method.
- * A legend is provided as an independant g element to be nested within a SVG image.
 */
-export const legend = function (map) {
+export const legend = function (map, config) {
+
+	//build legend object
 	const out = {};
 
-	out.map_ = map;
+	//link map to legend
+	out.map = map;
 
-	//the SVG 'g' element where to make the legend
-	out.gId_ = "legend_" + Math.round(10e15 * Math.random());
-	out.g_ = null;
+	//the SVG where to make the legend
+	out.svgId = "legend_" + Math.round(10e15 * Math.random());
+	out.svg = undefined;
+	out.lgg = undefined;
 
-	//the legend element dimension
-	out.width = null;
-	out.height = null;
+	//the legend element position, in case it is embeded within the map SVG
+	out.x = undefined;
+	out.y = undefined;
 
 	//the legend box
 	out.boxMargin = 10;
-	out.boxPadding = 10;
-	out.boxCornerRad = 10;
+	out.boxPadding = 7;
+	out.boxCornerRad = 7;
 	out.boxFill = "#eeeeee";
 	out.boxOpacity = 0.5;
 
+	//font
 	out.fontFamily = "Helvetica, Arial, sans-serif";
 
 	//legend title
-	out.titleText = "Legend";
-	out.titleFontSize = 17;
-	out.titleWidth = 140;
+	out.title = "";
+	out.titleFontSize = 15;
 
-	//legeng element labels
-	out.labelFontSize = 13;
-	out.labelDelim = " - ";
-	out.labelWrap = 140;
-	out.labelDecNb = 2;
-	out.labelOffset = 5;
-
-	//TODO: move those to the legends where it is used, only?
-	out.ascending = true;
-	out.shapeWidth = 15;
-	out.shapeHeight = 13;
-	out.shapePadding = 2;
-
-
-	/**
-	 * Private variables.
-	 */
-
-
-	/**
-	 * Build legend element.
-	 */
+	/** Build legend. */
 	out.build = function () {
-
-		//set SVG group
-		//TODO use d3.create ?
-		out.g_ = select("#" + out.gId_);
-
-		//set size
-		if (!out.width) out.width = out.computeWidth();
-		if (!out.height) out.height = out.computeHeight();
+		//set SVG element and add main drawing group
+		out.svg = select("#" + out.svgId);
+		out.lgg = out.svg.append("g").attr("id", "g_" + out.svgId);
 	}
 
 	/**
 	 * Update the legend element.
-	 * This is an abstract method.
+	 * This is an abstract method to be defined for each specific legend.
 	 */
 	out.update = function () {
 		console.log("Legend update function not implemented")
 		return out;
 	};
 
-	/**
-	 * Return a default value for the legend width.
-	 * This is an abstract method.
-	 */
-	out.computeWidth = function () {
-		console.log("Legend computeWidth not implemented")
-		return 100;
-	}
 
-	/**
-	 * Return a default value for the legend height.
-	 * This is an abstract method.
-	 */
-	out.computeHeight = function () {
-		console.log("Legend computeHeight not implemented")
-		return 100;
+
+	/** Draw legend background box */
+	out.makeBackgroundBox = function(){
+		out.lgg.append("rect")
+			.attr("id", "legendBR")
+			.attr("rx", out.boxCornerRad)
+			.attr("ry", out.boxCornerRad)
+			.style("fill", out.boxFill)
+			.style("opacity", out.boxOpacity);
+	}	
+
+	/** Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements */
+	out.setBoxDimension = function() {
+		//get legend elements bounding box
+		const bb = out.lgg.node().getBBox({stroke:true});
+		//apply to legend box dimensions
+		const p = out.boxPadding;
+		out.svg.select("#legendBR")
+			.attr("x",bb.x-p).attr("y",bb.y-p).attr("width", bb.width+2*p).attr("height", bb.height+2*p)
 	}
 
 	return out;

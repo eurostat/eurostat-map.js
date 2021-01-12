@@ -6,7 +6,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('choropleth and categorical maps', async () => {
+test('Two maps on a single page', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,
@@ -27,15 +27,13 @@ test('choropleth and categorical maps', async () => {
             .title("Population in Europe")
             .width(400)
             .scale("20M")
-            .datasetCode("demo_r_d3dens")
+            .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .unitText("people/km²")
             .tooltipShowFlags(false)
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "test",
-                    labelDecNb: 0,
+            .legend({
+                title: "test",
+                labelDecNb: 0,
                 }
             )
             .build();
@@ -48,14 +46,12 @@ test('choropleth and categorical maps', async () => {
             .scale("60M")
             .NUTSyear(2013)
             .nutsLvl(3)
-            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
-            .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
+            .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "test",
-                    labelDecNb: 0,
+            .legend({
+                title: "test",
+                labelDecNb: 0,
                 }
             )
             .build();

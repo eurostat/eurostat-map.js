@@ -2,11 +2,9 @@ var assert = require('assert');
 const puppeteer = require("puppeteer");
 const path = require("path")
 
-
-
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('separated legend', async () => {
+test('Different inste settings', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,
@@ -19,24 +17,25 @@ test('separated legend', async () => {
 
     // evaluate will run the function in the page context
     await page.evaluate(_ => {
-        // these will be executed within test.html, that was loaded before
-        //builds test map in test.html
         eurostatmap
             .map("ch")
-            .width(500)
-            .scale("60M")
-            .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
-            .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .unitText("people/km²")
-            .tooltipShowFlags(false)
-            .legend({
-              title: "Population density (people/km²)",
-              labelDecNb: 0,
-            })
+            .svgId("testMap1")
+            .insets("default")
+            .build();
+
+        eurostatmap
+            .map("ch")
+            .svgId("testMap2")
+            .insets({geo:"GF"}).insetBoxWidth(200).insetZoomExtent([0,99999])
+            .build();
+
+        eurostatmap
+            .map("ch")
+            .svgId("testMap3")
+            .geo("LI").scale("01M").insets({geo:"EUR",scale:"60M"}).insetBoxWidth(200).insetZoomExtent([0,99999])
             .build();
     });
 
-    // we're done; close the browser
     await browser.close();
 
 })
