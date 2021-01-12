@@ -55,18 +55,37 @@ export const legendProportionalSymbols = function (map, config) {
 
 		let d3Legend
 
-		if (legendConfig.map_.psShape_ !== "circle") {
+		if (out.map.psShape_ == "circle") {
+			// for standard circle legend
+			d3Legend = legendSize()
+				.shape("circle")
+				.scale(m.classifier());
+		} else {
+			//custom and d3.symbol shapes
 			// use legendSize() with custom scale for d3 shapes
 			let domain = m.classifier_.domain();
 			let shape;
-			let cells = legendConfig.cellNb + 1;
+			let cells = out.cellNb + 1;
 
-			if (legendConfig.map_.psShape_ == "custom") {
-				shape = legendConfig.map_.psCustomShape_;
+			if (out.map.psShape_ == "custom") {
+				shape = out.map.psCustomShape_;
+			} else if (out.map.psShape_ == "bar") {
+				//for rectangles, we use a custom d3 symbol
+				let drawRectangle = (context, size) => {
+					context.moveTo(0, 0)
+					context.lineTo(0, size / 100);
+					context.lineTo(10, size / 100);
+					context.lineTo(10, 0);
+					context.lineTo(0, 0);
+					context.closePath();
+				}
+
+				shape = d3.symbol().type({ draw: drawRectangle })
 			} else {
-				let symbolType = getSymbolType(legendConfig.map_.psShape_);
+				let symbolType = getSymbolType(out.map.psShape_);
 				shape = symbol().type(symbolType);
 			}
+
 
 			let values = [
 				domain[1] / 10,
@@ -81,6 +100,7 @@ export const legendProportionalSymbols = function (map, config) {
 			var symbolScale = scaleOrdinal()
 				.domain(values)
 				.range([
+					//d3 symbols
 					shape.size(sizes[0] * sizes[0])(),
 					shape.size(sizes[1] * sizes[1])(),
 					shape.size(sizes[2] * sizes[2])()
@@ -89,33 +109,28 @@ export const legendProportionalSymbols = function (map, config) {
 
 			d3Legend = legendSymbol()
 				.scale(symbolScale)
-				.labelFormat(".,2r")
+				.labelFormat(".2s")
 				;
 
-		} else {
-			// for standard circle legend
-			d3Legend = legendSize()
-				.shape("circle")
-				.scale(m.classifier());
 		}
 
 		//common methods between all ps legends:
 		d3Legend
-			.title(legendConfig.titleText)
-			.titleWidth(legendConfig.titleWidth)
+			.title(out.titleText)
+			.titleWidth(out.titleWidth)
 			//.scale(m.classifier())
-			.cells(legendConfig.cellNb + 1)
+			.cells(out.cellNb + 1)
 			.cellFilter(function (d) { if (!d.data) return false; return true; })
 			.orient("vertical")
-			.ascending(legendConfig.ascending)
+			.ascending(out.ascending)
 			//.shape("circle") //"rect", "circle", or "line"
-			.shapePadding(legendConfig.shapePadding)
+			.shapePadding(out.shapePadding)
 			//.classPrefix("prefix")
 			.labels(function (d) { return d.generatedLabels[d.i] })
 			//.labelAlign("middle") //?
-			.labelFormat(legendConfig.format || format(",." + legendConfig.labelDecNb + "r"))
-			.labelOffset(legendConfig.labelOffset)
-			.labelWrap(legendConfig.labelWrap)
+			.labelFormat(out.format || format(",." + out.labelDecNb + "r"))
+			.labelOffset(out.labelOffset)
+			.labelWrap(out.labelWrap)
 
 		//make legend
 		lgg.call(d3Legend);

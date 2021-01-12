@@ -27,21 +27,7 @@
         },
       };
 
-<<<<<<< HEAD
-        eurostatmap.map("ps")
-            //.width(900)
-            .nutsLvl(1)
-            .datasetCode("demo_r_pjangrp3")
-            .filters({ age: "TOTAL", sex: "T", unit: "NR", time: 2016 })
-            .psShape("diamond") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
-            //.psCustomShape(customCircle)
-            .psMaxSize(25)
-            .psFill("red")
-            //.psStrokeWidth(3)
-            //.psStroke("red")
-=======
       let customCircle = d3.symbol().type(customShapeCircle);
->>>>>>> 9c183ec40ee730276c43eec9dd38a6ff87058e42
 
       //map of semi-circles
       eurostatmap
@@ -80,8 +66,8 @@
           titleText: "Population",
           cellNb: 6,
           labelDecNb: 0,
-          height: 200,
-          width: 140,
+          height: 300,
+          width: 150,
           format: format,
         })
         .build();

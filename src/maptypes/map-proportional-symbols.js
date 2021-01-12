@@ -1,7 +1,7 @@
 import { scaleSqrt } from "d3-scale";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
-import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
+import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
 /**
  * Returns a proportionnal symbol map.
