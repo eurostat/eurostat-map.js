@@ -26,7 +26,7 @@ test('urban/rural categorical map with csvDataSource', async () => {
             .svgId("testMap")
             .title("NUTS urban/rural typology")
             .scale("60M")
-            .NUTSyear(2013)
+            .nutsYear(2013)
             .nutsLvl(3)
             .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
             .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })

@@ -266,7 +266,7 @@ export const statMap = function (config, withCenterPoints) {
 		if (opts.time) { out.filters_.time = opts.time; delete out.filters_.lastTimePeriod; }
 		if (opts.proj) out.proj(opts.proj);
 		if (opts.geo) out.geo(opts.geo);
-		if (opts.ny) out.NUTSyear(opts.ny);
+		if (opts.ny) out.nutsYear(opts.ny);
 		if (opts.lg) out.lg(opts.lg);
 		if (opts.clnb) out.clnb(+opts.clnb);
 		return out;
