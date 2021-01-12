@@ -6,7 +6,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('urban/rural categorical map with csvDataSource', async () => {
+test('programmatically defined statistics', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,
@@ -21,20 +21,22 @@ test('urban/rural categorical map with csvDataSource', async () => {
     await page.evaluate(_ => {
         // these will be executed within test.html, that was loaded before.
         //builds map in test.html
-        eurostatmap
-            .map("ct")
-            .svgId("testMap")
-            .title("NUTS urban/rural typology")
-            .scale("60M")
-            .NUTSyear(2013)
-            .nutsLvl(3)
-            .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
-            .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
-            .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .legend({
-                labelDecNb: 0,
-            })
-            .build();
+        const map = eurostatmap.map("ch");
+        map.nutsLvl(0);
+
+        map.statData().set("LU",500)
+        .set("DE",400)
+        .set("FR",100)
+        .set("IT",600)
+        .setData({
+            "FR": 10,
+            "DE": {value:7,status:"e"},
+            "UK": 12,
+        })
+        .set("IT",200)
+        .set("UK",{value:50,status:"p"})
+
+        map.build();
     });
 
     // we're done; close the browser

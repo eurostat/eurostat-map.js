@@ -1,18 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+var assert = require('assert');
+const puppeteer = require("puppeteer");
+const path = require("path")
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eurostat-map.js</title>
-</head>
 
-<body>
-    <svg id="map"></svg>
-    <script src="https://unpkg.com/eurostat-map"></script>
-    <script>
+
+// opens test.html using headless chrome
+// to run tests in open browser, set headless to false.
+test('choropleth with fill pattern', async () => {
+    let browser = await puppeteer.launch({
+        headless: true,
+        //sloMo: 80,
+        args: ["--window-size=1000,1000"]
+    })
+
+    const page = await browser.newPage();
+
+    await page.goto(`file:${path.join(__dirname, 'test.html')}`)
+
+    // evaluate will run the function in the page context
+    await page.evaluate(_ => {
+        // these will be executed within test.html, that was loaded before
+        //builds test map in test.html
         eurostatmap.map("ch")
-        .width(900)
+            .width(900)
             .title("Population in Europe")
             .titleFontSize(40)
             .titleFill("#444")
@@ -35,18 +45,10 @@
 
             .graticuleStroke("#888")
 
-            .unitText("people/km²")
-            .tooltipShowFlags(false)
-
-            .legend({
-                title: "Density - inhab./km²",
-                labelDecNb: 0,
-                x: 700,
-                noData: false,
-            })
             .build();
+    });
 
-    </script>
-</body>
+    // we're done; close the browser
+    await browser.close();
 
-</html>
+})
