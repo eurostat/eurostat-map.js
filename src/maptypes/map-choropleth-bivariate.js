@@ -21,7 +21,7 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	//The color function for variable 1 (from [0,1] to color)
-	out.colorFun1_ = dsc.interpolateBlues;
+	out.colorFun1_ = (t)=>"black"//alpha(255,255,255)//dsc.interpolateBlues;
 	//The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
 	out.exponant1_ = 0.15;
 	//The color function for variable 2 (from [0,1] to color)
@@ -33,6 +33,8 @@ export const map = function (config) {
 	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
+	//specific tooltip text function
+	out.tooltipText_ = tooltipTextFunBiv;
 
 
     /**
@@ -79,10 +81,15 @@ export const map = function (config) {
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
+
+				//get v1 value
 				const sv1 = out.statData("v1").getValue(rg.properties.id);
-				if(!sv1) return out.noDataFillStyle_;
+				if(!sv1) return out.noDataFillStyle();
+
+				//get v2 value
 				const sv2 = out.statData("v2").getValue(rg.properties.id);
-				if(!sv2) return out.noDataFillStyle_;
+				if(!sv2) return out.noDataFillStyle();
+
 				return out.classifier()(sv1, sv2)
 			})
 		return out;
@@ -131,3 +138,36 @@ const scaleBivariate = function(domain1, colorFun1, exponant1, domain2, colorFun
 			+ Math.round( 0.5*(c1.opacity+c2.opacity) )+")";
 	}
   }
+
+const alpha = function(r,g,b) {
+	return function(t) {
+		return "rgba("+r+","+g+","+b+","+ Math.round(255*t) +")";
+	}
+}
+
+
+/**
+ * Specific function for tooltip text.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tooltipTextFunBiv = function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+
+	//stat 1 value
+	const sv1 = map.statData("v1").get(rg.properties.id);
+	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
+	else buf.push(sv1.value);
+
+	buf.push("<br>");
+
+	//stat 2 value
+	const sv2 = map.statData("v2").get(rg.properties.id);
+	if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
+	else buf.push(sv2.value);
+
+	return buf.join("");
+};

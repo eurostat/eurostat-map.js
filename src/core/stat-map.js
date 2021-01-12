@@ -371,7 +371,7 @@ function rasterize(svg) {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//case when no data available
-		const sv = map.statData("default").get(rg.properties.id);
+		const sv = map.statData().get(rg.properties.id);
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);
 			return buf.join("");
