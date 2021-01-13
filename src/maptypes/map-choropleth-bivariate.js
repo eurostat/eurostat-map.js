@@ -1,6 +1,5 @@
 import { color } from "d3-color";
-import { scalePow } from "d3-scale";
-import * as dsc from "d3-scale-chromatic";
+import { scaleQuantile } from "d3-scale";
 import * as smap from '../core/stat-map';
 //import * as lgch from '../legend/legend-choropleth';
 
@@ -11,7 +10,6 @@ import * as smap from '../core/stat-map';
  * - http://andywoodruff.com/blog/how-to-make-a-value-by-alpha-map/ and https://bl.ocks.org/awoodruff/857b5b0bf170b236787b
  * - https://www.slideshare.net/ESRI/arcgis-extensions?next_slideshow=1
  * - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3173776/
- * - https://stackoverflow.com/questions/52822286/d3-combine-two-colour-scales-into-one
  * 
  * @param {*} config 
  */
@@ -21,11 +19,9 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	out.clnb_ = 3;
-	out.startColor = "white"
-	out.endColor1 = "blue"
-	out.endColor2 = "red"
-
-	//Quantile.
+	out.startColor_ = "white"
+	out.endColor1_ = "blue"
+	out.endColor2_ = "red"
 
 	//The color function for variable 1 (from [0,1] to color)
 	//out.colorFun1_ = dsc.interpolateGreys;
@@ -51,13 +47,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["noDataFillStyle_", "classifier_"]
+	["clnb_", "startColor_", "endColor1_", "endColor2_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["noDataFillStyle"].forEach(function (key) {
+	if(config) ["clnb", "startColor", "endColor1", "endColor2", "noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -69,10 +65,7 @@ export const map = function (config) {
 		const s2 = out.statData("v2");
 
 		//define bivariate scale
-		const scale = scaleBivariate(
-			[s1.getMin(), s1.getMax()], out.colorFun1(), out.exponant1(),
-			[s2.getMin(), s2.getMax()], out.colorFun2(), out.exponant2(),
-		);
+		const scale = scaleBivariate(out.clnb(), s1.getArray(), s2.getArray(), out.startColor(), out.endColor1(), out.endColor2());
 
 		//store as classifier
 		out.classifier(scale);
@@ -122,7 +115,7 @@ export const map = function (config) {
  * @param {*} colorFun2 The color function for variable 2 (from [0,1] to color)
  * @param {*} exponant2 The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
  */
-const scaleBivariate = function(domain1, colorFun1, exponant1, domain2, colorFun2, exponant2) {
+const scaleBivariate = function(clnb, domain1, domain2, startColor, endColor1, endColor2) {
 
 	//make color scales
 	const s1 = scalePow().exponent(exponant1).domain(domain1)
