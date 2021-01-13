@@ -50,11 +50,7 @@ export const map = function (config) {
 		//get max value
 		const maxValue = out.statData().getMax();
 		//define classifier
-		if (out.psShape_ == "bar") {
-			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
-		} else {
-			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]));
-		}
+		out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_, out.psMaxSize_]));
 		return out;
 	};
 
@@ -64,23 +60,7 @@ export const map = function (config) {
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
-		//set circle Size depending on stat value
-		if (out.psShape_ == "circle") {
-			out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("circle")
-				//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
-				.style("fill", out.psFill())
-				.style("fill-opacity", out.psFillOpacity())
-				.style("stroke", out.psStroke())
-				.style("stroke-width", out.psStrokeWidth())
-
-				.transition().duration(out.transitionDuration())
-				.attr("r", function (rg) {
-					const sv = out.statData().get(rg.properties.id);
-					if (!sv || !sv.value) return 0;
-					return out.classifier()(+sv.value);
-				})
-		} else if (out.psShape_ == "bar") {
+		if (out.psShape_ == "bar") {
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
 
