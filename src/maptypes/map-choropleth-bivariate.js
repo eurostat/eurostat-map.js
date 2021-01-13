@@ -20,14 +20,21 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
+	out.clnb_ = 3;
+	out.startColor = "white"
+	out.endColor1 = "blue"
+	out.endColor2 = "red"
+
+	//Quantile.
+
 	//The color function for variable 1 (from [0,1] to color)
-	out.colorFun1_ = dsc.interpolateGreys;
+	//out.colorFun1_ = dsc.interpolateGreys;
 	//The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	out.exponant1_ = 1;
+	//out.exponant1_ = 1;
 	//The color function for variable 2 (from [0,1] to color)
-	out.colorFun2_ = dsc.interpolateYlOrRd;
+	//out.colorFun2_ = dsc.interpolateYlOrRd;
 	//The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	out.exponant2_ = 1;
+	//out.exponant2_ = 1;
 
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
@@ -44,13 +51,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["colorFun1_", "exponant1_", "colorFun2_", "exponant2_", "noDataFillStyle_", "classifier_"]
+	["noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["colorFun1", "exponant1", "colorFun2", "exponant2", "noDataFillStyle"].forEach(function (key) {
+	if(config) ["noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
