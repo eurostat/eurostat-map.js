@@ -1,15 +1,12 @@
 import { color } from "d3-color";
 import { scaleQuantile } from "d3-scale";
+import { interpolateRgb } from "d3-interpolate";
 import * as smap from '../core/stat-map';
 //import * as lgch from '../legend/legend-choropleth';
 
 /**
  * Return a bivariate choropleth map.
- * See:
- * - https://gistbok.ucgis.org/bok-topics/multivariate-mapping
- * - http://andywoodruff.com/blog/how-to-make-a-value-by-alpha-map/ and https://bl.ocks.org/awoodruff/857b5b0bf170b236787b
- * - https://www.slideshare.net/ESRI/arcgis-extensions?next_slideshow=1
- * - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3173776/
+ * See: https://gistbok.ucgis.org/bok-topics/multivariate-mapping
  * 
  * @param {*} config 
  */
@@ -117,15 +114,22 @@ export const map = function (config) {
  */
 const scaleBivariate = function(clnb, domain1, domain2, startColor, endColor1, endColor2) {
 
+	//make color ramps
+	const ramp1 = interpolateRgb(startColor, endColor1);
+	const ramp2 = interpolateRgb(startColor, endColor2);
+
 	//make color scales
-	const s1 = scalePow().exponent(exponant1).domain(domain1)
-	const s2 = scalePow().exponent(exponant2).domain(domain2)
-	//TODO what happen for negative stat values?
+	const range1 = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range1.push( ramp1(i) );
+	const range2 = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range2.push( ramp2(i) );
+
+	//make single classifiers
+	const s1 = scaleQuantile().domain(domain1).range(range1);
+	const s2 = scaleQuantile().domain(domain2).range(range2);
 
 	return function(v1, v2) {
 
 		//get rgba colors
-		const col1 = colorFun1(s1(v1)), col2 = colorFun2(s2(v2));
+		const col1 = s1(v1), col2 = s2(v2);
 
 		//get d3 color
 		const c1 = color(col1), c2 = color(col2)
