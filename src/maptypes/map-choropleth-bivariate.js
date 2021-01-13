@@ -16,6 +16,7 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	out.clnb_ = 5;
+	//stevens.greenblue
 	out.startColor_ = "#e8e8e8";
 	out.color1_ = "#73ae80";
 	out.color2_ = "#6c83b5";
@@ -49,12 +50,13 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 
+		//make single classifiers
+		const range = [...Array(out.clnb()).keys()];
+		const classifier1 = scaleQuantile().domain(out.statData("v1").getArray()).range(range);
+		const classifier2 = scaleQuantile().domain(out.statData("v2").getArray()).range(range);
+
 		//define bivariate scale
-		const scale = scaleBivariate(
-			out.clnb(),
-			out.statData("v1").getArray(), out.statData("v2").getArray(),
-			out.startColor(), out.color1(), out.color2(), out.endColor()
-		);
+		const scale = scaleBivariate( out.clnb(), classifier1, classifier2, out.startColor(), out.color1(), out.color2(), out.endColor() );
 
 		//store as classifier
 		out.classifier(scale);
@@ -94,15 +96,7 @@ export const map = function (config) {
 }
 
 
-const scaleBivariate = function(clnb, domain1, domain2, startColor, color1, color2, endColor) {
-
-	//make single classifiers
-	//TODO extract this out
-	//const range = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range.push(i);
-	const range = [...Array(clnb).keys()];
-	console.log(range)
-	const s1 = scaleQuantile().domain(domain1).range(range);
-	const s2 = scaleQuantile().domain(domain2).range(range);
+const scaleBivariate = function(clnb, classifier1, classifier2, startColor, color1, color2, endColor) {
 
 	//color ramps, by row
 	const cs = [];
@@ -111,45 +105,23 @@ const scaleBivariate = function(clnb, domain1, domain2, startColor, color1, colo
 	const ramp2E = interpolateRgb(color2, endColor);
 	for(let i=0; i<clnb; i++) {
 		const t = i/(clnb-1);
-		cs.push( interpolateRgb( rampS1(t) , ramp2E(t)) );
+		const colFun = interpolateRgb( rampS1(t) , ramp2E(t));
+		const row = [];
+		for(let j=0; j<clnb; j++) row.push(colFun(j/(clnb-1)));
+		cs.push(row);
 	}
 
-
-
-
-
 	return function(v1, v2) {
-
-		//compute color coordinates
-		const t1 = s1(v1), t2 = s2(v2);
-
-		//get four colors
-		const cS1 = rampS1(t1), c1E = ramp1E(t1)
-		const cS2 = rampS2(t2), c2E = ramp2E(t2)
-
-
-		return "gray"
-
-		//get rgba colors
-		const col1 = s1(v1), col2 = s2(v2);
-
-		//get d3 color
-		const c1 = color(col1), c2 = color(col2)
-
-		//return middle color
-		return "rgba("
-			+ Math.round( 0.5*(c1.r+c2.r) ) + ","
-			+ Math.round( 0.5*(c1.g+c2.g) ) + ","
-			+ Math.round( 0.5*(c1.b+c2.b) ) + ","
-			+ Math.round( 0.5*(c1.opacity+c2.opacity) )+")";
+		return cs[ classifier1(v1) ][ classifier2(v2) ];
 	}
   }
 
+/*
 const alpha = function(r,g,b) {
 	return function(t) {
 		return "rgba("+r+","+g+","+b+","+ Math.round(255*t) +")";
 	}
-}
+}*/
 
 
 /**
