@@ -15,19 +15,11 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
-	out.clnb_ = 3;
-	out.startColor_ = "white"
-	out.endColor1_ = "blue"
-	out.endColor2_ = "red"
-
-	//The color function for variable 1 (from [0,1] to color)
-	//out.colorFun1_ = dsc.interpolateGreys;
-	//The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	//out.exponant1_ = 1;
-	//The color function for variable 2 (from [0,1] to color)
-	//out.colorFun2_ = dsc.interpolateYlOrRd;
-	//The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
-	//out.exponant2_ = 1;
+	out.clnb_ = 5;
+	out.startColor_ = "#e8e8e8";
+	out.color1_ = "#73ae80";
+	out.color2_ = "#6c83b5";
+	out.endColor_ = "#2a5a5b";
 
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
@@ -44,25 +36,25 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_", "startColor_", "endColor1_", "endColor2_", "noDataFillStyle_", "classifier_"]
+	["clnb_", "startColor_", "color1_", "color2_", "endColor_", "noDataFillStyle_", "classifier_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["clnb", "startColor", "endColor1", "endColor2", "noDataFillStyle"].forEach(function (key) {
+	if(config) ["clnb", "startColor", "color1", "color2", "endColor", "noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
 	//@override
 	out.updateClassification = function () {
 
-		//get stat data
-		const s1 = out.statData("v1");
-		const s2 = out.statData("v2");
-
 		//define bivariate scale
-		const scale = scaleBivariate(out.clnb(), s1.getArray(), s2.getArray(), out.startColor(), out.endColor1(), out.endColor2());
+		const scale = scaleBivariate(
+			out.clnb(),
+			out.statData("v1").getArray(), out.statData("v2").getArray(),
+			out.startColor(), out.color1(), out.color2(), out.endColor()
+		);
 
 		//store as classifier
 		out.classifier(scale);
@@ -102,31 +94,41 @@ export const map = function (config) {
 }
 
 
-/**
- * Return a bivariate classifier.
- * 
- * @param {*} domain1 The [min,max] interval of variable 1
- * @param {*} colorFun1 The color function for variable 1 (from [0,1] to color)
- * @param {*} exponant1 The exageration exponant for variable 1: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
- * @param {*} domain2 The [min,max] interval of variable 2
- * @param {*} colorFun2 The color function for variable 2 (from [0,1] to color)
- * @param {*} exponant2 The exageration exponant for variable 2: 1 for linear, <<1 to exagerate small values, >>1 to exagerate large values.
- */
-const scaleBivariate = function(clnb, domain1, domain2, startColor, endColor1, endColor2) {
-
-	//make color ramps
-	const ramp1 = interpolateRgb(startColor, endColor1);
-	const ramp2 = interpolateRgb(startColor, endColor2);
-
-	//make color scales
-	const range1 = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range1.push( ramp1(i) );
-	const range2 = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range2.push( ramp2(i) );
+const scaleBivariate = function(clnb, domain1, domain2, startColor, color1, color2, endColor) {
 
 	//make single classifiers
-	const s1 = scaleQuantile().domain(domain1).range(range1);
-	const s2 = scaleQuantile().domain(domain2).range(range2);
+	//TODO extract this out
+	//const range = []; for(let i=0; i<=1; i+=1.0/(clnb-1)) range.push(i);
+	const range = [...Array(clnb).keys()];
+	console.log(range)
+	const s1 = scaleQuantile().domain(domain1).range(range);
+	const s2 = scaleQuantile().domain(domain2).range(range);
+
+	//color ramps, by row
+	const cs = [];
+	//interpolate from first and last columns
+	const rampS1 = interpolateRgb(startColor, color1);
+	const ramp2E = interpolateRgb(color2, endColor);
+	for(let i=0; i<clnb; i++) {
+		const t = i/(clnb-1);
+		cs.push( interpolateRgb( rampS1(t) , ramp2E(t)) );
+	}
+
+
+
+
 
 	return function(v1, v2) {
+
+		//compute color coordinates
+		const t1 = s1(v1), t2 = s2(v2);
+
+		//get four colors
+		const cS1 = rampS1(t1), c1E = ramp1E(t1)
+		const cS2 = rampS2(t2), c2E = ramp2E(t2)
+
+
+		return "gray"
 
 		//get rgba colors
 		const col1 = s1(v1), col2 = s2(v2);
