@@ -15,7 +15,7 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
-	out.clnb_ = 5;
+	out.clnb_ = 3;
 	//stevens.greenblue
 	out.startColor_ = "#e8e8e8";
 	out.color1_ = "#73ae80";
@@ -61,6 +61,8 @@ export const map = function (config) {
 		//store as classifier
 		out.classifier(scale);
 
+		//TODO do real classification
+
 		return out;
 	};
 
@@ -72,6 +74,7 @@ export const map = function (config) {
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
+				//TODO use classification
 
 				//get v1 value
 				const sv1 = out.statData("v1").getValue(rg.properties.id);
