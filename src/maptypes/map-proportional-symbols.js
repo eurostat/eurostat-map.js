@@ -122,7 +122,6 @@ export const map = function (config) {
 		return lgps.legendProportionalSymbols;
 	}
 
-
 	return out;
 }
 
@@ -130,7 +129,7 @@ export const map = function (config) {
 /**
 * @function getSymbolType
 * @description returns a d3 symbol from a shape name
-* @param {String} psShape
+* @param {String} psShape //accepted values are cross, square, diamond, triangle, star, wye or circle
 */
 export const getSymbolType = function (psShape) {
 
@@ -147,6 +146,8 @@ export const getSymbolType = function (psShape) {
 		symbolType = symbolStar;
 	} else if (psShape == "wye") {
 		symbolType = symbolWye;
+	} else if (psShape == "wye") {
+
 	} else {
 		symbolType = symbolCircle;
 	}

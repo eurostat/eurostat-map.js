@@ -85,23 +85,20 @@ export const legendProportionalSymbols = function (map, config) {
 		}
 
 		let domain = m.classifier_.domain();
-		let maxVal = domain[1]; //maximum value of dataset
-		let sizes = []; //stores values of the legend entries
-		let shapes = []; //d3.symbol
+		let maxVal = domain[1]; //maximum value of dataset (used for first symbol)
 
 		//draw legend elements for classes: rectangle + label
 		let totalHeight = 0; //sum of shape sizes
 		for (let i = 1; i < out.cellNb + 1; i++) {
 
-			let val = maxVal / i; //value
+			let val = maxVal / i; // divide the maxVal by the 'cell number' index
 			let size = m.classifier_(val); //size 
-			sizes.push(size)
+
+
+			//d3 symbol
+			let d = shape.size(size * size)(); //set shape size and call
 
 			//the vertical position of the legend element
-
-
-			//symbol
-			let d = shape.size(size * size)(); //set shape size and call
 			let x;
 			let y;
 			if (out.map.psShape_ == "bar") {
@@ -140,127 +137,6 @@ export const legendProportionalSymbols = function (map, config) {
 		//set legend box dimensions
 		out.setBoxDimension();
 	}
-
-	//@override
-	// out.update = function () {
-	// 	const m = out.map;
-	// 	//const svgMap = m.svg();
-	// 	const lgg = out.lgg;
-
-	// 	//remove previous content
-	// 	lgg.selectAll("*").remove();
-
-	// 	//? necessary. But should become obsolete when abandonning "d3-svg-legend"
-	// 	lgg.attr("transform", "translate(20,10)")
-
-	// 	//draw legend background box
-	// 	out.makeBackgroundBox();
-
-	// 	//define legend
-	// 	//see http://d3-legend.susielu.com/#size
-
-	// 	let d3Legend
-	// 	let orient = "vertical";
-
-	// 	if (out.map.psShape_ == "circle") {
-	// 		// for standard circle legend
-	// 		d3Legend = legendSize()
-	// 			.shape("circle")
-	// 			.scale(m.classifier());
-	// 	} else {
-	// 		//custom and d3.symbol shapes
-	// 		// use legendSize() with custom scale for d3 shapes
-	// 		let domain = m.classifier_.domain();
-	// 		let shape;
-	// 		let cells = out.cellNb + 1;
-
-	// 		if (out.map.psShape_ == "custom") {
-	// 			shape = out.map.psCustomShape_;
-	// 		} else if (out.map.psShape_ == "bar") {
-	// 			//for rectangles, we use a custom d3 symbol
-	// 			let drawRectangle = (context, size) => {
-	// 				let height = Math.sqrt(size);
-	// 				context.moveTo(0, 0)
-	// 				context.lineTo(0, height);
-	// 				context.lineTo(out.map.psWidth_, height);
-	// 				context.lineTo(out.map.psWidth_, 0);
-	// 				context.lineTo(0, 0);
-	// 				context.closePath();
-	// 			}
-
-	// 			shape = d3.symbol().type({ draw: drawRectangle })
-	// 		} else {
-	// 			let symbolType = getSymbolType(out.map.psShape_);
-	// 			shape = symbol().type(symbolType);
-	// 		}
-
-	// 		let values = [];
-	// 		let shapes = [];
-	// 		let classNumber = out.cellNb;
-	// 		let maxVal = domain[1];
-	// 		for (let i = classNumber; i > 0; i--) {
-	// 			let val = maxVal / i;
-	// 			values.push(val);
-	// 			let size = m.classifier_(val);
-	// 			shapes.push(shape.size(size * size)());
-	// 		}
-
-	// 		var symbolScale = scaleOrdinal()
-	// 			.domain(values)
-	// 			.range(//d3 symbols
-	// 				shapes);
-
-
-	// 		d3Legend = legendSymbol()
-	// 			.scale(symbolScale);
-
-	// 	}
-
-	// 	//common methods between all ps legends:
-	// 	d3Legend
-	// 		.title(out.titleText)
-	// 		.titleWidth(out.titleWidth)
-	// 		//.scale(m.classifier())
-	// 		.cells(out.cellNb + 1)
-	// 		.cellFilter(function (d) { if (!d.data) return false; return true; })
-	// 		.orient(orient)
-	// 		.labelWrap(10)
-	// 		.ascending(out.ascending)
-	// 		//.shape("circle") //"rect", "circle", or "line"
-	// 		.shapePadding(out.shapePadding)
-	// 		//.classPrefix("prefix")
-	// 		.labels(function (d) {
-	// 			//for some reason formatting is not applied to legendSymbol legends
-	// 			let f = out.format || format(",." + out.labelDecNb + "r");
-	// 			if (out.map.psShape_ == "bar" || out.map.psShape_ == "custom") {
-	// 				return f(d.generatedLabels[d.i])
-	// 			} else {
-	// 				return d.generatedLabels[d.i]
-	// 			}
-
-	// 		})
-	// 		//.labelAlign("middle") //?
-	// 		.labelFormat(out.format || format(",." + out.labelDecNb + "r"))
-	// 		.labelOffset(out.labelOffset)
-	// 		.labelWrap(out.labelWrap)
-
-	// 	//make legend
-	// 	lgg.call(d3Legend);
-
-	// 	//apply style to legend elements
-	// 	lgg.selectAll(".swatch")
-	// 		.style("fill", m.psFill())
-	// 		.style("fill-opacity", m.psFillOpacity())
-	// 		.style("stroke", m.psStroke())
-	// 		.style("stroke-width", m.psStrokeWidth());
-
-	// 	lgg.select(".legendTitle").style("font-size", out.titleFontSize);
-	// 	lgg.selectAll("text.label").style("font-size", out.labelFontSize);
-	// 	lgg.style("font-family", out.fontFamily);
-
-	// 	//set legend box dimensions
-	// 	out.setBoxDimension();
-	// }
 
 	return out;
 }
