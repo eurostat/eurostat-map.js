@@ -73,7 +73,7 @@ export const legendChoropleth = function (map, config) {
 		//frame
 		lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 		.attr("width", out.shapeSize * clnb).attr("height", out.shapeSize * clnb)
-		.attr("fill", "none").style("stroke", "black")
+		.attr("fill", "none").style("stroke", "black").attr("stroke-width", 0.5)
 
 			//rectangle
 			/*/lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
