@@ -15,6 +15,7 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config);
 
+	//number of classes for the classification. Same for both variables.
 	out.clnb_ = 3;
 	//stevens.greenblue
 	//TODO make it possible to use diverging color ramps ?
@@ -22,7 +23,7 @@ export const map = function (config) {
 	out.color1_ = "#73ae80";
 	out.color2_ = "#6c83b5";
 	out.endColor_ = "#2a5a5b";
-	//a function returning the colors from the classes i,j
+	//a function returning the colors for the classes i,j
 	out.classToFillStyle_ = undefined;
 
 	//style for no data regions
@@ -76,10 +77,20 @@ export const map = function (config) {
 				if (v != 0 && !v) return "nd";
 				return +out.classifier2()(+v);
 			})
+			.attr("nd", function (rg) {
+				const sv1 = out.statData("v1").get(rg.properties.id);
+				const sv2 = out.statData("v2").get(rg.properties.id);
+				if (!sv1 || !sv2) return "nd";
+				let v = sv1.value; if (v != 0 && !v) return "nd";
+				    v = sv2.value; if (v != 0 && !v) return "nd";
+				return "";
+			})
 
 		//define bivariate scale
-		const scale = scaleBivariate( out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor() );
-		out.classToFillStyle(scale);
+		if(!out.classToFillStyle()) {
+			const scale = scaleBivariate( out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor() );
+			out.classToFillStyle(scale);
+		}
 
 		return out;
 	};

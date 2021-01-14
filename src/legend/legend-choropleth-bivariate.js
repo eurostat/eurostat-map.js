@@ -25,6 +25,8 @@ export const legend = function (map, config) {
 
 	//show no data
 	out.noData = true;
+	//show no data
+	out.noDataShapeSize = 15;
 	//no data text label
 	out.noDataText = "No data";
 
@@ -39,6 +41,7 @@ export const legend = function (map, config) {
 		const lgg = out.lgg;
 		const clnb = m.clnb();
 		const sz = out.squareSize / clnb;
+		const xc = 0.7071*out.squareSize + out.boxPadding;
 
 		//remove previous content
 		lgg.selectAll("*").remove();
@@ -48,8 +51,9 @@ export const legend = function (map, config) {
 
 		//draw title
 		if(out.title)
-			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+			lgg.append("text").attr("x", xc).attr("y", out.boxPadding + out.titleFontSize)
 			.text(out.title)
+			.style("text-anchor", "middle")
 			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
 			.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
@@ -60,9 +64,8 @@ export const legend = function (map, config) {
 		let y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0);
 
 		//square group
-		const sz2 = out.squareSize * 0.5;
 		const square = lgg.append("g")
-		.attr("transform", "translate(" + (2*out.boxPadding+out.labelFontSize) + "," + y + ") rotate(-45,"+sz2+","+sz2+")")
+		.attr("transform", "translate("+(out.boxPadding)+","+(xc+y)+") rotate(-45) translate("+(out.boxPadding)+","+0+")")
 
 		for(let i=0; i<clnb; i++)
 			for(let j=0; j<clnb; j++) {
@@ -104,31 +107,31 @@ export const legend = function (map, config) {
 		//frame
 		square.append("rect").attr("x", 0).attr("y", 0)
 		.attr("width", out.squareSize).attr("height", out.squareSize)
-		.attr("fill", "none").style("stroke", "black").attr("stroke-width", 0.5)
+		.attr("fill", "none").style("stroke", "black").attr("stroke-width", 0.7)
 
 
 		//'no data' legend box
 		if(out.noData) {
-			y = y + out.squareSize + out.boxPadding*2 + out.labelFontSize;
+			y = y + 1.4142*out.squareSize + out.boxPadding*2 + out.labelFontSize;
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-			.attr("width", sz).attr("height", sz)
+			.attr("width", out.noDataShapeSize).attr("height", out.noDataShapeSize)
 			.attr("fill", m.noDataFillStyle() )
-			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.attr("stroke", "black").attr("stroke-width", 0.7)
 			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl1=nd
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']");
 				sel.style("fill", m.nutsrgSelFillSty());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				select(this).style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl2
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']");
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
 				select(this).style("fill", m.noDataFillStyle());
 			});
 			//'no data' label
-			lgg.append("text").attr("x", out.boxPadding+sz+5).attr("y", y+sz*0.5)
+			lgg.append("text").attr("x", out.boxPadding+out.noDataShapeSize+out.boxPadding).attr("y", y+out.noDataShapeSize*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
