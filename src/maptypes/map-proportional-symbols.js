@@ -102,7 +102,7 @@ export const map = function (config) {
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()
 				} else {
-					let symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
+					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
 					return symbol().type(symbolType).size(size * size)()
 				}
 			})
