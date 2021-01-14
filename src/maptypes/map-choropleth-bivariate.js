@@ -17,6 +17,7 @@ export const map = function (config) {
 
 	out.clnb_ = 3;
 	//stevens.greenblue
+	//TODO make it possible to use diverging color ramps ?
 	out.startColor_ = "#e8e8e8";
 	out.color1_ = "#73ae80";
 	out.color2_ = "#6c83b5";
@@ -54,6 +55,7 @@ export const map = function (config) {
 	out.updateClassification = function () {
 
 		//make single classifiers
+		//TODO make it possible to use other types of classifiers ?
 		const range = [...Array(out.clnb()).keys()];
 		out.classifier1( scaleQuantile().domain(out.statData("v1").getArray()).range(range) );
 		out.classifier2( scaleQuantile().domain(out.statData("v2").getArray()).range(range) );
@@ -123,6 +125,7 @@ const scaleBivariate = function(clnb, startColor, color1, color2, endColor) {
 		for(let j=0; j<clnb; j++) row.push(colFun(j/(clnb-1)));
 		cs.push(row);
 	}
+	//TODO compute other matrix based on rows, and average both?
 
 	return function(ecl1, ecl2) {
 		return cs[ecl1][ecl2];
