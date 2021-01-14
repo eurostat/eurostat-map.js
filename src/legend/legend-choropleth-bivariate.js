@@ -12,12 +12,15 @@ export const legendChoropleth = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
 
+	//size
+	out.squareSize = 50;
 	//the order of the legend elements. Set to false to invert.
 	out.ascending1 = true;
 	out.ascending2 = true;
-
-	out.shapeSize = 20;
-
+	
+	//labels
+	out.label1 = "Variable 1";
+	out.label2 = "Variable 2";
 	//the font size of the legend label
 	out.labelFontSize = 12;
 
@@ -36,6 +39,7 @@ export const legendChoropleth = function (map, config) {
 		const svgMap = m.svg();
 		const lgg = out.lgg;
 		const clnb = m.clnb();
+		const sz = out.squareSize / clnb;
 
 		//remove previous content
 		lgg.selectAll("*").remove();
@@ -56,65 +60,65 @@ export const legendChoropleth = function (map, config) {
 		//the vertical position of the legend element
 		let y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0);
 
+		//square group
+		const sz2 = out.squareSize * 0.5;
+		const square = lgg.append("g")
+		.attr("transform", "translate(" + (2*out.boxPadding+out.labelFontSize) + "," + y + ") rotate(-45,"+sz2+","+sz2+")")
+
 		for(let i=0; i<clnb; i++)
 			for(let j=0; j<clnb; j++) {
 
 				//the class numbers, depending on order
 				const ecl1 = out.ascending1? clnb-i-1 : i;
 				const ecl2 = out.ascending2? clnb-j-1 : j;
+				const fill = m.classToFillStyle()(ecl1,ecl2);
 
 				//draw rectangle
-				lgg.append("rect").attr("x", out.boxPadding+(clnb-1-i)*out.shapeSize).attr("y", y+j*out.shapeSize)
-				.attr("width", out.shapeSize).attr("height", out.shapeSize)
-				.attr("fill", m.classToFillStyle()(ecl1,ecl2))
+				square.append("rect").attr("x", (clnb-1-i)*sz).attr("y", j*sz)
+				.attr("width", sz).attr("height", sz)
+				.attr("fill", fill)
+				.on("mouseover", function () {
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']");
+					sel.style("fill", m.nutsrgSelFillSty());
+					sel.attr("fill___", function () { select(this).attr("fill"); });
+					select(this).style("fill", m.nutsrgSelFillSty());
+				})
+				.on("mouseout", function () {
+					const sel = svgMap.select("#g_nutsrg").selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']");
+					sel.style("fill", function () { select(this).attr("fill___"); });
+					select(this).style("fill", fill);
+				})
 			}
+
+		//labels
+		square.append("text").attr("x", 0).attr("y", out.squareSize + out.labelFontSize)
+		.text(out.label1)
+		.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+		square.append("text").attr("x", -out.labelFontSize).attr("y", out.labelFontSize)
+		.text(out.label2)
+		.attr("transform", "rotate(90) translate("+out.labelFontSize+",0)")
+		.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+		//https://stackoverflow.com/questions/16726115/svg-text-rotation-around-the-center/30022443
 
 
 		//frame
-		lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-		.attr("width", out.shapeSize * clnb).attr("height", out.shapeSize * clnb)
+		square.append("rect").attr("x", 0).attr("y", 0)
+		.attr("width", out.squareSize).attr("height", out.squareSize)
 		.attr("fill", "none").style("stroke", "black").attr("stroke-width", 0.5)
 
-			//rectangle
-			/*/lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
-			.attr("fill", m.classToFillStyle()(ecl, m.clnb()))
-			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", m.nutsrgSelFillSty());
-				sel.attr("fill___", function (d) { select(this).attr("fill"); });
-				select(this).style("fill", m.nutsrgSelFillSty());
-			})
-			.on("mouseout", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", function (d) { select(this).attr("fill___"); });
-				select(this).style("fill", m.classToFillStyle()(ecl, m.clnb()));
-			});
-
-			//separation line
-			if(i>0)
-				lgg.append("line").attr("x1", out.boxPadding).attr("y1", y).attr("x2", out.boxPadding+out.sepLineLength).attr("y2", y)
-				.attr("stroke", out.sepLineStroke).attr("stroke-width", out.sepLineStrokeWidth);
-
-			//label
-			if(i<m.clnb()-1)
-				lgg.append("text").attr("x", out.boxPadding+Math.max(out.shapeWidth, out.sepLineLength)+out.labelOffset).attr("y", y+out.shapeHeight)
-				.attr("alignment-baseline", "middle")
-				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
-		}*/
 
 		//'no data' legend box
 		if(out.noData) {
-			y = y + out.shapeSize * clnb + out.boxPadding;
+			y = y + out.squareSize + out.boxPadding*2 + out.labelFontSize;
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-			.attr("width", out.shapeSize).attr("height", out.shapeSize)
+			.attr("width", sz).attr("height", sz)
 			.attr("fill", m.noDataFillStyle() )
 			.attr("stroke", "black").attr("stroke-width", 0.5)
 			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl2
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl1=nd
 				sel.style("fill", m.nutsrgSelFillSty());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				select(this).style("fill", m.nutsrgSelFillSty());
@@ -125,7 +129,7 @@ export const legendChoropleth = function (map, config) {
 				select(this).style("fill", m.noDataFillStyle());
 			});
 			//'no data' label
-			lgg.append("text").attr("x", out.boxPadding+out.shapeSize+5).attr("y", y+out.shapeSize*0.5)
+			lgg.append("text").attr("x", out.boxPadding+sz+5).attr("y", y+sz*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
