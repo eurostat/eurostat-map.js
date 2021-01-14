@@ -116,7 +116,7 @@ export const map = function (config) {
 
 	//@override
 	out.getLegendConstructor = function() {
-		return lgch.legendChoropleth;
+		return lgch.legend;
 	}
 
 	return out;

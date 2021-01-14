@@ -158,7 +158,7 @@ export const map = function (config) {
 
 	//@override
 	out.getLegendConstructor = function() {
-		return lgps.legendProportionalSymbols;
+		return lgps.legend;
 	}
 
 

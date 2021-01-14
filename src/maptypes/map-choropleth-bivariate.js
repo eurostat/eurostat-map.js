@@ -104,7 +104,7 @@ export const map = function (config) {
 
 	//@override
 	out.getLegendConstructor = function() {
-		return lgchbi.legendChoroplethBivariate;
+		return lgchbi.legend;
 	}
 
 	return out;
