@@ -72,12 +72,11 @@ export const legendProportionalSymbols = function (map, config) {
 				let height = Math.sqrt(size);
 				context.moveTo(0, 0)
 				context.lineTo(0, height);
-				context.lineTo(out.map.psWidth_, height);
-				context.lineTo(out.map.psWidth_, 0);
+				context.lineTo(out.map.psBarWidth_, height);
+				context.lineTo(out.map.psBarWidth_, 0);
 				context.lineTo(0, 0);
 				context.closePath();
 			}
-
 			shape = d3.symbol().type({ draw: drawRectangle })
 		} else {
 			let symbolType = getSymbolType(out.map.psShape_);
@@ -91,7 +90,10 @@ export const legendProportionalSymbols = function (map, config) {
 		let totalHeight = 0; //sum of shape sizes
 		for (let i = 1; i < out.cellNb + 1; i++) {
 
-			let val = maxVal / i; // divide the maxVal by the 'cell number' index
+			//class number
+			const ecl = out.ascending? out.cellNb-i+1 : i;
+
+			let val = maxVal / ecl; // divide the maxVal by the 'cell number' index
 			let size = m.classifier_(val); //size 
 
 
@@ -103,12 +105,12 @@ export const legendProportionalSymbols = function (map, config) {
 			let y;
 			if (out.map.psShape_ == "bar") {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
-				x = out.map.psWidth_ * 2;
+				x = out.map.psBarWidth_ * 2;
 				//we also dont need the y offset
 				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight);
 			} else {
 				x = out.boxPadding + m.classifier_(maxVal); //set X offset as largest symbol size
-				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight) + size * i;
+				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight) + size;
 			}
 			totalHeight = totalHeight + size + out.shapePadding;
 

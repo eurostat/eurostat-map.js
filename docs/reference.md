@@ -205,9 +205,10 @@ eurostatmap.map("ps")
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, square, star, cross, diamond, triangle, wye or custom |
+| *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
 | *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol. See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
 | *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol, in pixels. |
+| *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
 | *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size of the symbol, for non null values, in pixels. |
 | *map*.**psMinValue**([*value*]) | number | *0* | The minimum value of the range domain. |
 | *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol. |
