@@ -99,7 +99,7 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
-		//apply style to nuts regions depending on class
+		//apply style to nuts regions depending on classes
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
