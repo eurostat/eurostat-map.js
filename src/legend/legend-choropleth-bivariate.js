@@ -13,26 +13,13 @@ export const legendChoropleth = function (map, config) {
 	const out = lg.legend(map, config);
 
 	//the order of the legend elements. Set to false to invert.
-	out.ascending = true;
+	out.ascending1 = true;
+	out.ascending2 = true;
 
-	//the width of the legend box elements
-	out.shapeWidth = 13;
-	//the height of the legend box elements
-	out.shapeHeight = 15;
-
-	//the separation line length
-	out.sepLineLength = 17;
-	//the separation line color
-	out.sepLineStroke = "black";
-	//the separation line width
-	out.sepLineStrokeWidth = 1;
+	out.shapeSize = 20;
 
 	//the font size of the legend label
 	out.labelFontSize = 12;
-	//the number of decimal for the legend labels
-	out.labelDecNb = 2;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 3;
 
 	//show no data
 	out.noData = true;
@@ -48,6 +35,7 @@ export const legendChoropleth = function (map, config) {
 		const m = out.map;
 		const svgMap = m.svg();
 		const lgg = out.lgg;
+		const clnb = m.clnb();
 
 		//remove previous content
 		lgg.selectAll("*").remove();
@@ -65,20 +53,22 @@ export const legendChoropleth = function (map, config) {
 		//set font family
 		lgg.style("font-family", out.fontFamily);
 
-		//define format for labels
-		const f = format("." + out.labelDecNb + "f");
+		//the vertical position of the legend element
+		let y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0);
 
-		//draw legend elements for classes: rectangle + label
-		for(let i=0; i<m.clnb(); i++) {
+		for(let i=0; i<clnb; i++)
+			for(let j=0; j<clnb; j++) {
+				
+			}
 
-			//the vertical position of the legend element
-			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*out.shapeHeight;
 
-			//the class number, depending on order
-			const ecl = out.ascending? m.clnb()-i-1 : i;
+		//frame
+		lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+		.attr("width", out.shapeSize * clnb).attr("height", out.shapeSize * clnb)
+		.attr("fill", "none").style("stroke", "black")
 
 			//rectangle
-			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			/*/lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
 			.attr("fill", m.classToFillStyle()(ecl, m.clnb()))
 			.on("mouseover", function () {
@@ -104,31 +94,30 @@ export const legendChoropleth = function (map, config) {
 				.attr("alignment-baseline", "middle")
 				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
-		}
+		}*/
 
 		//'no data' legend box
 		if(out.noData) {
-			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + m.clnb()*out.shapeHeight + out.boxPadding;
+			y = y + out.shapeSize * clnb + out.boxPadding;
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("width", out.shapeSize).attr("height", out.shapeSize)
 			.attr("fill", m.noDataFillStyle() )
 			.attr("stroke", "black").attr("stroke-width", 0.5)
 			.on("mouseover", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl2
 				sel.style("fill", m.nutsrgSelFillSty());
 				sel.attr("fill___", function (d) { select(this).attr("fill"); });
 				select(this).style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl2='nd']"); //TODO also ecl2
 				sel.style("fill", function (d) { select(this).attr("fill___"); });
 				select(this).style("fill", m.noDataFillStyle());
 			});
-
 			//'no data' label
-			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			lgg.append("text").attr("x", out.boxPadding+out.shapeSize+5).attr("y", y+out.shapeSize*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)

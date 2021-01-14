@@ -132,13 +132,6 @@ const scaleBivariate = function(clnb, startColor, color1, color2, endColor) {
 	}
   }
 
-/*
-const alpha = function(r,g,b) {
-	return function(t) {
-		return "rgba("+r+","+g+","+b+","+ Math.round(255*t) +")";
-	}
-}*/
-
 
 /**
  * Specific function for tooltip text.
@@ -154,20 +147,24 @@ const tooltipTextFunBiv = function (rg, map) {
 	//stat 1 value
 	const sv1 = map.statData("v1").get(rg.properties.id);
 	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
-	else buf.push(sv1.value);
-	//unit 1
-	const unit1 = map.statData("v1").unitText();
-	if (unit1) buf.push(" " + unit1);
+	else {
+		buf.push(sv1.value);
+		//unit 1
+		const unit1 = map.statData("v1").unitText();
+		if (unit1) buf.push(" " + unit1);
+	}
 
 	buf.push("<br>");
 
 	//stat 2 value
 	const sv2 = map.statData("v2").get(rg.properties.id);
 	if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
-	else buf.push(sv2.value);
-	//unit 2
-	const unit2 = map.statData("v2").unitText();
-	if (unit2) buf.push(" " + unit2);
+	else {
+		buf.push(sv2.value);
+		//unit 2
+		const unit2 = map.statData("v2").unitText();
+		if (unit2) buf.push(" " + unit2);
+	}
 
 	return buf.join("");
 };
