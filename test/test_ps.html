@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
+  </head>
 
-<body>
+  <body>
     <svg id="map"></svg>
+    <svg id="map1"></svg>
+    <svg id="map2"></svg>
+    <svg id="map3"></svg>
+    <svg id="map4"></svg>
+    <svg id="map5"></svg>
+    <svg id="map6"></svg>
+
     <script src="../build/eurostatmap.js"></script>
     <script src="https://d3js.org/d3-format.v2.min.js"></script>
     <!-- for custom symbol -->
@@ -15,43 +21,149 @@
     <script src="https://d3js.org/d3-shape.v2.min.js"></script>
 
     <script>
-        let format = d3.format(".2s");
+      let format = d3.format(".2s");
 
-        //Custom Semi Circle, accurate center and size
-        let customShapeCircle = {
-            draw: function (context, size) {
-                let r = Math.sqrt(2 * size / Math.PI);
-                let orgin = (4 * r) / (3 * Math.PI); //the orgin of the circle, not of the symbol
-                context.arc(0, -orgin, r, Math.PI, 2 * Math.PI, true);
-                context.closePath();
-            }
-        }
+      //Custom Semi Circle, accurate center and size
+      let customShapeCircle = {
+        draw: function (context, size) {
+          let r = Math.sqrt((2 * size) / Math.PI);
+          let orgin = (4 * r) / (3 * Math.PI); //the orgin of the circle, not of the symbol
+          context.arc(0, -orgin, r, Math.PI, 2 * Math.PI, true);
+          context.closePath();
+        },
+      };
 
-        let customCircle = d3.symbol().type(customShapeCircle);
+      let customCircle = d3.symbol().type(customShapeCircle);
 
-        eurostatmap.map("ps")
-            //.width(900)
-            .nutsLvl(1)
-            //.insets()
-            .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
-            .psShape("custom") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
-            .psCustomShape(customCircle)
-            .psMaxSize(25)
-            .psFill("red")
-            //.psStrokeWidth(3)
-            //.psStroke("red")
+      // circles
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .nutsLvl(1)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("circle") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
+        .psMaxSize(20)
+        .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 6,
+          format: format,
+          ascending: false,
+          shapePadding: 8,
+        })
+        .build();
 
-            .tooltipShowFlags("long")
-            .legend({
-                titleText: "Population",
-                cellNb: 6,
-                labelDecNb: 0,
-                height: 200,
-                width: 140,
-                format: format
-            })
-            .build();
+      // semi-circles
+      eurostatmap
+        .map("ps")
+        .svgId("map1")
+        .width(500)
+        .nutsLvl(1)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("custom")
+        .psCustomShape(customCircle)
+        .psMaxSize(15)
+        .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 6,
+          format: d3.format(",.2r"),
+          x: 350,
+          ascending: false,
+          
+        })
+        .build();
+
+      // vertical bars
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .svgId("map2")
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("red")
+        .psMaxSize(70)
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 3,
+          format: format,
+          
+        })
+        .build();
+
+      // diamond
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .svgId("map3")
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("diamond") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 3,
+          shapePadding: 30,
+          format: format,
+          ascending: false
+        })
+        .build();
+
+      // cross
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .svgId("map4")
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("cross") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 3,
+          shapePadding: 10,
+          format: format,
+          
+        })
+        .build();
+
+      // wye
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .svgId("map5")
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("wye") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("red")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 3,
+          shapePadding: 10,
+          labelOffset: 30,
+          format: d3.format(",.2r"),
+          x: 350,
+        })
+        .build();
     </script>
-</body>
-
+  </body>
 </html>

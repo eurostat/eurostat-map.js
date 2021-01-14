@@ -1,7 +1,7 @@
 import { scaleSqrt } from "d3-scale";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
-import { symbol, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
+import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
 /**
  * Returns a proportionnal symbol map.
@@ -13,11 +13,11 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config, true);
 
-	out.psShape_ = "circle"; // accepted values: circle, rectangle, square, star, diamond, wye, cross or custom
+	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 0.8; //for circle
-	out.psWidth_ = 5; //for rect
+	out.psBarWidth_ = 5; //for vertical bars
 	out.psMinHeight_ = 5;
 	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
@@ -41,8 +41,8 @@ export const map = function (config) {
 		});
 
 	//override attribute values with config values
-	if(config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape"].forEach(function (key) {
-		if(config[key]!=undefined) out[key](config[key]);
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
 	});
 
 	//@override
@@ -50,11 +50,7 @@ export const map = function (config) {
 		//get max value
 		const maxValue = out.statData().getMax();
 		//define classifier
-		if (out.psShape_ == "rectangle") {
-			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinHeight_ * 0.5, out.psMaxHeight_ * 0.5]));
-		} else {
-			out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]));
-		}
+		out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_, out.psMaxSize_]));
 		return out;
 	};
 
@@ -64,23 +60,7 @@ export const map = function (config) {
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
-		//set circle Size depending on stat value
-		if (out.psShape_ == "circle") {
-			out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("circle")
-				//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
-				.style("fill", out.psFill())
-				.style("fill-opacity", out.psFillOpacity())
-				.style("stroke", out.psStroke())
-				.style("stroke-width", out.psStrokeWidth())
-
-				.transition().duration(out.transitionDuration())
-				.attr("r", function (rg) {
-					const sv = out.getStat(rg.properties.id);
-					if (!sv || !sv.value) return 0;
-					return out.classifier()(+sv.value);
-				})
-		} else if (out.psShape_ == "rectangle") {
+		if (out.psShape_ == "bar") {
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
 
@@ -88,9 +68,9 @@ export const map = function (config) {
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
-				.attr("width", out.psWidth_)
+				.attr("width", out.psBarWidth_)
 				.attr("height", function (rg) {
-					const sv = out.getStat(rg.properties.id);
+					const sv = out.statData().get(rg.properties.id);
 					if (!sv || !sv.value) {
 						return 0;
 					}
@@ -111,26 +91,6 @@ export const map = function (config) {
 			let path = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("path");
 
-			let symbolType;
-			if (out.psShape_ == "cross") {
-				symbolType = symbolCross;
-			} else if (out.psShape_ == "square") {
-				symbolType = symbolSquare;
-			} else if (out.psShape_ == "diamond") {
-				symbolType = symbolDiamond;
-			} else if (out.psShape_ == "triangle") {
-				symbolType = symbolTriangle;
-			} else if (out.psShape_ == "star") {
-				symbolType = symbolStar;
-			} else if (out.psShape_ == "wye") {
-				symbolType = symbolWye;
-			} else if (out.psShape_ == "custom") {
-				symbolType = symbolWye;
-			} else {
-				symbolType = symbolCircle;
-			}
-
-
 			path.attr("d", rg => {
 				const sv = out.statData().get(rg.properties.id);
 				let size;
@@ -142,6 +102,7 @@ export const map = function (config) {
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()
 				} else {
+					let symbolType = getSymbolType(out.psShape_)
 					return symbol().type(symbolType).size(size * size)()
 				}
 
@@ -161,6 +122,34 @@ export const map = function (config) {
 		return lgps.legend;
 	}
 
-
 	return out;
+}
+
+
+/**
+* @function getSymbolType
+* @description returns a d3 symbol from a shape name
+* @param {String} psShape //accepted values are cross, square, diamond, triangle, star, wye or circle
+*/
+export const getSymbolType = function (psShape) {
+
+	let symbolType;
+	if (psShape == "cross") {
+		symbolType = symbolCross;
+	} else if (psShape == "square") {
+		symbolType = symbolSquare;
+	} else if (psShape == "diamond") {
+		symbolType = symbolDiamond;
+	} else if (psShape == "triangle") {
+		symbolType = symbolTriangle;
+	} else if (psShape == "star") {
+		symbolType = symbolStar;
+	} else if (psShape == "wye") {
+		symbolType = symbolWye;
+	} else if (psShape == "circle") {
+		symbolType = symbolCircle;
+	} else {
+		symbolType = symbolCircle;
+	}
+	return symbolType;
 }

@@ -21,4 +21,4 @@ eurostat-map.js is now bundled and compiled using webpack & babel.
 
 ### Testing
 
-To run tests, use "npm test". This will execute eurostatmap.test.js using jest. Jest will execute the code in this file using a headless chrome upon test.html.
+To run tests, use "npm test". This will execute all files with the suffix .test.js in /test/jest/ using jest. Jest will execute the code in these files using headless chrome and output the results.
