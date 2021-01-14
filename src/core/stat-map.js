@@ -379,7 +379,8 @@ function rasterize(svg) {
 		//display value
 		buf.push(sv.value);
 		//unit
-		if (map.stat().unitText()) buf.push(" " + map.stat().unitText());
+		const unit = map.statData("default").unitText();
+		if (unit) buf.push(" " + unit);
 		//flag
 		const f = sv.status;
 		if (f && map.tooltipShowFlags_) {

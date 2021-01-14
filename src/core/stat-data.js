@@ -209,7 +209,20 @@ export const statData = function (config) {
 
 				callback();
 		});
-	}
+	};
+
+	/**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["unitText_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		}
+	);
 
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
