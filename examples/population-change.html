@@ -24,7 +24,8 @@
             .titleFill("white")
             .scale("60M")
             .width(900)
-            .nutsLvl(3).datasetCode("demo_r_gind3").filters({ indic_de: "GROWRT", time: 2016 })
+            .nutsLvl(3)
+            .stat( { eurostatDatasetCode: "demo_r_gind3", filters: { indic_de: "GROWRT", time: 2016 }, unitText: "‰" } )
 
             .colorFun(d3.interpolateRdYlBu)
             .classifMethod("threshold")
@@ -39,7 +40,6 @@
 
             .drawGraticule(false)
 
-            .unitText("‰")
             .tooltipShowFlags("long")
             .botTxtFill("white")
 

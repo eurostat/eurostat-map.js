@@ -64,6 +64,8 @@ The map statistical data can be accessed with the *map*.**statData**() method, w
 | **getUniqueValues**() | Return stat unique values. This can be used for categorical maps. |
 | **getMin**() | Get minimum value. |
 | **getMax**() | Get maximum value. |
+| **unitText**([*value*]) | String | *undefined* | The text of the unit of measurement, to show in the tooltip. |
+
 
 The map statistical data source can be accessed with the *map*.**stat**([*value*]) method. Several types of data sources are supported (see sections below).
 
@@ -148,10 +150,9 @@ Example:
 ```javascript
 eurostatmap.map("ch")
 	.title("Population in Europe")
-	.stat( { eurostatDatasetCode:"demo_r_d3dens" } )
+    .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "inhab./km²" } )
 	.classifMethod("threshold")
 	.threshold([50, 75, 100, 150, 300, 850])
-	.unitText("inhab./km²")
 	.tooltipShowFlags(false)
 	.legend({ noData:false, labelDecNb:0, x:15, y:160, })
 	.build();
@@ -196,10 +197,9 @@ Example:
 ```javascript
 eurostatmap.map("ps")
 	.nutsLvl(1)
-	.stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
+	.stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
 	.psMaxSize(25)
 	.psFill("red")
-	.unitText("inhabitants")
 	.build();
 ```
 
@@ -332,7 +332,6 @@ The tooltip is the little rectangle showing information on the map feature under
 | -------- | ------ | ---------- | ----------- |
 | *map*.**tooltipText**([*value*]) | Function | *auto* | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
-| *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
 
 ## Styling
 

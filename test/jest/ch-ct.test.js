@@ -27,9 +27,8 @@ test('Two maps on a single page', async () => {
             .title("Population in Europe")
             .width(400)
             .scale("20M")
-            .stat( { eurostatDatasetCode:"demo_r_d3dens" } )
+            .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "people/km²" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .unitText("people/km²")
             .tooltipShowFlags(false)
             .legend({
                 title: "test",

@@ -89,6 +89,9 @@ export const statData = function (config) {
 	/** Some metadata */
 	out.metadata = undefined;
 
+	//a text for the statitics unit of measure, to be shown in the tooltip
+	out.unitText_ = undefined;
+
 
 	/**
 	 * Retrieve stat data from remote data sources.
@@ -208,13 +211,8 @@ export const statData = function (config) {
 		});
 	}
 
-
-	//use default config
-	//config = config || { eurostatDatasetCode:"demo_r_d3dens" };
-
 	//override attribute values with config values
 	if(config) for (let key in config) out[key+"_"] = config[key];
-
 
 	return out;
 }
