@@ -13,10 +13,7 @@ export const legend = function (map, config) {
 
 	//size
 	out.squareSize = 50;
-	//the order of the legend elements. Set to false to invert.
-	out.ascending1 = true;
-	out.ascending2 = true;
-	
+
 	//labels
 	out.label1 = "Variable 1";
 	out.label2 = "Variable 2";
@@ -71,8 +68,8 @@ export const legend = function (map, config) {
 			for(let j=0; j<clnb; j++) {
 
 				//the class numbers, depending on order
-				const ecl1 = out.ascending1? clnb-i-1 : i;
-				const ecl2 = out.ascending2? clnb-j-1 : j;
+				const ecl1 = clnb-i-1;
+				const ecl2 = clnb-j-1;
 				const fill = m.classToFillStyle()(ecl1,ecl2);
 
 				//draw rectangle

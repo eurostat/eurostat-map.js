@@ -268,7 +268,7 @@ In addition to [the default legend parameters](#map-legend), categorical maps ha
 
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
 
-A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html)).
+A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. It shows how the correlation between these variables varies across space. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html)).
 
 Example:
 
@@ -284,13 +284,39 @@ eurostatmap.map("chbi")
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **** |  | ** | . |
+| *map*.**clnb**([*value*]) | int | *3* | The number of classes for the classification. The same value is used for both variables. |
+| *map*.**startColor**([*value*]) | color | *"#e8e8e8"* | The color for lowest values of both variables. |
+| *map*.**color1**([*value*]) | color | *"#73ae80"* | The color for the highest values of variable 1, and lowest of variable 2. |
+| *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
+| *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
+| *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | Fill style for regions with no data available. |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | **** |  | ** | . |
+
+
+	//size
+	out.squareSize = 50;
+	//the order of the legend elements. Set to false to invert.
+	out.ascending1 = true;
+	out.ascending2 = true;
+	
+	//labels
+	out.label1 = "Variable 1";
+	out.label2 = "Variable 2";
+	//the font size of the legend label
+	out.labelFontSize = 12;
+
+	//show no data
+	out.noData = true;
+	//show no data
+	out.noDataShapeSize = 15;
+	//no data text label
+	out.noDataText = "No data";
 
 
 
