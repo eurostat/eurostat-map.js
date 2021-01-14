@@ -49,7 +49,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//the function returning the tooltip text
 	out.tooltipText_ = (rg => { return rg.properties.na; });
 	out.tooltipShowFlags_ = "short"; //"short" "long"
-	out.unitText_ = "";
 
 
 	//template default style

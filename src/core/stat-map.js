@@ -54,6 +54,8 @@ export const statMap = function (config, withCenterPoints) {
 	out.transitionDuration_ = 800;
 	//specific tooltip text function
 	out.tooltipText_ = tootipTextFunStat;
+	//a text for the statitics unit, to be shown in the tooltip
+	out.unitText_ = "";
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function() { };
 	//a callback function to execute after the map build is complete.
@@ -71,7 +73,7 @@ export const statMap = function (config, withCenterPoints) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_", "callback_"]
+	["legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "unitText_", "filtersDefinitionFun_", "callback_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
