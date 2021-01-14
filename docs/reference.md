@@ -282,7 +282,16 @@ eurostatmap.map("chbi")
 	.build();
 ```
 
-TODO
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **** |  | ** | . |
+
+In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **** |  | ** | . |
+
 
 
 ## Map title
