@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
@@ -262,6 +262,27 @@ In addition to [the default legend parameters](#map-legend), categorical maps ha
 | **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
 | **noData** | boolean | *true* | Show 'no data' style. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
+
+
+## Bivariate choropleth map
+
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
+
+A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html)).
+
+Example:
+
+```javascript
+eurostatmap.map("chbi")
+	.nutsLvl(2)
+	.nutsYear(2016)
+	.stat("v1", { eurostatDatasetCode:"demo_r_d3dens", unitText: "inh./km²" } )
+	.stat("v2", { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: 2017 }, unitText: "%" } )
+	.clnb(4)
+	.build();
+```
+
+
 
 
 ## Map title
