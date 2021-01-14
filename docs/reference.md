@@ -296,28 +296,13 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **** |  | ** | . |
-
-
-	//size
-	out.squareSize = 50;
-	//the order of the legend elements. Set to false to invert.
-	out.ascending1 = true;
-	out.ascending2 = true;
-	
-	//labels
-	out.label1 = "Variable 1";
-	out.label2 = "Variable 2";
-	//the font size of the legend label
-	out.labelFontSize = 12;
-
-	//show no data
-	out.noData = true;
-	//show no data
-	out.noDataShapeSize = 15;
-	//no data text label
-	out.noDataText = "No data";
-
+| **squareSize** | number | *50* | The size, in pixel, of the legend square. |
+| **label1** | string | *"Variable 1"* | The text for the label of variable 1. |
+| **label2** | string | *"Variable 2"* | The text for the label of variable 1. |
+| **labelFontSize** | int | *12* | The font size of the legend label. |
+| **noData** | boolean | *true* | Show 'no data' style. |
+| **noDataShapeSize** | number | *15* | . |
+| **noDataText** | Text | *"No data"* | 'No data' text label. |
 
 
 ## Map title
