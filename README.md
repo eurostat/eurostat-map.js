@@ -38,7 +38,7 @@ See the **[API reference](docs/reference.md)**:
 - For a [choropleth map](docs/reference.md#choropleth-map),
 - For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
 - For a [categorical map](docs/reference.md#categorical-map).
-- For a [bivariate choropleth map](docs/reference.md#bivariate-categorical-map).
+- For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
