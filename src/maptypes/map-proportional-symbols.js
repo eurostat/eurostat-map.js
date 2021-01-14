@@ -25,7 +25,7 @@ export const map = function (config) {
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
-	//the classifier: a function which return a class number from a stat value.
+	//the classifier: a function which return the symbol size from the stat value.
 	out.classifier_ = undefined;
 
 	/**
@@ -102,10 +102,9 @@ export const map = function (config) {
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()
 				} else {
-					let symbolType = getSymbolType(out.psShape_)
+					let symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
 					return symbol().type(symbolType).size(size * size)()
 				}
-
 			})
 				.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
@@ -125,31 +124,15 @@ export const map = function (config) {
 	return out;
 }
 
-
 /**
-* @function getSymbolType
-* @description returns a d3 symbol from a shape name
-* @param {String} psShape //accepted values are cross, square, diamond, triangle, star, wye or circle
+* @description give a d3 symbol from a shape name
 */
-export const getSymbolType = function (psShape) {
-
-	let symbolType;
-	if (psShape == "cross") {
-		symbolType = symbolCross;
-	} else if (psShape == "square") {
-		symbolType = symbolSquare;
-	} else if (psShape == "diamond") {
-		symbolType = symbolDiamond;
-	} else if (psShape == "triangle") {
-		symbolType = symbolTriangle;
-	} else if (psShape == "star") {
-		symbolType = symbolStar;
-	} else if (psShape == "wye") {
-		symbolType = symbolWye;
-	} else if (psShape == "circle") {
-		symbolType = symbolCircle;
-	} else {
-		symbolType = symbolCircle;
-	}
-	return symbolType;
+export const symbolsLibrary = {
+	cross: symbolCross,
+	square: symbolSquare,
+	diamond: symbolDiamond,
+	triangle: symbolTriangle,
+	star: symbolStar,
+	wye: symbolWye,
+	circle: symbolCircle,
 }

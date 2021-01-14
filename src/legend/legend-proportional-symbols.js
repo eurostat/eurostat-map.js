@@ -1,6 +1,6 @@
 import { format } from "d3-format";
 import * as lg from '../core/legend';
-import { getSymbolType } from "../maptypes/map-proportional-symbols";
+import { symbolsLibrary } from "../maptypes/map-proportional-symbols";
 import { symbol } from 'd3-shape';
 
 /**
@@ -76,7 +76,7 @@ export const legend = function (map, config) {
 			}
 			shape = d3.symbol().type({ draw: drawRectangle })
 		} else {
-			let symbolType = getSymbolType(out.map.psShape_);
+			let symbolType = symbolsLibrary[out.map.psShape_] || symbolsLibrary["circle"];
 			shape = symbol().type(symbolType);
 		}
 
