@@ -2,7 +2,7 @@ import { select } from "d3-selection";
 import { scaleQuantile } from "d3-scale";
 import { interpolateRgb } from "d3-interpolate";
 import * as smap from '../core/stat-map';
-import * as lgch from '../legend/legend-choropleth-bivariate';
+import * as lgchbi from '../legend/legend-choropleth-bivariate';
 
 /**
  * Return a bivariate choropleth map.
@@ -104,7 +104,7 @@ export const map = function (config) {
 
 	//@override
 	out.getLegendConstructor = function() {
-		return lgch.legendChoropleth;
+		return lgchbi.legendChoroplethBivariate;
 	}
 
 	return out;

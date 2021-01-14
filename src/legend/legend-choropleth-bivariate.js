@@ -1,13 +1,12 @@
 import { select } from "d3-selection";
-import { format } from "d3-format";
 import * as lg from '../core/legend';
 
 /**
- * A legend for choropleth maps
+ * A legend for choropleth-bivariate maps
  * 
  * @param {*} map 
  */
-export const legendChoropleth = function (map, config) {
+export const legendChoroplethBivariate = function (map, config) {
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
