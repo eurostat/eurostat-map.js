@@ -146,8 +146,8 @@ export const getSymbolType = function (psShape) {
 		symbolType = symbolStar;
 	} else if (psShape == "wye") {
 		symbolType = symbolWye;
-	} else if (psShape == "wye") {
-
+	} else if (psShape == "circle") {
+		symbolType = symbolCircle;
 	} else {
 		symbolType = symbolCircle;
 	}
