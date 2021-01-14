@@ -109,7 +109,7 @@ export const legendProportionalSymbols = function (map, config) {
 				//we also dont need the y offset
 				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight);
 			} else {
-				x = out.boxPadding + m.classifier_(maxVal); //set X offset as largest symbol size
+				x = out.boxPadding + (m.classifier_(maxVal)/1.5); //set X offset by the largest symbol size
 				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight) + size;
 			}
 			totalHeight = totalHeight + size + out.shapePadding;

@@ -52,7 +52,8 @@
           title: "Population",
           cellNb: 6,
           format: format,
-          ascending: false
+          ascending: false,
+          shapePadding: 8,
         })
         .build();
 
@@ -76,7 +77,8 @@
           cellNb: 6,
           format: d3.format(",.2r"),
           x: 350,
-          ascending: false
+          ascending: false,
+          
         })
         .build();
 
@@ -98,6 +100,7 @@
           title: "Population",
           cellNb: 3,
           format: format,
+          
         })
         .build();
 
@@ -116,8 +119,8 @@
         .tooltipShowFlags("long")
         .legend({
           title: "Population",
-          cellNb: 4,
-          shapePadding: 15,
+          cellNb: 3,
+          shapePadding: 30,
           format: format,
           ascending: false
         })
@@ -141,6 +144,7 @@
           cellNb: 3,
           shapePadding: 10,
           format: format,
+          
         })
         .build();
 
