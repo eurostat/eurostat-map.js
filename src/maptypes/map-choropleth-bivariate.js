@@ -1,4 +1,4 @@
-import { color } from "d3-color";
+import { select } from "d3-selection";
 import { scaleQuantile } from "d3-scale";
 import { interpolateRgb } from "d3-interpolate";
 import * as smap from '../core/stat-map';
@@ -21,11 +21,14 @@ export const map = function (config) {
 	out.color1_ = "#73ae80";
 	out.color2_ = "#6c83b5";
 	out.endColor_ = "#2a5a5b";
+	//a function returning the colors from the classes i,j
+	out.classToFillStyle_ = undefined;
 
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 	//the classifier: a function which return a class number from a stat value.
-	out.classifier_ = undefined;
+	out.classifier1_ = undefined;
+	out.classifier2_ = undefined;
 	//specific tooltip text function
 	out.tooltipText_ = tooltipTextFunBiv;
 
@@ -37,13 +40,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_", "startColor_", "color1_", "color2_", "endColor_", "noDataFillStyle_", "classifier_"]
+	["clnb_", "startColor_", "color1_", "color2_", "endColor_", "classToFillStyle_", "noDataFillStyle_", "classifier1_", "classifier2_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["clnb", "startColor", "color1", "color2", "endColor", "noDataFillStyle"].forEach(function (key) {
+	if(config) ["clnb", "startColor", "color1", "color2", "endColor", "classToFillStyle", "noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -52,16 +55,29 @@ export const map = function (config) {
 
 		//make single classifiers
 		const range = [...Array(out.clnb()).keys()];
-		const classifier1 = scaleQuantile().domain(out.statData("v1").getArray()).range(range);
-		const classifier2 = scaleQuantile().domain(out.statData("v2").getArray()).range(range);
+		out.classifier1( scaleQuantile().domain(out.statData("v1").getArray()).range(range) );
+		out.classifier2( scaleQuantile().domain(out.statData("v2").getArray()).range(range) );
+
+		//assign class to nuts regions, based on their value
+		out.svg().selectAll("path.nutsrg")
+			.attr("ecl1", function (rg) {
+				const sv = out.statData("v1").get(rg.properties.id);
+				if (!sv) return "nd";
+				const v = sv.value;
+				if (v != 0 && !v) return "nd";
+				return +out.classifier1()(+v);
+			})
+			.attr("ecl2", function (rg) {
+				const sv = out.statData("v2").get(rg.properties.id);
+				if (!sv) return "nd";
+				const v = sv.value;
+				if (v != 0 && !v) return "nd";
+				return +out.classifier2()(+v);
+			})
 
 		//define bivariate scale
-		const scale = scaleBivariate( out.clnb(), classifier1, classifier2, out.startColor(), out.color1(), out.color2(), out.endColor() );
-
-		//store as classifier
-		out.classifier(scale);
-
-		//TODO do real classification
+		const scale = scaleBivariate( out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor() );
+		out.classToFillStyle(scale);
 
 		return out;
 	};
@@ -70,24 +86,18 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
-		//apply colors
+		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
-			.attr("fill", function (rg) {
-				//TODO use classification
+			.attr("fill", function () {
+				const ecl1 = select(this).attr("ecl1");
+				if (!ecl1 || ecl1 === "nd") return out.noDataFillStyle() || "gray";
+				const ecl2 = select(this).attr("ecl2");
+				if (!ecl2 || ecl2 === "nd") return out.noDataFillStyle() || "gray";
+				return out.classToFillStyle()(+ecl1, +ecl2);
+			});
 
-				//get v1 value
-				const sv1 = out.statData("v1").getValue(rg.properties.id);
-				if(!sv1) return out.noDataFillStyle();
-
-				//get v2 value
-				const sv2 = out.statData("v2").getValue(rg.properties.id);
-				if(!sv2) return out.noDataFillStyle();
-
-				return out.classifier()(sv1, sv2)
-			})
 		return out;
-
 	};
 
 	/*/@override
@@ -99,7 +109,7 @@ export const map = function (config) {
 }
 
 
-const scaleBivariate = function(clnb, classifier1, classifier2, startColor, color1, color2, endColor) {
+const scaleBivariate = function(clnb, startColor, color1, color2, endColor) {
 
 	//color ramps, by row
 	const cs = [];
@@ -114,8 +124,8 @@ const scaleBivariate = function(clnb, classifier1, classifier2, startColor, colo
 		cs.push(row);
 	}
 
-	return function(v1, v2) {
-		return cs[ classifier1(v1) ][ classifier2(v2) ];
+	return function(ecl1, ecl2) {
+		return cs[ecl1][ecl2];
 	}
   }
 
