@@ -58,7 +58,15 @@ export const legendChoropleth = function (map, config) {
 
 		for(let i=0; i<clnb; i++)
 			for(let j=0; j<clnb; j++) {
-				
+
+				//the class numbers, depending on order
+				const ecl1 = out.ascending1? clnb-i-1 : i;
+				const ecl2 = out.ascending2? clnb-j-1 : j;
+
+				//draw rectangle
+				lgg.append("rect").attr("x", out.boxPadding+(clnb-1-i)*out.shapeSize).attr("y", y+j*out.shapeSize)
+				.attr("width", out.shapeSize).attr("height", out.shapeSize)
+				.attr("fill", m.classToFillStyle()(ecl1,ecl2))
 			}
 
 
