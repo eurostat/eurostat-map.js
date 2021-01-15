@@ -20,15 +20,30 @@
             .stat("F", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "F", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("G-I", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "G-I", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("J", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "J", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            //.stat("K", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "K", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            //.stat("L", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "L", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            //.stat("M_N", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "M_N", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            //.stat("O-Q", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "O-Q", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            //.stat("R-U", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "R-U", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            .stripeColors({A:"red", "B-E":"blue", "F":"green", "G-I":"yellow", "J": "gray"})
+            .stat("K", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "K", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
+            .stat("L", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "L", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
+            .stat("M_N", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "M_N", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
+            .stat("O-Q", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "O-Q", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
+            .stat("R-U", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "R-U", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
+            .stripeColors({A:"green", "B-E":"yellow", "F":"yellow"})
+            .defaultStripeColor("blue")
             .scale("60M")
             .zoomExtent([1,2])
             .build();
+
+            /*
+	A	Agriculture, forestry and fishing
+	B-E	Industry (except construction)
+	C	Manufacturing
+	F	Construction
+	G-I	Wholesale and retail trade, transport, accommodation and food service activities
+	J	Information and communication
+	K	Financial and insurance activities
+	L	Real estate activities
+	M_N	Professional, scientific and technical activities; administrative and support service activities
+	O-Q	Public administration, defence, education, human health and social work activities
+  R-U	Arts, entertainment and recreation; other service activities; activities of household and extra-territorial organizations and bodies
+  */
 
 </script>
 </body>

@@ -15,6 +15,8 @@ export const map = function (config) {
 	out.stripeWidth_ = 50;
 	//colors - indexed by dataset code
 	out.stripeColors_ = {};
+	//default color, for all categories not specified
+	out.defaultStripeColor_ = "lightgray";
 	//orientation - vertical by default
 	//out.stripeOrientation_ = 0;
 
@@ -31,13 +33,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeColors_", "noDataFillStyle_"]
+	["stripeWidth_", "stripeColors_", "defaultStripeColor_", "noDataFillStyle_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeColors", "noDataFillStyle"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeColors", "defaultStripeColor", "noDataFillStyle"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -89,7 +91,7 @@ export const map = function (config) {
 				let x=0;
 				for(let s in comp) {
 					const dx = comp[s] * out.stripeWidth();
-					const col = out.stripeColors()[s] || "lightgray";
+					const col = out.stripeColors()[s] || out.defaultStripeColor() || "lightgray";
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
 					x += dx;
 				}
