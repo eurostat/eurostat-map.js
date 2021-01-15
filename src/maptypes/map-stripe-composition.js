@@ -43,13 +43,18 @@ export const map = function (config) {
 
 	//@override
 	out.updateClassification = function () {
-
 		return out;
 	};
 
 
 	//@override
 	out.updateStyle = function () {
+
+		//get regions
+		//for each, get all values
+		//compute composition (%)
+		//make corresponding texture
+		//apply texture
 
 		return out;
 	};
