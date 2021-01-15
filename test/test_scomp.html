@@ -15,7 +15,24 @@
             .scale("60M")
             .zoomExtent([1,2])
 
+            //cattle
+            //ANIMALS : "A2000", "A2300", "A2400", "A3100", "A4100", "A4200"
+            //"bovine", "cows", "buffalo", "pig", "sheep", "goat"
             .nutsLvl(2)
+            .nutsYear(2016)
+            .stripeWidth(12)
+            //.stripeOrientation(45)
+            .stat("A2000", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2000", unit: "THS_HD", time: "2017" }, unitText: "1000 heads" })
+            //.stat("A2300", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2300", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            //.stat("A2400", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2400", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            .stat("A3100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A3100", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            .stat("A4100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4100", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            .stat("A4200", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4200", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            .stripeColors({"A2000":"#7fc97f", "A2300":"#beaed4", "A2400":"#fdc086", "A3100":"#ffff99", "A4100":"#386cb0", "A4200":"#f0027f"})
+            //.defaultStripeColor("#beaed4")
+
+            /*/population by age
+            .nutsLvl(3)
             .nutsYear(2016)
             .stripeWidth(10)
             //.stripeOrientation(45)
@@ -23,8 +40,9 @@
             .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
             .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
             .stripeColors({"Y_LT15":"#7fc97f", "Y15-64":"#fdc086", "Y_GE65":"#beaed4"})
-            //.defaultStripeColor("#beaed4")
+            //.defaultStripeColor("#beaed4")*/
 
+            //GDP by sector
             /*.nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(30)
@@ -46,9 +64,7 @@
 
 
 /*
-- Population by age group
 - Livestock composition by animal
-- GDP by NACE type
 - Mortality by cause of death
 - Household consumption by COICOP
 - Governement expenditure by COFOG

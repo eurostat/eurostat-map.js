@@ -15,15 +15,16 @@ export const map = function (config) {
 	out.stripeWidth_ = 50;
 	//orientation - vertical by default
 	out.stripeOrientation_ = 0;
+
 	//colors - indexed by dataset code
 	out.stripeColors_ = {};
 	//default color, for all categories not specified
 	out.defaultStripeColor_ = "lightgray";
-
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
+
 	//specific tooltip text function
-	//out.tooltipText_ = tooltipTextFunBiv;
+	out.tooltipText_ = (rg => { return rg.properties.na; });
 
 
     /**
