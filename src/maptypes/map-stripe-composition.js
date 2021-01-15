@@ -23,6 +23,9 @@ export const map = function (config) {
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 
+	//labels
+	out.labelText_ = {};
+
 	//specific tooltip text function
 	out.tooltipText_ = (rg => { return rg.properties.na; }); //TODO show pie chart
 
@@ -34,13 +37,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "stripeColors_", "defaultStripeColor_", "noDataFillStyle_"]
+	["stripeWidth_", "stripeOrientation_", "stripeColors_", "defaultStripeColor_", "noDataFillStyle_", "labelText_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "stripeColors", "defaultStripeColor", "noDataFillStyle"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "stripeColors", "defaultStripeColor", "noDataFillStyle", "labelText"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -116,6 +119,7 @@ export const map = function (config) {
 
 	//@override
 	/*out.getLegendConstructor = function() {
+		//TODO
 		return lgchbi.legend;
 	}*/
 
