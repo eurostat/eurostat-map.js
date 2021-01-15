@@ -15,6 +15,8 @@ export const map = function (config) {
 	out.stripeWidth_ = 10;
 	//colors - indexed by dataset code
 	out.stripeColors_ = {};
+	//orientation - vertical by default
+	//out.stripeOrientation_ = 0;
 
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
