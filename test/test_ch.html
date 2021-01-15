@@ -10,36 +10,15 @@
     <svg id="map"></svg>
     <script src="../build/eurostatmap.js"></script>
     <script>
-        eurostatmap
+        const map = eurostatmap
             .map("ch")
             .title("Population in Europe")
-            //.NUTSyear(2021)
-            .width(600)
-            //.height(100)
-            //.pixSize(3000)
-            //.geo("GF").proj("32622")
-            //.geo("IC").proj("32628")
-            //.geo("CARIB").proj("32620").geoCenter([650000, 1783000]).pixSize(800)
-            //.geo("MT")
-            .scale("20M")
-            .datasetCode("demo_r_d3dens")
+            .insets("default")
+            .scale("60M")
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .unitText("people/km²")
             .tooltipShowFlags(false)
-
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "Population change from 2015 to 2016 : in ‰)",
-                    width: 200,
-                    height: 220,
-                    labelDecNb: 0,
-                    labelDelim: "to",
-                }
-            )
-
+            .legend({ labelDecNb:0, x:15, y:160, })
             .build();
-
     </script>
 </body>
 

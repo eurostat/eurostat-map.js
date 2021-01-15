@@ -1,5 +1,4 @@
 import { select } from "d3-selection";
-import { legendColor } from "d3-svg-legend";
 import * as lg from '../core/legend';
 
 /**
@@ -7,84 +6,131 @@ import * as lg from '../core/legend';
  * 
  * @param {*} map 
  */
-export const legendCategorical = function (map) {
-	const legendConfig = lg.legend(map);
+export const legend = function (map, config) {
+
+	//build generic legend object for the map
+	const out = lg.legend(map, config);
+
+	//the width of the legend box elements
+	out.shapeWidth = 13;
+	//the height of the legend box elements
+	out.shapeHeight = 15;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+	//show no data
+	out.noData = true;
+	//no data label text
+	out.noDataText = "No data";
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key] = config[key];
+
 
 	//@override
-	legendConfig.update = function () {
-		const m = legendConfig.map_;
-		const cla = m.classifier();
-		const claInv = m.classifierInverse();
-		const g = legendConfig.g_;
-
+	out.update = function () {
+		const m = out.map;
+		const lgg = out.lgg;
 		const svgMap = m.svg();
 
 		//remove previous content
-		g.selectAll("*").remove();
+		lgg.selectAll("*").remove();
 
-		//background rectangle
-		g.append("rect").attr("id", "legendBR").attr("x", -legendConfig.boxPadding).attr("y", -legendConfig.titleFontSize - legendConfig.boxPadding + 6)
-			.attr("rx", legendConfig.boxCornerRad).attr("ry", legendConfig.boxCornerRad)
-			.attr("width", legendConfig.width).attr("height", legendConfig.height)
-			.style("fill", legendConfig.boxFill).style("opacity", legendConfig.boxOpacity);
+		//draw legend background box
+		out.makeBackgroundBox();
 
-		//define legend
-		//see http://d3-legend.susielu.com/#color
-		const d3Legend = legendColor()
-			.title(legendConfig.titleText)
-			.titleWidth(legendConfig.titleWidth)
-			.useClass(true)
-			.scale(cla)
-			.ascending(legendConfig.ascending)
-			.shapeWidth(legendConfig.shapeWidth)
-			.shapeHeight(legendConfig.shapeHeight)
-			.shapePadding(legendConfig.shapePadding)
-			.labels(function (d) {
-				return m.classToText() ? m.classToText()[claInv(d.i)] || claInv(d.i) : claInv(d.i);
-			})
-			.labelDelimiter(legendConfig.labelDelim)
-			.labelOffset(legendConfig.labelOffset)
-			.labelWrap(legendConfig.labelWrap)
-			.on("cellover", function (ecl) {
-				ecl = cla(ecl);
+		//draw title
+		if(out.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+			.text(out.title)
+			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+		//set font family
+		lgg.style("font-family", out.fontFamily);
+
+		//get classes
+		const ecls = Object.keys(m.classToFillStyle());
+
+		//draw legend elements for classes: rectangle + label
+		for(let i=0; i<ecls.length; i++) {
+
+			//the class
+			const ecl = i;
+			const ecl_ = ecls[i];
+
+			//the vertical position of the legend element
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
+
+			//prepare mouse over function
+			const mouseoverF = function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
-				sel.attr("fill___", function (d) { select(this).attr("fill"); });
-			})
-			.on("cellout", function (ecl) {
-				ecl = cla(ecl);
+				const th = select(this);
+				sel.attr("fill___", function (d) { th.attr("fill"); });
+				th.style("fill", m.nutsrgSelFillSty());
+			}
+
+			//prepare mouse out function
+			const mouseoutF = function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", function (d) { select(this).attr("fill___"); });
-			});
+				const th = select(this);
+				sel.style("fill", function (d) { th.attr("fill___"); });
+				th.style("fill", m.classToFillStyle()[ecl]);
+			}
 
-		//make legend
-		g.call(d3Legend);
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.classToFillStyle()[ecl_])
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", mouseoverF)
+			.on("mouseout", mouseoutF)
 
-		//apply style to legend elements
-		g.selectAll(".swatch")
-			.attr("ecl", function () {
-				const ecl = select(this).attr("class").replace("swatch ", "");
-				if (!ecl || ecl === "nd") return "nd";
-				return ecl;
+			//label
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
+			.text( m.classToText()[ecl_] )
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.on("mouseover", mouseoverF)
+			.on("mouseout", mouseoutF)
+
+		}
+
+		//'no data' legend box
+		if(out.noData) {
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + ecls.length*(out.shapeHeight + out.shapePadding);
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.noDataFillStyle() )
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				select(this).style("fill", m.nutsrgSelFillSty());
 			})
-			.attr("fill", function () {
-				const ecl = select(this).attr("class").replace("swatch ", "");
-				if (!ecl || ecl === "nd") return m.noDataFillStyle() || "gray";
-				return m.classToFillStyleCT()[claInv(ecl)];
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
+				sel.style("fill", function (d) { select(this).attr("fill___"); });
+				select(this).style("fill", m.noDataFillStyle());
 			});
-		g.select(".legendTitle").style("font-size", legendConfig.titleFontSize);
-		g.selectAll("text.label").style("font-size", legendConfig.labelFontSize);
-		g.style("font-family", legendConfig.fontFamily);
+
+			//'no data' label
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
+			.text(out.noDataText)
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
+
+		//set legend box dimensions
+		out.setBoxDimension();
 	}
 
-	//@override
-	legendConfig.computeWidth = function () {
-		return legendConfig.boxPadding * 2 + Math.max(legendConfig.titleWidth, legendConfig.shapeWidth + legendConfig.labelOffset + legendConfig.labelWrap);
-	}
-	//@override
-	legendConfig.computeHeight = function () {
-		return legendConfig.boxPadding * 2 + legendConfig.titleFontSize + legendConfig.shapeHeight + (1 + legendConfig.shapeHeight + legendConfig.shapePadding) * (legendConfig.map_.clnb_ - 1) + 12;
-	}
-
-	return legendConfig;
+	return out;
 }

@@ -8,31 +8,23 @@
 
 <body>
     <svg id="map"></svg>
-    <svg height="210">
-        <g id="legend"></g>
-    </svg>
+    <svg id="legend"></svg>
 
     <script src="../build/eurostatmap.js"></script>
     <script>
-        const map = eurostatmap
+        eurostatmap
             .map("ch")
             .width(500)
             .scale("60M")
-            .datasetCode("demo_r_d3dens")
+            .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "people/km²" } )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .unitText("people/km²")
             .tooltipShowFlags(false)
-            .build()
-            ;
-
-        const lg = map.legend({
-            gId: "legend",
-            titleText: "Population density (people/km²)",
-            labelDecNb: 0,
-            height: 210,
-            width: 190
-        }).build();
-
+            .legend({
+              svgId: "legend",
+              title: "Inhab./km²",
+              labelDecNb: 0,
+            })
+            .build();
     </script>
 </body>
 

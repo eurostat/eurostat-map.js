@@ -1,22 +1,30 @@
 import * as mapch from './maptypes/map-choropleth';
 import * as mapps from './maptypes/map-proportional-symbols';
 import * as mapct from './maptypes/map-categorical';
-import * as mt from './core/stat-map-template';
+import * as mapchbi from './maptypes/map-choropleth-bivariate';
+import * as mt from './core/stat-map';
 
 /**
  * Function returning a eurostat-map object.
+ * 
+ * @param {*} type The type of map ('ch' for choropleth, etc.)
+ * @param {*} config The configuration object. Ex.: { title: "Map title", geoCenter: [233,654], ...}
  */
-export const map = function (type) {
+ export const map = function (type, config) {
 
 	//choropleth map
-	if(type == "ch") return mapch.map();
+	if(type == "ch") return mapch.map(config);
 	//categorical map
-	if(type == "ct") return mapct.map();
+	if(type == "ct") return mapct.map(config);
 	//proportionnal symbols map
-	if(type == "ps") return mapps.map();
+	if(type == "ps") return mapps.map(config);
+	//value-by-alha map
+	if(type == "chbi") return mapchbi.map(config);
+	//add new map types here
+	//if(type == "XX") return mapXX.map(config);
 
 	console.log("Unexpected map type: " + type);
-	return mt.statMapTemplate(true);
+	return mt.statMap(config, true);
 };
 
 

@@ -13,21 +13,24 @@
         eurostatmap
             .map("ct")
             .title("NUTS urban/rural typology")
+            .insets("default")
             //.width(600)
             .scale("60M")
-            .NUTSyear(2013)
+            .nutsYear(2013)
             .nutsLvl(3)
-            .csvDataSource({ url: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
-            .classToFillStyleCT({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            .stat( { csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
+            .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
 
-            .showLegend(true)
             .legend({
-                labelDecNb: 0,
-                height: 110,
-                width: 125
+                //titleText: "Map keys",
+                //boxFill: "none",
+                //boxOpacity : 0,
+                labelFontSize: 14,
+                shapeWidth:20,
+                shapeHeight:18,
+                x: 10, y:170,
             })
-
 
             .build();
     </script>

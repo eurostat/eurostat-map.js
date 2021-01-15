@@ -33,7 +33,9 @@
             .titleFill("#333333")
             .scale("60M")
             .width(250)
-            .nutsLvl(0).datasetCode("namq_10_gdp").filters({ freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"Q"+q })
+
+            .nutsLvl(0)
+            .stat( { eurostatDatasetCode: "namq_10_gdp", filters: { freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"Q"+q }, unitText: "%" } )
 
             .colorFun(d3.interpolateRdYlBu)
             .classifMethod("threshold")
@@ -47,7 +49,6 @@
             //.cntbnStroke({ def: "#777", co: "none" })
             .drawGraticule(false)
 
-            .unitText("%")
             .tooltipShowFlags("long")
             .bottomText(null)
             .zoomExtent([1,3])

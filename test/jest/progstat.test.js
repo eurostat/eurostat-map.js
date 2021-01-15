@@ -6,7 +6,7 @@ const path = require("path")
 
 // opens test.html using headless chrome
 // to run tests in open browser, set headless to false.
-test('separated legend', async () => {
+test('programmatically defined statistics', async () => {
     let browser = await puppeteer.launch({
         headless: true,
         //sloMo: 80,
@@ -19,20 +19,24 @@ test('separated legend', async () => {
 
     // evaluate will run the function in the page context
     await page.evaluate(_ => {
-        // these will be executed within test.html, that was loaded before
-        //builds test map in test.html
-        eurostatmap
-            .map("ch")
-            .width(500)
-            .scale("60M")
-            .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "people/km²" } )
-            .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .tooltipShowFlags(false)
-            .legend({
-              title: "Population density (people/km²)",
-              labelDecNb: 0,
-            })
-            .build();
+        // these will be executed within test.html, that was loaded before.
+        //builds map in test.html
+        const map = eurostatmap.map("ch");
+        map.nutsLvl(0);
+
+        map.statData().set("LU",500)
+        .set("DE",400)
+        .set("FR",100)
+        .set("IT",600)
+        .setData({
+            "FR": 10,
+            "DE": {value:7,status:"e"},
+            "UK": 12,
+        })
+        .set("IT",200)
+        .set("UK",{value:50,status:"p"})
+
+        map.build();
     });
 
     // we're done; close the browser

@@ -24,25 +24,20 @@ test('exporting map as SVG', async () => {
             .title("Population in Europe")
             .width(600)
             .scale("20M")
-            .datasetCode("demo_r_d3dens")
+            .stat( { default: { eurostatDatasetCode:"demo_r_d3dens", unitText: "people/km²" }} )
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .unitText("people/km²")
             .tooltipShowFlags(false)
-            .showLegend(true)
-            .legend(
-                {
-                    titleText: "Population change from 2015 to 2016 : in ‰)",
-                    width: 200,
-                    height: 220,
-                    labelDecNb: 0,
-                    labelDelim: "to",
-                }
-            )
+            .legend({
+                title: "Population change from 2015 to 2016 : in ‰)",
+                labelDecNb: 0,
+            })
+            .callback(function() {
+                setTimeout( ()=>{
+                    myMap.exportMapToPNG();
+                    myMap.exportMapToSVG();
+                }, 200);
+            })
             .build();
-
-        setTimeout(() => {
-            myMap.exportMapToSVG();
-        }, 3000)
     });
 
     // we're done; close the browser

@@ -1,25 +1,32 @@
 import { scaleSqrt } from "d3-scale";
-import * as mt from '../core/stat-map-template';
+import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
+import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
 
-
-export const map = function () {
+/**
+ * Returns a proportionnal symbol map.
+ * 
+ * @param {*} config 
+ */
+export const map = function (config) {
 
 	//create map object to return, using the template
-	const out = mt.statMapTemplate(true);
+	const out = smap.statMap(config, true);
 
-	//out.psShape_ = CIRCLE; //TODO specify other shapes than simply circles
+	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
+	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psMaxSize_ = 30;
-	out.psMinSize_ = 0.8;
+	out.psMinSize_ = 0.8; //for circle
+	out.psBarWidth_ = 5; //for vertical bars
+	out.psMinHeight_ = 5;
+	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04";
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
-	out.legend_ = lgps.legendProportionalSymbols(out);
-	//the classifier: a function which return a class number from a stat value.
+	//the classifier: a function which return the symbol size from the stat value.
 	out.classifier_ = undefined;
-
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -28,31 +35,22 @@ export const map = function () {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_","psMinSize_","psMinValue_","psFill_","psFillOpacity_","psStroke_","psStrokeWidth_","classifier_"]
-	.forEach(function(att) {
-		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
-	});
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_", "psCustomShape_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		});
 
-	out.legend = function (config) {
-		if (!arguments.length) {
-			//create legend if needed
-			if(!out.legend_) out.legend_ = lgps.legendProportionalSymbols(out);
-			return out.legend_;
-		}
-		for (let key in config) {
-			out.legend_[key] = config[key];
-		  }
-		//setter: link map and legend
-		// out.legend_ = v; v.map(out);
-		return out;
-	};
+	//override attribute values with config values
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
+	});
 
 	//@override
 	out.updateClassification = function () {
 		//get max value
-		const maxValue = Object.values(out._statDataIndex).map(s=>s.value).filter(s=>(s==0||s)).reduce( (acc,v) => Math.max(acc,v), 0);
+		const maxValue = out.statData().getMax();
 		//define classifier
-		out.classifier( scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_ * 0.5, out.psMaxSize_ * 0.5]) );
+		out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range([out.psMinSize_, out.psMaxSize_]));
 		return out;
 	};
 
@@ -62,29 +60,79 @@ export const map = function () {
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
+		if (out.psShape_ == "bar") {
+			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("rect");
 
-		console.log(out.psStrokeWidth_)
-		console.log(out.psStrokeWidth())
+			rect.style("fill", out.psFill())
+				.style("fill-opacity", out.psFillOpacity())
+				.style("stroke", out.psStroke())
+				.style("stroke-width", out.psStrokeWidth())
+				.attr("width", out.psBarWidth_)
+				.attr("height", function (rg) {
+					const sv = out.statData().get(rg.properties.id);
+					if (!sv || !sv.value) {
+						return 0;
+					}
+					let v = out.classifier()(+sv.value);
+					return v;
+				})
+				.attr('transform', function () {
+					let bRect = this.getBoundingClientRect();
+					//console.log(bRect)
+					return `translate(${-this.getAttribute('width') / 2}` +
+						`, -${this.getAttribute('height')})`;
+				})
+				.transition().duration(out.transitionDuration())
+		} else {
+			// d3.symbol symbols
+			// circle, cross, star, triangle, diamond, square, wye
 
-		//set circle radius depending on stat value
-		out.svg().select("#g_ps").selectAll("circle.symbol")
+			let path = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("path");
 
-			//TODO no need to execute that everytime stat values change - should be extracted somewhere else. Use a new "updateStaticStyle" function?
-			.style("fill", out.psFill())
-			.style("fill-opacity", out.psFillOpacity())
-			.style("stroke", out.psStroke())
-			.style("stroke-width", out.psStrokeWidth())
-
-			.transition().duration(out.transitionDuration())
-			.attr("r", function (rg) {
-				const sv = out.getStat(rg.properties.id);
-				if( !sv || !sv.value ) return 0;
-				return out.classifier()(+sv.value);
+			path.attr("d", rg => {
+				const sv = out.statData().get(rg.properties.id);
+				let size;
+				if (!sv || !sv.value) {
+					size = 0;
+				} else {
+					size = out.classifier()(+sv.value);
+				}
+				if (out.psCustomShape_) {
+					return out.psCustomShape_.size(size * size)()
+				} else {
+					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
+					return symbol().type(symbolType).size(size * size)()
+				}
 			})
+				.style("fill", out.psFill())
+				.style("fill-opacity", out.psFillOpacity())
+				.style("stroke", out.psStroke())
+				.style("stroke-width", out.psStrokeWidth())
+		}
 
 		return out;
 	};
 
 
-    return out;
+	//@override
+	out.getLegendConstructor = function() {
+		return lgps.legend;
+	}
+
+	return out;
+}
+
+/**
+* @description give a d3 symbol from a shape name
+*/
+export const symbolsLibrary = {
+	cross: symbolCross,
+	square: symbolSquare,
+	diamond: symbolDiamond,
+	triangle: symbolTriangle,
+	star: symbolStar,
+	wye: symbolWye,
+	circle: symbolCircle,
 }
