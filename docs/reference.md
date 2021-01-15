@@ -206,7 +206,7 @@ eurostatmap.map("ps")
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
-| *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol. See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
+| *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
 | *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol, in pixels. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
 | *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size of the symbol, for non null values, in pixels. |
@@ -226,6 +226,7 @@ In addition to [the default legend parameters](#map-legend), proportional symbol
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
 | **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
+| **format** | Function | *format(",." + labelDecNb + "r")* | D3 format function which formats the labels. |
 
 
 ## Categorical map

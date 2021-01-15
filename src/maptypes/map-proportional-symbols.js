@@ -16,10 +16,8 @@ export const map = function (config) {
 	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psMaxSize_ = 30;
-	out.psMinSize_ = 0.8; //for circle
+	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 5; //for vertical bars
-	out.psMinHeight_ = 5;
-	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04";
 	out.psFillOpacity_ = 0.7;
@@ -35,13 +33,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_", "psCustomShape_"]
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_", "psCustomShape_","psBarWidth_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape"].forEach(function (key) {
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape","psBarWidth"].forEach(function (key) {
 		if (config[key] != undefined) out[key](config[key]);
 	});
 
@@ -111,7 +109,6 @@ export const map = function (config) {
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
 		}
-
 		return out;
 	};
 
