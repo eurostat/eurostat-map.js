@@ -12,7 +12,7 @@ export const map = function (config) {
 	const out = smap.statMap(config);
 
 	//width of the stripes serie
-	out.stripeWidth_ = 10;
+	out.stripeWidth_ = 50;
 	//colors - indexed by dataset code
 	out.stripeColors_ = {};
 	//orientation - vertical by default
@@ -83,12 +83,18 @@ export const map = function (config) {
 				//case when no or missing data
 				if (!comp) return out.noDataFillStyle() || "gray";
 
-				//make tripe texture
-				//const patt = svg.append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
-				//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
-				//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
+				//make stripe pattern
+				const patt = out.svg().append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
+				.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
+				let x=0;
+				for(let s in comp) {
+					const dx = comp[s] * out.stripeWidth();
+					const col = out.stripeColors()[s] || "lightgray";
+					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
+					x += dx;
+				}
 
-				//return "red";
+				//return pattern reference
 				return "url(#pattern_" + id + ")"
 			});
 
