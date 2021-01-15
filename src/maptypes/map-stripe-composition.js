@@ -50,24 +50,12 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
-		//get regions
-		//for each, get all values
-		//compute composition (%)
-
-		//make corresponding texture
-		//const patt = svg.append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
-		//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
-		//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
-
-		//apply texture
-		//"url(#pattern_" + id + ")"
-
-		//get stat codes, without "default"
+		//get list of stat codes. Remove "default".
 		const statCodes = Object.keys(out.statData_);
 		const index = statCodes.indexOf("default");
 		if (index > -1) statCodes.splice(index, 1);
 
-		//compute composition, for each category
+		//function to compute composition for region id, for each category
 		const getComposition = function(id) {
 			let comp = {}, sum = 0;
 			for(let i=0; i<statCodes.length; i++) {
@@ -83,7 +71,7 @@ export const map = function (config) {
 		}
 
 
-		//apply style to nuts regions depending on class
+		//build and assign texture to the regions
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (d) {
@@ -92,9 +80,16 @@ export const map = function (config) {
 				//compute composition
 				const comp = getComposition(id);
 
-				//const ecl = select(this).attr("ecl");
-				//if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-				return "yellow";
+				//case when no or missing data
+				if (!comp) return out.noDataFillStyle() || "gray";
+
+				//make tripe texture
+				//const patt = svg.append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
+				//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
+				//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
+
+				//return "red";
+				return "url(#pattern_" + id + ")"
 			});
 
 
