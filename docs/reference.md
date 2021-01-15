@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
@@ -64,6 +64,8 @@ The map statistical data can be accessed with the *map*.**statData**() method, w
 | **getUniqueValues**() | Return stat unique values. This can be used for categorical maps. |
 | **getMin**() | Get minimum value. |
 | **getMax**() | Get maximum value. |
+| **unitText**([*value*]) | String | *undefined* | The text of the unit of measurement, to show in the tooltip. |
+
 
 The map statistical data source can be accessed with the *map*.**stat**([*value*]) method. Several types of data sources are supported (see sections below).
 
@@ -148,10 +150,9 @@ Example:
 ```javascript
 eurostatmap.map("ch")
 	.title("Population in Europe")
-	.stat( { eurostatDatasetCode:"demo_r_d3dens" } )
+    .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "inhab./km²" } )
 	.classifMethod("threshold")
 	.threshold([50, 75, 100, 150, 300, 850])
-	.unitText("inhab./km²")
 	.tooltipShowFlags(false)
 	.legend({ noData:false, labelDecNb:0, x:15, y:160, })
 	.build();
@@ -196,10 +197,9 @@ Example:
 ```javascript
 eurostatmap.map("ps")
 	.nutsLvl(1)
-	.stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 } } )
+	.stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
 	.psMaxSize(25)
 	.psFill("red")
-	.unitText("inhabitants")
 	.build();
 ```
 
@@ -263,6 +263,47 @@ In addition to [the default legend parameters](#map-legend), categorical maps ha
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
 | **noData** | boolean | *true* | Show 'no data' style. |
+| **noDataText** | Text | *"No data"* | 'No data' text label. |
+
+
+## Bivariate choropleth map
+
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
+
+A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. It shows how the correlation between these variables varies across space. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html)).
+
+Example:
+
+```javascript
+eurostatmap.map("chbi")
+	.nutsLvl(2)
+	.nutsYear(2016)
+	.stat("v1", { eurostatDatasetCode:"demo_r_d3dens", unitText: "inh./km²" } )
+	.stat("v2", { eurostatDatasetCode:"lfst_r_lfu3rt", filters:{ age: "Y20-64", sex: "T", unit: "PC", time: 2017 }, unitText: "%" } )
+	.clnb(4)
+	.build();
+```
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**clnb**([*value*]) | int | *3* | The number of classes for the classification. The same value is used for both variables. |
+| *map*.**startColor**([*value*]) | color | *"#e8e8e8"* | The color for lowest values of both variables. |
+| *map*.**color1**([*value*]) | color | *"#73ae80"* | The color for the highest values of variable 1, and lowest of variable 2. |
+| *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
+| *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
+| *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | Fill style for regions with no data available. |
+
+In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **squareSize** | number | *50* | The size, in pixel, of the legend square. |
+| **label1** | string | *"Variable 1"* | The text for the label of variable 1. |
+| **label2** | string | *"Variable 2"* | The text for the label of variable 1. |
+| **labelFontSize** | int | *12* | The font size of the legend label. |
+| **noData** | boolean | *true* | Show 'no data' style. |
+| **noDataShapeSize** | number | *15* | . |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
 
@@ -334,7 +375,6 @@ The tooltip is the little rectangle showing information on the map feature under
 | -------- | ------ | ---------- | ----------- |
 | *map*.**tooltipText**([*value*]) | Function | *auto* | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
 | *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
-| *map*.**unitText**([*value*]) | String | *""* | The text of the unit to show in the tooltip. |
 
 ## Styling
 

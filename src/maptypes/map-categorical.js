@@ -86,7 +86,7 @@ export const map = function (config) {
 
 	//@override
 	out.getLegendConstructor = function() {
-		return lgct.legendCategorical;
+		return lgct.legend;
 	}
 
 

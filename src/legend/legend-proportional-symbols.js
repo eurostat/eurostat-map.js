@@ -1,9 +1,6 @@
-import { legendSize, legendSymbol } from "d3-svg-legend";
-import { select } from "d3-selection";
 import { format } from "d3-format";
-import { scaleOrdinal } from "d3-scale";
 import * as lg from '../core/legend';
-import { getSymbolType } from "../maptypes/map-proportional-symbols";
+import { symbolsLibrary } from "../maptypes/map-proportional-symbols";
 import { symbol } from 'd3-shape';
 
 /**
@@ -11,7 +8,7 @@ import { symbol } from 'd3-shape';
  * 
  * @param {*} map 
  */
-export const legendProportionalSymbols = function (map, config) {
+export const legend = function (map, config) {
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
@@ -79,7 +76,7 @@ export const legendProportionalSymbols = function (map, config) {
 			}
 			shape = d3.symbol().type({ draw: drawRectangle })
 		} else {
-			let symbolType = getSymbolType(out.map.psShape_);
+			let symbolType = symbolsLibrary[out.map.psShape_] || symbolsLibrary["circle"];
 			shape = symbol().type(symbolType);
 		}
 

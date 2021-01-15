@@ -49,7 +49,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//the function returning the tooltip text
 	out.tooltipText_ = (rg => { return rg.properties.na; });
 	out.tooltipShowFlags_ = "short"; //"short" "long"
-	out.unitText_ = "";
 
 
 	//template default style
@@ -524,7 +523,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods
-		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "unitText", "tooltipText_", "classToText_"]
+		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "tooltipText_", "classToText_"]
 		.forEach(function (att) { mt[att] = out[att]; });
 
 		//apply config values for inset

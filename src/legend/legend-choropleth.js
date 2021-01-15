@@ -7,7 +7,7 @@ import * as lg from '../core/legend';
  * 
  * @param {*} map 
  */
-export const legendChoropleth = function (map, config) {
+export const legend = function (map, config) {
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);
@@ -84,12 +84,12 @@ export const legendChoropleth = function (map, config) {
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
-				sel.attr("fill___", function (d) { select(this).attr("fill"); });
+				sel.attr("fill___", function () { select(this).attr("fill"); });
 				select(this).style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", function (d) { select(this).attr("fill___"); });
+				sel.style("fill", function () { select(this).attr("fill___"); });
 				select(this).style("fill", m.classToFillStyle()(ecl, m.clnb()));
 			});
 

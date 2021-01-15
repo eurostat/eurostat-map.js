@@ -12,6 +12,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
 
 ## Examples
 
@@ -22,6 +23,8 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [NUTS typology as a categorical map](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html))
 - [Focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/spain.html))
 - [20 years of GDP change in Europe](https://eurostat.github.io/eurostat-map.js/examples/small_multiple.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/small_multiple.html))
+- [Unemployment/population relation](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html))
+
 
 ## Installation
 
@@ -35,6 +38,7 @@ See the **[API reference](docs/reference.md)**:
 - For a [choropleth map](docs/reference.md#choropleth-map),
 - For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
 - For a [categorical map](docs/reference.md#categorical-map).
+- For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 

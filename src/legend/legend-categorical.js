@@ -6,7 +6,7 @@ import * as lg from '../core/legend';
  * 
  * @param {*} map 
  */
-export const legendCategorical = function (map, config) {
+export const legend = function (map, config) {
 
 	//build generic legend object for the map
 	const out = lg.legend(map, config);

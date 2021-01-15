@@ -166,7 +166,7 @@ export const statMap = function (config, withCenterPoints) {
 			if(!out.stat(statKey) && out.statData(statKey).get()) return;
 
 			//if no config is specified, use default data source: population density
-			if(statKey == "default" && !out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode:"demo_r_d3dens" } );
+			if(statKey == "default" && !out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
 
 			//build stat data object from stat configuration and store it
 			const stdt = sd.statData(out.stat(statKey));
@@ -371,7 +371,7 @@ function rasterize(svg) {
 		//region name
 		buf.push("<b>" + rg.properties.na + "</b><br>");
 		//case when no data available
-		const sv = map.statData("default").get(rg.properties.id);
+		const sv = map.statData().get(rg.properties.id);
 		if (!sv || (sv.value != 0 && !sv.value)) {
 			buf.push(map.noDataText_);
 			return buf.join("");
@@ -379,7 +379,8 @@ function rasterize(svg) {
 		//display value
 		buf.push(sv.value);
 		//unit
-		if (map.unitText()) buf.push(" " + map.unitText());
+		const unit = map.statData("default").unitText();
+		if (unit) buf.push(" " + unit);
 		//flag
 		const f = sv.status;
 		if (f && map.tooltipShowFlags_) {
