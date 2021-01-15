@@ -62,6 +62,42 @@ export const map = function (config) {
 		//apply texture
 		//"url(#pattern_" + id + ")"
 
+		//get stat codes, without "default"
+		const statCodes = Object.keys(out.statData_);
+		const index = statCodes.indexOf("default");
+		if (index > -1) statCodes.splice(index, 1);
+
+		//compute composition, for each category
+		const getComposition = function(id) {
+			let comp = {}, sum = 0;
+			for(let i=0; i<statCodes.length; i++) {
+				const sc = statCodes[i]
+				const s = out.statData(sc).get(id);
+				if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return null;
+				comp[sc] = s.value;
+				sum += s.value;
+			}
+			if(sum == 0) return null;
+			for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
+			return comp;
+		}
+
+
+		//apply style to nuts regions depending on class
+		out.svg().selectAll("path.nutsrg")
+			.transition().duration(out.transitionDuration())
+			.attr("fill", function (d) {
+				const id = d.properties.id;
+
+				//compute composition
+				const comp = getComposition(id);
+
+				//const ecl = select(this).attr("ecl");
+				//if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+				return "yellow";
+			});
+
+
 		return out;
 	};
 
