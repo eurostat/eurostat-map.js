@@ -15,7 +15,17 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-            .nutsLvl(0)
+            .nutsLvl(3)
+            .nutsYear(2016)
+            .stripeWidth(30)
+            .stripeOrientation(45)
+            .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR" }, unitText: "inhabitants" })
+            .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR" }, unitText: "inhabitants" })
+            .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR" }, unitText: "inhabitants" })
+            .stripeColors({"Y_LT15":"#7fc97f", "Y15-64":"#fdc086", "Y_GE65":"#beaed4"})
+            //.defaultStripeColor("#beaed4")
+
+            /*.nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(30)
             .stripeOrientation(45)
@@ -29,10 +39,11 @@
             .stat("M_N", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "M_N", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("O-Q", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "O-Q", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("R-U", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "R-U", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            .stripeColors({A:"#7fc97f", "B-E":"#fdc086", "F":"#fdc086"})
-            .defaultStripeColor("#beaed4")
+            .stripeColors({"A":"#7fc97f", "B-E":"#fdc086", "F":"#fdc086"})
+            .defaultStripeColor("#beaed4")*/
 
             .build();
+
 
 /*
 - Population by age group
