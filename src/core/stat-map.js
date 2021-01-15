@@ -166,7 +166,9 @@ export const statMap = function (config, withCenterPoints) {
 			if(!out.stat(statKey) && out.statData(statKey).get()) return;
 
 			//if no config is specified, use default data source: population density
-			if(statKey == "default" && !out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
+			//TODO move that out of loop ?
+			if(statKey == "default" && !out.stat(statKey))
+				out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
 
 			//build stat data object from stat configuration and store it
 			const stdt = sd.statData(out.stat(statKey));
