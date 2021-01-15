@@ -24,7 +24,7 @@ export const map = function (config) {
 	out.noDataFillStyle_ = "darkgray";
 
 	//specific tooltip text function
-	out.tooltipText_ = (rg => { return rg.properties.na; });
+	out.tooltipText_ = (rg => { return rg.properties.na; }); //TODO show pie chart
 
 
     /**
@@ -44,35 +44,43 @@ export const map = function (config) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
+
+
+
+	/**  */
+	let statCodes = undefined;
+
+	/** Function to compute composition for region id, for each category */
+	const getComposition = function(id) {
+		let comp = {}, sum = 0;
+		for(let i=0; i<statCodes.length; i++) {
+			const sc = statCodes[i]
+			const s = out.statData(sc).get(id);
+			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return null;
+			comp[sc] = s.value;
+			sum += s.value;
+		}
+		if(sum == 0) return null;
+		for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
+		return comp;
+	}
+
+
+
 	//@override
 	out.updateClassification = function () {
+
+		//get list of stat codes. Remove "default".
+		statCodes = Object.keys(out.statData_);
+		const index = statCodes.indexOf("default");
+		if (index > -1) statCodes.splice(index, 1);
+
 		return out;
 	};
 
 
 	//@override
 	out.updateStyle = function () {
-
-		//get list of stat codes. Remove "default".
-		const statCodes = Object.keys(out.statData_);
-		const index = statCodes.indexOf("default");
-		if (index > -1) statCodes.splice(index, 1);
-
-		//function to compute composition for region id, for each category
-		const getComposition = function(id) {
-			let comp = {}, sum = 0;
-			for(let i=0; i<statCodes.length; i++) {
-				const sc = statCodes[i]
-				const s = out.statData(sc).get(id);
-				if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return null;
-				comp[sc] = s.value;
-				sum += s.value;
-			}
-			if(sum == 0) return null;
-			for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
-			return comp;
-		}
-
 
 		//build and assign texture to the regions
 		out.svg().selectAll("path.nutsrg")
