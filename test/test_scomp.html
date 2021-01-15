@@ -12,6 +12,9 @@
     <script>
         const map = eurostatmap
             .map("scomp")
+            .scale("60M")
+            .zoomExtent([1,2])
+
             .nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(30)
@@ -28,11 +31,20 @@
             .stat("R-U", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "R-U", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stripeColors({A:"#7fc97f", "B-E":"#fdc086", "F":"#fdc086"})
             .defaultStripeColor("#beaed4")
-            .scale("60M")
-            .zoomExtent([1,2])
+
             .build();
 
-            /*
+/*
+- Population by age group
+- Livestock composition by animal
+- GDP by NACE type
+- Mortality by cause of death
+- Household consumption by COICOP
+- Governement expenditure by COFOG
+*/
+
+
+/*
 	A	Agriculture, forestry and fishing
 	B-E	Industry (except construction)
 	C	Manufacturing
