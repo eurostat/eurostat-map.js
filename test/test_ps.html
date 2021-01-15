@@ -39,19 +39,19 @@
       eurostatmap
         .map("ps")
         .width(500)
-        .nutsLvl(1)
-        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 } })
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "tec00001", filters: { "na_item":"B1GQ", "unit":"CP_MEUR", "time":"2019", "filterNonGeo":"1" } })
         .psShape("circle") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
         .psMaxSize(20)
-        .psFill("red")
+        .psFill("green")
         .psStroke("black")
         .psStrokeWidth("1")
-        .unitText("inhabitants")
+        .unitText("GDP")
         .tooltipShowFlags("long")
         .legend({
-          title: "Population",
+          title: "GDP",
           cellNb: 6,
-          format: format,
+          format: d3.format(",.2r"),
           ascending: false,
           shapePadding: 8,
         })
@@ -154,19 +154,19 @@
         .width(500)
         .svgId("map5")
         .nutsLvl(0)
-        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 } })
+        .stat({ eurostatDatasetCode: "naida_10_gdp", filters: { "na_item":"B1GQ", "unit":"CP_MEUR", "time":"2019" } })
         .psShape("wye") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
-        .psFill("red")
+        .psFill("blue")
         .psStroke("black")
         .psStrokeWidth("1")
-        .unitText("inhabitants")
+        .unitText("million euro")
         .tooltipShowFlags("long")
         .legend({
-          title: "Population",
+          title: "GDP at market prices, in millions of euro, 2019",
           cellNb: 3,
           shapePadding: 10,
           labelOffset: 30,
-          format: d3.format(",.2r"),
+          //format: d3.format(",.2r"),
           x: 350,
         })
         .build();

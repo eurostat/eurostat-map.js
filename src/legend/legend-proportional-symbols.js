@@ -24,7 +24,7 @@ export const legendProportionalSymbols = function (map, config) {
 	out.shapePadding = 5;
 	//the font size of the legend label
 	out.labelFontSize = 12;
-	// user-define d3 format function
+	// user-defined d3 format function
 	out.format = undefined;
 	//the number of decimal for the legend labels
 	out.labelDecNb = 2;

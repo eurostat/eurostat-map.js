@@ -16,10 +16,8 @@ export const map = function (config) {
 	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psMaxSize_ = 30;
-	out.psMinSize_ = 0.8; //for circle
+	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 5; //for vertical bars
-	out.psMinHeight_ = 5;
-	out.psMaxHeight_ = 150;
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04";
 	out.psFillOpacity_ = 0.7;
@@ -105,14 +103,12 @@ export const map = function (config) {
 					let symbolType = getSymbolType(out.psShape_)
 					return symbol().type(symbolType).size(size * size)()
 				}
-
 			})
 				.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
 		}
-
 		return out;
 	};
 
