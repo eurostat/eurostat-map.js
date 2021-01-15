@@ -53,8 +53,14 @@ export const map = function (config) {
 		//get regions
 		//for each, get all values
 		//compute composition (%)
+
 		//make corresponding texture
+		//const patt = svg.append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
+		//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
+		//patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
+
 		//apply texture
+		//"url(#pattern_" + id + ")"
 
 		return out;
 	};
