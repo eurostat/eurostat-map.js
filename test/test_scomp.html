@@ -15,21 +15,62 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-            //cattle
+
+            //internet utilisation
+            //isoc_r_iuse_i
+
+            //cod
+            //hlth_cd_acdr2
+
+            //business demographie
+            //bd_hgnace2_r3
+
+            //size of exploitations agri
+            //ef_kvaareg
+/*    HA0	Zéro ha
+	HA_LT2	Moins de 2 ha
+	HA2-4	De 2 à 4.9 ha
+	HA5-9	De 5 à 9.9 ha
+	HA10-19	De 10 à 19.9 ha
+	HA20-29	De 20 à 29.9 ha
+	HA30-49	De 30 à 49.9 ha
+	HA50-99	De 50 à 99.9 ha
+	HA_GE100	100 ha ou plus*/
+
+            .nutsLvl(2)
+            .nutsYear(2010)
+            .stripeWidth(10)
+            //.stripeOrientation(45)
+            const indic = "TOTAREA_HA" /*HOLD_HOLD*/, year = "2013";
+            map.stat("HA0", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA0", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA_LT2", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA_LT2", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA2-4", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA2-4", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA5-9", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA5-9", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA10-19", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA10-19", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA20-29", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA20-29", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA30-49", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA30-49", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA50-99", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA50-99", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            .stat("HA_GE100", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA_GE100", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
+            //.stripeColors({"HA0": "#00441b", "HA_LT2": "#006d2c", "HA2-4": "#238b45", "HA5-9": "#41ae76", "HA10-19": "#66c2a4", "HA20-29": "#99d8c9", "HA30-49": "#ccece6", "HA50-99": "#e5f5f9", "HA_GE100": "#f7fcfd"})
+            .stripeColors({"HA0": "#d53e4f", "HA_LT2": "#f46d43", "HA2-4": "#fdae61", "HA5-9": "#fee08b", "HA10-19": "#ffffbf", "HA20-29": "#e6f598", "HA30-49": "#abdda4", "HA50-99": "#66c2a5", "HA_GE100": "#3288bd"})
+            .defaultStripeColor("#beaed4")
+
+
+            /*/cattle
             //ANIMALS : "A2000", "A2300", "A2400", "A3100", "A4100", "A4200"
             //"bovine", "cows", "buffalo", "pig", "sheep", "goat"
-            .nutsLvl(2)
-            .nutsYear(2016)
+            .nutsLvl(1)
+            .nutsYear(2013)
             .stripeWidth(12)
             //.stripeOrientation(45)
-            .stat("A2000", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2000", unit: "THS_HD", time: "2017" }, unitText: "1000 heads" })
-            //.stat("A2300", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2300", unit: "THS_HD", time: "2017" }, unitText: "heads" })
-            //.stat("A2400", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2400", unit: "THS_HD", time: "2017" }, unitText: "heads" })
-            .stat("A3100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A3100", unit: "THS_HD", time: "2017" }, unitText: "heads" })
-            .stat("A4100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4100", unit: "THS_HD", time: "2017" }, unitText: "heads" })
-            .stat("A4200", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4200", unit: "THS_HD", time: "2017" }, unitText: "heads" })
+            .stat("A2000", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2000", unit: "THS_HD", time: "2016" }, unitText: "1000 heads" })
+            .stat("A2300", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2300", unit: "THS_HD", time: "2016" }, unitText: "heads" })
+            .stat("A2400", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A2400", unit: "THS_HD", time: "2016" }, unitText: "heads" })
+            .stat("A3100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A3100", unit: "THS_HD", time: "2016" }, unitText: "heads" })
+            .stat("A4100", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4100", unit: "THS_HD", time: "2016" }, unitText: "heads" })
+            .stat("A4200", { eurostatDatasetCode: "agr_r_animal", filters: { animals: "A4200", unit: "THS_HD", time: "2016" }, unitText: "heads" })
             .stripeColors({"A2000":"#7fc97f", "A2300":"#beaed4", "A2400":"#fdc086", "A3100":"#ffff99", "A4100":"#386cb0", "A4200":"#f0027f"})
-            //.defaultStripeColor("#beaed4")
+            //.defaultStripeColor("#beaed4")*/
 
             /*/population by age
             .nutsLvl(3)
@@ -64,7 +105,6 @@
 
 
 /*
-- Livestock composition by animal
 - Mortality by cause of death
 - Household consumption by COICOP
 - Governement expenditure by COFOG
