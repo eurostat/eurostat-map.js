@@ -22,20 +22,28 @@
             //hlth_cd_acdr2
 
             //business demography
-            //bd_hgnace2_r3
+            .nutsLvl(1)
+            .nutsYear(2016)
+            .stripeWidth(15)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "bd_hgnace2_r3", filters: { indic_sb: "V11920", time: "2017" }, unitText: "" },
+                "nace_r2",
+                //["B-E", "F"/*, "G","H", "I","J", "K_L_X_K642", "M_N", "P_Q", "R_S"*/],
+                //["B-E", "F"],
+                ["B-E", "F", "G", "J"],
+            )
 
-            //size of exploitations agri
+            /*/size of exploitations agri
             .nutsLvl(2)
             .nutsYear(2010)
             .stripeWidth(10)
             .stripeOrientation(45)
-            const indic = "TOTAREA_HA" /*HOLD_HOLD*/, year = "2013";
-            map.statComp( { eurostatDatasetCode: "ef_kvaareg", filters: { indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" },
+            map.statComp( { eurostatDatasetCode: "ef_kvaareg", filters: { indic_ef: "TOTAREA_HA", legtype: "TOTAL", time: "2013" }, unitText: "" },
                 "agrarea",
                 ["HA0", "HA_LT2", "HA2-4", "HA5-9", "HA10-19", "HA20-29", "HA30-49", "HA50-99", "HA_GE100"],
                 //["#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd"]
                 //["#00441b", "#006d2c", "#238b45", "#41ae76", "#66c2a4", "#99d8c9", "#ccece6", "#e5f5f9", "#f7fcfd"]
-            )
+            )*/
 
 
             /*/cattle

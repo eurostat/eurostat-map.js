@@ -1,4 +1,5 @@
 import { schemeCategory10 } from "d3-scale-chromatic";
+//schemeSet3 schemeDark2 schemePastel1 schemeTableau10
 import * as smap from '../core/stat-map';
 
 /**
