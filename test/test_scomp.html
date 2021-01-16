@@ -15,24 +15,46 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-            //internet utilisation
-            //isoc_r_iuse_i
+            //COICOP
 
             //cod
             //hlth_cd_acdr2
 
-            //business demography
+            //internet utilisation
+            .nutsLvl(2)
+            .nutsYear(2016)
+            .stripeWidth(20)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "isoc_r_iuse_i", filters: { unit: "PC_IND", time: "2019" }, unitText: "" },
+                "indic_is",
+                ["I_IU3", "I_ILT12", "I_IUX"], ["Last 3 months", "Last 12 months", "Never"],
+            )
+            .legend({x: 200, title: "Internet"})
+    /*I_IUSE	Frequency of internet access: once a week (including every day)
+	I_IDAY	Frequency of internet access: daily
+
+    I_IUSNET	Internet use: participating in social networks (creating user profile, posting messages or other contributions to facebook, twitter, etc.)
+	I_IUBK	Internet use: Internet banking
+	I_IUSELL	Internet use: selling goods or services
+	I_IUCPP	Internet use: civic or political participation
+
+    I_IU3	Last internet use: in last 3 months
+	I_ILT12	Last internet use: in the last 12 months
+	I_IUX	Internet use: never*/
+
+
+            /*/business demography
             .nutsLvl(2)
             .nutsYear(2016)
             .stripeWidth(15)
             //.stripeOrientation(45)
             map.statComp( { eurostatDatasetCode: "bd_hgnace2_r3", filters: { indic_sb: "V11920", time: "2017" }, unitText: "" },
                 "nace_r2",
-                //["B-E", "F"/*, "G","H", "I","J", "K_L_X_K642", "M_N", "P_Q", "R_S"*/],
+                //["B-E", "F", "G","H", "I","J", "K_L_X_K642", "M_N", "P_Q", "R_S"],
                 //["B-E", "F"],
                 ["B-E", "F", "G", "J"], ["Industry", "Construction", "Sales", "IT"],
             )
-            .legend({title:"Composition"})
+            .legend({})*/
 
             /*/size of exploitations agri
             .nutsLvl(2)
