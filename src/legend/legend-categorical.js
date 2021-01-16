@@ -9,7 +9,7 @@ import * as lg from '../core/legend';
 export const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = lg.legend(map, config);
+	const out = lg.legend(map);
 
 	//the width of the legend box elements
 	out.shapeWidth = 13;

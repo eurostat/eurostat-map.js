@@ -10,7 +10,7 @@ import * as lg from '../core/legend';
 export const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = lg.legend(map, config);
+	const out = lg.legend(map);
 
 	//the order of the legend elements. Set to false to invert.
 	out.ascending = true;
@@ -50,6 +50,9 @@ export const legend = function (map, config) {
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
+
+        
+
 
 		//set legend box dimensions
 		out.setBoxDimension();

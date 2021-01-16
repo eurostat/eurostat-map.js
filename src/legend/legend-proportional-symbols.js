@@ -11,7 +11,7 @@ import { symbol } from 'd3-shape';
 export const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = lg.legend(map, config);
+	const out = lg.legend(map);
 
 	//number of elements in the legend
 	out.cellNb = 4;
