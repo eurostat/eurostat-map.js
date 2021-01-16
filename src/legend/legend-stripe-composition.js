@@ -57,7 +57,7 @@ export const legend = function (map, config) {
 
         //draw legend elements for classes: rectangle + label
         let i=0;
-        const scs = m.stripeColors();
+        const scs = m.catColors();
 		for(let sc in scs) {
 
 			//the vertical position of the legend element

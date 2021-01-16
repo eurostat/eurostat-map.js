@@ -20,7 +20,9 @@ export const map = function (config) {
 	out.stripeOrientation_ = 0;
 
 	//colors - indexed by dataset code
-	out.stripeColors_ = undefined;
+	out.catColors_ = undefined;
+	//colors - indexed by dataset code
+	out.catLabels_ = undefined;
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 
@@ -38,13 +40,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "stripeColors_", "noDataFillStyle_", "labelText_"]
+	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "noDataFillStyle_", "labelText_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "stripeColors", "noDataFillStyle", "labelText"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "noDataFillStyle", "labelText"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -55,7 +57,7 @@ export const map = function (config) {
 	 * @param {*} dim 
 	 * @param {*} dimValues 
 	 */
-	out.statComp = function(stat, dim, dimValues, colors) {
+	out.statComp = function(stat, dim, dimValues, colors, labels) {
 
 		//assign stat configs
 		stat.filters = stat.filters || {};
@@ -71,8 +73,12 @@ export const map = function (config) {
 
 			//if specified, retrieve color
 			if(colors) {
-				out.stripeColors_ = out.stripeColors_ || {};
-				out.stripeColors_[dv] = colors[i];
+				out.catColors_ = out.catColors_ || {};
+				out.catColors_[dv] = colors[i];
+			}
+			if(labels) {
+				out.catLabels_ = out.catLabels_ || {};
+				out.catLabels_[dv] = labels[i];
 			}
 		}
 
@@ -121,10 +127,10 @@ export const map = function (config) {
 	out.updateStyle = function () {
 
 		//if not specified, build color ramp
-		if(!out.stripeColors()) {
-			out.stripeColors({});
+		if(!out.catColors()) {
+			out.catColors({});
 			for(let i=0; i<statCodes.length; i++)
-				out.stripeColors()[statCodes[i]] = schemeCategory10[i%12];
+				out.catColors()[statCodes[i]] = schemeCategory10[i%12];
 		}
 
 		//build and assign texture to the regions
@@ -146,7 +152,7 @@ export const map = function (config) {
 				let x=0;
 				for(let s in comp) {
 					const dx = comp[s] * out.stripeWidth();
-					const col = out.stripeColors()[s] || "lightgray";
+					const col = out.catColors()[s] || "lightgray";
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
 					x += dx;
 				}
