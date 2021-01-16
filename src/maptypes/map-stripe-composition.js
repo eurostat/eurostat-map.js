@@ -57,7 +57,7 @@ export const map = function (config) {
 	 * @param {*} dim 
 	 * @param {*} dimValues 
 	 */
-	out.statComp = function(stat, dim, dimValues, colors, labels) {
+	out.statComp = function(stat, dim, dimValues, labels, colors) {
 
 		//assign stat configs
 		stat.filters = stat.filters || {};
