@@ -1,3 +1,4 @@
+import { schemeSet3 } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 
 /**
@@ -116,6 +117,14 @@ export const map = function (config) {
 
 	//@override
 	out.updateStyle = function () {
+
+		//if not specified, build color ramp
+		if(!out.stripeColors()) {
+			out.stripeColors({});
+			for(let i=0; i<statCodes.length; i++) {
+				out.stripeColors()[statCodes[i]] = schemeSet3[statCodes.length-i]; //TODO limit - use modulo
+			}
+		}
 
 		//build and assign texture to the regions
 		out.svg().selectAll("path.nutsrg")
