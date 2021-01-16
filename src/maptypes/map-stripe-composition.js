@@ -17,9 +17,8 @@ export const map = function (config) {
 	out.stripeOrientation_ = 0;
 
 	//colors - indexed by dataset code
+	//TODO if not specified, use cbrew colors
 	out.stripeColors_ = {};
-	//default color, for all categories not specified
-	out.defaultStripeColor_ = "lightgray";
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 
@@ -37,13 +36,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "stripeColors_", "defaultStripeColor_", "noDataFillStyle_", "labelText_"]
+	["stripeWidth_", "stripeOrientation_", "stripeColors_", "noDataFillStyle_", "labelText_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "stripeColors", "defaultStripeColor", "noDataFillStyle", "labelText"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "stripeColors", "noDataFillStyle", "labelText"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -54,10 +53,28 @@ export const map = function (config) {
 	 * @param {*} dim 
 	 * @param {*} dimValues 
 	 */
-	out.statComp = function(stat, dim, dimValues) {
+	out.statComp = function(stat, dim, dimValues, colors) {
+
+		//assign stat configs
+		stat.filters = stat.filters || {};
 		for(let i=0; i<dimValues.length; i++) {
+			const dv = dimValues[i]
+			stat.filters[dim] = dv
+			const sc_ = {};
+			for(let key in stat) sc_[key] = stat[key]
+			sc_.filters = {};
+			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
+			out.stat(dv, sc_)
+		}
+
+		//set statCodes
+		statCodes = dimValues;
+
+		//colors
+		if(colors) {
 			//TODO
 		}
+		return out;
 	}
 
 
@@ -115,7 +132,7 @@ export const map = function (config) {
 				let x=0;
 				for(let s in comp) {
 					const dx = comp[s] * out.stripeWidth();
-					const col = out.stripeColors()[s] || out.defaultStripeColor() || "lightgray";
+					const col = out.stripeColors()[s] || "lightgray";
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
 					x += dx;
 				}
