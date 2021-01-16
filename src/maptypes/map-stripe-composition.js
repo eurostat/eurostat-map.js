@@ -48,6 +48,17 @@ export const map = function (config) {
 	});
 
 
+	/**
+	 * 
+	 * @param {*} stat 
+	 * @param {*} dim 
+	 * @param {*} dimValues 
+	 */
+	out.statComp = function(stat, dim, dimValues) {
+		for(let i=0; i<dimValues.length; i++) {
+			//TODO
+		}
+	}
 
 
 	/**  */
