@@ -155,7 +155,6 @@ export const map = function (config) {
 				return "url(#pattern_" + id + ")"
 			});
 
-
 		return out;
 	};
 
