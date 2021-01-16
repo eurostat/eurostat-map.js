@@ -17,8 +17,7 @@ export const map = function (config) {
 	out.stripeOrientation_ = 0;
 
 	//colors - indexed by dataset code
-	//TODO if not specified, use cbrew colors
-	out.stripeColors_ = {};
+	out.stripeColors_ = undefined;
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 
@@ -67,8 +66,11 @@ export const map = function (config) {
 			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
 			out.stat(dv, sc_)
 
-			//retrieve color
-			if(colors) out.stripeColors_[dv] = colors[i]
+			//if specified, retrieve color
+			if(colors) {
+				out.stripeColors_ = out.stripeColors_ || {};
+				out.stripeColors_[dv] = colors[i];
+			}
 		}
 
 		//set statCodes
@@ -101,10 +103,12 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 
-		//get list of stat codes. Remove "default".
-		statCodes = Object.keys(out.statData_);
-		const index = statCodes.indexOf("default");
-		if (index > -1) statCodes.splice(index, 1);
+		if(!statCodes) {
+			//get list of stat codes. Remove "default".
+			statCodes = Object.keys(out.statData_);
+			const index = statCodes.indexOf("default");
+			if (index > -1) statCodes.splice(index, 1);
+		}
 
 		return out;
 	};
