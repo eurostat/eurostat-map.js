@@ -133,6 +133,9 @@ export const map = function (config) {
 				out.catColors()[statCodes[i]] = schemeCategory10[i%12];
 		}
 
+		//initialise catlabels
+		out.catLabels_ = out.catLabels_ || {};
+
 		//build and assign texture to the regions
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())

@@ -72,7 +72,7 @@ export const legend = function (map, config) {
 			//label
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
-			.text( sc ) //TODO
+			.text( m.catLabels()[sc] || sc )
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 
             i++;
