@@ -1,6 +1,7 @@
 import { schemeCategory10 } from "d3-scale-chromatic";
 //schemeSet3 schemeDark2 schemePastel1 schemeTableau10
 import * as smap from '../core/stat-map';
+import * as lgscomp from '../legend/legend-stripe-composition';
 
 /**
  * Return a stripe composition map.
@@ -159,10 +160,9 @@ export const map = function (config) {
 	};
 
 	//@override
-	/*out.getLegendConstructor = function() {
-		//TODO
-		return lgchbi.legend;
-	}*/
+	out.getLegendConstructor = function() {
+		return lgscomp.legend;
+	}
 
 	return out;
 }
