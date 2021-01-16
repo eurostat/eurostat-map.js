@@ -32,8 +32,8 @@
             //.stripeOrientation(45)
             const indic = "TOTAREA_HA" /*HOLD_HOLD*/, year = "2013";
             map.statComp( { eurostatDatasetCode: "ef_kvaareg", filters: { indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" },
-            "agrarea",
-            ["HA0", "HA_LT2", "HA2-4", "HA5-9", "HA10-19", "HA20-29", "HA30-49", "HA50-99", "HA_GE100"])
+                "agrarea",
+                ["HA0", "HA_LT2", "HA2-4", "HA5-9", "HA10-19", "HA20-29", "HA30-49", "HA50-99", "HA_GE100"])
             /*map.stat("HA0", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA0", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
             .stat("HA_LT2", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA_LT2", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
             .stat("HA2-4", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA2-4", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
