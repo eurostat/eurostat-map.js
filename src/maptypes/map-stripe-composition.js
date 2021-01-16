@@ -1,4 +1,4 @@
-import { schemeSet3 } from "d3-scale-chromatic";
+import { schemeCategory10 } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 
 /**
@@ -122,7 +122,7 @@ export const map = function (config) {
 		if(!out.stripeColors()) {
 			out.stripeColors({});
 			for(let i=0; i<statCodes.length; i++) {
-				out.stripeColors()[statCodes[i]] = schemeSet3[statCodes.length-i]; //TODO limit - use modulo
+				out.stripeColors()[statCodes[i]] = schemeCategory10[i]; //TODO limit - use modulo
 			}
 		}
 
