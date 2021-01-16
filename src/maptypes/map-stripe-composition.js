@@ -121,9 +121,8 @@ export const map = function (config) {
 		//if not specified, build color ramp
 		if(!out.stripeColors()) {
 			out.stripeColors({});
-			for(let i=0; i<statCodes.length; i++) {
-				out.stripeColors()[statCodes[i]] = schemeCategory10[i]; //TODO limit - use modulo
-			}
+			for(let i=0; i<statCodes.length; i++)
+				out.stripeColors()[statCodes[i]] = schemeCategory10[i%12];
 		}
 
 		//build and assign texture to the regions
