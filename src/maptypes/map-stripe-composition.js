@@ -58,6 +58,7 @@ export const map = function (config) {
 		//assign stat configs
 		stat.filters = stat.filters || {};
 		for(let i=0; i<dimValues.length; i++) {
+			//stat config by dimension value
 			const dv = dimValues[i]
 			stat.filters[dim] = dv
 			const sc_ = {};
@@ -65,15 +66,14 @@ export const map = function (config) {
 			sc_.filters = {};
 			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
 			out.stat(dv, sc_)
+
+			//retrieve color
+			if(colors) out.stripeColors_[dv] = colors[i]
 		}
 
 		//set statCodes
 		statCodes = dimValues;
 
-		//colors
-		if(colors) {
-			//TODO
-		}
 		return out;
 	}
 

@@ -33,7 +33,9 @@
             const indic = "TOTAREA_HA" /*HOLD_HOLD*/, year = "2013";
             map.statComp( { eurostatDatasetCode: "ef_kvaareg", filters: { indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" },
                 "agrarea",
-                ["HA0", "HA_LT2", "HA2-4", "HA5-9", "HA10-19", "HA20-29", "HA30-49", "HA50-99", "HA_GE100"])
+                ["HA0", "HA_LT2", "HA2-4", "HA5-9", "HA10-19", "HA20-29", "HA30-49", "HA50-99", "HA_GE100"],
+                #d53e4f", "#f46d43", "-4": "#fdae61", "HA5-9": "#fee08b", "HA10-19": "#ffffbf", "HA20-29": "#e6f598", "HA30-49": "#abdda4", "HA50-99": "#66c2a5", "HA_GE100": "#3288bd"})
+                )
             /*map.stat("HA0", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA0", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
             .stat("HA_LT2", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA_LT2", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
             .stat("HA2-4", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA2-4", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
@@ -44,8 +46,7 @@
             .stat("HA50-99", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA50-99", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })
             .stat("HA_GE100", { eurostatDatasetCode: "ef_kvaareg", filters: { agrarea: "HA_GE100", indic_ef: indic, legtype: "TOTAL", time: year }, unitText: "" })*/
             //.stripeColors({"HA0": "#00441b", "HA_LT2": "#006d2c", "HA2-4": "#238b45", "HA5-9": "#41ae76", "HA10-19": "#66c2a4", "HA20-29": "#99d8c9", "HA30-49": "#ccece6", "HA50-99": "#e5f5f9", "HA_GE100": "#f7fcfd"})
-            .stripeColors({"HA0": "#d53e4f", "HA_LT2": "#f46d43", "HA2-4": "#fdae61", "HA5-9": "#fee08b", "HA10-19": "#ffffbf", "HA20-29": "#e6f598", "HA30-49": "#abdda4", "HA50-99": "#66c2a5", "HA_GE100": "#3288bd"})
-            .defaultStripeColor("#beaed4")
+            //.stripeColors({"HA0": "#d53e4f", "HA_LT2": "#f46d43", "HA2-4": "#fdae61", "HA5-9": "#fee08b", "HA10-19": "#ffffbf", "HA20-29": "#e6f598", "HA30-49": "#abdda4", "HA50-99": "#66c2a5", "HA_GE100": "#3288bd"})
 
 
             /*/cattle
