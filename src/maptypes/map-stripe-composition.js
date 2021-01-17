@@ -1,3 +1,4 @@
+import { select, create, arc, pie } from "d3";
 import { schemeCategory10 } from "d3-scale-chromatic";
 //schemeSet3 schemeDark2 schemePastel1 schemeTableau10
 import * as smap from '../core/stat-map';
@@ -184,15 +185,39 @@ export const map = function (config) {
  */
 const tooltipTextSComp = function (rg, map) {
 
+	//get tooltip
+	const tp = select("#tooltip_eurostat")
 
-	console.log("aaa")
+	//clear
+	tp.selectAll("*").remove();
 
-	//TODO show pie chart
-	//get tooltip id and fill it
+	//write region name
+	tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
 
+	//TODO pie chart
+	/*
+	//create svg
+	const s = 100;
+	const svg = create("svg").attr("viewBox", [-s/2,-s/2, s, s]);
 
-	//const buf = [];
-	//region name
-	//buf.push("<b>" + rg.properties.na + "</b><br>");
-	//return buf.join("");
+	//make pie chart
+	//https://observablehq.com/@d3/pie-chart
+	const pie_ = pie().sort(null).value(d => d)
+	const data = [4535, 234234, 3455, 7757, 5437];
+	const arcs = pie_(data);
+	const arc_ = arc().innerRadius(0).outerRadius(Math.min(s, s) / 2 - 1)
+	svg.append("g")
+	.attr("stroke", "white")
+	.selectAll("path")
+	.data(arcs)
+	.join("path")
+	.attr("fill", d => "red")
+	.attr("d", arc_)
+
+	console.log(svg.node().toString())
+	//console.log(JSON.stringify(svg.node()))
+	buf.push(svg.node().toString());
+*/
+	//console.log(buf)
+
 };

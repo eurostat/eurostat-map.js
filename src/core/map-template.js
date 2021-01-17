@@ -371,10 +371,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					const sel = select(this);
 					sel.attr("fill___", sel.attr("fill"));
 					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) {
-						const html = out.tooltipText_(rg, out);
-						if(html) tooltip.mouseover(html)
-					};
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -437,10 +434,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", "gray")
 				.on("mouseover", function (rg) {
 					select(this).style("fill", out.nutsrgSelFillSty_);
-					if (tooltip) {
-						const html = out.tooltipText_(rg, out);
-						if(html) tooltip.mouseover(html)
-					}
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
