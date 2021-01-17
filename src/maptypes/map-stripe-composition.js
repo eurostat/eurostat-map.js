@@ -30,7 +30,7 @@ export const map = function (config) {
 	out.labelText_ = {};
 
 	//specific tooltip text function
-	out.tooltipText_ = (rg => { return rg.properties.na; }); //TODO show pie chart
+	out.tooltipText_ = tooltipTextSComp;
 
 
     /**
@@ -174,3 +174,22 @@ export const map = function (config) {
 
 	return out;
 }
+
+
+/**
+ * Specific function for tooltip text.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tooltipTextSComp = function (rg, map) {
+
+	//TODO show pie chart
+	//get tooltip id and fill it
+
+
+	//const buf = [];
+	//region name
+	//buf.push("<b>" + rg.properties.na + "</b><br>");
+	//return buf.join("");
+};
