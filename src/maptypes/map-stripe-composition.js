@@ -30,9 +30,6 @@ export const map = function (config) {
 	//labels
 	out.labelText_ = {};
 
-	//specific tooltip text function
-	out.tooltipText_ = tooltipTextSComp;
-
 
     /**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -173,51 +170,40 @@ export const map = function (config) {
 		return lgscomp.legend;
 	}
 
+
+	//specific tooltip text function
+	out.tooltipText_ =  function (rg, map) {
+
+		//get tooltip
+		const tp = select("#tooltip_eurostat")
+
+		//clear
+		tp.selectAll("*").remove();
+	
+		//write region name
+		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+
+		//TODO skip for countries
+		//prepare pie chart data
+		const data = []
+		const comp = getComposition(rg.properties.id);
+		for(const key in comp) data.push({ code:key, value:comp[key] })
+
+		//create svg for pie chart
+		//TODO center it ?
+		const radius = 40, inRadius = 15;
+		const svg = tp.append("svg").attr("viewBox", [-radius, -radius, 2*radius, 2*radius]).attr("width", 2*radius);
+
+		//make pie chart. See https://observablehq.com/@d3/pie-chart
+		const pie_ = pie().sort(null).value(d => d.value)
+		svg.append("g")
+		.attr("stroke", "white")
+		.selectAll("path")
+		.data( pie_(data) )
+		.join("path")
+		.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray"} )
+		.attr("d", arc().innerRadius(inRadius).outerRadius(radius) )
+	};
+
 	return out;
 }
-
-
-/**
- * Specific function for tooltip text.
- * 
- * @param {*} rg The region to show information on.
- * @param {*} map The map element
- */
-const tooltipTextSComp = function (rg, map) {
-
-	//get tooltip
-	const tp = select("#tooltip_eurostat")
-
-	//clear
-	tp.selectAll("*").remove();
-
-	//write region name
-	tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
-
-	//TODO pie chart
-	/*
-	//create svg
-	const s = 100;
-	const svg = create("svg").attr("viewBox", [-s/2,-s/2, s, s]);
-
-	//make pie chart
-	//https://observablehq.com/@d3/pie-chart
-	const pie_ = pie().sort(null).value(d => d)
-	const data = [4535, 234234, 3455, 7757, 5437];
-	const arcs = pie_(data);
-	const arc_ = arc().innerRadius(0).outerRadius(Math.min(s, s) / 2 - 1)
-	svg.append("g")
-	.attr("stroke", "white")
-	.selectAll("path")
-	.data(arcs)
-	.join("path")
-	.attr("fill", d => "red")
-	.attr("d", arc_)
-
-	console.log(svg.node().toString())
-	//console.log(JSON.stringify(svg.node()))
-	buf.push(svg.node().toString());
-*/
-	//console.log(buf)
-
-};
