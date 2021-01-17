@@ -184,6 +184,9 @@ export const map = function (config) {
  */
 const tooltipTextSComp = function (rg, map) {
 
+
+	console.log("aaa")
+
 	//TODO show pie chart
 	//get tooltip id and fill it
 
