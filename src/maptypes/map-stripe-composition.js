@@ -33,6 +33,9 @@ export const map = function (config) {
 	//category label text, to be used in the legend for example
 	out.labelText_ = {};
 
+	//tooltip pie chart
+	out.pieChartRadius_ = 40;
+	out.pieChartInnerRadius_ = 15;
 
     /**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -41,13 +44,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "labelText_"]
+	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "labelText_", "pieChartRadius_", "pieChartInnerRadius_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "labelText"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "labelText", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -238,7 +241,7 @@ export const map = function (config) {
 		//write region name
 		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
 
-		//prepare pie chart data
+		//prepare data for pie chart
 		const data = []
 		const comp = getComposition(rg.properties.id);
 		for(const key in comp) data.push({ code:key, value:comp[key] })
@@ -250,18 +253,18 @@ export const map = function (config) {
 		};
 
 		//create svg for pie chart
-		const radius = 40, inRadius = 15;
-		const svg = tp.append("svg").attr("viewBox", [-radius, -radius, 2*radius, 2*radius]).attr("width", 2*radius);
+		const r = out.pieChartRadius(), ir = out.pieChartInnerRadius();
+		const svg = tp.append("svg").attr("viewBox", [-r, -r, 2*r, 2*r]).attr("width", 2*r);
 
 		//make pie chart. See https://observablehq.com/@d3/pie-chart
 		const pie_ = pie().sort(null).value(d => d.value)
 		svg.append("g")
-		.attr("stroke", "white")
+		.attr("stroke", "darkgray")
 		.selectAll("path")
 		.data( pie_(data) )
 		.join("path")
 		.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray"} )
-		.attr("d", arc().innerRadius(inRadius).outerRadius(radius) )
+		.attr("d", arc().innerRadius(ir).outerRadius(r) )
 	};
 
 	return out;
