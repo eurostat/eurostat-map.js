@@ -183,11 +183,16 @@ export const map = function (config) {
 		//write region name
 		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
 
-		//TODO skip for countries
 		//prepare pie chart data
 		const data = []
 		const comp = getComposition(rg.properties.id);
 		for(const key in comp) data.push({ code:key, value:comp[key] })
+
+		//case of regions with no data
+		if(!data || data.length == 0) {
+			tp.append("div").html( out.noDataText() );
+			return;
+		};
 
 		//create svg for pie chart
 		//TODO center it ?
