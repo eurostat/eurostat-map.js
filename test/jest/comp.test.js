@@ -45,6 +45,8 @@ test('Composition stripes', async () => {
             .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
             .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
             .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+            .pieChartRadius(20)
+            .pieChartInnerRadius(5)
             .legend({x:500, y:10, title: "Population by age"})
 
     });
