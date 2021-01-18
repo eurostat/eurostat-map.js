@@ -179,7 +179,7 @@ export const map = function (config) {
 
 		//clear
 		tp.selectAll("*").remove();
-	
+
 		//write region name
 		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
 
