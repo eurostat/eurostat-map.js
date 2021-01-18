@@ -63,6 +63,9 @@ export const legend = function (map, config) {
 			//the vertical position of the legend element
 			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
 
+			//the color
+			const col = m.catColors()[code] || "lightgray";
+
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
@@ -71,11 +74,12 @@ export const legend = function (map, config) {
 			.on("mouseover", function () {
 				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
 					.style("fill", m.nutsrgSelFillSty())
+					select(this).style("fill", m.nutsrgSelFillSty())
 			})
 			.on("mouseout", function () {
-				const col = m.catColors()[code] || "lightgray";
 				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
 					.style("fill", col)
+					select(this).style("fill", col)
 			})
 
 			//label
