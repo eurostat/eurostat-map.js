@@ -305,6 +305,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
+		//RS
+		if(cntrg && (out.nutsYear()+"" === "2016" || out.nutsYear()+"" === "2021"))
+		for(let i=0; i<cntrg.length; i++) {
+			const c = cntrg[i];
+			if(c.properties.id == "RS") c.properties.na = "Kosovo (UNSCR 1244/1999 & ICJ)";
+		}
+
 		//prepare drawing group
 		const zg = out.svg().select("#zoomgroup"+out.geo_);
 		zg.selectAll("*").remove();

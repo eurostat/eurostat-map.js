@@ -15,7 +15,7 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-            //cattle
+            //livestock
             .nutsLvl(1)
             .nutsYear(2016)
             .stripeWidth(12)
@@ -27,7 +27,11 @@
             )
             .insets("default")
             .title("European livestock composition in 2018")
-            .legend({x:10, y:150, title: "Animals"})
+            .legend({x:10, y:150, title: "Animals", boxOpacity: 0.8, boxFill: "white" })
+            .seaFillStyle("white")
+            .coastalMarginColor("lightgray")
+            .drawGraticule(false)
+
 
 
             /*/size of exploitations agri
