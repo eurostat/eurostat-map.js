@@ -12,23 +12,15 @@
     <script src="https://unpkg.com/eurostat-map"></script>
     <script>
         eurostatmap.map("ps")
-            .width(900)
-            .stat( { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
-
+            .title("Population in Europe, 2019")
+            .width(800)
+            .stat( { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2019 }, unitText: "inhabitants" } )
             .psMaxSize(25)
             .psStrokeWidth(0.3)
-
             .tooltipShowFlags("long")
-
-            .showLegend(true)
-            .legend().titleText("Population")
-            .legend().cellNb(6)
-            .legend().labelDecNb(0)
-            .legend().height(200)
-            .legend().width(140)
-
+            //.insets("default")
+            .legend({ x:600, y: 40, title: "Population", cellNb: 6, labelDecNb: 0 })
             .build();
-
     </script>
 </body>
 
