@@ -15,50 +15,7 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-            //cod
-            //
-            .nutsLvl(2)
-            .nutsYear(2016)
-            .stripeWidth(12)
-            //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "hlth_cd_acdr2", filters: { age: "TOTAL", sex: "T", time: "2016" }, unitText: "%" },
-                "icd10",
-                //["A_B", "C", "D00-D48", "D50-D89", "E", "G_H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "V01-Y89", "ACC"],
-                //["D00-D48", "E", "L", "M", "N"],
-                ["R","G_H","D50-D89","J","F","K"]
-                //["C", "I"]
-                //["C", "E", "F", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "V01-Y89", "ACC"],
-                //["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
-            )
-            //.showOnlyWhenComplete(true)
-            .legend({x:550, y:100, title: "Causes of death"})
-/*
-	A_B	Certain infectious and parasitic diseases (A00-B99)
-	C	Malignant neoplasms (C00-C97)
-	D00-D48	Non-malignant neoplasms (benign and uncertain)
-	D50-D89	Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism
-	E	Endocrine, nutritional and metabolic diseases (E00-E90)
-	F	Mental and behavioural disorders (F00-F99)
-	G_H	Diseases of the nervous system and the sense organs (G00-H95)
-	I	Diseases of the circulatory system (I00-I99)
-	J	Diseases of the respiratory system (J00-J99)
-	K	Diseases of the digestive system (K00-K93)
-	L	Diseases of the skin and subcutaneous tissue (L00-L99)
-	M	Diseases of the musculoskeletal system and connective tissue (M00-M99)
-	N	Diseases of the genitourinary system (N00-N99)
-	O	Pregnancy, childbirth and the puerperium (O00-O99)
-	P	Certain conditions originating in the perinatal period (P00-P96)
-	Q	Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)
-	R	Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified (R00-R99)
-	V01-Y89	External causes of morbidity and mortality (V01-Y89)
-	ACC	Accidents (V01-X59, Y85, Y86)
-	W00-W19	Falls
-	W65-W74	Accidental drowning and submersion
-	X60-X84_Y870	Intentional self-harm
-	X85-Y09_Y871	Assault
-*/
-
-            /*/cattle
+            //cattle
             .nutsLvl(1)
             .nutsYear(2016)
             .stripeWidth(12)
@@ -68,9 +25,10 @@
                 ["A2000", "A2300", "A2400", "A3100", "A4100", "A4200"], ["bovines", "cows", "buffalos", "pigs", "sheeps", "goats"],
                 ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
             )
-            //.showOnlyWhenComplete(true)
-            .legend({x:550, y:100, title: "Cattle"})
-*/
+            .insets("default")
+            .title("European livestock composition in 2018")
+            .legend({x:10, y:150, title: "Animal"})
+
 
             /*/size of exploitations agri
             .nutsLvl(2)
@@ -91,6 +49,51 @@
 
 
 
+
+
+            /*/cod
+            .nutsLvl(2)
+            .nutsYear(2016)
+            .stripeWidth(20)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "hlth_cd_acdr2", filters: { age: "TOTAL", sex: "T", time: "2016" }, unitText: "%" },
+                "icd10",
+                //["A_B", "C", "D00-D48", "D50-D89", "E", "G_H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "V01-Y89", "ACC"],
+                ["A_B", "D00-D48", "E", "G_H", "N", "ACC"]
+                //["D00-D48", "E", "L", "M", "N"],
+                //["C", "I"]
+            )
+            //.showOnlyWhenComplete(true)
+            .legend({x:550, y:10, title: "Causes of death"})
+            .nutsrgSelFillSty("white")
+            .catLabels({
+A_B: "Certain infectious and parasitic", 
+C: "Malignant neoplasms", 
+"D00-D48": "Non-malignant neoplasms", 
+"D50-D89": "Blood and imune", 
+E: "Endocrine, nutritional and metabolic", 
+F: "Mental", 
+G_H: "Nervous/sense", 
+I: "Circulatory", 
+J: "Respiratory", 
+K: "Digestive", 
+L: "Skin", 
+M: "Musculoskeletal", 
+N: "Genitourinary", 
+O: "Pregnancy, childbirth, puerperium", 
+P: "Perinatal", 
+Q: "Congenital malformations", 
+R: "Other symptoms", 
+"V01-Y89": "External causes", 
+ACC: "Accidents", 
+"W00-W19": "Falls", 
+"W65-W74": "Accidental drowning and submersion", 
+"X60-X84_Y870": "Intentional self-harm", 
+"X85-Y09_Y871": "Assault"
+    })
+*/
+
+
             /*/Governement expenditure by COFOG
             .nutsLvl(0)
             .nutsYear(2016)
@@ -100,7 +103,9 @@
                 "cofog99",
                 ["GF01", "GF02", "GF03", "GF04", "GF05", "GF06", "GF07", "GF08", "GF09", "GF10"],
             )
-            .catLabels({GF01: "General public services", GF02: "Defence", GF03: "Public order and safety", GF04: "Economic affairs", GF05: "Environmental protection", GF06: "Housing and community amenities", GF07: "Health", GF08: "Recreation, culture and religion", GF09: "Education", GF10: "Social protection"})
+            .catLabels({GF01: "General public services", GF02: "Defence", GF03: "Public order and safety", GF04: "Economic affairs",
+            GF05: "Environmental protection", GF06: "Housing and community amenities", GF07: "Health",
+            GF08: "Recreation, culture and religion", GF09: "Education", GF10: "Social protection"})
             //.showOnlyWhenComplete(true)
             .legend({x:550, y:10, title: "Gov expenditure"})*/
 

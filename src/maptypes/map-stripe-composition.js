@@ -232,6 +232,7 @@ export const map = function (config) {
 		const tp = select("#tooltip_eurostat")
 
 		//clear
+		tp.html("")
 		tp.selectAll("*").remove();
 
 		//write region name

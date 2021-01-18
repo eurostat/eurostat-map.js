@@ -455,6 +455,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize())
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
+
+				.style("stroke-width", 3)
+				.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke-linejoin", "round")
+				.style("paint-order", "stroke")
 		}
 
 		//bottom text
