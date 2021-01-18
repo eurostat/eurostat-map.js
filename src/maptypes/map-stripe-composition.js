@@ -191,7 +191,9 @@ export const map = function (config) {
 					const col = out.catColors()[s] || "lightgray";
 
 					//add stripe: a thin rectangle
-					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
+					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1)
+						.style("stroke", "none").style("fill", col)
+						.attr("code", s)
 					x += dx;
 				}
 
@@ -232,7 +234,6 @@ export const map = function (config) {
 		};
 
 		//create svg for pie chart
-		//TODO center it ?
 		const radius = 40, inRadius = 15;
 		const svg = tp.append("svg").attr("viewBox", [-radius, -radius, 2*radius, 2*radius]).attr("width", 2*radius);
 
