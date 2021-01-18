@@ -6,7 +6,6 @@ import * as lgscomp from '../legend/legend-stripe-composition';
 
 /**
  * Return a stripe composition map.
- * See: https://gistbok.ucgis.org/bok-topics/multivariate-mapping
  * 
  * @param {*} config 
  */
@@ -20,14 +19,18 @@ export const map = function (config) {
 	//orientation - vertical by default
 	out.stripeOrientation_ = 0;
 
-	//colors - indexed by dataset code
+	//colors - indexed by category code
 	out.catColors_ = undefined;
-	//colors - indexed by dataset code
+	//colors - indexed by category code
 	out.catLabels_ = undefined;
+
+	//show stripes only when data for all categories is complete.
+	//Otherwise, consider the regions as being with no data at all.
+	out.showOnlyWhenComplete_ = false;
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
 
-	//labels
+	//category label text, to be used in the legend for example
 	out.labelText_ = {};
 
 
@@ -38,50 +41,56 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "noDataFillStyle_", "labelText_"]
+	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "labelText_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "noDataFillStyle", "labelText"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "labelText"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
 
 	/**
+	 * A function to define a stripe map easily, without repetition of information.
+	 * Only for eurobase data sources.
 	 * 
-	 * @param {*} stat 
-	 * @param {*} dim 
-	 * @param {*} dimValues 
+	 * @param {*} stat A pattern for the stat data source
+	 * @param {String} dim The dimension of the composition.
+	 * @param {Array} codes The category codes of the composition
+	 * @param {Array} labels Optional: The labels for the category codes
+	 * @param {Array} colors Optional: The colors for the category
 	 */
-	out.statComp = function(stat, dim, dimValues, labels, colors) {
+	out.statComp = function(stat, dim, codes, labels, colors) {
 
-		//assign stat configs
+		//add one dataset config for each category
 		stat.filters = stat.filters || {};
-		for(let i=0; i<dimValues.length; i++) {
-			//stat config by dimension value
-			const dv = dimValues[i]
-			stat.filters[dim] = dv
+		for(let i=0; i<codes.length; i++) {
+
+			//category code
+			const code = codes[i]
+			stat.filters[dim] = code
 			const sc_ = {};
 			for(let key in stat) sc_[key] = stat[key]
 			sc_.filters = {};
 			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
-			out.stat(dv, sc_)
+			out.stat(code, sc_)
 
-			//if specified, retrieve color
+			//if specified, retrieve and assign color
 			if(colors) {
 				out.catColors_ = out.catColors_ || {};
-				out.catColors_[dv] = colors[i];
+				out.catColors_[code] = colors[i];
 			}
+			//if specified, retrieve and assign label
 			if(labels) {
 				out.catLabels_ = out.catLabels_ || {};
-				out.catLabels_[dv] = labels[i];
+				out.catLabels_[code] = labels[i];
 			}
 		}
 
 		//set statCodes
-		statCodes = dimValues;
+		statCodes = codes;
 
 		return out;
 	}
@@ -96,7 +105,11 @@ export const map = function (config) {
 		for(let i=0; i<statCodes.length; i++) {
 			const sc = statCodes[i]
 			const s = out.statData(sc).get(id);
-			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return undefined;
+			//case when some data is missing
+			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) {
+				if(out.showOnlyWhenComplete()) return undefined;
+				else continue;
+			}
 			comp[sc] = s.value;
 			sum += s.value;
 		}
@@ -152,8 +165,16 @@ export const map = function (config) {
 				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
 				let x=0;
 				for(let s in comp) {
-					const dx = comp[s] * out.stripeWidth();
+
+					//get stripe size
+					let dx = comp[s]
+					if(!dx) continue;
+					dx *= out.stripeWidth();
+
+					//get stripe color
 					const col = out.catColors()[s] || "lightgray";
+
+					//add stripe: a thin rectangle
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1).style("stroke", "none").style("fill", col)
 					x += dx;
 				}
