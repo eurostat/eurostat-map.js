@@ -170,30 +170,30 @@ export const map = function (config) {
 				const id = d.properties.id;
 
 				//compute composition
-				const comp = getComposition(id);
+				const composition = getComposition(id);
 
 				//case when no or missing data
-				if (!comp) return out.noDataFillStyle() || "gray";
+				if (!composition) return out.noDataFillStyle() || "gray";
 
 				//make stripe pattern
 				const patt = out.svg().append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
 				.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
 				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
 				let x=0;
-				for(let s in comp) {
+				for(let code in composition) {
 
 					//get stripe size
-					let dx = comp[s]
+					let dx = composition[code]
 					if(!dx) continue;
 					dx *= out.stripeWidth();
 
 					//get stripe color
-					const col = out.catColors()[s] || "lightgray";
+					const col = out.catColors()[code] || "lightgray";
 
 					//add stripe: a thin rectangle
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1)
 						.style("stroke", "none").style("fill", col)
-						.attr("code", s)
+						.attr("code", code)
 					x += dx;
 				}
 
