@@ -21,7 +21,6 @@
             .map("ch")
             .title("Population change")
             .titleFontSize(40)
-            .titleFill("white")
             .scale("60M")
             .width(900)
             .nutsLvl(3)
@@ -43,12 +42,7 @@
             .tooltipShowFlags("long")
             .botTxtFill("white")
 
-            .showLegend(true)
-            .legend().titleText("Population change from 2015 to 2016 (in ‰)")
-            .legend().width(200)
-            .legend().height(320)
-            .legend().labelDecNb(0)
-
+            .legend({ x:650, y:10, title: "In ‰, 2015-2016", labelDecNb: 0 })
             .build();
 
     </script>
