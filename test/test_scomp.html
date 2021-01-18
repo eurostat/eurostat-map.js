@@ -27,29 +27,29 @@
             //?&geo=EA&time=2020&coicop
             .nutsLvl(0)
             .nutsYear(2016)
-            .stripeWidth(30)
+            .stripeWidth(60)
             //.stripeOrientation(45)
             map.statComp( { eurostatDatasetCode: "prc_hicp_inw", filters: { time: "2020" }, unitText: "" },
                 "coicop",
                 ["CP01", "CP02", "CP03", "CP04", "CP05", "CP06", "CP07", "CP08", "CP09", "CP10", "CP11", "CP12"],
+                [],
+                ["#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f"]
             )
-            //.showOnlyWhenComplete(true)
-            .legend({x:550, y:100, title: "Household consumption"})
+            .legend({x:550, y:10, title: "Household consumption"})
             .catLabels({
                 CP01: "Food and non-alcoholic beverages",
-                CP02: "Alcoholic beverages, tobacco and narcotics",
+                CP02: "Alcool, tobacco, etc.",
                 CP03: "Clothing and footwear",
-                CP04: "Housing, water, electricity, gas and other fuels",
-                CP05: "Furnishings, household equipment and routine household maintenance",
+                CP04: "Housing, water, energy, etc.",
+                CP05: "Household (equip., maintenance)",
                 CP06: "Health",
                 CP07: "Transport",
                 CP08: "Communications",
                 CP09: "Recreation and culture",
                 CP10: "Education",
                 CP11: "Restaurants and hotels",
-                CP12: "Miscellaneous goods and services"
+                CP12: "Miscellaneous"
             })
-
 
             /*/cattle
             .nutsLvl(1)
