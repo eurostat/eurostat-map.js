@@ -176,9 +176,13 @@ export const map = function (config) {
 				if (!composition) return out.noDataFillStyle() || "gray";
 
 				//make stripe pattern
-				const patt = out.svg().append("pattern").attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
-				.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
+				const patt = out.svg().append("pattern")
+					.attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
+					.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
+				//use orientation, if specified
 				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
+
+				//make stripes, one per category
 				let x=0;
 				for(let code in composition) {
 
@@ -190,7 +194,7 @@ export const map = function (config) {
 					//get stripe color
 					const col = out.catColors()[code] || "lightgray";
 
-					//add stripe: a thin rectangle
+					//add stripe to pattern: a thin rectangle
 					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1)
 						.style("stroke", "none").style("fill", col)
 						.attr("code", code)
