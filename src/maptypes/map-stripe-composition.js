@@ -96,11 +96,11 @@ export const map = function (config) {
 		for(let i=0; i<statCodes.length; i++) {
 			const sc = statCodes[i]
 			const s = out.statData(sc).get(id);
-			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return null;
+			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) return undefined;
 			comp[sc] = s.value;
 			sum += s.value;
 		}
-		if(sum == 0) return null;
+		if(sum == 0) return undefined;
 		for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
 		return comp;
 	}
