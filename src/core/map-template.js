@@ -31,7 +31,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.scale_ = "20M"; //TODO choose automatically, depending on pixSize ?
 	out.geoCenter_ = undefined;
 	out.pixSize_ = undefined;
-    out.zoomExtent_ = undefined;
+	out.zoomExtent_ = undefined;
+
+	//labelling (country names and geographical features)
+	out.labelling_ = false;
+	out.labelLanguage_ = "english";
+	out.labelColor_ = "#383838";
+	out.labelOpacity_ = 0.8;
+	out.labelFontSize_ = 13;
 
 	//map title
 	out.title_ = "";
@@ -73,7 +80,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.graticuleStroke_ = "gray";
 	out.graticuleStrokeWidth_ = 1;
 
-    //default copyright and disclaimer text
+	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
 	out.botTxtFontSize_ = 12;
 	out.botTxtFill_ = "black";
@@ -97,7 +104,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetBoxPosition_ = undefined;
 	out.insetBoxPadding_ = 5;
 	out.insetBoxWidth_ = 210;
-	out.insetZoomExtent_ = [1,3];
+	out.insetZoomExtent_ = [1, 3];
 	out.insetScale_ = "03M";
 
 	/**
@@ -108,33 +115,33 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	for (const att in out)
-		out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 	//special ones which affect also the insets
 	["tooltipText_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) {
+			out[att.substring(0, att.length - 1)] = function (v) {
 				if (!arguments.length) return out[att];
 				out[att] = v;
 				//recursive call to inset components
-				for(const geo in out.insetTemplates_) {
+				for (const geo in out.insetTemplates_) {
 					out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
 				}
 				return out;
 			};
 		}
-	);
+		);
 
 	//title getter and setter
-	out.title = function(v) {
+	out.title = function (v) {
 		if (!arguments.length) return out.title_;
 		out.title_ = v;
-		if(out.svg()) out.svg().select("#title"+out.geo()).text(v);
+		if (out.svg()) out.svg().select("#title" + out.geo()).text(v);
 		return out;
 	};
 
 	//insets getter/setter
-	out.insets = function() {
+	out.insets = function () {
 		if (!arguments.length) return out.insets_;
 		if (arguments.length == 1 && arguments[0] === "default") out.insets_ = "default";
 		else if (arguments.length == 1 && Array.isArray(arguments[0])) out.insets_ = arguments[0];
@@ -149,22 +156,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 	let geoData = undefined;
 
 	/** */
-	out.isGeoReady = function() {
-		if(!geoData) return false;
+	out.isGeoReady = function () {
+		if (!geoData) return false;
 		//recursive call to inset components
-		for(const geo in out.insetTemplates_)
-			if( !out.insetTemplates_[geo].isGeoReady() ) return false;
+		for (const geo in out.insetTemplates_)
+			if (!out.insetTemplates_[geo].isGeoReady()) return false;
 		return true;
 	}
 
 	/**
 	 * Return promise for Nuts2JSON topojson data.
 	 */
-	out.getGeoDataPromise = function() {
+	out.getGeoDataPromise = function () {
 		const buf = [];
 		buf.push(out.nuts2jsonBaseURL_);
 		buf.push(out.nutsYear_);
-		if(out.geo_ != "EUR") buf.push("/" + this.geo_ );
+		if (out.geo_ != "EUR") buf.push("/" + this.geo_);
 		buf.push("/"); buf.push(out.proj_);
 		buf.push("/"); buf.push(out.scale_);
 		buf.push("/"); buf.push(out.nutsLvl_);
@@ -182,17 +189,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//get geo data from Nuts2json API
 		out.getGeoDataPromise().then(function (geo___) {
-				geoData = geo___;
+			geoData = geo___;
 
-				//build map template
-				out.buildMapTemplate();
+			//build map template
+			out.buildMapTemplate();
 
-				//callback
-				callback();
-			});
+			//callback
+			callback();
+		});
 
 		//recursive call to inset components
-		for(const geo in out.insetTemplates_)
+		for (const geo in out.insetTemplates_)
 			out.insetTemplates_[geo].updateGeoMT(callback);
 
 		return out;
@@ -200,7 +207,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 
-    /**
+	/**
 	 * Build a map object.
 	 */
 	out.buildMapTemplateBase = function () {
@@ -225,23 +232,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const dg = svg.insert("g", ":first-child").attr("id", "drawing");
 
 		//create main zoom group
-		const zg = dg.append("g").attr("id", "zoomgroup"+out.geo_);
+		const zg = dg.append("g").attr("id", "zoomgroup" + out.geo_);
 
 		//insets
-		if(!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2*out.insetBoxPadding(), 2*out.insetBoxPadding()];
-		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate("+out.insetBoxPosition()[0]+","+out.insetBoxPosition()[1]+")")
+		if (!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2 * out.insetBoxPadding(), 2 * out.insetBoxPadding()];
+		const ing = dg.append("g").attr("id", "insetsgroup").attr("transform", "translate(" + out.insetBoxPosition()[0] + "," + out.insetBoxPosition()[1] + ")")
 		//if needed, use default inset setting
-		if(out.insets_ === "default") out.insets_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding());
-		for(let i=0; i<out.insets_.length; i++) {
+		if (out.insets_ === "default") out.insets_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding());
+		for (let i = 0; i < out.insets_.length; i++) {
 			const config = out.insets_[i];
-			config.svgId = config.svgId || "inset"+config.geo + (Math.random().toString(36).substring(7));
+			config.svgId = config.svgId || "inset" + config.geo + (Math.random().toString(36).substring(7));
 
 			//get svg element. Create it if it as an embeded SVG if it does not exists
 			let svg = select("#" + config.svgId);
 			if (svg.size() == 0) {
-				const x = config.x == undefined? out.insetBoxPadding_ : config.x;
-				const y = config.y == undefined? out.insetBoxPadding_+ i*(out.insetBoxPadding_+out.insetBoxWidth_) : config.y;
-				const ggeo = ing.append("g").attr("id", "zoomgroup"+config.geo).attr("transform", "translate(" + x + "," + y + ")");
+				const x = config.x == undefined ? out.insetBoxPadding_ : config.x;
+				const y = config.y == undefined ? out.insetBoxPadding_ + i * (out.insetBoxPadding_ + out.insetBoxWidth_) : config.y;
+				const ggeo = ing.append("g").attr("id", "zoomgroup" + config.geo).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
 			}
 
@@ -250,7 +257,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw frame
-		dg.append("rect").attr("id", "frame"+out.geo_).attr("x", 0).attr("y", 0)
+		dg.append("rect").attr("id", "frame" + out.geo_).attr("x", 0).attr("y", 0)
 			.attr("width", out.width_).attr("height", out.height_)
 			.style("stroke-width", out.frameStrokeWidth_)
 			.style("stroke", out.frameStroke_)
@@ -289,13 +296,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 			else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])]);
 		//pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
 		if (!out.pixSize())
-			if (dp) out.pixSize(dp.pixSize * 800/out.width());
+			if (dp) out.pixSize(dp.pixSize * 800 / out.width());
 			else out.pixSize(Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_));
 
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
 		const bbox = [out.geoCenter_[0] - 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] - 0.5 * out.pixSize_ * out.height_, out.geoCenter_[0] + 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] + 0.5 * out.pixSize_ * out.height_];
-		const path = geoPath().projection(geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox)));
+		const projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+		const path = geoPath().projection(projection);
 
 
 		//decode topojson to geojson
@@ -306,7 +314,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
 		//prepare drawing group
-		const zg = out.svg().select("#zoomgroup"+out.geo_);
+		const zg = out.svg().select("#zoomgroup" + out.geo_);
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
@@ -443,13 +451,37 @@ export const mapTemplate = function (config, withCenterPoints) {
 				});
 		}
 
+		//geographical names
+		if (out.labelling()) {
+			let data = defaultLabelsConfig();
+			if (data[out.labelLanguage_]) {
+				const label = zg.append("g").attr("id", "g_geolabels");
+				label.selectAll("text")
+					.data(data[out.labelLanguage_])
+					.enter()
+					.append("text") // append text
+					.attr("class","geolabel")
+					.attr("x", function (d) {
+						return projection([d.lon, d.lat])[0];
+					})
+					.attr("y", function (d) {
+						return projection([d.lon, d.lat])[1];
+					})
+					.attr("dy", -7) // set y position of bottom of text
+					.style("opacity", out.labelOpacity_) 
+					.style("fill", out.labelColor_) 
+					.style("font-size", out.labelFontSize_) 
+					.attr("text-anchor", "middle") // set anchor y justification
+					.text(function (d) { return d.text; }); // define the text to display
+			}
+		}
 
 		//title
 		if (out.title()) {
 			//define default position
 			if (!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()]);
 			//draw title
-			out.svg().append("text").attr("id", "title"+out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
+			out.svg().append("text").attr("id", "title" + out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
 				.style("font-family", out.titleFontFamily())
 				.style("font-size", out.titleFontSize())
@@ -481,18 +513,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//prepare map tooltip
 		const tooltip = (out.tooltipText_ || out.botTxtTooltipTxt_) ? tp.tooltip() : null;
 
-        return out;
+		return out;
 	};
 
 
 
 	/** Build template for inset, based on main one */
-	const buildInset = function(config, map) {
+	const buildInset = function (config, map) {
 		//TODO find a better way to do that
 
 		//copy map
 		//for(let key__ in map) {
-			//mt[key__] = map[key__];
+		//mt[key__] = map[key__];
 		//}
 
 		//const mt = Object.assign({}, map)
@@ -520,14 +552,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//copy template attributes
 		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_"]
-		.forEach(function (att) { mt[att] = out[att]; });
+			.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods
 		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "tooltipText_", "classToText_"]
-		.forEach(function (att) { mt[att] = out[att]; });
+			.forEach(function (att) { mt[att] = out[att]; });
 
 		//apply config values for inset
-		for (let key in config) mt[key+"_"] = config[key];
+		for (let key in config) mt[key + "_"] = config[key];
 
 		return mt;
 	}
@@ -562,22 +594,22 @@ const _defaultPosition = {
  * @param {*} s The width of the inset box
  * @param {*} p The padding
  */
-const defaultInsetConfig = function(s,p) {
+const defaultInsetConfig = function (s, p) {
 	const out = [
-	{geo:"IC", x:0, y:0, width:s, height:0.3*s },
-	{geo:"CARIB", x:0, y:0.3*s+p, width:0.5*s, height:s },
-	{geo:"GF", x:0.5*s, y:0.3*s+p, width:0.5*s, height:0.75*s },{geo:"YT", x:0.5*s, y:1.05*s+p, width:0.25*s, height:0.25*s },{geo:"RE", x:0.75*s, y:1.05*s+p, width:0.25*s, height:0.25*s },
-	{geo:"PT20", x:0, y:1.3*s+2*p, width:0.75*s, height:0.25*s }, {geo:"PT30", x:0.75*s, y:1.3*s+2*p, width:0.25*s, height:0.25*s },
-	{geo:"MT", x:0, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"LI", x:0.25*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
-	{geo:"SJ_SV", x:0.5*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s}, {geo:"SJ_JM", x:0.75*s, y:1.55*s+3*p, width:0.25*s, height:0.25*s},
-	/*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
-	{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},
-	{geo:"PT20", x:0, y:2*dd}, {geo:"PT30", x:dd, y:2*dd}, {geo:"MT", x:2*dd, y:2*dd},
-	{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},*/
-	//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:dd, y:330}
+		{ geo: "IC", x: 0, y: 0, width: s, height: 0.3 * s },
+		{ geo: "CARIB", x: 0, y: 0.3 * s + p, width: 0.5 * s, height: s },
+		{ geo: "GF", x: 0.5 * s, y: 0.3 * s + p, width: 0.5 * s, height: 0.75 * s }, { geo: "YT", x: 0.5 * s, y: 1.05 * s + p, width: 0.25 * s, height: 0.25 * s }, { geo: "RE", x: 0.75 * s, y: 1.05 * s + p, width: 0.25 * s, height: 0.25 * s },
+		{ geo: "PT20", x: 0, y: 1.3 * s + 2 * p, width: 0.75 * s, height: 0.25 * s }, { geo: "PT30", x: 0.75 * s, y: 1.3 * s + 2 * p, width: 0.25 * s, height: 0.25 * s },
+		{ geo: "MT", x: 0, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s }, { geo: "LI", x: 0.25 * s, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s },
+		{ geo: "SJ_SV", x: 0.5 * s, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s }, { geo: "SJ_JM", x: 0.75 * s, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s },
+		/*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
+		{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},
+		{geo:"PT20", x:0, y:2*dd}, {geo:"PT30", x:dd, y:2*dd}, {geo:"MT", x:2*dd, y:2*dd},
+		{geo:"LI",scale:"01M", x:0, y:3*dd}, {geo:"SJ_SV", x:dd, y:3*dd}, {geo:"SJ_JM",scale:"01M", x:2*dd, y:3*dd},*/
+		//{geo:"CARIB", x:0, y:330}, {geo:"IS", x:dd, y:330}
 	];
 	//hide graticule for insets
-	for(let i=0; i<out.length; i++) out[i].drawGraticule = false;
+	for (let i = 0; i < out.length; i++) out[i].drawGraticule = false;
 	return out;
 }
 
@@ -585,19 +617,40 @@ const defaultInsetConfig = function(s,p) {
 
 /** Default CRS for each geo area */
 const _defaultCRS = {
-	"EUR":"3035",
-	"IC":"32628",
-	"GP":"32620",
-	"MQ":"32620",
-	"GF":"32622",
-	"RE":"32740",
-	"YT":"32738",
-	"MT":"3035",
-	"PT20":"32626",
-	"PT30":"32628",
-	"LI":"3035",
-	"IS":"3035",
-	"SJ_SV":"3035",
-	"SJ_JM":"3035",
-	"CARIB":"32620",
+	"EUR": "3035",
+	"IC": "32628",
+	"GP": "32620",
+	"MQ": "32620",
+	"GF": "32622",
+	"RE": "32740",
+	"YT": "32738",
+	"MT": "3035",
+	"PT20": "32626",
+	"PT30": "32628",
+	"LI": "3035",
+	"IS": "3035",
+	"SJ_SV": "3035",
+	"SJ_JM": "3035",
+	"CARIB": "32620",
 };
+
+/**
+ * Default labels for country / geographical names.
+ * Using centroids would clash with proportional symbols, so labels are positioned independently 
+ *
+ */
+const defaultLabelsConfig = function () {
+	const labels = {
+		"english": [
+			{ "text": "GERMANY", "lon": 4347284, "lat": 3093276 },
+			{ "text": "FRANCE", "lon": 3767740, "lat": 2662817 },
+			{ "text": "SPAIN", "lon": 3186096, "lat": 2013979 },
+			{ "text": "ITALY", "lon": 4529967, "lat": 2181963 },
+			{ "text": "PORTUGAL", "lon": 2706136, "lat": 1706179, }
+		],
+		"french": [
+
+		]
+	};
+	return labels;
+}
