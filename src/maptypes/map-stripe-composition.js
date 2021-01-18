@@ -165,7 +165,6 @@ export const map = function (config) {
 
 		//build and assign texture to the regions
 		out.svg().selectAll("path.nutsrg")
-			.transition().duration(out.transitionDuration())
 			.attr("fill", function (d) {
 				const id = d.properties.id;
 
@@ -182,6 +181,10 @@ export const map = function (config) {
 				//use orientation, if specified
 				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
 
+				//background
+				patt.append("rect").attr("x", 0).attr("y", 0).attr("width", out.stripeWidth()).attr("height", 1)
+				.style("stroke", "none").style("fill", "lightgray")
+
 				//make stripes, one per category
 				let x=0;
 				for(let code in composition) {
@@ -195,9 +198,14 @@ export const map = function (config) {
 					const col = out.catColors()[code] || "lightgray";
 
 					//add stripe to pattern: a thin rectangle
-					patt.append("rect").attr("x", x).attr("y", 0).attr("width", dx).attr("height", 1)
-						.style("stroke", "none").style("fill", col)
+					patt.append("rect").attr("x", x).attr("y", 0)
+						.attr("height", 1)
+						.style("stroke", "none")
 						.attr("code", code)
+						.style("fill", col)
+						//transition along x
+						.transition().duration(out.transitionDuration())
+						.attr("width", dx)
 					x += dx;
 				}
 

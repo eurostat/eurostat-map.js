@@ -15,6 +15,8 @@
             .scale("60M")
             .zoomExtent([1,2])
 
+
+
             //Governement expenditure by COFOG
 
             //cod
@@ -23,42 +25,45 @@
             //COICOP
             //https://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/prc_hicp_inw
             //?&geo=EA&time=2020&coicop
-
-            /*/internet utilisation
-            .nutsLvl(2)
+            .nutsLvl(0)
             .nutsYear(2016)
-            .stripeWidth(20)
+            .stripeWidth(30)
             //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "isoc_r_iuse_i", filters: { unit: "PC_IND", time: "2019" }, unitText: "" },
-                "indic_is",
-                ["I_IU3", "I_ILT12", "I_IUX"], ["Last 3 months", "Last 12 months", "Never"],
+            map.statComp( { eurostatDatasetCode: "prc_hicp_inw", filters: { time: "2020" }, unitText: "" },
+                "coicop",
+                ["CP01", "CP02", "CP03", "CP04", "CP05", "CP06", "CP07", "CP08", "CP09", "CP10", "CP11", "CP12"],
             )
-            .legend({x:550, y:150, title: "Internet"})*/
-    /*I_IUSE	Frequency of internet access: once a week (including every day)
-	I_IDAY	Frequency of internet access: daily
+            //.showOnlyWhenComplete(true)
+            .legend({x:550, y:100, title: "Household consumption"})
+            .catLabels({
+                CP01: "Food and non-alcoholic beverages",
+                CP02: "Alcoholic beverages, tobacco and narcotics",
+                CP03: "Clothing and footwear",
+                CP04: "Housing, water, electricity, gas and other fuels",
+                CP05: "Furnishings, household equipment and routine household maintenance",
+                CP06: "Health",
+                CP07: "Transport",
+                CP08: "Communications",
+                CP09: "Recreation and culture",
+                CP10: "Education",
+                CP11: "Restaurants and hotels",
+                CP12: "Miscellaneous goods and services"
+            })
 
-    I_IUSNET	Internet use: participating in social networks (creating user profile, posting messages or other contributions to facebook, twitter, etc.)
-	I_IUBK	Internet use: Internet banking
-	I_IUSELL	Internet use: selling goods or services
-	I_IUCPP	Internet use: civic or political participation
 
-    I_IU3	Last internet use: in last 3 months
-	I_ILT12	Last internet use: in the last 12 months
-	I_IUX	Internet use: never*/
-
-
-            //business demography
-            .nutsLvl(2)
+            /*/cattle
+            .nutsLvl(1)
             .nutsYear(2016)
-            .stripeWidth(15)
+            .stripeWidth(12)
             //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "bd_hgnace2_r3", filters: { indic_sb: "V11920", time: "2017" }, unitText: "" },
-                "nace_r2",
-                //["B-E", "F", "G","H", "I","J", "K_L_X_K642", "M_N", "P_Q", "R_S"],
-                //["B-E", "F"],
-                ["B-E", "F", "G", "J"], ["Industry", "Construction", "Sales", "IT"],
+            map.statComp( { eurostatDatasetCode: "agr_r_animal", filters: { unit: "THS_HD", time: "2018" }, unitText: "1000 heads" },
+                "animals",
+                ["A2000", "A2300", "A2400", "A3100", "A4100", "A4200"], ["bovines", "cows", "buffalos", "pigs", "sheeps", "goats"],
+                ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
             )
-            .legend({})
+            //.showOnlyWhenComplete(true)
+            .legend({x:550, y:100, title: "Cattle"})
+*/
 
             /*/size of exploitations agri
             .nutsLvl(2)
@@ -75,19 +80,11 @@
             .legend({x:550, y:100, title: "Farm areas"})
 */
 
-            /*/cattle
-            .nutsLvl(1)
-            .nutsYear(2016)
-            .stripeWidth(12)
-            //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "agr_r_animal", filters: { unit: "THS_HD", time: "2018" }, unitText: "1000 heads" },
-                "animals",
-                ["A2000", "A2300", "A2400", "A3100", "A4100", "A4200"], ["bovines", "cows", "buffalos", "pigs", "sheeps", "goats"],
-                ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
-            )
-            //.showOnlyWhenComplete(true)
-            .legend({x:550, y:100, title: "Cattle"})
-*/
+
+
+
+
+
 
             /*/population by age
             .nutsLvl(3)
@@ -95,16 +92,18 @@
             .stripeWidth(10)
             //.stripeOrientation(45)
             .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
-            .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
+            //.stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
             .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
-            .catColors({"Y_LT15":"#7fc97f", "Y15-64":"#fdc086", "Y_GE65":"#beaed4"})
-            //.defaultStripeColor("#beaed4")*/
+            .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+            .legend({x:500, y:10, title: "Population by age"})
+*/
 
-            //GDP by sector
-            /*.nutsLvl(0)
+
+            /*/GDP by sector
+            .nutsLvl(0)
             .nutsYear(2016)
-            .stripeWidth(30)
-            .stripeOrientation(45)
+            .stripeWidth(70)
+            //.stripeOrientation(45)
             .stat("A", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "A", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("B-E", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "B-E", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("F", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "F", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
@@ -115,8 +114,48 @@
             .stat("M_N", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "M_N", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("O-Q", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "O-Q", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
             .stat("R-U", { eurostatDatasetCode: "nama_10_a10", filters: { nace_r2: "R-U", na_item: "B1G", unit: "CP_MEUR", time: "2019" }, unitText: "M€" })
-            .catColors({"A":"#7fc97f", "B-E":"#fdc086", "F":"#fdc086"})
-            .defaultStripeColor("#beaed4")*/
+            //.catColors({"A":"#7fc97f", "B-E":"#fdc086", "F":"#fdc086"})
+            .legend({x:500, y:10, title: "GDP by sector"})
+            .catLabels({
+                "A":"Agriculture, forestry and fishing",
+                "B-E": "Industry (except construction)",
+                "F": "Construction",
+                "G-I": "Trade, transport, accommodation, food",
+                "J": "Information and communication",
+                "K": "Financial and insurance activities",
+                "L": "Real estate activities",
+                "M_N": "Professional, scientific and technical; support",
+                "O-Q": "Public, defence, education, health and social",
+                "R-U": "Arts, entertainment, other services, int, etc.",
+            })*/
+
+
+
+
+                        /*/internet utilisation
+            .nutsLvl(2)
+            .nutsYear(2016)
+            .stripeWidth(15)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "isoc_r_iuse_i", filters: { unit: "PC_IND", time: "2019" }, unitText: "" },
+                "indic_is",
+                ["I_IU3", "I_ILT12", "I_IUX"], ["Last 3 months", "Last 12 months", "Never"],
+            )
+            .legend({x:550, y:150, title: "Internet"})*/
+
+
+            /*/business demography
+            .nutsLvl(2)
+            .nutsYear(2016)
+            .stripeWidth(15)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "bd_hgnace2_r3", filters: { indic_sb: "V11920", time: "2017" }, unitText: "" },
+                "nace_r2",
+                //["B-E", "F", "G","H", "I","J", "K_L_X_K642", "M_N", "P_Q", "R_S"],
+                //["B-E", "F"],
+                ["B-E", "F", "G", "J"], ["Industry", "Construction", "Sales", "IT"],
+            )
+            .legend({})*/
 
             .build();
 
