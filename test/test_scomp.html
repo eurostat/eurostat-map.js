@@ -15,41 +15,48 @@
             .scale("60M")
             .zoomExtent([1,2])
 
-
-
-            //Governement expenditure by COFOG
-
             //cod
-            //hlth_cd_acdr2
-
-            //COICOP
-            //https://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/prc_hicp_inw
-            //?&geo=EA&time=2020&coicop
-            .nutsLvl(0)
+            //
+            .nutsLvl(2)
             .nutsYear(2016)
-            .stripeWidth(60)
+            .stripeWidth(12)
             //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "prc_hicp_inw", filters: { time: "2020" }, unitText: "" },
-                "coicop",
-                ["CP01", "CP02", "CP03", "CP04", "CP05", "CP06", "CP07", "CP08", "CP09", "CP10", "CP11", "CP12"],
-                [],
-                ["#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f"]
+            map.statComp( { eurostatDatasetCode: "hlth_cd_acdr2", filters: { age: "TOTAL", sex: "T", time: "2016" }, unitText: "%" },
+                "icd10",
+                //["A_B", "C", "D00-D48", "D50-D89", "E", "G_H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "V01-Y89", "ACC"],
+                //["D00-D48", "E", "L", "M", "N"],
+                ["R","G_H","D50-D89","J","F","K"]
+                //["C", "I"]
+                //["C", "E", "F", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "V01-Y89", "ACC"],
+                //["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
             )
-            .legend({x:550, y:10, title: "Household consumption"})
-            .catLabels({
-                CP01: "Food and non-alcoholic beverages",
-                CP02: "Alcool, tobacco, etc.",
-                CP03: "Clothing and footwear",
-                CP04: "Housing, water, energy, etc.",
-                CP05: "Household (equip., maintenance)",
-                CP06: "Health",
-                CP07: "Transport",
-                CP08: "Communications",
-                CP09: "Recreation and culture",
-                CP10: "Education",
-                CP11: "Restaurants and hotels",
-                CP12: "Miscellaneous"
-            })
+            //.showOnlyWhenComplete(true)
+            .legend({x:550, y:100, title: "Causes of death"})
+/*
+	A_B	Certain infectious and parasitic diseases (A00-B99)
+	C	Malignant neoplasms (C00-C97)
+	D00-D48	Non-malignant neoplasms (benign and uncertain)
+	D50-D89	Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism
+	E	Endocrine, nutritional and metabolic diseases (E00-E90)
+	F	Mental and behavioural disorders (F00-F99)
+	G_H	Diseases of the nervous system and the sense organs (G00-H95)
+	I	Diseases of the circulatory system (I00-I99)
+	J	Diseases of the respiratory system (J00-J99)
+	K	Diseases of the digestive system (K00-K93)
+	L	Diseases of the skin and subcutaneous tissue (L00-L99)
+	M	Diseases of the musculoskeletal system and connective tissue (M00-M99)
+	N	Diseases of the genitourinary system (N00-N99)
+	O	Pregnancy, childbirth and the puerperium (O00-O99)
+	P	Certain conditions originating in the perinatal period (P00-P96)
+	Q	Congenital malformations, deformations and chromosomal abnormalities (Q00-Q99)
+	R	Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified (R00-R99)
+	V01-Y89	External causes of morbidity and mortality (V01-Y89)
+	ACC	Accidents (V01-X59, Y85, Y86)
+	W00-W19	Falls
+	W65-W74	Accidental drowning and submersion
+	X60-X84_Y870	Intentional self-harm
+	X85-Y09_Y871	Assault
+*/
 
             /*/cattle
             .nutsLvl(1)
@@ -84,7 +91,45 @@
 
 
 
+            /*/Governement expenditure by COFOG
+            .nutsLvl(0)
+            .nutsYear(2016)
+            .stripeWidth(60)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "gov_10a_exp", filters: { na_item: "TE", sector: "S13", unit: "MIO_EUR", time: "2018" }, unitText: "M€" },
+                "cofog99",
+                ["GF01", "GF02", "GF03", "GF04", "GF05", "GF06", "GF07", "GF08", "GF09", "GF10"],
+            )
+            .catLabels({GF01: "General public services", GF02: "Defence", GF03: "Public order and safety", GF04: "Economic affairs", GF05: "Environmental protection", GF06: "Housing and community amenities", GF07: "Health", GF08: "Recreation, culture and religion", GF09: "Education", GF10: "Social protection"})
+            //.showOnlyWhenComplete(true)
+            .legend({x:550, y:10, title: "Gov expenditure"})*/
 
+            /*/COICOP
+            .nutsLvl(0)
+            .nutsYear(2016)
+            .stripeWidth(60)
+            //.stripeOrientation(45)
+            map.statComp( { eurostatDatasetCode: "prc_hicp_inw", filters: { time: "2020" }, unitText: "" },
+                "coicop",
+                ["CP01", "CP02", "CP03", "CP04", "CP05", "CP06", "CP07", "CP08", "CP09", "CP10", "CP11", "CP12"],
+                [],
+                ["#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f"]
+            )
+            .legend({x:550, y:10, title: "Household consumption"})
+            .catLabels({
+                CP01: "Food and non-alcoholic beverages",
+                CP02: "Alcool, tobacco, etc.",
+                CP03: "Clothing and footwear",
+                CP04: "Housing, water, energy, etc.",
+                CP05: "Household (equip., maintenance)",
+                CP06: "Health",
+                CP07: "Transport",
+                CP08: "Communications",
+                CP09: "Recreation and culture",
+                CP10: "Education",
+                CP11: "Restaurants and hotels",
+                CP12: "Miscellaneous"
+            })*/
 
             /*/population by age
             .nutsLvl(3)
