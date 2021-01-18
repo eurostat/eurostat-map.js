@@ -199,7 +199,10 @@ export const map = function (config) {
 
 				//return pattern reference
 				return "url(#pattern_" + id + ")"
-			});
+			})
+			.attr("nd", function (d) {
+				return ! getComposition(d.properties.id) ? "nd" : "";
+			})
 
 		return out;
 	};

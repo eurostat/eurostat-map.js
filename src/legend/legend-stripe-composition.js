@@ -106,17 +106,14 @@ export const legend = function (map, config) {
 			.attr("fill", m.noDataFillStyle() )
 			.attr("stroke", "black").attr("stroke-width", 0.5)
 			.on("mouseover", function () {
-				//TODO
-				/*const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
-				sel.style("fill", m.nutsrgSelFillSty());
-				sel.attr("fill___", function (d) { select(this).attr("fill"); });
-				select(this).style("fill", m.nutsrgSelFillSty());*/
+				svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", m.nutsrgSelFillSty())
+				select(this).style("fill", m.nutsrgSelFillSty())
 			})
 			.on("mouseout", function () {
-                //TODO
-				/*const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='nd']");
-				sel.style("fill", function (d) { select(this).attr("fill___"); });
-				select(this).style("fill", m.noDataFillStyle());*/
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", function (d) { m.noDataFillStyle() })
+				select(this).style("fill", m.noDataFillStyle())
 			});
 
 			//'no data' label
@@ -124,6 +121,14 @@ export const legend = function (map, config) {
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.on("mouseover", function () {
+				svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", m.nutsrgSelFillSty())
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", function (d) { m.noDataFillStyle() })
+			});
 		}
 
 		//set legend box dimensions
