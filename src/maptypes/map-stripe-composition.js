@@ -96,25 +96,39 @@ export const map = function (config) {
 	}
 
 
-	/**  */
+	/** The codes of the categories to consider for the composition. */
 	let statCodes = undefined;
 
-	/** Function to compute composition for region id, for each category */
+	/**
+	 * Function to compute composition for region id, for each category.
+	 * Return an object with, for each category, the share [0,1] of the category.
+	 * @param {*} id 
+	 */
 	const getComposition = function(id) {
 		let comp = {}, sum = 0;
+		//get stat value for each category. Compute the sum.
 		for(let i=0; i<statCodes.length; i++) {
+
+			//retrieve code and stat value
 			const sc = statCodes[i]
 			const s = out.statData(sc).get(id);
+
 			//case when some data is missing
 			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) {
 				if(out.showOnlyWhenComplete()) return undefined;
 				else continue;
 			}
+
 			comp[sc] = s.value;
 			sum += s.value;
 		}
+
+		//case when no data
 		if(sum == 0) return undefined;
+
+		//compute ratios
 		for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
+
 		return comp;
 	}
 
@@ -123,9 +137,11 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 
+		//if not provided, get list of stat codes from the map stat data
 		if(!statCodes) {
-			//get list of stat codes. Remove "default".
+			//get list of stat codes.
 			statCodes = Object.keys(out.statData_);
+			//remove "default", if present
 			const index = statCodes.indexOf("default");
 			if (index > -1) statCodes.splice(index, 1);
 		}
@@ -137,14 +153,14 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
-		//if not specified, build color ramp
+		//if not specified, build default color ramp
 		if(!out.catColors()) {
 			out.catColors({});
 			for(let i=0; i<statCodes.length; i++)
 				out.catColors()[statCodes[i]] = schemeCategory10[i%12];
 		}
 
-		//initialise catlabels
+		//if not specified, initialise category labels
 		out.catLabels_ = out.catLabels_ || {};
 
 		//build and assign texture to the regions
