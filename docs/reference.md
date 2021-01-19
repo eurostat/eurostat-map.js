@@ -302,8 +302,8 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 | **label1** | string | *"Variable 1"* | The text for the label of variable 1. |
 | **label2** | string | *"Variable 2"* | The text for the label of variable 1. |
 | **labelFontSize** | int | *12* | The font size of the legend label. |
-| **noData** | boolean | *true* | Show 'no data' style. |
-| **noDataShapeSize** | number | *15* | . |
+| **noData** | boolean | *true* | Show/hide 'no data' style in the legend. |
+| **noDataShapeSize** | number | *15* | The size, in pixel, of the 'No data' legend shape. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
 
@@ -350,9 +350,15 @@ eurostatmap.map("scomp")
 	.legend({x:550, y:10, title: "Population by age"})
 ```
 
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.****([*value*]) |  | ** | . |
 
+In addition to [the default legend parameters](#map-legend), stripe composition maps have the following specific legend parameters:
 
-TODO documentation
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.****([*value*]) |  | ** | . |
 
 
 ## Map title
