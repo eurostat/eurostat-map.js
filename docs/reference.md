@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](stripe-composition-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
@@ -306,6 +306,12 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 | **noDataShapeSize** | number | *15* | . |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
+
+## Stripe composition map
+
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
+
+TODO documentatio
 
 ## Map title
 

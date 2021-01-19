@@ -43,6 +43,7 @@ See the **[API reference](docs/reference.md)**:
 - For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
 - For a [categorical map](docs/reference.md#categorical-map).
 - For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
+- For a [stripe composition map](docs/reference.md#stripe-composition-map).
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
