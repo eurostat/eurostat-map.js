@@ -522,9 +522,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.append("text") // append text
 				.attr("class", (d) => { return "geolabel_" + d.class })
 				.attr("x", function (d) {
+					if (d.rotate) {
+						return 0; //for rotated text, x and y positions must be specified in the transform property
+					}
 					return projection([d.x, d.y])[0];
 				})
 				.attr("y", function (d) {
+					if (d.rotate) {
+						return 0; //for rotated text, x and y positions must be specified in the transform property
+					}
 					return projection([d.x, d.y])[1];
 				})
 				.attr("dy", -7) // set y position of bottom of text
@@ -532,16 +538,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", d => d.class == "ocean" || d.class == "sea" ? out.labelColors_.seas : out.labelColors_.countries)
 				.style("font-size", (d)=>{
 					if (d.size == "large") {
-						return out.labelFontSize_;
+						return out.labelFontSize_ +"px";
 					} else if (d.size == "medium") {
-						return out.labelFontSize_ /1.25;
+						return out.labelFontSize_ /1.25 +"px";
 					} else if (d.size == "small") {
-						return out.labelFontSize_ /1.5;
+						return out.labelFontSize_ /1.5 +"px";
 					} else {
-						return out.labelFontSize_;
+						return out.labelFontSize_ +"px";
 					}
 				})
-				.attr("transform", (d)=> d.rotate ? `rotate(${d.rotate})` : "rotate(0)")
+				//transform labels which have a "rotate" property in the labels config
+				.attr("transform", (d)=> {
+					if (d.rotate) {
+						let pos = projection([d.x, d.y])
+						let x =pos[0];
+						let y = pos[1];
+						return `translate(${x},${y}) rotate(${d.rotate})`
+					} else {
+						return "rotate(0)"
+					}
+				})
 				.style("font-weight", d => d.class == "ocean" || d.class == "sea" ? "normal" : "bold")
 				.style("font-style", d => d.class == "ocean" || d.class == "sea" ? "italic" : "normal")
 				.style("pointer-events","none" )
@@ -563,13 +579,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 				{ "text": "ATLANTIC OCEAN", "x": 2694000, "y": 2854000, "class": "ocean", "size":"large" },
 				{ "text": "NORTH SEA", "x": 3915000, "y": 3700000, "class": "sea", "size":"large" },
 				// { "text": "BALTIC SEA", "x": 4958000, "y": 3572000, "class": "sea" },
-				{ "text": "NORWEGIAN SEA", "x": 3955000, "y": 5008000, "class": "sea", "size":"large" },
+				{ "text": "NORWEGIAN SEA", "x": 3855000, "y": 5008000, "class": "sea", "size":"large" },
 				{ "text": "BLACK SEA", "x": 6265000, "y": 2472000, "class": "sea", "size":"large" },
 				{ "text": "GERMANY", "x": 4347284, "y": 3093276, "class": "country", "size":"large" },
 				{ "text": "FRANCE", "x": 3767740, "y": 2662817, "class": "country", "size":"large" },
 				{ "text": "SPAIN", "x": 3186096, "y": 2000000, "class": "country", "size":"large" },
 				{ "text": "ITALY", "x": 4469967, "y": 2181963, "class": "country", "size":"large" },
-				{ "text": "PORTUGAL", "x": 2706136, "y": 1706179, "class": "country", "size":"medium", "rotate":90 },
+				{ "text": "PORTUGAL", "x": 2836136, "y": 1956179, "class": "country", "size":"medium", "rotate":-75 },
 				{ "text": "POLAND", "x": 4964000, "y": 3269000, "class": "country", "size":"large" },
 				{ "text": "GREECE", "x": 5489000, "y": 1787000, "class": "country", "size":"large" },
 				{ "text": "BULGARIA", "x": 5567000, "y": 2216000, "class": "country", "size":"large" },
@@ -583,10 +599,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 				{ "text": "HUNGARY", "x": 5020000, "y": 2654000, "class": "country", "size":"medium" },
 				{ "text": "CZECHIA", "x": 4707000, "y": 2867000, "class": "country", "size":"large" },
 				{ "text": "TURKEY", "x": 6510000, "y": 2150000, "class": "country", "size":"large" },
-				{ "text": "SLOVAKIA", "x": 5040000, "y": 2835000, "class": "country", "size":"small" },
+				{ "text": "SLOVAKIA", "x": 5040000, "y": 2835000, "class": "country", "size":"small", "rotate":-25 },
 				{ "text": "CROATIA", "x": 4876000, "y": 2462000, "class": "country", "size":"small" },
 				{ "text": "CYPRUS", "x": 6426000, "y": 1480000, "class": "country", "size":"medium" },
-				{ "text": "SLOVENIA", "x": 4660000, "y": 2496000, "class": "country", "size":"small" },
+				{ "text": "SLOVENIA", "x": 4690000, "y": 2499000, "class": "country", "size":"small","rotate":-25 },
 				{ "text": "BELGIUM", "x": 3933000, "y": 3055000, "class": "country", "size":"small" },
 				{ "text": "LUXEMBOURG", "x": 4041000, "y": 2900000, "class": "country", "size":"small" },
 				{ "text": "DENMARK", "x": 4316000, "y": 3621000, "class": "country", "size":"medium" },
