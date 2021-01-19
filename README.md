@@ -10,9 +10,11 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html)
 
 ## Examples
 
