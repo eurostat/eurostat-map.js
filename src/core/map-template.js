@@ -33,13 +33,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.pixSize_ = undefined;
 	out.zoomExtent_ = undefined;
 
-	//labelling (country names and geographical features)
-	out.labelling_ = false;
-	out.labelLanguage_ = "english";
-	out.labelColor_ = "#383838";
-	out.labelOpacity_ = 0.8;
-	out.labelFontSize_ = 13;
-
 	//map title
 	out.title_ = "";
 	out.titleFontSize_ = 25;
@@ -47,6 +40,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titlePosition_ = undefined;
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
+
+	//labelling (country names and geographical features)
+	out.labelling_ = false;
+	out.labelLanguage_ = "english";
+	out.labelColor_ = "#383838";
+	out.labelOpacity_ = 0.8;
+	out.labelFontSize_ = 10;
 
 	//map frame
 	out.frameStroke_ = "#222";
@@ -56,7 +56,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//the function returning the tooltip text
 	out.tooltipText_ = (rg => { return rg.properties.na; });
 	out.tooltipShowFlags_ = "short"; //"short" "long"
-
 
 	//template default style
 	//nuts
@@ -451,29 +450,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 				});
 		}
 
-		//geographical names
+		// add geographical labels to map
 		if (out.labelling()) {
-			let data = defaultLabelsConfig();
-			if (data[out.labelLanguage_]) {
-				const label = zg.append("g").attr("id", "g_geolabels");
-				label.selectAll("text")
-					.data(data[out.labelLanguage_])
-					.enter()
-					.append("text") // append text
-					.attr("class","geolabel")
-					.attr("x", function (d) {
-						return projection([d.lon, d.lat])[0];
-					})
-					.attr("y", function (d) {
-						return projection([d.lon, d.lat])[1];
-					})
-					.attr("dy", -7) // set y position of bottom of text
-					.style("opacity", out.labelOpacity_) 
-					.style("fill", out.labelColor_) 
-					.style("font-size", out.labelFontSize_) 
-					.attr("text-anchor", "middle") // set anchor y justification
-					.text(function (d) { return d.text; }); // define the text to display
-			}
+			addLabelsToMap(out, zg, projection)
 		}
 
 		//title
@@ -515,6 +494,81 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		return out;
 	};
+
+
+	/**
+	 * @function addLabelsToMap 
+	 * @description appends text labels of country and ocean names to the map
+	*/
+	function addLabelsToMap(out, zg, projection) {
+		let data = out.labelsConfig_ || defaultLabelsConfig();
+		if (data[out.labelLanguage_]) {
+			const label = zg.append("g").attr("id", "g_geolabels");
+			label.selectAll("text")
+				.data(data[out.labelLanguage_])
+				.enter()
+				.append("text") // append text
+				.attr("class", (d) => { return "geolabel_" + d.class })
+				.attr("x", function (d) {
+					return projection([d.x, d.y])[0];
+				})
+				.attr("y", function (d) {
+					return projection([d.x, d.y])[1];
+				})
+				.attr("dy", -7) // set y position of bottom of text
+				.style("opacity", out.labelOpacity_)
+				.style("fill", out.labelColor_)
+				.style("fill", d => d.class == "ocean" || d.class == "sea" ? "#003399" : out.labelColor_)
+				.style("font-size", out.labelFontSize_)
+				.style("font-weight", d => d.class == "ocean" || d.class == "sea" ? "normal" : "bold")
+				.style("font-style", d => d.class == "ocean" || d.class == "sea" ? "italic" : "normal")
+				.style("font-family", "sans-serif")
+				.attr("text-anchor", "middle") // set anchor y justification
+				.text(function (d) { return d.text; }); // define the text to display
+		}
+	}
+
+	/**
+	 * Default labels for country / geographical names.
+	 * Using centroids would clash with proportional symbols, and are generally not ideal placements, so labels are positioned independently 
+	 *
+	 */
+	const defaultLabelsConfig = function () {
+		const labels = {
+			"english": [
+				{ "text": "MEDITERRANEAN SEA", "x": 5472000, "y": 1242000, "class": "sea" },
+				{ "text": "ATLANTIC OCEAN", "x": 2694000, "y": 2854000, "class": "ocean" },
+				{ "text": "NORTH SEA", "x": 3915000, "y": 3700000, "class": "sea" },
+				// { "text": "BALTIC SEA", "x": 4958000, "y": 3572000, "class": "sea" },
+				{ "text": "NORWEGIAN SEA", "x": 3955000, "y": 5008000, "class": "sea" },
+				{ "text": "BLACK SEA", "x": 6265000, "y": 2472000, "class": "sea" },
+				{ "text": "GERMANY", "x": 4347284, "y": 3093276, "class": "country" },
+				{ "text": "FRANCE", "x": 3767740, "y": 2662817, "class": "country" },
+				{ "text": "SPAIN", "x": 3186096, "y": 2000000, "class": "country" },
+				{ "text": "ITALY", "x": 4469967, "y": 2181963, "class": "country" },
+				{ "text": "PORTUGAL", "x": 2706136, "y": 1706179, "class": "country" },
+				{ "text": "POLAND", "x": 4964000, "y": 3269000, "class": "country" },
+				{ "text": "GREECE", "x": 5489000, "y": 1787000, "class": "country" },
+				{ "text": "BULGARIA", "x": 5567000, "y": 2216000, "class": "country" },
+				{ "text": "ROMANIA", "x": 5451000, "y": 2643000, "class": "country" },
+				{ "text": "SWEDEN", "x": 4601000, "y": 4401000, "class": "country" },
+				{ "text": "NORWAY", "x": 4274000, "y": 4147000, "class": "country" },
+				{ "text": "U.K.", "x": 3558000, "y": 3311000, "class": "country" },
+				{ "text": "IRELAND", "x": 3136000, "y": 3394000, "class": "country" },
+				{ "text": "FINLAND", "x": 5125000, "y": 4424000, "class": "country" },
+				{ "text": "AUSTRIA", "x": 4648000, "y": 2629000, "class": "country" },
+				{ "text": "HUNGARY", "x": 5020000, "y": 2654000, "class": "country" },
+				{ "text": "CZECHIA", "x": 4707000, "y": 2867000, "class": "country" },
+				{ "text": "TURKEY", "x": 6510000, "y": 2150000, "class": "country" },
+				{ "text": "SLOVAKIA", "x": 5042000, "y": 2825000, "class": "country" },
+				{ "text": "CROATIA", "x": 4826000, "y": 2424000, "class": "country" },
+			],
+			"french": [
+
+			]
+		};
+		return labels;
+	}
 
 
 
@@ -634,23 +688,4 @@ const _defaultCRS = {
 	"CARIB": "32620",
 };
 
-/**
- * Default labels for country / geographical names.
- * Using centroids would clash with proportional symbols, so labels are positioned independently 
- *
- */
-const defaultLabelsConfig = function () {
-	const labels = {
-		"english": [
-			{ "text": "GERMANY", "lon": 4347284, "lat": 3093276 },
-			{ "text": "FRANCE", "lon": 3767740, "lat": 2662817 },
-			{ "text": "SPAIN", "lon": 3186096, "lat": 2013979 },
-			{ "text": "ITALY", "lon": 4529967, "lat": 2181963 },
-			{ "text": "PORTUGAL", "lon": 2706136, "lat": 1706179, }
-		],
-		"french": [
 
-		]
-	};
-	return labels;
-}
