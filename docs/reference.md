@@ -311,7 +311,13 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
 
-TODO documentatio
+A stripe composition map is a choropleth map showing the composition of a statistical variable using a pattern of stripes of different colors and widths. The color of a stripe corresponds to its category, and its width is proportional to the share of this categroy in the total. A stripe composition map shows how proportions vary across space.
+
+Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
+
+
+TODO documentation
+
 
 ## Map title
 
@@ -325,7 +331,6 @@ Specify the map title, its style and position.
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontFamily**([*value*]) | String | "Helvetica, Arial, sans-serif" | The title font. |
 | *map*.**titleFontWeight**([*value*]) | String | "bold" | The title font weight. |
-
 
 
 ## Map frame
