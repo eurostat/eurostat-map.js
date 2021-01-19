@@ -365,8 +365,13 @@ In addition to [the default legend parameters](#map-legend), stripe composition 
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.****([*value*]) |  | ** | . |
-
+| *map*.**shapeWidth**([*value*]) |  | *13* | the width of the legend box elements. |
+| *map*.**shapeHeight**([*value*]) |  | *15* | the height of the legend box elements. |
+| *map*.**shapePadding**([*value*]) |  | *5* | the distance between consecutive legend box elements. |
+| *map*.**labelFontSize**([*value*]) |  | *12* | the font size of the legend label. |
+| *map*.**labelOffset**([*value*]) |  | *5* | the distance between the legend box elements to the corresponding text label. |
+| *map*.**noData**([*value*]) |  | *true* | show no data. |
+| *map*.**noDataText**([*value*]) |  | *"No data"* | no data label text. |
 
 ## Map title
 
