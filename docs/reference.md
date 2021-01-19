@@ -292,7 +292,7 @@ eurostatmap.map("chbi")
 | *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
 | *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
 | *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
-| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | Fill style for regions with no data available. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
@@ -352,7 +352,14 @@ eurostatmap.map("scomp")
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.****([*value*]) |  | ** | . |
+| *map*.**stripeWidth**([*value*]) | number | *50* | Width of the stripes series. |
+| *map*.**stripeOrientation**([*value*]) | number | *0* | Orientation of the stripes, in degree. Set to 0 for vertical and 90 for horizontal. |
+| *map*.**catColors**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. If not specified, different colors are proposed. |
+| *map*.**catLabels**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. |
+| *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
+| *map*.**noDataFillStyle**([*value*]) |  | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**pieChartRadius**([*value*]) |  | *40* | Radius of the pie chart to show in the tooltip. |
+| *map*.**pieChartInnerRadius**([*value*]) |  | *15* | Inner radius of the pie chart to show in the tooltip. |
 
 In addition to [the default legend parameters](#map-legend), stripe composition maps have the following specific legend parameters:
 
