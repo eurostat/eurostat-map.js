@@ -44,7 +44,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//labelling (country names and geographical features)
 	out.labelling_ = false;
 	out.labelLanguage_ = "english";
-	out.labelColor_ = "#383838";
+	out.labelColors_ = {"seas":"#003399", "countries":"#383838"};
 	out.labelOpacity_ = 0.8;
 	out.labelFontSize_ = 10;
 
@@ -529,11 +529,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 				.attr("dy", -7) // set y position of bottom of text
 				.style("opacity", out.labelOpacity_)
-				.style("fill", out.labelColor_)
-				.style("fill", d => d.class == "ocean" || d.class == "sea" ? "#003399" : out.labelColor_)
-				.style("font-size", out.labelFontSize_)
+				.style("fill", d => d.class == "ocean" || d.class == "sea" ? out.labelColors_.seas : out.labelColors_.countries)
+				.style("font-size", (d)=>{
+					if (d.size == "large") {
+						return out.labelFontSize_;
+					} else if (d.size == "medium") {
+						return out.labelFontSize_ /1.25;
+					} else if (d.size == "small") {
+						return out.labelFontSize_ /1.5;
+					} else {
+						return out.labelFontSize_;
+					}
+				})
+				.attr("transform", (d)=> d.rotate ? `rotate(${d.rotate})` : "rotate(0)")
 				.style("font-weight", d => d.class == "ocean" || d.class == "sea" ? "normal" : "bold")
 				.style("font-style", d => d.class == "ocean" || d.class == "sea" ? "italic" : "normal")
+				.style("pointer-events","none" )
 				.style("font-family", "sans-serif")
 				.attr("text-anchor", "middle") // set anchor y justification
 				.text(function (d) { return d.text; }); // define the text to display
@@ -548,32 +559,43 @@ export const mapTemplate = function (config, withCenterPoints) {
 	const defaultLabelsConfig = function () {
 		const labels = {
 			"english": [
-				{ "text": "MEDITERRANEAN SEA", "x": 5472000, "y": 1242000, "class": "sea" },
-				{ "text": "ATLANTIC OCEAN", "x": 2694000, "y": 2854000, "class": "ocean" },
-				{ "text": "NORTH SEA", "x": 3915000, "y": 3700000, "class": "sea" },
+				{ "text": "MEDITERRANEAN SEA", "x": 5472000, "y": 1242000, "class": "sea", "size":"large" },
+				{ "text": "ATLANTIC OCEAN", "x": 2694000, "y": 2854000, "class": "ocean", "size":"large" },
+				{ "text": "NORTH SEA", "x": 3915000, "y": 3700000, "class": "sea", "size":"large" },
 				// { "text": "BALTIC SEA", "x": 4958000, "y": 3572000, "class": "sea" },
-				{ "text": "NORWEGIAN SEA", "x": 3955000, "y": 5008000, "class": "sea" },
-				{ "text": "BLACK SEA", "x": 6265000, "y": 2472000, "class": "sea" },
-				{ "text": "GERMANY", "x": 4347284, "y": 3093276, "class": "country" },
-				{ "text": "FRANCE", "x": 3767740, "y": 2662817, "class": "country" },
-				{ "text": "SPAIN", "x": 3186096, "y": 2000000, "class": "country" },
-				{ "text": "ITALY", "x": 4469967, "y": 2181963, "class": "country" },
-				{ "text": "PORTUGAL", "x": 2706136, "y": 1706179, "class": "country" },
-				{ "text": "POLAND", "x": 4964000, "y": 3269000, "class": "country" },
-				{ "text": "GREECE", "x": 5489000, "y": 1787000, "class": "country" },
-				{ "text": "BULGARIA", "x": 5567000, "y": 2216000, "class": "country" },
-				{ "text": "ROMANIA", "x": 5451000, "y": 2643000, "class": "country" },
-				{ "text": "SWEDEN", "x": 4601000, "y": 4401000, "class": "country" },
-				{ "text": "NORWAY", "x": 4274000, "y": 4147000, "class": "country" },
-				{ "text": "U.K.", "x": 3558000, "y": 3311000, "class": "country" },
-				{ "text": "IRELAND", "x": 3136000, "y": 3394000, "class": "country" },
-				{ "text": "FINLAND", "x": 5125000, "y": 4424000, "class": "country" },
-				{ "text": "AUSTRIA", "x": 4648000, "y": 2629000, "class": "country" },
-				{ "text": "HUNGARY", "x": 5020000, "y": 2654000, "class": "country" },
-				{ "text": "CZECHIA", "x": 4707000, "y": 2867000, "class": "country" },
-				{ "text": "TURKEY", "x": 6510000, "y": 2150000, "class": "country" },
-				{ "text": "SLOVAKIA", "x": 5042000, "y": 2825000, "class": "country" },
-				{ "text": "CROATIA", "x": 4826000, "y": 2424000, "class": "country" },
+				{ "text": "NORWEGIAN SEA", "x": 3955000, "y": 5008000, "class": "sea", "size":"large" },
+				{ "text": "BLACK SEA", "x": 6265000, "y": 2472000, "class": "sea", "size":"large" },
+				{ "text": "GERMANY", "x": 4347284, "y": 3093276, "class": "country", "size":"large" },
+				{ "text": "FRANCE", "x": 3767740, "y": 2662817, "class": "country", "size":"large" },
+				{ "text": "SPAIN", "x": 3186096, "y": 2000000, "class": "country", "size":"large" },
+				{ "text": "ITALY", "x": 4469967, "y": 2181963, "class": "country", "size":"large" },
+				{ "text": "PORTUGAL", "x": 2706136, "y": 1706179, "class": "country", "size":"medium", "rotate":90 },
+				{ "text": "POLAND", "x": 4964000, "y": 3269000, "class": "country", "size":"large" },
+				{ "text": "GREECE", "x": 5489000, "y": 1787000, "class": "country", "size":"large" },
+				{ "text": "BULGARIA", "x": 5567000, "y": 2216000, "class": "country", "size":"large" },
+				{ "text": "ROMANIA", "x": 5451000, "y": 2600000, "class": "country", "size":"large" },
+				{ "text": "SWEDEN", "x": 4601000, "y": 4401000, "class": "country", "size":"large" },
+				{ "text": "NORWAY", "x": 4274000, "y": 4147000, "class": "country", "size":"large" },
+				{ "text": "U.K.", "x": 3558000, "y": 3311000, "class": "country", "size":"large" },
+				{ "text": "IRELAND", "x": 3136000, "y": 3394000, "class": "country", "size":"medium" },
+				{ "text": "FINLAND", "x": 5125000, "y": 4424000, "class": "country", "size":"large" },
+				{ "text": "AUSTRIA", "x": 4648000, "y": 2629000, "class": "country", "size":"medium" },
+				{ "text": "HUNGARY", "x": 5020000, "y": 2654000, "class": "country", "size":"medium" },
+				{ "text": "CZECHIA", "x": 4707000, "y": 2867000, "class": "country", "size":"large" },
+				{ "text": "TURKEY", "x": 6510000, "y": 2150000, "class": "country", "size":"large" },
+				{ "text": "SLOVAKIA", "x": 5040000, "y": 2835000, "class": "country", "size":"small" },
+				{ "text": "CROATIA", "x": 4876000, "y": 2462000, "class": "country", "size":"small" },
+				{ "text": "CYPRUS", "x": 6426000, "y": 1480000, "class": "country", "size":"medium" },
+				{ "text": "SLOVENIA", "x": 4660000, "y": 2496000, "class": "country", "size":"small" },
+				{ "text": "BELGIUM", "x": 3933000, "y": 3055000, "class": "country", "size":"small" },
+				{ "text": "LUXEMBOURG", "x": 4041000, "y": 2900000, "class": "country", "size":"small" },
+				{ "text": "DENMARK", "x": 4316000, "y": 3621000, "class": "country", "size":"medium" },
+				{ "text": "LITHUANIA", "x": 5205000, "y": 3630000, "class": "country", "size":"small" },
+				{ "text": "LATVIA", "x": 5269000, "y": 3776000, "class": "country", "size":"small" },
+				{ "text": "ESTONIA", "x": 5229000, "y": 3990000, "class": "country", "size":"small" },
+				{ "text": "MALTA", "x": 4731000, "y": 1320000, "class": "country", "size":"small" },
+				{ "text": "NETHERLANDS", "x": 3977000, "y": 3272000, "class": "country", "size":"small" },
+				{ "text": "ICELAND", "x": 3020000, "y": 4803000, "class": "country", "size":"medium" },
 			],
 			"french": [
 
