@@ -26,6 +26,8 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [Focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/spain.html))
 - [20 years of GDP change in Europe](https://eurostat.github.io/eurostat-map.js/examples/small_multiple.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/small_multiple.html))
 - [Unemployment/population relation](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html))
+- [Farm sizes composition](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
+- [Livestock composition](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html))
 
 
 ## Installation
