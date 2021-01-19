@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](stripe-composition-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
