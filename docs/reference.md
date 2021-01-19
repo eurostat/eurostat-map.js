@@ -315,6 +315,42 @@ A stripe composition map is a choropleth map showing the composition of a statis
 
 Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
 
+Example:
+
+```javascript
+//population composition by age
+eurostatmap.map("scomp")
+	.nutsLvl(3)
+    .nutsYear(2016)
+    .stripeWidth(10)
+    .stripeOrientation(45)
+    .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .catLabels({"Y_LT15":"< 15", "Y15-64":"15 to 64", "Y_GE65":"> 65"})
+    .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+    .legend({x:550, y:10, title: "Population by age"})
+```
+
+Or simplier:
+
+```javascript
+//population composition by age
+eurostatmap.map("scomp")
+	.nutsLvl(3)
+    .nutsYear(2016)
+    .stripeWidth(10)
+    .stripeOrientation(45)
+	.statComp( { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR", time: "2019" }, unitText: "people" },
+		"age",
+		["Y_LT15", "Y15-64", "Y_GE65"],
+		["< 15", "15 to 64", "> 65"],
+		["#33a02c", "#cab2d6", "#ff7f00"]
+	)
+	.legend({x:550, y:10, title: "Population by age"})
+```
+
+
 
 TODO documentation
 
