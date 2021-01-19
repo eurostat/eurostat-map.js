@@ -3,7 +3,7 @@ import { select } from "d3-selection";
 /**
  * A eurostat-map legend. This is an abstract method.
 */
-export const legend = function (map, config) {
+export const legend = function (map) {
 
 	//build legend object
 	const out = {};

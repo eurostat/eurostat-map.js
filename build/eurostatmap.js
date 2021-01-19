@@ -30244,7 +30244,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * A eurostat-map legend. This is an abstract method.
 */
-const legend = function (map, config) {
+const legend = function (map) {
 
 	//build legend object
 	const out = {};
@@ -30652,6 +30652,13 @@ const mapTemplate = function (config, withCenterPoints) {
 		const cntrg = Object(topojson_client__WEBPACK_IMPORTED_MODULE_4__["feature"])(geoData, geoData.objects.cntrg).features;
 		const cntbn = Object(topojson_client__WEBPACK_IMPORTED_MODULE_4__["feature"])(geoData, geoData.objects.cntbn).features;
 
+		//RS
+		if(cntrg && (out.nutsYear()+"" === "2016" || out.nutsYear()+"" === "2021"))
+		for(let i=0; i<cntrg.length; i++) {
+			const c = cntrg[i];
+			if(c.properties.id == "RS") c.properties.na = "Kosovo (UNSCR 1244/1999 & ICJ)";
+		}
+
 		//prepare drawing group
 		const zg = out.svg().select("#zoomgroup" + out.geo_);
 		zg.selectAll("*").remove();
@@ -30718,7 +30725,7 @@ const mapTemplate = function (config, withCenterPoints) {
 					const sel = Object(d3_selection__WEBPACK_IMPORTED_MODULE_2__["select"])(this);
 					sel.attr("fill___", sel.attr("fill"));
 					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out));
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -30781,7 +30788,7 @@ const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", "gray")
 				.on("mouseover", function (rg) {
 					Object(d3_selection__WEBPACK_IMPORTED_MODULE_2__["select"])(this).style("fill", out.nutsrgSelFillSty_);
-					if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -30806,6 +30813,11 @@ const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize())
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
+
+				.style("stroke-width", 3)
+				.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke-linejoin", "round")
+				.style("paint-order", "stroke")
 		}
 
 		//bottom text
@@ -31466,7 +31478,9 @@ const statMap = function (config, withCenterPoints) {
 			if(!out.stat(statKey) && out.statData(statKey).get()) return;
 
 			//if no config is specified, use default data source: population density
-			if(statKey == "default" && !out.stat(statKey)) out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
+			//TODO move that out of loop ?
+			if(statKey == "default" && !out.stat(statKey))
+				out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
 
 			//build stat data object from stat configuration and store it
 			const stdt = _stat_data__WEBPACK_IMPORTED_MODULE_2__["statData"](out.stat(statKey));
@@ -31727,7 +31741,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maptypes/map-proportional-symbols */ "./src/maptypes/map-proportional-symbols.js");
 /* harmony import */ var _maptypes_map_categorical__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maptypes/map-categorical */ "./src/maptypes/map-categorical.js");
 /* harmony import */ var _maptypes_map_choropleth_bivariate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maptypes/map-choropleth-bivariate */ "./src/maptypes/map-choropleth-bivariate.js");
-/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core/stat-map */ "./src/core/stat-map.js");
+/* harmony import */ var _maptypes_map_stripe_composition__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./maptypes/map-stripe-composition */ "./src/maptypes/map-stripe-composition.js");
+/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./core/stat-map */ "./src/core/stat-map.js");
+
 
 
 
@@ -31748,13 +31764,15 @@ __webpack_require__.r(__webpack_exports__);
 	if(type == "ct") return _maptypes_map_categorical__WEBPACK_IMPORTED_MODULE_2__["map"](config);
 	//proportionnal symbols map
 	if(type == "ps") return _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_1__["map"](config);
-	//value-by-alha map
+	//bivariate choropleth
 	if(type == "chbi") return _maptypes_map_choropleth_bivariate__WEBPACK_IMPORTED_MODULE_3__["map"](config);
+	//stripes composition
+	if(type == "scomp") return _maptypes_map_stripe_composition__WEBPACK_IMPORTED_MODULE_4__["map"](config);
 	//add new map types here
 	//if(type == "XX") return mapXX.map(config);
 
 	console.log("Unexpected map type: " + type);
-	return _core_stat_map__WEBPACK_IMPORTED_MODULE_4__["statMap"](config, true);
+	return _core_stat_map__WEBPACK_IMPORTED_MODULE_5__["statMap"](config, true);
 };
 
 
@@ -31848,7 +31866,7 @@ __webpack_require__.r(__webpack_exports__);
 const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map, config);
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map);
 
 	//the width of the legend box elements
 	out.shapeWidth = 13;
@@ -32000,7 +32018,7 @@ __webpack_require__.r(__webpack_exports__);
 const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map, config);
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map);
 
 	//size
 	out.squareSize = 50;
@@ -32160,7 +32178,7 @@ __webpack_require__.r(__webpack_exports__);
 const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = _core_legend__WEBPACK_IMPORTED_MODULE_2__["legend"](map, config);
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_2__["legend"](map);
 
 	//the order of the legend elements. Set to false to invert.
 	out.ascending = true;
@@ -32321,7 +32339,7 @@ __webpack_require__.r(__webpack_exports__);
 const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map, config);
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map);
 
 	//number of elements in the legend
 	out.cellNb = 4;
@@ -32441,6 +32459,166 @@ const legend = function (map, config) {
 				.attr("alignment-baseline", "middle")
 				.text(f(val))
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
+
+		//set legend box dimensions
+		out.setBoxDimension();
+	}
+
+	return out;
+}
+
+
+/***/ }),
+
+/***/ "./src/legend/legend-stripe-composition.js":
+/*!*************************************************!*\
+  !*** ./src/legend/legend-stripe-composition.js ***!
+  \*************************************************/
+/*! exports provided: legend */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "legend", function() { return legend; });
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/index.js");
+/* harmony import */ var d3_format__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-format */ "./node_modules/d3-format/src/index.js");
+/* harmony import */ var _core_legend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/legend */ "./src/core/legend.js");
+
+
+
+
+/**
+ * A legend for choropleth maps
+ * 
+ * @param {*} map 
+ */
+const legend = function (map, config) {
+
+	//build generic legend object for the map
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_2__["legend"](map);
+
+	//the width of the legend box elements
+	out.shapeWidth = 13;
+	//the height of the legend box elements
+	out.shapeHeight = 15;
+	//the distance between consecutive legend box elements
+	out.shapePadding = 5;
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//the distance between the legend box elements to the corresponding text label
+	out.labelOffset = 5;
+	//show no data
+	out.noData = true;
+	//no data label text
+	out.noDataText = "No data";
+
+
+	//override attribute values with config values
+	if(config) for (let key in config) out[key] = config[key];
+
+
+	//@override
+	out.update = function () {
+		const m = out.map;
+		const svgMap = m.svg();
+		const lgg = out.lgg;
+
+		//remove previous content
+		lgg.selectAll("*").remove();
+
+		//draw legend background box
+		out.makeBackgroundBox();
+
+		//draw title
+		if(out.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+			.text(out.title)
+			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+		//set font family
+		lgg.style("font-family", out.fontFamily);
+
+
+        //draw legend elements for classes: rectangle + label
+        let i=0;
+        const scs = m.catColors();
+		for(let code in scs) {
+
+			//the vertical position of the legend element
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
+
+			//the color
+			const col = m.catColors()[code] || "lightgray";
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", scs[code])
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", function () {
+				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
+					.style("fill", m.nutsrgSelFillSty())
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_0__["select"])(this).style("fill", m.nutsrgSelFillSty())
+			})
+			.on("mouseout", function () {
+				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
+					.style("fill", col)
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_0__["select"])(this).style("fill", col)
+			})
+
+			//label
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
+			.text( m.catLabels()[code] || code )
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.on("mouseover", function () {
+				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
+					.style("fill", m.nutsrgSelFillSty())
+			})
+			.on("mouseout", function () {
+				const col = m.catColors()[code] || "lightgray";
+				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
+					.style("fill", col)
+			})
+
+            i++;
+        }
+
+		//'no data' legend box
+		if(out.noData) {
+			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+			.attr("fill", m.noDataFillStyle() )
+			.attr("stroke", "black").attr("stroke-width", 0.5)
+			.on("mouseover", function () {
+				svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", m.nutsrgSelFillSty())
+				Object(d3_selection__WEBPACK_IMPORTED_MODULE_0__["select"])(this).style("fill", m.nutsrgSelFillSty())
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", function (d) { m.noDataFillStyle() })
+				Object(d3_selection__WEBPACK_IMPORTED_MODULE_0__["select"])(this).style("fill", m.noDataFillStyle())
+			});
+
+			//'no data' label
+			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
+			.attr("alignment-baseline", "middle")
+			.text(out.noDataText)
+			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.on("mouseover", function () {
+				svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", m.nutsrgSelFillSty())
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+					.style("fill", function (d) { m.noDataFillStyle() })
+			});
 		}
 
 		//set legend box dimensions
@@ -33151,8 +33329,8 @@ const tooltip = function (config) {
 	}
 
 	my.mouseover = function (html) {
-		tooltip.html(html)
-			.style("left", (d3_selection__WEBPACK_IMPORTED_MODULE_0__["event"].pageX + config.xOffset) + "px").style("top", (d3_selection__WEBPACK_IMPORTED_MODULE_0__["event"].pageY - config.yOffset) + "px")
+		if(html) tooltip.html(html);
+		tooltip.style("left", (d3_selection__WEBPACK_IMPORTED_MODULE_0__["event"].pageX + config.xOffset) + "px").style("top", (d3_selection__WEBPACK_IMPORTED_MODULE_0__["event"].pageY - config.yOffset) + "px")
 			.transition().duration(config.transitionDuration).style("opacity", 1);
 	};
 
@@ -33824,6 +34002,295 @@ const symbolsLibrary = {
 	star: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolStar"],
 	wye: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolWye"],
 	circle: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolCircle"],
+}
+
+
+/***/ }),
+
+/***/ "./src/maptypes/map-stripe-composition.js":
+/*!************************************************!*\
+  !*** ./src/maptypes/map-stripe-composition.js ***!
+  \************************************************/
+/*! exports provided: map */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "map", function() { return map; });
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+/* harmony import */ var d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-scale-chromatic */ "./node_modules/d3-scale-chromatic/src/index.js");
+/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/stat-map */ "./src/core/stat-map.js");
+/* harmony import */ var _legend_legend_stripe_composition__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../legend/legend-stripe-composition */ "./src/legend/legend-stripe-composition.js");
+
+
+//schemeSet3 schemeDark2 schemePastel1 schemeTableau10
+
+
+
+/**
+ * Return a stripe composition map.
+ * 
+ * @param {*} config 
+ */
+const map = function (config) {
+
+	//create map object to return, using the template
+	const out = _core_stat_map__WEBPACK_IMPORTED_MODULE_2__["statMap"](config);
+
+	//width of the stripes serie
+	out.stripeWidth_ = 50;
+	//orientation - vertical by default
+	out.stripeOrientation_ = 0;
+
+	//colors - indexed by category code
+	out.catColors_ = undefined;
+	//colors - indexed by category code
+	out.catLabels_ = undefined;
+
+	//show stripes only when data for all categories is complete.
+	//Otherwise, consider the regions as being with no data at all.
+	out.showOnlyWhenComplete_ = false;
+	//style for no data regions
+	out.noDataFillStyle_ = "darkgray";
+
+	//category label text, to be used in the legend for example
+	out.labelText_ = {};
+
+	//tooltip pie chart
+	out.pieChartRadius_ = 40;
+	out.pieChartInnerRadius_ = 15;
+
+    /**
+	 * Definition of getters/setters for all previously defined attributes.
+	 * Each method follow the same pattern:
+	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+	 *  - To get the attribute value, call the method without argument.
+	 *  - To set the attribute value, call the same method with the new value as single argument.
+	*/
+	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "labelText_", "pieChartRadius_", "pieChartInnerRadius_"]
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		});
+
+	//override attribute values with config values
+	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "labelText", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
+		if(config[key]!=undefined) out[key](config[key]);
+	});
+
+
+	/**
+	 * A function to define a stripe map easily, without repetition of information.
+	 * Only for eurobase data sources.
+	 * 
+	 * @param {*} stat A pattern for the stat data source
+	 * @param {String} dim The dimension of the composition.
+	 * @param {Array} codes The category codes of the composition
+	 * @param {Array} labels Optional: The labels for the category codes
+	 * @param {Array} colors Optional: The colors for the category
+	 */
+	out.statComp = function(stat, dim, codes, labels, colors) {
+
+		//add one dataset config for each category
+		stat.filters = stat.filters || {};
+		for(let i=0; i<codes.length; i++) {
+
+			//category code
+			const code = codes[i]
+			stat.filters[dim] = code
+			const sc_ = {};
+			for(let key in stat) sc_[key] = stat[key]
+			sc_.filters = {};
+			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
+			out.stat(code, sc_)
+
+			//if specified, retrieve and assign color
+			if(colors) {
+				out.catColors_ = out.catColors_ || {};
+				out.catColors_[code] = colors[i];
+			}
+			//if specified, retrieve and assign label
+			if(labels) {
+				out.catLabels_ = out.catLabels_ || {};
+				out.catLabels_[code] = labels[i];
+			}
+		}
+
+		//set statCodes
+		statCodes = codes;
+
+		return out;
+	}
+
+
+	/** The codes of the categories to consider for the composition. */
+	let statCodes = undefined;
+
+	/**
+	 * Function to compute composition for region id, for each category.
+	 * Return an object with, for each category, the share [0,1] of the category.
+	 * @param {*} id 
+	 */
+	const getComposition = function(id) {
+		let comp = {}, sum = 0;
+		//get stat value for each category. Compute the sum.
+		for(let i=0; i<statCodes.length; i++) {
+
+			//retrieve code and stat value
+			const sc = statCodes[i]
+			const s = out.statData(sc).get(id);
+
+			//case when some data is missing
+			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) {
+				if(out.showOnlyWhenComplete()) return undefined;
+				else continue;
+			}
+
+			comp[sc] = s.value;
+			sum += s.value;
+		}
+
+		//case when no data
+		if(sum == 0) return undefined;
+
+		//compute ratios
+		for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
+
+		return comp;
+	}
+
+
+
+	//@override
+	out.updateClassification = function () {
+
+		//if not provided, get list of stat codes from the map stat data
+		if(!statCodes) {
+			//get list of stat codes.
+			statCodes = Object.keys(out.statData_);
+			//remove "default", if present
+			const index = statCodes.indexOf("default");
+			if (index > -1) statCodes.splice(index, 1);
+		}
+
+		return out;
+	};
+
+
+	//@override
+	out.updateStyle = function () {
+
+		//if not specified, build default color ramp
+		if(!out.catColors()) {
+			out.catColors({});
+			for(let i=0; i<statCodes.length; i++)
+				out.catColors()[statCodes[i]] = d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_1__["schemeCategory10"][i%12];
+		}
+
+		//if not specified, initialise category labels
+		out.catLabels_ = out.catLabels_ || {};
+
+		//build and assign texture to the regions
+		out.svg().selectAll("path.nutsrg")
+			.attr("fill", function (d) {
+				const id = d.properties.id;
+
+				//compute composition
+				const composition = getComposition(id);
+
+				//case when no or missing data
+				if (!composition) return out.noDataFillStyle() || "gray";
+
+				//make stripe pattern
+				const patt = out.svg().append("pattern")
+					.attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
+					.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
+				//use orientation, if specified
+				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
+
+				//background
+				patt.append("rect").attr("x", 0).attr("y", 0).attr("width", out.stripeWidth()).attr("height", 1)
+				.style("stroke", "none").style("fill", "lightgray")
+
+				//make stripes, one per category
+				let x=0;
+				for(let code in composition) {
+
+					//get stripe size
+					let dx = composition[code]
+					if(!dx) continue;
+					dx *= out.stripeWidth();
+
+					//get stripe color
+					const col = out.catColors()[code] || "lightgray";
+
+					//add stripe to pattern: a thin rectangle
+					patt.append("rect").attr("x", x).attr("y", 0)
+						.attr("height", 1)
+						.style("stroke", "none")
+						.attr("code", code)
+						.style("fill", col)
+						//transition along x
+						.transition().duration(out.transitionDuration())
+						.attr("width", dx)
+					x += dx;
+				}
+
+				//return pattern reference
+				return "url(#pattern_" + id + ")"
+			})
+			.attr("nd", function (d) {
+				return ! getComposition(d.properties.id) ? "nd" : "";
+			})
+
+		return out;
+	};
+
+	//@override
+	out.getLegendConstructor = function() {
+		return _legend_legend_stripe_composition__WEBPACK_IMPORTED_MODULE_3__["legend"];
+	}
+
+
+	//specific tooltip text function
+	out.tooltipText_ =  function (rg, map) {
+
+		//get tooltip
+		const tp = Object(d3__WEBPACK_IMPORTED_MODULE_0__["select"])("#tooltip_eurostat")
+
+		//clear
+		tp.html("")
+		tp.selectAll("*").remove();
+
+		//write region name
+		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+
+		//prepare data for pie chart
+		const data = []
+		const comp = getComposition(rg.properties.id);
+		for(const key in comp) data.push({ code:key, value:comp[key] })
+
+		//case of regions with no data
+		if(!data || data.length == 0) {
+			tp.append("div").html( out.noDataText() );
+			return;
+		};
+
+		//create svg for pie chart
+		const r = out.pieChartRadius(), ir = out.pieChartInnerRadius();
+		const svg = tp.append("svg").attr("viewBox", [-r, -r, 2*r, 2*r]).attr("width", 2*r);
+
+		//make pie chart. See https://observablehq.com/@d3/pie-chart
+		const pie_ = Object(d3__WEBPACK_IMPORTED_MODULE_0__["pie"])().sort(null).value(d => d.value)
+		svg.append("g")
+		.attr("stroke", "darkgray")
+		.selectAll("path")
+		.data( pie_(data) )
+		.join("path")
+		.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray"} )
+		.attr("d", Object(d3__WEBPACK_IMPORTED_MODULE_0__["arc"])().innerRadius(ir).outerRadius(r) )
+	};
+
+	return out;
 }
 
 

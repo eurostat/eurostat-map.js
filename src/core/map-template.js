@@ -312,6 +312,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const cntrg = feature(geoData, geoData.objects.cntrg).features;
 		const cntbn = feature(geoData, geoData.objects.cntbn).features;
 
+		//RS
+		if(cntrg && (out.nutsYear()+"" === "2016" || out.nutsYear()+"" === "2021"))
+		for(let i=0; i<cntrg.length; i++) {
+			const c = cntrg[i];
+			if(c.properties.id == "RS") c.properties.na = "Kosovo (UNSCR 1244/1999 & ICJ)";
+		}
+
 		//prepare drawing group
 		const zg = out.svg().select("#zoomgroup" + out.geo_);
 		zg.selectAll("*").remove();
@@ -378,7 +385,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					const sel = select(this);
 					sel.attr("fill___", sel.attr("fill"));
 					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out));
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -441,7 +448,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", "gray")
 				.on("mouseover", function (rg) {
 					select(this).style("fill", out.nutsrgSelFillSty_);
-					if (tooltip) { tooltip.mouseover(out.tooltipText_(rg, out)); }
+					if (tooltip) tooltip.mouseover( out.tooltipText_(rg, out) )
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -466,6 +473,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize())
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
+
+				.style("stroke-width", 3)
+				.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke-linejoin", "round")
+				.style("paint-order", "stroke")
 		}
 
 		//bottom text

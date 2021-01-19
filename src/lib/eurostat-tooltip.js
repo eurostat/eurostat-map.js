@@ -46,8 +46,8 @@ export const tooltip = function (config) {
 	}
 
 	my.mouseover = function (html) {
-		tooltip.html(html)
-			.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px")
+		if(html) tooltip.html(html);
+		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px")
 			.transition().duration(config.transitionDuration).style("opacity", 1);
 	};
 
