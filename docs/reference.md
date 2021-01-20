@@ -399,6 +399,18 @@ Specify specific map styles.
 | *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 
+## Labelling
+
+Adjust the country and sea/ocean labels.
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**labelling**([*value*]) | Boolean | *false* | Whether or not to show geographic name labels on the map. |
+| *map*.**labelLanguage**([*value*]) | String | *english* | The language in which the labels will be displayed. Currently accepted values are "english" or "french" |
+| *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838"}* | The colours of the labels. |
+| *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
+| *map*.**labelFontSize**([*value*]) | Object | *{"seas":12, "countries":10}* | The largest font size of the labels. For visualization purposes, some countries' labels will be reduced in size. |
+| *map*.**labelFontFamily**([*value*]) | String | *"sans-serif"* | The font family of the labels. |
 
 ## Insets
 
