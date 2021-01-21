@@ -80,18 +80,18 @@ export const legend = function (map, config) {
 			shape = symbol().type(symbolType);
 		}
 
-		let domain = m.classifier_.domain();
+		let domain = m.classifierSize_.domain();
 		let maxVal = domain[1]; //maximum value of dataset (used for first symbol)
 
-		//draw legend elements for classes: rectangle + label
-		let totalHeight = 0; //sum of shape sizes
+		//draw legend elements for classes: symbol + label
+		let totalHeight = 0; //sum of shape sizes: used for positioning legend elements
 		for (let i = 1; i < out.cellNb + 1; i++) {
 
 			//class number
 			const ecl = out.ascending? out.cellNb-i+1 : i;
 
 			let val = maxVal / ecl; // divide the maxVal by the 'cell number' index
-			let size = m.classifier_(val); //size 
+			let size = m.classifierSize_(val); //size 
 
 
 			//d3 symbol
@@ -106,14 +106,20 @@ export const legend = function (map, config) {
 				//we also dont need the y offset
 				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight);
 			} else {
-				x = out.boxPadding + (m.classifier_(maxVal)/1.5); //set X offset by the largest symbol size
+				x = out.boxPadding + (m.classifierSize_(maxVal)/1.5); //set X offset by the largest symbol size
 				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight) + size;
 			}
 			totalHeight = totalHeight + size + out.shapePadding;
 
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
-				.style("fill", m.psFill())
+				.style("fill", d=> {
+					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+					if (!m.classifierColor_) {
+						return m.psFill()
+					} else {
+					return "none"
+				} })
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
 				.style("stroke-width", m.psStrokeWidth())
