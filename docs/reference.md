@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
@@ -140,6 +140,8 @@ map.statData().setData({
 ## Choropleth map
 
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
 
 A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show *intensive* statistical variables such as proportions, ratios, densities, rates of change, percentages, etc.
 
@@ -292,7 +294,7 @@ eurostatmap.map("chbi")
 | *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
 | *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
 | *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
-| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | Fill style for regions with no data available. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
@@ -302,10 +304,77 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 | **label1** | string | *"Variable 1"* | The text for the label of variable 1. |
 | **label2** | string | *"Variable 2"* | The text for the label of variable 1. |
 | **labelFontSize** | int | *12* | The font size of the legend label. |
-| **noData** | boolean | *true* | Show 'no data' style. |
-| **noDataShapeSize** | number | *15* | . |
+| **noData** | boolean | *true* | Show/hide 'no data' style in the legend. |
+| **noDataShapeSize** | number | *15* | The size, in pixel, of the 'No data' legend shape. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
+
+## Stripe composition map
+
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html)
+
+A stripe composition map is a choropleth map showing the composition of a statistical variable using a pattern of stripes of different colors and widths. The color of a stripe corresponds to its category, and its width is proportional to the share of this categroy in the total. A stripe composition map shows how proportions vary across space.
+
+Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
+
+Example:
+
+```javascript
+//population composition by age
+eurostatmap.map("scomp")
+	.nutsLvl(3)
+    .nutsYear(2016)
+    .stripeWidth(10)
+    .stripeOrientation(45)
+    .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .catLabels({"Y_LT15":"< 15", "Y15-64":"15 to 64", "Y_GE65":"> 65"})
+    .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+    .legend({x:550, y:10, title: "Population by age"})
+```
+
+Or simplier:
+
+```javascript
+//population composition by age
+eurostatmap.map("scomp")
+	.nutsLvl(3)
+    .nutsYear(2016)
+    .stripeWidth(10)
+    .stripeOrientation(45)
+	.statComp( { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR", time: "2019" }, unitText: "people" },
+		"age",
+		["Y_LT15", "Y15-64", "Y_GE65"],
+		["< 15", "15 to 64", "> 65"],
+		["#33a02c", "#cab2d6", "#ff7f00"]
+	)
+	.legend({x:550, y:10, title: "Population by age"})
+```
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**stripeWidth**([*value*]) | number | *50* | Width of the stripes series. |
+| *map*.**stripeOrientation**([*value*]) | number | *0* | Orientation of the stripes, in degree. Set to 0 for vertical and 90 for horizontal. |
+| *map*.**catColors**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. If not specified, different colors are proposed. |
+| *map*.**catLabels**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. |
+| *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
+| *map*.**noDataFillStyle**([*value*]) |  | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**pieChartRadius**([*value*]) |  | *40* | Radius of the pie chart to show in the tooltip. |
+| *map*.**pieChartInnerRadius**([*value*]) |  | *15* | Inner radius of the pie chart to show in the tooltip. |
+
+In addition to [the default legend parameters](#map-legend), stripe composition maps have the following specific legend parameters:
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**shapeWidth**([*value*]) | number | *13* | Width of the legend box elements. |
+| *map*.**shapeHeight**([*value*]) | number | *15* | Height of the legend box elements. |
+| *map*.**shapePadding**([*value*]) | number | *5* | Distance between consecutive legend box elements. |
+| *map*.**labelFontSize**([*value*]) | int | *12* | Font size of the legend label. |
+| *map*.**labelOffset**([*value*]) | number | *5* | Distance between the legend box elements to the corresponding text label. |
+| *map*.**noData**([*value*]) | boolean | *true* | Show/hide 'no data' legend box element. |
+| *map*.**noDataText**([*value*]) | string | *"No data"* | 'No data' label text. |
 
 ## Map title
 
@@ -319,7 +388,6 @@ Specify the map title, its style and position.
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontFamily**([*value*]) | String | "Helvetica, Arial, sans-serif" | The title font. |
 | *map*.**titleFontWeight**([*value*]) | String | "bold" | The title font weight. |
-
 
 
 ## Map frame

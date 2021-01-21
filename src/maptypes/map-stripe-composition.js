@@ -21,7 +21,7 @@ export const map = function (config) {
 
 	//colors - indexed by category code
 	out.catColors_ = undefined;
-	//colors - indexed by category code
+	//labels - indexed by category code
 	out.catLabels_ = undefined;
 
 	//show stripes only when data for all categories is complete.
@@ -29,9 +29,6 @@ export const map = function (config) {
 	out.showOnlyWhenComplete_ = false;
 	//style for no data regions
 	out.noDataFillStyle_ = "darkgray";
-
-	//category label text, to be used in the legend for example
-	out.labelText_ = {};
 
 	//tooltip pie chart
 	out.pieChartRadius_ = 40;
@@ -44,13 +41,13 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "labelText_", "pieChartRadius_", "pieChartInnerRadius_"]
+	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieChartRadius_", "pieChartInnerRadius_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "labelText", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
+	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -160,7 +157,7 @@ export const map = function (config) {
 		if(!out.catColors()) {
 			out.catColors({});
 			for(let i=0; i<statCodes.length; i++)
-				out.catColors()[statCodes[i]] = schemeCategory10[i%12];
+				out.catColors()[statCodes[i]] = schemeCategory10[i%10];
 		}
 
 		//if not specified, initialise category labels

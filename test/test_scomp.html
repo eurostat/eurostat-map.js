@@ -144,13 +144,24 @@ ACC: "Accidents",
             .nutsLvl(3)
             .nutsYear(2016)
             .stripeWidth(10)
-            //.stripeOrientation(45)
-            .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
-            //.stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
-            .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
-            .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
-            .legend({x:500, y:10, title: "Population by age"})
+            .stripeOrientation(45)
+            .statComp( { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR", time: "2019" }, unitText: "people" },
+                "age",
+                ["Y_LT15", "Y15-64", "Y_GE65"],
+                ["< 15", "15 to 64", "> 65"],
+                ["#33a02c", "#cab2d6", "#ff7f00"]
+            )
+
+            //.stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+            //.stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+            //.stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+            //.catLabels({"Y_LT15":"< 15", "Y15-64":"15 to 64", "Y_GE65":"> 65"})
+            //.catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+
+            .legend({x:550, y:10, title: "Population by age"})
 */
+
+
 
 
             /*/GDP by sector
