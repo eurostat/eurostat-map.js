@@ -408,7 +408,7 @@ Adjust the country and sea/ocean labels. Labels are displayed in the language se
 | *map*.**labelling**([*value*]) | Boolean | *false* | Whether or not to show geographic name labels on the map. |
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
-| *map*.**labelFontSize**([*value*]) | Object | *{"seas":12, "countries":10}* | The largest font size of the labels. If the map size is smaller than the default setting, then these values will most likely need to be reduced. |
+| *map*.**labelFontSize**([*value*]) | Object | *{"seas":13, "countries":13}* | The largest font size of the labels. If the map size is smaller than the default setting, then these values will most likely need to be reduced. |
 | *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
 
 ## Insets
