@@ -20,6 +20,8 @@ Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``
 - ``"ch"`` for a [choropleth map](#choropleth-map),
 - ``"ps"`` for a [proportional symbol map](#proportional-symbol-map),
 - ``"ct"`` for a [categorical map](#categorical-map).
+- ``"chbi"`` for a [bivariate choropleth map](#bivariate-choropleth-map).
+- ``"scomp"`` for a [stripe composition map](#stripe-composition-map).
 
 The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
