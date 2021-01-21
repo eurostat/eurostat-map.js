@@ -401,16 +401,15 @@ Specify specific map styles.
 
 ## Labelling
 
-Adjust the country and sea/ocean labels.
+Adjust the country and sea/ocean labels. Labels are displayed in the language set by the map.lg() method.
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**labelling**([*value*]) | Boolean | *false* | Whether or not to show geographic name labels on the map. |
-| *map*.**labelLanguage**([*value*]) | String | *english* | The language in which the labels will be displayed. Currently accepted values are "english" or "french" |
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
-| *map*.**labelFontSize**([*value*]) | Object | *{"seas":12, "countries":10}* | The largest font size of the labels. For visualization purposes, some countries' labels will be reduced in size. |
-| *map*.**labelFontFamily**([*value*]) | String | *"sans-serif"* | The font family of the labels. |
+| *map*.**labelFontSize**([*value*]) | Object | *{"seas":12, "countries":10}* | The largest font size of the labels. If the map size is smaller than the default setting, then these values will most likely need to be reduced. |
+| *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
 
 ## Insets
 
