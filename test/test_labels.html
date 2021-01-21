@@ -18,7 +18,7 @@
             .map("ct")
             .title("NUTS urban/rural typology")
             //.insets("default")
-            .width(600)
+            //.width(600)
             .zoomExtent([1,2])
             .scale("60M")
             .nutsYear(2013)
@@ -33,7 +33,7 @@
                 shapeHeight:18,
                 x: 10, y:170,
             })
-            .labelFontSize({"seas":7, "countries":8})
+            //.labelFontSize({"seas":7, "countries":8})
             .build();
 
 
@@ -42,7 +42,7 @@
             .map("ch")
             .svgId('map1')
             .zoomExtent([1,2])
-            .title("Population in Europe")
+            .title("Bevölkerung in Europa")
             .insets("default")
             //.width(1000)
             .scale("10M")
@@ -52,7 +52,7 @@
             .tooltipShowFlags(false)
             .legend({ labelDecNb:0, x:15, y:160, })
             //styling
-            .lg("en")
+            .lg("de")
             .seaFillStyle('aliceblue')
             .drawCoastalMargin(false)
             .nutsbnStroke({0:"black", 1:"grey", 2:"grey", 3:"grey", oth:"lightgrey", co:"black"})

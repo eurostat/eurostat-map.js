@@ -643,10 +643,10 @@ const _defaultLabels = {
 	"EUR_3035": {
 		en: [
 			{ text: "MEDITERRANEAN SEA", x: 5472000, y: 1200000, class: "seas", size: "large", letterSpacing: 7 },
-			{ text: "ATLANTIC OCEAN", x: 2750000, y: 2854000, class: "seas", size: "large", letterSpacing: 2 },
+			{ text: "ATLANTIC OCEAN", x: 2820000, y: 2540000, class: "seas", size: "large", letterSpacing: 2 },
 			{ text: "NORTH SEA", x: 3915000, y: 3700000, class: "seas", size: "large" },
 			{ text: "BALTIC SEA", x: 4900000, y: 3672000, class: "seas", size: "medium", rotate: -50 },
-			{ text: "NORWEGIAN SEA", x: 3855000, y: 5008000, class: "seas", size: "large", letterSpacing: 4 },
+			{ text: "NORWEGIAN SEA", x: 3850000, y: 4800000, class: "seas", size: "large", letterSpacing: 1},
 			{ text: "BLACK SEA", x: 6300000, y: 2500000, class: "seas", size: "large", letterSpacing: 4 },
 			{ text: "ALBANIA", x: 5100000, y: 2060000, class: "countries", size: "small", rotate: 80 },
 			{ text: "AUSTRIA", x: 4670000, y: 2629000, class: "countries", size: "medium" },
@@ -687,10 +687,10 @@ const _defaultLabels = {
 		],
 		fr: [
 			{ text: "MER MÉDITERRANÉE", x: 5472000, y: 1242000, class: "seas", size: "large" },
-			{ text: "OCÈAN ATLANTIQUE", x: 2694000, y: 2854000, class: "seas", size: "large" },
+			{ text: "OCÈAN ATLANTIQUE", x: 2820000, y: 2540000, class: "seas", size: "large" },
 			{ text: "MER DU NORD", x: 3915000, y: 3700000, class: "seas", size: "large" },
 			{ text: "MER BALTIQUE", x: 4900000, y: 3672000, class: "seas", size: "medium", rotate: -50 },
-			{ text: "MER DE NORVÈGE", x: 3855000, y: 5008000, class: "seas", size: "large" },
+			{ text: "MER DE NORVÈGE", x: 3850000, y: 4800000, class: "seas", size: "large" },
 			{ text: "MER NOIRE", x: 6265000, y: 2472000, class: "seas", size: "large" },
 			{ text: "ALBANIE", x: 5100000, y: 2060000, class: "countries", size: "small", rotate: 80 },
 			{ text: "AUTRICHE", x: 4670000, y: 2629000, class: "countries", size: "medium" },
@@ -731,15 +731,15 @@ const _defaultLabels = {
 		],
 		de: [
 			{ text: "MITTELMEER", x: 5472000, y: 1200000, class: "seas", size: "large", letterSpacing: 7 },
-			{ text: "ATLANTISCHER OZEAN", x: 2820000, y: 2540000, class: "seas", size: "large", letterSpacing: 1 },
+			{ text: "ATLANTISCHER OZEAN", x: 2820000, y: 2540000, class: "seas", size: "large" },
 			{ text: "NORDSEE", x: 3915000, y: 3700000, class: "seas", size: "large" },
 			{ text: "OSTSEE", x: 4900000, y: 3672000, class: "seas", size: "medium", rotate: -50 },
-			{ text: "NORWEGISCHE MEER", x: 3855000, y: 5008000, class: "seas", size: "large", letterSpacing: 2 },
+			{ text: "NORWEGISCHE MEER", x: 3850000, y: 4800000, class: "seas", size: "large" },
 			{ text: "SCHWARZE MEER", x: 6300000, y: 2500000, class: "seas", size: "large", letterSpacing: 1 },
 			{ text: "ALBANIEN", x: 5100000, y: 2060000, class: "countries", size: "small", rotate: 80 },
-			{ text: "ÖSTERREICH", x: 4670000, y: 2629000, class: "countries", size: "medium" },
+			{ text: "ÖSTERREICH", x: 4650000, y: 2629000, class: "countries", size: "small" },
 			{ text: "BELGIEN", x: 3900000, y: 3030000, class: "countries", size: "small", rotate: 30 },
-			{ text: "BULGARIEN", x: 5567000, y: 2256000, class: "countries", size: "large" },
+			{ text: "BULGARIEN", x: 5567000, y: 2256000, class: "countries", size: "medium" },
 			{ text: "KROATIEN", x: 4876000, y: 2455000, class: "countries", size: "small" },
 			{ text: "ZYPERN", x: 6426000, y: 1480000, class: "countries", size: "medium" },
 			{ text: "TSCHECHIEN", x: 4707000, y: 2885000, class: "countries", size: "small" },
@@ -752,13 +752,13 @@ const _defaultLabels = {
 			{ text: "UNGARN", x: 5020000, y: 2630000, class: "countries", size: "medium" },
 			{ text: "ISLAND", x: 3040000, y: 4833000, class: "countries", size: "medium" },
 			{ text: "IRLAND", x: 3136000, y: 3394000, class: "countries", size: "medium" },
-			{ text: "ITALIEN", x: 4469967, y: 2181963, class: "countries", size: "large" },
+			{ text: "ITALIEN", x: 4469967, y: 2181963, class: "countries", size: "large", rotate:35 },
 			{ text: "LETTLAND", x: 5290000, y: 3800000, class: "countries", size: "small" },
 			{ text: "LITAUEN", x: 5190000, y: 3630000, class: "countries", size: "small" },
-			{ text: "LUXEMBURG", x: 4120000, y: 2940000, class: "countries", size: "small" },
+			{ text: "LUX.", x: 4120000, y: 2940000, class: "countries", size: "small" },
 			{ text: "MALTA", x: 4731000, y: 1330000, class: "countries", size: "small" },
 			{ text: "MONT.", x: 5073000, y: 2185000, class: "countries", size: "xsmall" },
-			{ text: "NORDMAZEDONIEN", x: 5300000, y: 2082000, class: "countries", size: "xsmall" },
+			{ text: "NORDMAZEDONIEN", x: 5350000, y: 2082000, class: "countries", size: "xsmall" },
 			{ text: "NIEDERLANDE", x: 3977000, y: 3208000, class: "countries", size: "small" },
 			{ text: "NORWEGEN", x: 4330000, y: 4147000, class: "countries", size: "large", rotate: -75 },
 			{ text: "POLEN", x: 4964000, y: 3269000, class: "countries", size: "large" },
@@ -771,7 +771,8 @@ const _defaultLabels = {
 			{ text: "SCHWEDEN", x: 4670000, y: 4180000, class: "countries", size: "large", rotate: -75 },
 			{ text: "SCHWEIZ", x: 4200000, y: 2564000, class: "countries", size: "small" },
 			{ text: "TRUTHAHN", x: 6510000, y: 2100000, class: "countries", size: "large" },
-			{ text: "VEREINIGTES KÖNIGREICH", x: 3558000, y: 3311000, class: "countries", size: "large" }
+			{ text: "VEREINIGTES", x: 3550000, y: 3520000, class: "countries", size: "medium" },
+			{ text: "KÖNIGREICH", x: 3550000, y: 3420000, class: "countries", size: "medium" } 
 		],
 	},
 	"IC_32628": {
@@ -780,6 +781,9 @@ const _defaultLabels = {
 		],
 		fr: [
 			{ text: "Les îles Canaries", x: 420468, y: 3180647, class: "countries", size: "large" }
+		],
+		de: [
+			{ text: "Kanarische Inseln", x: 410000, y: 3180647, class: "countries", size: "large" }
 		]
 	},
 	"GP_32620": {
@@ -795,6 +799,9 @@ const _defaultLabels = {
 	"GF_32622": {
 		en: [
 			{ text: "Guyane", x: 266852, y: 444074, class: "countries", size: "large" }
+		],
+		de: [
+			{ text: "Guayana", x: 266852, y: 444074, class: "countries", size: "large" }
 		]
 	},
 	"RE_32740": {
@@ -818,6 +825,9 @@ const _defaultLabels = {
 		],
 		fr: [
 			{ text: "Açores", x: 397418, y: 4271471, class: "countries", size: "medium" }
+		],
+		de: [
+			{ text: "Azoren", x: 397418, y: 4271471, class: "countries", size: "medium" }
 		]
 	},
 	"PT30_32628": {
@@ -839,11 +849,17 @@ const _defaultLabels = {
 		],
 		fr: [
 			{ text: "Islande", x: 3011804, y: 4960000, class: "countries", size: "large" }
+		],
+		de: [
+			{ text: "Island", x: 3011804, y: 4960000, class: "countries", size: "large" }
 		]
 	},
 	"SJ_SV_3035": {
 		en: [
 			{ text: "Svalbard", x: 4570000, y: 6260000, class: "countries", size: "medium" }
+		],
+		de: [
+			{ text: "Spitzbergen", x: 4570000, y: 6260000, class: "countries", size: "small" }
 		]
 	},
 	"SJ_JM_3035": {
