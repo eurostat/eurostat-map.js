@@ -1,5 +1,6 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
+import { schemeSet3 } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
@@ -22,6 +23,9 @@ export const map = function (config) {
 	//specific tooltip text function
 	out.tooltipText_ = tooltipTextFunCat;
 
+	//the classifier: a function which return a class number from a stat value.
+	out.classifier_ = undefined;
+
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -29,18 +33,17 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["classToFillStyle_","classToText_","noDataFillStyle_"]
+	["classToFillStyle_", "classToText_", "noDataFillStyle_", "tooltipText_", "classifier_"]
 	.forEach(function(att) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 	});
 
 	//override attribute values with config values
-	if(config) ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText"].forEach(function (key) {
+	if(config) ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText", "classifier"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
-	//the classifier: a function which return a class number from a stat value.
-	let classifier = undefined;
+
 
 	//@override
 	out.updateClassification = function () {
@@ -52,7 +55,7 @@ export const map = function (config) {
 		const range = [...Array(domain.length).keys()];
 
 		//make classifier
-		classifier = scaleOrdinal().domain(domain).range(range);
+		out.classifier( scaleOrdinal().domain(domain).range(range) );
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -61,7 +64,7 @@ export const map = function (config) {
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
-				return +classifier(isNaN(v) ? v : +v);
+				return +out.classifier()(isNaN(v) ? v : +v);
 		})
 
 		return out;
@@ -71,13 +74,22 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
+		//if no color specified, use some default colors
+		if(!out.classToFillStyle()) {
+			const ctfs = {}
+			const dom = out.classifier().domain();
+			for(let i=0; i<dom.length; i++)
+				ctfs[dom[i]] = schemeSet3[i % 12];
+			out.classToFillStyle(ctfs);
+		}
+
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
-				return out.classToFillStyle_[classifier.domain()[ecl]] || out.noDataFillStyle_ || "gray";
+				return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
 		});
 
 		return out;
@@ -88,7 +100,6 @@ export const map = function (config) {
 	out.getLegendConstructor = function() {
 		return lgct.legend;
 	}
-
 
 	return out;
 }
