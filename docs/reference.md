@@ -253,8 +253,8 @@ eurostatmap.map("ct")
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**classToFillStyle**([*value*]) | Object | null | An object giving the fill style depending on the class code. |
-| *map*.**classToText**([*value*]) | Object | null | An object giving the legend label text depending on the class code. |
+| *map*.**classToFillStyle**([*value*]) | Object | *auto* | An object giving the fill style depending on the class code. If not specify, use default colors. |
+| *map*.**classToText**([*value*]) | Object | *auto* | An object giving the legend label text depending on the class code. If not specified, use the class code. |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), categorical maps have the following specific legend parameters:

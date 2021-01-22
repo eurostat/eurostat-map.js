@@ -53,6 +53,7 @@ export const legend = function (map, config) {
 		lgg.style("font-family", out.fontFamily);
 
 		//get classes
+		//TODO rely on classifier
 		const ecls = Object.keys(m.classToFillStyle());
 
 		//draw legend elements for classes: rectangle + label
@@ -65,38 +66,47 @@ export const legend = function (map, config) {
 			//the vertical position of the legend element
 			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
 
-			//prepare mouse over function
-			const mouseoverF = function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				sel.style("fill", m.nutsrgSelFillSty());
-				const th = select(this);
-				sel.attr("fill___", function (d) { th.attr("fill"); });
-				th.style("fill", m.nutsrgSelFillSty());
-			}
-
-			//prepare mouse out function
-			const mouseoutF = function () {
-				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
-				const th = select(this);
-				sel.style("fill", function (d) { th.attr("fill___"); });
-				th.style("fill", m.classToFillStyle()[ecl]);
-			}
-
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
 			.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
 			.attr("fill", m.classToFillStyle()[ecl_])
 			.attr("stroke", "black").attr("stroke-width", 0.5)
-			.on("mouseover", mouseoverF)
-			.on("mouseout", mouseoutF)
+			.on("mouseover", function () {
+				console.log(ecl, ecl_)
+
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				const th = select(this);
+				sel.attr("fill___", function (d) { th.attr("fill"); });
+				th.style("fill", m.nutsrgSelFillSty());
+			})
+			.on("mouseout", function () {
+				console.log(ecl, ecl_)
+
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				const th = select(this);
+				sel.style("fill", function (d) { th.attr("fill___"); });
+				th.style("fill", m.classToFillStyle()[ecl]);
+			})
 
 			//label
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text( m.classToText()[ecl_] )
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
-			.on("mouseover", mouseoverF)
-			.on("mouseout", mouseoutF)
+			.on("mouseover", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				sel.style("fill", m.nutsrgSelFillSty());
+				const th = select(this);
+				sel.attr("fill___", function (d) { th.attr("fill"); });
+				th.style("fill", m.nutsrgSelFillSty());
+			})
+			.on("mouseout", function () {
+				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
+				const th = select(this);
+				sel.style("fill", function (d) { th.attr("fill___"); });
+				th.style("fill", m.classToFillStyle()[ecl]);
+			})
 
 		}
 

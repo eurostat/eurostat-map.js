@@ -1,5 +1,6 @@
 import { select } from "d3-selection";
 import { scaleOrdinal } from "d3-scale";
+import { schemeSet3 } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgct from '../legend/legend-categorical';
 
@@ -42,6 +43,7 @@ export const map = function (config) {
 	//the classifier: a function which return a class number from a stat value.
 	let classifier = undefined;
 
+
 	//@override
 	out.updateClassification = function () {
 
@@ -71,6 +73,15 @@ export const map = function (config) {
 	//@override
 	out.updateStyle = function () {
 
+		//if no color specified, use some default colors
+		if(!out.classToFillStyle()) {
+			const ctfs = {}
+			const dom = classifier.domain();
+			for(let i=0; i<dom.length; i++)
+				ctfs[dom[i]] = schemeSet3[i % 12];
+			out.classToFillStyle(ctfs);
+		}
+
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
@@ -88,7 +99,6 @@ export const map = function (config) {
 	out.getLegendConstructor = function() {
 		return lgct.legend;
 	}
-
 
 	return out;
 }
