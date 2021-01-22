@@ -86,25 +86,25 @@
         .build();
 
       // // vertical bars
-      // eurostatmap
-      //   .map("ps")
-      //   .width(500)
-      //   .svgId("map2")
-      //   .nutsLvl(0)
-      //   .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
-      //   .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
-      //   .psFill("#35aeff")
-      //   .psMaxSize(70)
-      //   .psStroke("black")
-      //   .psStrokeWidth("1")
-      //   .tooltipShowFlags("long")
-      //   .legend({
-      //     title: "Population",
-      //     cellNb: 3,
-      //     format: format,
+      eurostatmap
+        .map("ps")
+        .width(500)
+        .svgId("map2")
+        .nutsLvl(0)
+        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("#35aeff")
+        .psMaxSize(70)
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .legend({
+          title: "Population",
+          cellNb: 3,
+          format: format,
           
-      //   })
-      //   .build();
+        })
+        .build();
 
       // // diamond
       // eurostatmap

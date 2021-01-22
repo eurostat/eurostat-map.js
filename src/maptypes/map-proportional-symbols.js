@@ -86,8 +86,14 @@ export const map = function (config) {
 	function defineClassifiers() {
 		//simply return the array [0,1,2,3,...,nb-1]
 		const getA = function (nb) { return [...Array(nb).keys()]; }
-		if (out.statData("size")) {
-			let sizeDomain = [out.statData("size").getMin(), out.statData("size").getMax()];
+
+		let sizeDomain;
+		if (out.statData("size") || out.statData() ) {
+			if (out.statData() && !out.statData("size")) {
+				sizeDomain = [out.statData().getMin(), out.statData().getMax()];
+			} else if (out.statData("size")) {
+				sizeDomain = [out.statData("size").getMin(), out.statData("size").getMax()];
+			}
 			out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
 		}
 
