@@ -1,16 +1,18 @@
-# How to make a map with eurostat-map.js ?
+# How to make a map from Eurostat statistics
 
-This page describes how to use eurostat-map.js to quickly create a web map from Eurostat data. No need for advanced javascript programming knowledge.
+This page describes how to create a statistical map with Eurostat data. It does not require any knowledge in javascript programming.
 
 ## Create a map
 
 1. Download [this example file](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html).
-2. Double click on it. You should see a map appearing in your web browser:
+2. Double click on it. You will see this map appearing in your web browser:
 
 ![map 1](map1.png)
 
-3. To modify the map, edit the **eurostat_map.html** file with a text editor such as notepad or notepad++. For that, you can either:
-   - right click on the file and open it with a text editor
+This is a default map showing the latest figures on population density in European regions (NUTS 3).
+
+3. To modify the map, edit the **eurostat_map.html** file with a text editor such as Notepad or [Notepad++](https://notepad-plus-plus.org/). For that, you can either:
+   - right-click on the file, select "open with", and select a text edition program,
    - OR launch a text editor and open the file
    - OR drag and drop the file in it
 
