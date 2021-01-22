@@ -52,16 +52,15 @@ export const legend = function (map, config) {
 		//set font family
 		lgg.style("font-family", out.fontFamily);
 
-		//get classes
-		//TODO rely on classifier
-		const ecls = Object.keys(m.classToFillStyle());
+		//get category codes
+		const ecls = m.classifier().domain();
 
 		//draw legend elements for classes: rectangle + label
 		for(let i=0; i<ecls.length; i++) {
 
 			//the class
-			const ecl = i;
 			const ecl_ = ecls[i];
+			const ecl = m.classifier()(ecl_);
 
 			//the vertical position of the legend element
 			const y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0) + i*(out.shapeHeight + out.shapePadding);
@@ -72,8 +71,6 @@ export const legend = function (map, config) {
 			.attr("fill", m.classToFillStyle()[ecl_])
 			.attr("stroke", "black").attr("stroke-width", 0.5)
 			.on("mouseover", function () {
-				console.log(ecl, ecl_)
-
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
 				const th = select(this);
@@ -81,8 +78,6 @@ export const legend = function (map, config) {
 				th.style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
-				console.log(ecl, ecl_)
-
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				const th = select(this);
 				sel.style("fill", function (d) { th.attr("fill___"); });
@@ -92,20 +87,18 @@ export const legend = function (map, config) {
 			//label
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
-			.text( m.classToText()[ecl_] )
+			.text( m.classToText()? m.classToText()[ecl_] : ecl_ )
 			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
 				const th = select(this);
 				sel.attr("fill___", function (d) { th.attr("fill"); });
-				th.style("fill", m.nutsrgSelFillSty());
 			})
 			.on("mouseout", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				const th = select(this);
 				sel.style("fill", function (d) { th.attr("fill___"); });
-				th.style("fill", m.classToFillStyle()[ecl]);
 			})
 
 		}
