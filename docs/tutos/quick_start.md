@@ -46,3 +46,5 @@ Different types of maps.
 ## Publish the map
 - Explain how to insert the code snippet in a CMS
 
+
+Use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>``, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
