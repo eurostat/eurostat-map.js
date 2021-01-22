@@ -4,10 +4,10 @@ This page describes how to use eurostat-map.js to quickly create a web map from 
 
 ## Create a map
 
-1. Download [this example file](eurostat_map.html).
+1. Download [this example file](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html).
 2. Double click on it. You should see a map appearing in your web browser:
 
-(image)
+![map 1](map1.png)
 
 3. To modify the map, edit the **eurostat_map.html** file with a text editor such as notepad or notepad++. For that, you can either:
    - right click on the file and open it with a text editor
