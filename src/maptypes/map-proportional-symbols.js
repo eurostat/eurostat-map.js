@@ -1,5 +1,6 @@
-import { scaleSqrt, scaleLinear } from "d3-scale";
-import { interpolateYlOrBr } from "d3-scale-chromatic";
+import { scaleSqrt, scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
+import { select } from "d3-selection";
+import { interpolateBlues } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
@@ -22,10 +23,19 @@ export const map = function (config) {
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
-	out.psColorClasses_ = 5;
-	out.psColorFun_ = interpolateYlOrBr;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
+	//colour
+	out.psClasses_ = 5; // number of classes to use for colouring
+	out.psColorFun_ = interpolateBlues;
+	out.noDataFillStyle_ = "darkgray"; //style for no data regions
+
+	//the threshold, when the classificatio method is 'threshold'
+	out.threshold_ = [0];
+	//the classification method
+	out.classifMethod_ = "quantile"; // or: equinter, threshold
+	//when computed automatically, ensure the threshold are nice rounded values
+	out.makeClassifNice_ = true;
 	//the classifier: a function which return the symbol size/color from the stat value.
 	out.classifierSize_ = undefined;
 	out.classifierColor_ = undefined;
@@ -37,50 +47,86 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_", "psShape_", "psCustomShape_", "psBarWidth_"]
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_", 
+	"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_","noDataFillStyle_","threshold_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize_", "classifierColor_", "psShape", "psCustomShape", "psBarWidth"].forEach(function (key) {
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor", 
+	"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun","noDataFillStyle","threshold"].forEach(function (key) {
 		if (config[key] != undefined) out[key](config[key]);
 	});
 
 	//@override
 	out.updateClassification = function () {
 
-		//define classifiers for sizing and colouring
-		//out.classifier(scaleSqrt().domain([out.psMinValue_, maxValue]).range());
-		let sizeDomain = [out.statData("size").getMin(), out.statData("size").getMax()];
-		let colorDomain = [out.statData("color").getMin(), out.statData("color").getMax()];
-		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
-		out.classifierColor(scaleLinear().domain(colorDomain).range([...Array(out.psColorClasses_).keys()]));
+		//define classifiers for sizing and colouring (out.classifierSize_ & out.classifierColor_)
+		defineClassifiers();
 
-		//assign color class to each symbol, based on their value
-		out.svg().selectAll("path.ps")
-			.attr("ecl", function (rg) {
-				const sv = out.statData("color").get(rg.properties.id);
-				if (!sv) return "nd";
-				const v = sv.value;
-				if (v != 0 && !v) return "nd";
-				return +out.classifierColor()(+v);
-			})
+		if (out.classifierColor_) {
+			//assign color class to each symbol, based on their value
+			// at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
+			out.svg().selectAll(".symbol")
+				.attr("ecl", function (rg) {
+					const sv = out.statData("color").get(rg.properties.id);
+					if (!sv) return "nd";
+					const v = sv.value;
+					if (v != 0 && !v) return "nd";
+					let c = +out.classifierColor()(+v);
+					return c
+				})
+		}
 
 		return out;
 	};
 
 
+	function defineClassifiers() {
+		//simply return the array [0,1,2,3,...,nb-1]
+		const getA = function (nb) { return [...Array(nb).keys()]; }
+		if (out.statData("size")) {
+			let sizeDomain = [out.statData("size").getMin(), out.statData("size").getMax()];
+			out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
+		}
+
+		if (out.statData("color")) {
+			//use suitable classification type for colouring
+			if (out.classifMethod_ === "quantile") {
+				//https://github.com/d3/d3-scale#quantile-scales
+				const domain = out.statData("color").getArray();
+				const range = getA(out.psClasses_);
+				out.classifierColor(scaleQuantile().domain(domain).range(range));
+			} else if (out.classifMethod_ === "equinter") {
+				//https://github.com/d3/d3-scale#quantize-scales
+				const domain = out.statData("color").getArray();
+				const range = getA(out.psClasses_);
+				out.classifierColor(scaleQuantize().domain([min(domain), max(domain)]).range(range));
+				if (out.makeClassifNice_) out.classifierColor().nice();
+			} else if (out.classifMethod_ === "threshold") {
+				//https://github.com/d3/d3-scale#threshold-scales
+				out.psClasses_(out.threshold().length + 1);
+				const range = getA(out.psClasses_);
+				out.classifierColor(scaleThreshold().domain(out.threshold()).range(range));
+			}
+
+		}
+
+	}
 
 	//@override
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
+		//define style per class
+		if (!out.classToFillStyle())
+			out.classToFillStyle(getColorLegend(out.psColorFun()))
+
 		// vertical bars
 		if (out.psShape_ == "bar") {
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
-
 			rect.style("fill", out.psFill())
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
@@ -128,19 +174,17 @@ export const map = function (config) {
 					return symbol().type(symbolType).size(size * size)()
 				}
 			})
-				.style("fill", d => {
+
+				// apply color
+				.style("fill", function () {
+					// use colour classifier when applicable
 					if (out.classifierColor_) {
-						const sv = out.statData("color").get(d.properties.id);
-						//calculate color
-						let color;
-						if (!sv || !sv.value) {
-							color = 0;
-						} else {
-							color = out.classifierColor_(+sv.value)
-						}
-						return out.psColorFun_(color);
+						//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+						var ecl = select(this.parentNode).attr("ecl");
+						if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+						return out.classToFillStyle()(ecl, out.psClasses_);
 					} else {
-						return out.psFill(); //single color for all symbols
+						return out.psFill();
 					}
 				})
 				.style("fill-opacity", out.psFillOpacity())
@@ -157,6 +201,12 @@ export const map = function (config) {
 	}
 
 	return out;
+}
+
+//build a color legend object
+export const getColorLegend = function (colorFun) {
+	colorFun = colorFun || interpolateYlOrRd;
+	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
 
 /**
