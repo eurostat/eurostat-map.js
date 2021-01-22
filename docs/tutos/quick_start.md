@@ -16,7 +16,15 @@ This page describes how to use eurostat-map.js to quickly create a web map from 
 
 You should see the short code defining the map:
 
-(code)
+```html
+<svg id="map"></svg>
+<script src="https://unpkg.com/eurostat-map@3.1.2"></script>
+<script>
+    eurostatmap.map("ch")
+    .build();
+</script>
+``` 
+
 
 Explain?
 
