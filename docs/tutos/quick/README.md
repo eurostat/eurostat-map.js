@@ -1,47 +1,56 @@
-# How to make a map from Eurostat statistics
+# Eurostat-map in 5 minutes
 
-This page describes how to create a statistical map with Eurostat data. It does not require any knowledge in javascript programming.
+This page describes how to quickly create a statistical map with Eurostat data. It does not require any knowledge in javascript programming.
 
 ## Create a map
 
-1. Download [this example file](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html).
-2. Double click on it. You will see this map appearing in your web browser:
+- Download [this file](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html).
+- Double click on it. You will see this map appearing in your web browser:
 
 ![map 1](map1.png)
 
-This is a default map showing the latest figures on population density in European regions (NUTS 3).
+This is a default map showing the latest Eurostat figures on population.
 
-3. To modify the map, edit the **eurostat_map.html** file with a text editor such as Notepad or [Notepad++](https://notepad-plus-plus.org/). For that, you can either:
-   - right-click on the file, select "open with", and select a text edition program,
+## First customisation
+
+To modify this map, edit the file **eurostat_map.html** with a text editor such as Notepad or [Notepad++](https://notepad-plus-plus.org/). For that, you can either:
+   - right-click on the file, select "open with..." menu item, and select a text edition program,
    - OR launch a text editor and open the file
-   - OR drag and drop the file in it
 
-You should see the short code defining the map:
+You should see the short code snippet defining the map:
 
 ```html
 <svg id="map"></svg>
 <script src="https://unpkg.com/eurostat-map@3.1.2"></script>
 <script>
-    eurostatmap.map("ch")
-    .build();
+eurostatmap.map("ch")
+.build();
 </script>
 ``` 
 
+As modification, you could add a title, change the background color and 
 
-Explain?
+```html
+<svg id="map"></svg>
+<script src="https://unpkg.com/eurostat-map@3.1.2"></script>
+<script>
+eurostatmap.map("ch")
+.title("Population in Europe")
+.seaFillStyle("lightgray")
+.labelling(true)
+.build();
+</script>
+```
 
-## First customisation
+Save, re-open the **eurostat_map.html** file or fresh the web browser content by pressing F5 button. The map is modified:
 
-(Explain how to change easy parameters)
+![map 2](map2.png)
 
-Save
-F5
+For each characteristic of the map to change, there is a need to insert a line with the **name** of the characteristic (such as ```.title```) and the desired **value** (such ```"Population in Europe"```).
 
-Show big example, with a lot of parameters changed.
+The most important characteristic is of course the statistical data to show on the map as described in the next section.
 
-Most important: select the data.
-
-### Select the data
+### Choose the statistics
 
 <TODO> explain how to find data from Eurostat data. +CSV case
 
