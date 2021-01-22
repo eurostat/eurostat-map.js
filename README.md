@@ -33,7 +33,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 ## Installation
 
 - **Node.js**: With ``npm install eurostatmap`` and then ``eurostatmap = require("eurostatmap")``.
-- **Standalone**: For the latest version, use ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). For a fixed version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z/build/eurostatmap.min.js"></script>``, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
+- **Standalone**: For the latest version, use ``<script src="https://unpkg.com/eurostat-map"></script>`` as shown in [the examples](#examples). For a fixed version, use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>``, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
 
 
 ## Documentation
