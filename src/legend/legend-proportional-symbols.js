@@ -14,55 +14,52 @@ export const legend = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map);
 
-	//the order of the legend elements. Set to false to invert.
-	out.ascending = true;
+	out.ascending = true; //the order of the legend elements. Set to false to invert.
+	out.legendSpacing = 35; //spacing between color & size legends (if applicable)
+	out.labelFontSize = 12; //the font size of the legend labels
 
-	//size legend
-	//number of elements in the legend
-	out.cellNb = 4;
-	//the distance between consecutive legend shape elements
-	out.shapePadding = 10;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 25;
+	//size legend config (legend illustrating the values of different symbol sizes)
+	out.sizeLegend = {
+		title: null,
+		titlePadding: 10,//padding between title and legend body
+		cellNb: 4, //number of elements in the legend
+		shapePadding: 10, //the distance between consecutive legend shape elements
+		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
+		labelDecNb: 0, //the number of decimal for the legend labels
+		format: undefined
+	}
 
-	//color legend
-	//title of color legend
-	out.colorTitle = null;
-	//the size of the color legend shape elements
-	out.colorShapeSize = 13;
-	//the distance between the legend box elements to the corresponding text label
-	out.colorLabelOffset = 20;
-	//the distance between consecutive legend shape elements in the color legend
-	out.colorShapePadding = 3;
+	// color legend config (legend illustrating the data-driven colour classes)
+	out.colorLegend = {
+		title: null,
+		titlePadding: 10, //padding between title and legend body
+		shapePadding: 3, //the distance between consecutive legend shape elements in the color legend
+		shapeSize: 13, //the distance between the legend box elements to the corresponding text label
+		labelOffset: 20,
 
-	//shared
-	//padding between title & legend body
-	out.titlePadding = 10;
-	//the font size of the legend label
-	out.labelFontSize = 12;
-	// user-defined d3 format function
-	out.format = undefined;
-	//the number of decimal for the legend labels
-	out.labelDecNb = 2;
-
-
-	//show no data
-	out.noData = true;
-	//no data text label
-	out.noDataText = "No data";
-	// //the separation line length
-	 out.sepLineLength = 17;
-	// //the separation line color
-	 out.sepLineStroke = "black";
-	// //the separation line width
-	 out.sepLineStrokeWidth = 1;
-	//spacing between color & size legends
-	out.legendSpacing = 35;
-	
-
+		labelDecNb: 0, //the number of decimal for the legend labels
+		format: undefined, // user-defined d3 format function	
+		noData: true, //show no data
+		noDataText: "No data", //no data text label
+		sepLineLength: 17,// //the separation line length
+		sepLineStroke: "black", //the separation line color
+		sepLineStrokeWidth: 1, //the separation line width
+	}
 
 	//override attribute values with config values
-	if (config) for (let key in config) out[key] = config[key];
+	if (config) for (let key in config) {
+		if (key == "colorLegend" || key == "sizeLegend") {
+			for (let p in out[key]) {
+				//override each property in size and color legend configs
+				if (config[key][p]) {
+					out[key][p] = config[key][p]
+				}
+			}
+		} else {
+			out[key] = config[key];
+		}
+	}
+
 
 	//@override
 	out.update = function () {
@@ -75,44 +72,51 @@ export const legend = function (map, config) {
 		//draw legend background box
 		out.makeBackgroundBox();
 
-		//draw title
-		if (out.title)
-			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-				.text(out.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
-				.style("font-family", out.fontFamily).style("fill", out.fontFill)
-
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
 
-		//define format for labels
-		const f = out.format || format(",." + out.labelDecNb + "r");
+
 
 		// legend for 
 		if (m.classifierSize_) {
-			buildSizeLegend(m, lgg, f)
+			buildSizeLegend(m, lgg)
 		}
 		// legend for ps color values
 		if (m.classifierColor_) {
-			buildColorLegend(m, lgg, f)
+			buildColorLegend(m, lgg)
 		}
 
 		//set legend box dimensions
 		out.setBoxDimension();
 	}
 
-	
-	function buildSizeLegend(m, lgg, f) {
+	/**
+	 * Builds a legend illustrating the values of different symbol sizes
+	 * 
+	 * @param {*} m map 
+	 * @param {*} lgg parent legend object from core/legend.js 
+	 */
+	function buildSizeLegend(m, lgg) {
+		//define format for labels
+		const f = out.sizeLegend.format || format("." + out.sizeLegend.labelDecNb + "f");
+		//draw title
+		if (out.sizeLegend.title) {
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+				.text(out.sizeLegend.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
+
 		let shape = getShape();
 		let domain = m.classifierSize_.domain();
 		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol)
 		out._sizeLegendHeight = 0; //sum of shape sizes: used for positioning legend elements and color legend
-		//draw legend elements for classes: symbol + label
-		for (let i = 1; i < out.cellNb + 1; i++) {
 
+		//draw legend elements for classes: symbol + label
+		for (let i = 1; i < out.sizeLegend.cellNb + 1; i++) {
 			//calculate shape size using cellNb
-			const ecl = out.ascending ? out.cellNb - i + 1 : i;
+			const ecl = out.ascending ? out.sizeLegend.cellNb - i + 1 : i;
 			let val = maxVal / ecl;
 			let size = m.classifierSize_(val);
 
@@ -126,14 +130,14 @@ export const legend = function (map, config) {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
 				x = out.map.psBarWidth_ * 2;
 				//we also dont need the y offset
-				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding + out.titlePadding : 0) + out._sizeLegendHeight); 
+				y = (out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.boxPadding + out.sizeLegend.titlePadding : 0) + out._sizeLegendHeight);
 			} else {
 				// x and y for all other symbols
 				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
 				x = out.boxPadding + out._xOffset; //set X offset by the largest symbol size
-				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + out._sizeLegendHeight) + size/2 + out.shapePadding;
+				y = (out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.boxPadding : 0) + out._sizeLegendHeight) + size / 2 + out.sizeLegend.shapePadding;
 			}
-			out._sizeLegendHeight = out._sizeLegendHeight + size + out.shapePadding;
+			out._sizeLegendHeight = out._sizeLegendHeight + size + out.sizeLegend.shapePadding;
 
 			//append symbol & style
 			lgg.append("g")
@@ -154,7 +158,7 @@ export const legend = function (map, config) {
 				.attr('d', d)
 
 			//label position
-			let labelX = x + out.labelOffset;
+			let labelX = x + out.sizeLegend.labelOffset;
 			let labelY = y;
 			if (out.map.psShape_ == "bar") {
 				labelY = labelY + (size / 2)
@@ -168,33 +172,42 @@ export const legend = function (map, config) {
 		}
 	}
 
-	function buildColorLegend(m, lgg, f) {
+
+	/**
+ * Builds a legend illustrating the values of different symbol colours
+ * 
+ * @param {*} m map 
+ * @param {*} lgg parent legend object from core/legend.js 
+ */
+	function buildColorLegend(m, lgg) {
+		//define format for labels
+		const f = out.colorLegend.format || format("." + out.colorLegend.labelDecNb + "f");
 		const svgMap = m.svg();
 
 		//title
-		if (out.colorTitle)
-		lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight+ out.boxPadding + out.titleFontSize + out.legendSpacing + out.titlePadding)
-			.text(out.colorTitle)
-			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
-			.style("font-family", out.fontFamily).style("fill", out.fontFill)
+		if (out.colorLegend.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + out.colorLegend.titlePadding)
+				.text(out.colorLegend.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		// x position of color legend cells
-		let x = out.colorShapeSize + out.boxPadding;
+		let x = out.colorLegend.shapeSize + out.boxPadding;
 
 		//draw legend elements for classes: rectangle + label
 		let clnb = m.psClasses_;
-		
+
 		for (let i = 0; i < clnb; i++) {
 
 			//the vertical position of the legend element
-			const y = (out._sizeLegendHeight + out.boxPadding + (out.colorTitle ? out.titleFontSize + out.boxPadding + (out.titlePadding*2) : 0) + i * (out.colorShapeSize + out.colorShapePadding)) + out.legendSpacing + out.colorShapePadding;
+			const y = (out._sizeLegendHeight + out.boxPadding + (out.colorLegend.title ? out.titleFontSize + out.boxPadding + (out.colorLegend.titlePadding * 2) : 0) + i * (out.colorLegend.shapeSize + out.colorLegend.shapePadding)) + out.legendSpacing + out.colorLegend.shapePadding;
 
 			//the class number, depending on order
-			const ecl = out.ascending ? clnb - i + 1 : i;
+			const ecl = out.ascending ? i : clnb - i - 1;
 
 			//shape
 			let shape = getShape();
-			let d = shape.size(out.colorShapeSize * out.colorShapeSize)();
+			let d = shape.size(out.colorLegend.shapeSize * out.colorLegend.shapeSize)();
 
 			//append symbol & style
 			lgg.append("g")
@@ -231,25 +244,31 @@ export const legend = function (map, config) {
 				});
 
 			//separation line
-			if (i > 0)
-				lgg.append("line").attr("x1", x).attr("y1", y - out.colorShapeSize + (out.colorShapePadding/2)).attr("x2", x + out.sepLineLength).attr("y2", y - out.colorShapeSize + (out.colorShapePadding/2))
-					.attr("stroke", out.sepLineStroke).attr("stroke-width", out.sepLineStrokeWidth);
+			let lineY = y - out.colorLegend.shapeSize + (out.colorLegend.shapePadding / 2) + out.boxPadding / 2;
+			if (i > 0) {
+				lgg.append("line").attr("x1", x).attr("y1", lineY).attr("x2", x + out.colorLegend.sepLineLength).attr("y2", lineY)
+					.attr("stroke", out.colorLegend.sepLineStroke).attr("stroke-width", out.colorLegend.sepLineStrokeWidth);
+			}
 
 			//label
-			if (i < clnb -1 )
-				lgg.append("text").attr("x", x + out.colorLabelOffset).attr("y", y + out.colorShapeSize/2)
+			if (i < clnb - 1) {
+				lgg.append("text").attr("x", x + out.colorLegend.labelOffset).attr("y", y + out.colorLegend.shapeSize / 2)
 					.attr("alignment-baseline", "middle")
-					.text(f(m.classifierColor_.invertExtent(ecl)[out.ascending ? 0 : 1]))
+					.text(d => {
+						let text = f(m.classifierColor_.invertExtent(ecl)[out.ascending ? 0 : 1])
+						return text;
+					})
 					.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			}
 		}
 
 		//'no data' legend box
 		if (out.noData) {
-			const y = (out._sizeLegendHeight + out.boxPadding + (out.colorTitle ? out.titleFontSize + out.boxPadding + (out.titlePadding*2) : 0) + m.psClasses_ * (out.colorShapeSize + out.colorShapePadding)) + out.legendSpacing + out.colorShapePadding;
+			const y = (out._sizeLegendHeight + out.boxPadding + (out.colorLegend.title ? out.titleFontSize + out.boxPadding + (out.colorLegend.titlePadding * 2) : 0) + m.psClasses_ * (out.colorLegend.shapeSize + out.colorLegend.ShapePadding)) + out.legendSpacing + out.colorLegend.ShapePadding;
 
 			//shape
 			let shape = getShape();
-			let d = shape.size(out.colorShapeSize * out.colorShapeSize)();
+			let d = shape.size(out.colorLegend.shapeSize * out.colorLegend.shapeSize)();
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
@@ -285,9 +304,9 @@ export const legend = function (map, config) {
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", x + out.colorLabelOffset).attr("y", y)
+			lgg.append("text").attr("x", x + out.colorLegend.LabelOffset).attr("y", y)
 				.attr("alignment-baseline", "middle")
-				.text(out.noDataText)
+				.text(out.colorLegend.noDataText)
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 	}

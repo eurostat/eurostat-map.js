@@ -39,6 +39,8 @@ export const map = function (config) {
 	//the classifier: a function which return the symbol size/color from the stat value.
 	out.classifierSize_ = undefined;
 	out.classifierColor_ = undefined;
+	//specific tooltip text function
+	out.tooltipText_ = tooltipTextFunPs;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -47,17 +49,17 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_", 
-	"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_","noDataFillStyle_","threshold_"]
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
+		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "noDataFillStyle_", "threshold_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor", 
-	"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun","noDataFillStyle","threshold"].forEach(function (key) {
-		if (config[key] != undefined) out[key](config[key]);
-	});
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
+		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "noDataFillStyle", "threshold"].forEach(function (key) {
+			if (config[key] != undefined) out[key](config[key]);
+		});
 
 	//@override
 	out.updateClassification = function () {
@@ -87,15 +89,9 @@ export const map = function (config) {
 		//simply return the array [0,1,2,3,...,nb-1]
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
-		let sizeDomain;
-		if (out.statData("size") || out.statData() ) {
-			if (out.statData() && !out.statData("size")) {
-				sizeDomain = [out.statData().getMin(), out.statData().getMax()];
-			} else if (out.statData("size")) {
-				sizeDomain = [out.statData("size").getMin(), out.statData("size").getMax()];
-			}
-			out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
-		}
+		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
+		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
+
 
 		if (out.statData("color")) {
 			//use suitable classification type for colouring
@@ -140,7 +136,8 @@ export const map = function (config) {
 				.attr("width", out.psBarWidth_)
 				//for vertical bars we scale the height attribute using the classifier
 				.attr("height", function (rg) {
-					const sv = out.statData().get(rg.properties.id);
+					const s = out.statData("size") ? out.statData("size") : out.statData();
+					const sv = s.get(rg.properties.id);
 					if (!sv || !sv.value) {
 						return 0;
 					}
@@ -162,7 +159,8 @@ export const map = function (config) {
 
 			// we define the d attribute of the path as the d3 symbol
 			path.attr("d", rg => {
-				const sv = out.statData("size").get(rg.properties.id);
+				const v = out.statData("size") ? out.statData("size") : out.statData();
+				const sv = v.get(rg.properties.id);
 				let size;
 
 				//calculate size
@@ -227,3 +225,43 @@ export const symbolsLibrary = {
 	wye: symbolWye,
 	circle: symbolCircle,
 }
+
+
+/**
+ * Specific function for tooltip text.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tooltipTextFunPs = function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+
+	//stat 1 value
+	const v1 = map.statData("size") ? map.statData("size") : map.statData();
+	const sv1 = v1.get(rg.properties.id);
+	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
+	else {
+		buf.push(sv1.value);
+		//unit 1
+		const unit1 = map.statData("size").unitText();
+		if (unit1) buf.push(" " + unit1);
+	}
+	buf.push("<br>");
+
+
+	//stat 2 value
+	if (map.statData("color")) {
+		const sv2 = map.statData("color").get(rg.properties.id);
+		if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
+		else {
+			buf.push(sv2.value);
+			//unit 2
+			const unit2 = map.statData("color").unitText();
+			if (unit2) buf.push(" " + unit2);
+		}
+	}
+
+	return buf.join("");
+};
