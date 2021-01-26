@@ -33,7 +33,7 @@ export const legend = function (map, config) {
 	out.colorLegend = {
 		title: null,
 		titlePadding: 10, //padding between title and legend body
-		shapePadding: 3, //the distance between consecutive legend shape elements in the color legend
+		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
 		shapeSize: 13, //the distance between the legend box elements to the corresponding text label
 		labelOffset: 25, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels

@@ -19,6 +19,7 @@
     <!-- for custom symbol -->
     <script src="https://d3js.org/d3-path.v2.min.js"></script>
     <script src="https://d3js.org/d3-shape.v2.min.js"></script>
+    
 
     <script>
       let format = d3.format(".2s");
@@ -70,7 +71,7 @@
       eurostatmap
         .map("ps")
         .svgId("map1")
-        .width(500)
+        
         .nutsLvl(1)
         .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
         .psShape("custom")
@@ -94,7 +95,7 @@
       // // vertical bars
       eurostatmap
         .map("ps")
-        .width(500)
+       
         .svgId("map2")
         .nutsLvl(0)
         .stat("size", { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
@@ -114,25 +115,34 @@
         .build();
 
       // // diamond
-      // eurostatmap
-      //   .map("ps")
-      //   .width(500)
-      //   .svgId("map3")
-      //   .nutsLvl(0)
-      //   .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
-      //   .psShape("diamond") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
-      //   .psFill("#fa8dfc")
-      //   .psStroke("black")
-      //   .psStrokeWidth("1")
-      //   .tooltipShowFlags("long")
-      //   .legend({
-      //     title: "Population",
-      //     cellNb: 3,
-      //     shapePadding: 30,
-      //     format: format,
-      //     ascending: false
-      //   })
-      //   .build();
+      eurostatmap
+        .map("ps")
+        
+        .svgId("map3")
+        .nutsLvl(0)
+        .title("Tourism August 2020")
+        .stat("size", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "NR", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK" }, unitText: "total nights spent" })
+        .stat("color", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "PCH_SM", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK", }, unitText: "% change compared to previous year" })
+        .psShape("square") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("#fa8dfc")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .psColorFun(d3.interpolateMagma)
+        .legend({
+          x:550,
+          y:50,
+          sizeLegend: {
+            title: "Total nights spent",
+            cellNb: 3,
+            format: format,
+          },
+          colorLegend: {
+            title: "% change compared to 2019",
+            shapePadding: 1,
+          }
+        })
+        .build();
 
       // // cross
       // eurostatmap

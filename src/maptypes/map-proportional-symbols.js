@@ -1,6 +1,6 @@
 import { scaleSqrt, scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
 import { select } from "d3-selection";
-import { interpolateBlues } from "d3-scale-chromatic";
+import { interpolateOrRd } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
@@ -27,7 +27,7 @@ export const map = function (config) {
 	out.psStrokeWidth_ = 0.3;
 	//colour
 	out.psClasses_ = 5; // number of classes to use for colouring
-	out.psColorFun_ = interpolateBlues;
+	out.psColorFun_ = interpolateOrRd;
 	out.noDataFillStyle_ = "darkgray"; //style for no data regions
 
 	//the threshold, when the classificatio method is 'threshold'
@@ -209,7 +209,7 @@ export const map = function (config) {
 
 //build a color legend object
 export const getColorLegend = function (colorFun) {
-	colorFun = colorFun || interpolateYlOrRd;
+	colorFun = colorFun || interpolateOrRd;
 	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
 
