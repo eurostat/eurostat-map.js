@@ -245,7 +245,7 @@ const tooltipTextFunPs = function (rg, map) {
 	else {
 		buf.push(sv1.value);
 		//unit 1
-		const unit1 = map.statData("size").unitText();
+		const unit1 = v1.unitText();
 		if (unit1) buf.push(" " + unit1);
 	}
 	buf.push("<br>");
