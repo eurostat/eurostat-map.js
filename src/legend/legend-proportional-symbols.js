@@ -23,7 +23,7 @@ export const legend = function (map, config) {
 		title: null,
 		titlePadding: 10,//padding between title and legend body
 		cellNb: 4, //number of elements in the legend
-		shapePadding: 10, //the distance between consecutive legend shape elements
+		shapePadding: 10, //the y distance between consecutive legend shape elements
 		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
 		format: undefined
@@ -245,15 +245,16 @@ export const legend = function (map, config) {
 				});
 
 			//separation line
-			let lineY = y - config.shapeSize + (config.shapePadding / 2) + out.boxPadding / 2;
+			let lineY = out.map.psShape_ == "bar" ? y : y - config.shapeSize / 2;
 			if (i > 0) {
 				lgg.append("line").attr("x1", x).attr("y1", lineY).attr("x2", x + config.sepLineLength).attr("y2", lineY)
 					.attr("stroke", config.sepLineStroke).attr("stroke-width", config.sepLineStrokeWidth);
 			}
 
 			//label
+			let labelY = out.map.psShape_ == "bar" ? y + out.labelFontSize : y + (config.shapeSize / 2) + 2;
 			if (i < clnb - 1) {
-				lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + (config.shapeSize / 2) + 2)
+				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
 					.text(d => {
 						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
@@ -305,7 +306,7 @@ export const legend = function (map, config) {
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y)
+			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding) 
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)

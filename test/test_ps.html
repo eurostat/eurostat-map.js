@@ -19,7 +19,10 @@
     <!-- for custom symbol -->
     <script src="https://d3js.org/d3-path.v2.min.js"></script>
     <script src="https://d3js.org/d3-shape.v2.min.js"></script>
-    
+    <!-- for colorFun -->
+    <script src="https://d3js.org/d3-color.v2.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
     <script>
       let format = d3.format(".2s");
@@ -40,6 +43,7 @@
       eurostatmap
         .map("ps")
         .nutsLvl(0)
+        .title("GDP, 2018")
         //GDP per inhabitant
         .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "GDP", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
         // total GDP
@@ -49,6 +53,7 @@
         .psFill("#84d8c3")
         .psStroke("black")
         .psStrokeWidth("1")
+        .psColorFun(d3.interpolatePurples)
         .tooltipShowFlags("long")
         .legend({
           x: 600,
@@ -71,24 +76,33 @@
       eurostatmap
         .map("ps")
         .svgId("map1")
-        
-        .nutsLvl(1)
-        .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .title("Organic Farmland, 2018")
+        .nutsLvl(0)
+        //.stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .stat("size",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"HA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
+        .stat("color",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"PC_UAA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
         .psShape("custom")
         .psCustomShape(customCircle)
-        .psMaxSize(15)
-        .psFill("red")
+        .psMaxSize(55)
+        .psColorFun(d3.interpolateGreens)
         .psStroke("black")
         .psStrokeWidth("1")
         .tooltipShowFlags("long")
         .legend({
+          x:530,
+          y:20,
+          boxPadding: 15,
           sizeLegend: {
-            title: "Population",
-            cellNb: 6,
+            title: "Total organic arable land (HA)",
+            cellNb: 3,
             format: d3.format(",.2r"),
-            x: 350,
             ascending: false,
+            labelOffset: 65,
           },
+          colorLegend: {
+            title: "% of total utilised agricultural area",
+            shapePadding: 2
+          }
         })
         .build();
 
@@ -98,7 +112,8 @@
        
         .svgId("map2")
         .nutsLvl(0)
-        .stat("size", { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .stat("size", { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2019 }, unitText: "inhabitants" })
+        .stat("color", { eurostatDatasetCode:"demo_r_d3dens", unitText: "inh./km²" } )
         .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
         .psFill("#35aeff")
         .psMaxSize(70)
@@ -106,18 +121,21 @@
         .psStrokeWidth("1")
         .tooltipShowFlags("long")
         .legend({
+          x:610,
           sizeLegend: {
-            title: "Population",
+            title: "Total population",
             cellNb: 3,
             format: format,
           },
+          colorLegend: {
+            title: "Inhabitants per km²"
+          }
         })
         .build();
 
-      // // diamond
+      // 
       eurostatmap
         .map("ps")
-        
         .svgId("map3")
         .nutsLvl(0)
         .title("Tourism August 2020")
@@ -127,15 +145,17 @@
         .psFill("#fa8dfc")
         .psStroke("black")
         .psStrokeWidth("1")
+        .psMaxSize(70)
         .tooltipShowFlags("long")
-        .psColorFun(d3.interpolateMagma)
+        .psColorFun(d3.interpolateReds)
         .legend({
           x:550,
-          y:50,
+          y:20,
           sizeLegend: {
             title: "Total nights spent",
             cellNb: 3,
             format: format,
+            labelOffset: -10
           },
           colorLegend: {
             title: "% change compared to 2019",

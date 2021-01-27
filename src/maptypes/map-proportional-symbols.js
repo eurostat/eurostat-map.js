@@ -31,7 +31,7 @@ export const map = function (config) {
 	out.noDataFillStyle_ = "darkgray"; //style for no data regions
 
 	//the threshold, when the classificatio method is 'threshold'
-	out.threshold_ = [0];
+	out.psThreshold_ = [0];
 	//the classification method
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	//when computed automatically, ensure the threshold are nice rounded values
@@ -60,6 +60,10 @@ export const map = function (config) {
 		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "noDataFillStyle", "threshold"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
+
+			//override of some special getters/setters
+	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.classToFillStyle_ = getColorLegend(out.psColorFun_); return out; };
+	out.psThreshold = function (v) { if (!arguments.length) return out.psThreshold_; out.psThreshold_ = v; out.psClasses(v.length + 1); return out; };
 
 	//@override
 	out.updateClassification = function () {
@@ -123,13 +127,24 @@ export const map = function (config) {
 
 		//define style per class
 		if (!out.classToFillStyle())
-			out.classToFillStyle(getColorLegend(out.psColorFun()))
+			out.classToFillStyle(getColorLegend(out.psColorFun_))
 
 		// vertical bars
 		if (out.psShape_ == "bar") {
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
-			rect.style("fill", out.psFill())
+			rect				// apply color
+			.style("fill", function () {
+				// use colour classifier when applicable
+				if (out.classifierColor_) {
+					//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+					var ecl = select(this.parentNode).attr("ecl");
+					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+					return out.classToFillStyle()(ecl, out.psClasses_);
+				} else {
+					return out.psFill();
+				}
+			})
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())
