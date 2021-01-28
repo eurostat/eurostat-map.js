@@ -15,8 +15,9 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config, true);
 
-	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
+	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
+	out.psCustomPath_; // see http://bl.ocks.org/jessihamel/9648495
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 5; //for vertical bars
@@ -50,18 +51,18 @@ export const map = function (config) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
-		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "noDataFillStyle_", "threshold_"]
+		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "noDataFillStyle_", "threshold_", "psCustomPath_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
 	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
-		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "noDataFillStyle", "threshold"].forEach(function (key) {
+		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "noDataFillStyle", "threshold", "psCustomPath"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
 
-			//override of some special getters/setters
+	//override of some special getters/setters
 	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.classToFillStyle_ = getColorLegend(out.psColorFun_); return out; };
 	out.psThreshold = function (v) { if (!arguments.length) return out.psThreshold_; out.psThreshold_ = v; out.psClasses(v.length + 1); return out; };
 
@@ -93,10 +94,11 @@ export const map = function (config) {
 		//simply return the array [0,1,2,3,...,nb-1]
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
+		// size
 		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
 		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
 
-
+		// colour
 		if (out.statData("color")) {
 			//use suitable classification type for colouring
 			if (out.classifMethod_ === "quantile") {
@@ -129,22 +131,38 @@ export const map = function (config) {
 		if (!out.classToFillStyle())
 			out.classToFillStyle(getColorLegend(out.psColorFun_))
 
-		// vertical bars
-		if (out.psShape_ == "bar") {
+		if (out.psCustomPath_) {
+			//custom path
+			let size;
+			let path = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("path").attr("class", "ps").attr("d", out.psCustomPath_)
+			//apply size
+			path.attr('transform', rg=>{
+				//calculate size
+				const v = out.statData("size") ? out.statData("size") : out.statData();
+				const sv = v.get(rg.properties.id);
+				if (!sv || !sv.value) {
+					size = 0;
+				} else {
+					size = out.classifierSize_(+sv.value);
+				}
+			return `scale(${size})`})
+		} else if (out.psShape_ == "bar") {
+			// vertical bars
 			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("rect");
 			rect				// apply color
-			.style("fill", function () {
-				// use colour classifier when applicable
-				if (out.classifierColor_) {
-					//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
-					var ecl = select(this.parentNode).attr("ecl");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-					return out.classToFillStyle()(ecl, out.psClasses_);
-				} else {
-					return out.psFill();
-				}
-			})
+				.style("fill", function () {
+					// use colour classifier when applicable
+					if (out.classifierColor_) {
+						//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+						var ecl = select(this.parentNode).attr("ecl");
+						if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+						return out.classToFillStyle()(ecl, out.psClasses_);
+					} else {
+						return out.psFill();
+					}
+				})
 				.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())
 				.style("stroke-width", out.psStrokeWidth())

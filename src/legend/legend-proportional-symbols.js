@@ -121,7 +121,7 @@ export const legend = function (map, config) {
 			let size = m.classifierSize_(val);
 
 			//set shape size and define 'd'
-			let d = shape.size(size * size)();
+			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(size * size)();
 
 			//define position of the legend element
 			let x;
@@ -140,7 +140,7 @@ export const legend = function (map, config) {
 			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
 
 			//append symbol & style
-			lgg.append("g")
+			let symb = lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
 				.style("fill", d => {
 					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
@@ -156,6 +156,11 @@ export const legend = function (map, config) {
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				.append("path")
 				.attr('d', d)
+
+				//scale the custom path using the transform attribute
+				if (out.map.psCustomPath_ ) {
+					symb.attr('transform',`scale(${size})`)
+				}
 
 			//label position
 			let labelX = x + config.labelOffset;
@@ -208,7 +213,7 @@ export const legend = function (map, config) {
 
 			//shape
 			let shape = getShape();
-			let d = shape.size(config.shapeSize * config.shapeSize)();
+			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
 
 			//append symbol & style
 			lgg.append("g")
@@ -270,7 +275,7 @@ export const legend = function (map, config) {
 
 			//shape
 			let shape = getShape();
-			let d = shape.size(config.shapeSize * config.shapeSize)();
+			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
@@ -317,7 +322,9 @@ export const legend = function (map, config) {
 	// returns the d3.symbol object chosen by the user
 	function getShape() {
 		let shape;
-		if (out.map.psShape_ == "custom") {
+		if (out.map.psCustomPath_) {
+			shape = out.map.psCustomPath_;
+		}else if (out.map.psCustomShape_) {
 			shape = out.map.psCustomShape_;
 		} else if (out.map.psShape_ == "bar") {
 			//for rectangles, we use a custom d3 symbol

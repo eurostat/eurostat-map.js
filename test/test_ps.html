@@ -38,6 +38,7 @@
       };
 
       let customCircle = d3.symbol().type(customShapeCircle);
+      let customPath = "M32.41,28.414c-4.193,0.706-6.717,3.079-6.719,3.08c0.77-3.909,1.76-6.55,2.206-7.626   c3.055-0.57,10.352-2.229,10.271-12.682c-10.406,0.188-11.143,8.994-11.102,11.904c-1.237,1.697-2.196,3.707-2.94,5.83   c-1.283-3.52-1.49-7-1.508-8.667c1.955-1.983,6.456-6.933,1.053-14.563c-6.805,4.924-4.248,11.207-2.566,13.9   C20.464,28.407,23.324,32,23.324,32h0.002c-0.266,1-0.492,1.779-0.686,2.774c-0.004-0.005-2.012-3.212-5.094-5.116   c-1.158-2.195-4.041-6.902-11.471-4.588c2.193,6.79,7.732,6.328,10.385,5.678c0.002,0.002,4.678,2.908,5.686,6.851   c-0.699,5.218-0.551,9.435-0.551,9.435c0,1.934,3.195,2.151,3.195-0.449c-0.318-4.706-0.063-8.839,0.424-12.265   c2.44-3.273,7.975-4.317,7.975-4.317l0,0c6.025,4.43,11.188-1.902,11.188-1.902C42.986,27.165,38.205,23.144,32.41,28.414z"
 
       // circles
       eurostatmap
@@ -48,8 +49,21 @@
         .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "GDP", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
         // total GDP
         .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "GDP", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
-        .psShape("circle") // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
-        .psMaxSize(60)
+        //styling
+        .seaFillStyle('aliceblue')
+            .drawCoastalMargin(false)
+            .nutsbnStroke({0:"black", 1:"grey", 2:"grey", 3:"grey", oth:"lightgrey", co:"black"})
+            .nutsbnStrokeWidth({0:0.3, 1:0.2, 2:0.2, 3:0.2, oth:0.1, co:0.3})
+            .cntbnStrokeWidth(0.2)
+            .cntrgFillStyle("#f7f7f7")
+            .nutsrgFillStyle("#f3f3f3")
+            .cntbnStroke({def:"#f7f7f7", co:"#f7f7f7"})
+            .graticuleStroke("lightgrey")
+            .graticuleStrokeWidth(0)
+            //prop symbols
+        .psCustomPath(customPath) // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
+        .psMaxSize(2)
+        .psMinSize(0.2)
         .psFill("#84d8c3")
         .psStroke("black")
         .psStrokeWidth("1")
@@ -70,6 +84,7 @@
             format: d3.format(",.2r"),
           },
         })
+        //.labelling(true)
         .build();
 
       // semi-circles
@@ -98,6 +113,7 @@
             format: d3.format(",.2r"),
             ascending: false,
             labelOffset: 65,
+            shapePadding: -1
           },
           colorLegend: {
             title: "% of total utilised agricultural area",
