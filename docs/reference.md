@@ -209,14 +209,20 @@ eurostatmap.map("ps")
 | -------- | ------ | ---------- | ----------- |
 | *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
 | *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
-| *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol, in pixels. |
+| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. |
+| *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it. |
+| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size/scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
-| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size of the symbol, for non null values, in pixels. |
 | *map*.**psMinValue**([*value*]) | number | *0* | The minimum value of the range domain. |
 | *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
 | *map*.**psStrokeWidth**([*value*]) | number | *0.3* | The width of the stroke. |
+| *map*.**psClasses**([*value*]) | number | *5* | The number of classes to use when applying data-driven colour for the symbols. Similar to clnb() for choropleth maps. |
+| *map*.**psColorFun**([*value*]) | function | *d3.interpolateOrRd* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
+| *map*.**psClassifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshold (see threshold method). |
+| *map*.**psThreshold**([*value*]) | Array | *[0]* | If *psClassifMethod = "threshold"*, the breaks of the classification. |
+| *map*.**psNoDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
 

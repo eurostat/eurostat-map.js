@@ -76,10 +76,8 @@ export const legend = function (map, config) {
 		//draw legend background box
 		out.makeBackgroundBox();
 
-
 		//set font family
 		lgg.style("font-family", out.fontFamily);
-
 
 
 		// legend for 
@@ -133,13 +131,13 @@ export const legend = function (map, config) {
 			let y;
 			if (out.map.psShape_ == "bar") {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
-				x = out.map.psBarWidth_ * 2;
+				x = out.boxPadding + 10;
 				//we also dont need the y offset
 				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight);
 			} else {
 				// x and y for all other symbols
 				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
-				x = out.boxPadding + out._xOffset; //set X offset by the largest symbol size
+				x = out.boxPadding + out._xOffset; //set X offset
 				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
 			}
 			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
@@ -204,7 +202,7 @@ export const legend = function (map, config) {
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		// x position of color legend cells
-		let x = config.shapeSize + out.boxPadding + 10;
+		let x = out.boxPadding;
 
 		//draw legend elements for classes: rectangle + label
 		let clnb = m.psClasses_;
@@ -212,7 +210,7 @@ export const legend = function (map, config) {
 		for (let i = 0; i < clnb; i++) {
 
 			//the vertical position of the legend element
-			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + i * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize  + (config.titlePadding * 2) : 0) + i * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//the class number, depending on order
 			const ecl = out.ascending ? i : clnb - i - 1;
@@ -287,7 +285,7 @@ export const legend = function (map, config) {
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
-				.attr("fill", m.noDataFillStyle())
+				.attr("fill", m.psNoDataFillStyle())
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
 				.style("stroke-width", m.psStrokeWidth())
@@ -304,7 +302,7 @@ export const legend = function (map, config) {
 					//for ps, the symbols are the children of each g_ps element
 					parents.each(function (d, i) {
 						let ps = select(this.childNodes[0]);
-						ps.style("fill", m.noDataFillStyle());
+						ps.style("fill", m.psNoDataFillStyle());
 
 					});
 					select(this).style("fill", m.nutsrgSelFillSty());
@@ -317,7 +315,7 @@ export const legend = function (map, config) {
 						let ps = select(this.childNodes[0]);
 						ps.style("fill", cellFill);
 					});
-					select(this).style("fill", m.noDataFillStyle());
+					select(this).style("fill", m.psNoDataFillStyle());
 				});
 
 			//'no data' label

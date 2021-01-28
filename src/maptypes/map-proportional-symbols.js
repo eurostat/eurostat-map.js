@@ -21,7 +21,7 @@ export const map = function (config) {
 	out.psOffset_ = {x:0,y:0}
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 1; //for circle
-	out.psBarWidth_ = 5; //for vertical bars
+	out.psBarWidth_ = 10; //for vertical bars
 	out.psMinValue_ = 0;
 	out.psFill_ = "#B45F04"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
@@ -30,7 +30,7 @@ export const map = function (config) {
 	//colour
 	out.psClasses_ = 5; // number of classes to use for colouring
 	out.psColorFun_ = interpolateOrRd;
-	out.noDataFillStyle_ = "darkgray"; //style for no data regions
+	out.psNoDataFillStylepsN = "darkgray"; //style for no data regions
 
 	//the threshold, when the classificatio method is 'threshold'
 	out.psThreshold_ = [0];
@@ -52,14 +52,14 @@ export const map = function (config) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
-		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "noDataFillStyle_", "psThreshold_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
+		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
 	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
-		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "noDataFillStyle", "psThreshold", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
+		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
 
@@ -202,7 +202,7 @@ export const map = function (config) {
 			if (out.classifierColor_) {
 				//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
 				var ecl = select(this.parentNode).attr("ecl");
-				if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+				if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
 				return out.classToFillStyle()(ecl, out.psClasses_);
 			} else {
 				return out.psFill();
