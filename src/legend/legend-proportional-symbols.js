@@ -24,6 +24,7 @@ export const legend = function (map, config) {
 		titlePadding: 10,//padding between title and legend body
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
+		shapeOffset:{x:0, y:0},
 		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
 		format: undefined
@@ -33,6 +34,10 @@ export const legend = function (map, config) {
 	out.colorLegend = {
 		title: null,
 		titlePadding: 10, //padding between title and legend body
+		//the width of the legend box elements
+		shapeWidth: 13,
+		//the height of the legend box elements
+		shapeHeight: 15,
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
 		shapeSize: 13, //the distance between the legend box elements to the corresponding text label
 		labelOffset: 25, //distance (x) between label text and its corresponding shape element
@@ -156,11 +161,12 @@ export const legend = function (map, config) {
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				.append("path")
 				.attr('d', d)
+				.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y})`)
 
-				//scale the custom path using the transform attribute
-				if (out.map.psCustomPath_ ) {
-					symb.attr('transform',`scale(${size})`)
-				}
+			//scale the custom path using the transform attribute
+			if (out.map.psCustomPath_) {
+				symb.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`)
+			}
 
 			//label position
 			let labelX = x + config.labelOffset;
@@ -206,14 +212,14 @@ export const legend = function (map, config) {
 		for (let i = 0; i < clnb; i++) {
 
 			//the vertical position of the legend element
-			const y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + i * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + i * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//the class number, depending on order
 			const ecl = out.ascending ? i : clnb - i - 1;
 
-			//shape
-			let shape = getShape();
-			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+			// we now use rect instead of shapes
+			// let shape = getShape();
+			// let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
 
 			//append symbol & style
 			lgg.append("g")
@@ -223,8 +229,10 @@ export const legend = function (map, config) {
 				.style("stroke", m.psStroke())
 				.style("stroke-width", m.psStrokeWidth())
 				.attr("stroke", "black").attr("stroke-width", 0.5)
-				.append("path")
-				.attr('d', d)
+				// .append("path")
+				// .attr('d', d)
+				.append("rect")
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
 				.on("mouseover", function () {
 					//for ps, the symbols are the children of each g_ps element
 					const parents = svgMap.select("#g_ps").selectAll("[ecl='" + ecl + "']");
@@ -250,14 +258,14 @@ export const legend = function (map, config) {
 				});
 
 			//separation line
-			let lineY = out.map.psShape_ == "bar" ? y : y - config.shapeSize / 2;
+			let lineY = out.map.psShape_ == "bar" ? y : y;
 			if (i > 0) {
 				lgg.append("line").attr("x1", x).attr("y1", lineY).attr("x2", x + config.sepLineLength).attr("y2", lineY)
 					.attr("stroke", config.sepLineStroke).attr("stroke-width", config.sepLineStrokeWidth);
 			}
 
 			//label
-			let labelY = out.map.psShape_ == "bar" ? y + out.labelFontSize : y + (config.shapeSize / 2) + 2;
+			let labelY = out.map.psShape_ == "bar" ? y + out.labelFontSize : y + out.labelFontSize;
 			if (i < clnb - 1) {
 				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
@@ -274,8 +282,8 @@ export const legend = function (map, config) {
 			const y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + m.psClasses_ * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//shape
-			let shape = getShape();
-			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+			// let shape = getShape();
+			// let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
@@ -284,8 +292,10 @@ export const legend = function (map, config) {
 				.style("stroke", m.psStroke())
 				.style("stroke-width", m.psStrokeWidth())
 				.attr("stroke", "black").attr("stroke-width", 0.5)
-				.append("path")
-				.attr('d', d)
+				// .append("path")
+				// .attr('d', d)
+				.append("rect")
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
 				.on("mouseover", function () {
 					const parents = svgMap.select("#g_ps").selectAll("[ecl='nd']");
 					let cellFill = select(this.parentNode).attr("fill")
@@ -311,7 +321,7 @@ export const legend = function (map, config) {
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding) 
+			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
@@ -324,7 +334,7 @@ export const legend = function (map, config) {
 		let shape;
 		if (out.map.psCustomPath_) {
 			shape = out.map.psCustomPath_;
-		}else if (out.map.psCustomShape_) {
+		} else if (out.map.psCustomShape_) {
 			shape = out.map.psCustomShape_;
 		} else if (out.map.psShape_ == "bar") {
 			//for rectangles, we use a custom d3 symbol
