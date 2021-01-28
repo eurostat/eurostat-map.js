@@ -27,22 +27,20 @@ export const legend = function (map, config) {
 		shapeOffset:{x:0, y:0},
 		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
-		format: undefined
+		labelFormat: undefined
 	}
 
 	// color legend config (legend illustrating the data-driven colour classes)
 	out.colorLegend = {
 		title: null,
 		titlePadding: 10, //padding between title and legend body
-		//the width of the legend box elements
-		shapeWidth: 13,
-		//the height of the legend box elements
-		shapeHeight: 15,
+		shapeWidth: 13, //the width of the legend box elements
+		shapeHeight: 15, //the height of the legend box elements
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
 		shapeSize: 13, //the distance between the legend box elements to the corresponding text label
 		labelOffset: 25, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
-		format: undefined, // user-defined d3 format function	
+		labelFormat: undefined, // user-defined d3 format function	
 		noData: true, //show no data
 		noDataText: "No data", //no data text label
 		sepLineLength: 17,// //the separation line length
@@ -102,7 +100,7 @@ export const legend = function (map, config) {
 	 */
 	function buildSizeLegend(m, lgg, config) {
 		//define format for labels
-		const f = config.format || format("." + config.labelDecNb + "f");
+		const f = config.labelFormat || format("." + config.labelDecNb + "f");
 		//draw title
 		if (config.title) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
@@ -191,7 +189,7 @@ export const legend = function (map, config) {
  */
 	function buildColorLegend(m, lgg, config) {
 		//define format for labels
-		const f = config.format || format("." + config.labelDecNb + "f");
+		const f = config.labelFormat || format("." + config.labelDecNb + "f");
 		const svgMap = m.svg();
 
 		//title
@@ -222,7 +220,7 @@ export const legend = function (map, config) {
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
-				.attr("fill", m.classToFillStyle()(ecl, clnb))
+				.attr("fill", m.psClassToFillStyle()(ecl, clnb))
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
 				.style("stroke-width", m.psStrokeWidth())
@@ -252,7 +250,7 @@ export const legend = function (map, config) {
 						let ps = select(this.childNodes[0]);
 						ps.style("fill", cellFill);
 					});
-					select(this).style("fill", m.classToFillStyle()(ecl, clnb));
+					select(this).style("fill", m.psClassToFillStyle()(ecl, clnb));
 				});
 
 			//separation line
@@ -263,7 +261,7 @@ export const legend = function (map, config) {
 			}
 
 			//label
-			let labelY = out.map.psShape_ == "bar" ? y + out.labelFontSize : y + out.labelFontSize;
+			let labelY = y + (out.labelFontSize*1.2);
 			if (i < clnb - 1) {
 				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
 					.attr("alignment-baseline", "middle")

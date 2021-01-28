@@ -214,7 +214,7 @@ eurostatmap.map("ps")
 | *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size/scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
 | *map*.**psMinValue**([*value*]) | number | *0* | The minimum value of the range domain. |
-| *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol. |
+| *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol, for when a colour scheme is not defined. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
 | *map*.**psStrokeWidth**([*value*]) | number | *0.3* | The width of the stroke. |
@@ -222,9 +222,11 @@ eurostatmap.map("ps")
 | *map*.**psColorFun**([*value*]) | function | *d3.interpolateOrRd* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
 | *map*.**psClassifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshold (see threshold method). |
 | *map*.**psThreshold**([*value*]) | Array | *[0]* | If *psClassifMethod = "threshold"*, the breaks of the classification. |
+| *map*.**psColours**([*value*]) | Array | null | If *psClassifMethod = "threshold"*, the colours of the classification that correspond with the threshold values. |
 | *map*.**psNoDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
+As proportional symbol maps allow for two visual variables (size and colour), a legend configuration object can be specified for each variable (sizeLegend and colorLegend).
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |

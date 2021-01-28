@@ -29,8 +29,11 @@ export const map = function (config) {
 	out.psStrokeWidth_ = 0.3;
 	//colour
 	out.psClasses_ = 5; // number of classes to use for colouring
+	out.psColors_ = null; //colours to use for threshold colouring
 	out.psColorFun_ = interpolateOrRd;
-	out.psNoDataFillStylepsN = "darkgray"; //style for no data regions
+		
+	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
+	out.psNoDataFillStyle_ = "darkgray"; //style for no data regions
 
 	//the threshold, when the classificatio method is 'threshold'
 	out.psThreshold_ = [0];
@@ -38,6 +41,7 @@ export const map = function (config) {
 	out.psClassifMethod_ = "quantile"; // or: equinter, threshold
 	//when computed automatically, ensure the threshold are nice rounded values
 	out.makeClassifNice_ = true;
+	//
 	//the classifier: a function which return the symbol size/color from the stat value.
 	out.classifierSize_ = undefined;
 	out.classifierColor_ = undefined;
@@ -52,19 +56,19 @@ export const map = function (config) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
-		"psShape_", "psCustomShape_", "psBarWidth_", "classToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
+		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
 	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
-		"psShape", "psCustomShape", "psBarWidth", "classToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
+		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
 
 	//override of some special getters/setters
-	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.classToFillStyle_ = getColorLegend(out.psColorFun_); return out; };
+	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.psClassToFillStyle_ = getColorLegend(out.psColorFun_,out.psColors_); return out; };
 	out.psThreshold = function (v) { if (!arguments.length) return out.psThreshold_; out.psThreshold_ = v; out.psClasses(v.length + 1); return out; };
 
 	//@override
@@ -115,9 +119,9 @@ export const map = function (config) {
 				if (out.makeClassifNice_) out.classifierColor().nice();
 			} else if (out.psClassifMethod_ === "threshold") {
 				//https://github.com/d3/d3-scale#threshold-scales
-				out.psClasses(out.psThreshold().length + 1);
-				const range = getA(out.psClasses_);
-				out.classifierColor(scaleThreshold().domain(out.psThreshold()).range(range));
+					out.psClasses(out.psThreshold().length + 1);
+					const range = getA(out.psClasses_);
+					out.classifierColor(scaleThreshold().domain(out.psThreshold()).range(range));
 			}
 
 		}
@@ -129,8 +133,8 @@ export const map = function (config) {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
 		//define style per class
-		if (!out.classToFillStyle())
-			out.classToFillStyle(getColorLegend(out.psColorFun_))
+		if (!out.psClassToFillStyle())
+			out.psClassToFillStyle(getColorLegend(out.psColorFun_,out.psColors_))
 
 		// define symbol then apply styling
 		let symb;
@@ -203,7 +207,8 @@ export const map = function (config) {
 				//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
 				var ecl = select(this.parentNode).attr("ecl");
 				if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
-				return out.classToFillStyle()(ecl, out.psClasses_);
+				let color = out.psClassToFillStyle_(ecl, out.psClasses_);
+				return color;
 			} else {
 				return out.psFill();
 			}
@@ -221,8 +226,11 @@ export const map = function (config) {
 }
 
 //build a color legend object
-export const getColorLegend = function (colorFun) {
+export const getColorLegend = function (colorFun, colorArray) {
 	colorFun = colorFun || interpolateOrRd;
+	if (colorArray) {
+		return function (ecl, clnb) { return colorArray[ecl]; }
+	}
 	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
 

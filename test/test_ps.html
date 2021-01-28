@@ -57,6 +57,7 @@
         .nutsLvl(0)
         .title("GDP, 2018")
         .nutsrgSelFillSty("cyan")
+        .zoomExtent([1,2])
         //GDP per inhabitant
         .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
         // total GDP
@@ -64,12 +65,13 @@
         //prop symbols configuration
         .psCustomPath(euroPath) // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
         .psMaxSize(0.2)
-        .psMinSize(0.1) //minSize for customPaths indicates scale() value, not pixel size
-        .psFillOpacity(0.9)
-        .psOffset({x:-20, y:-20})
+        .psMinSize(0.05) //minSize for customPaths indicates scale() value, not pixel size
+        .psFillOpacity(1)
+        .psOffset({x:-15, y:-20})
         .psStroke("black")
-        .psStrokeWidth("1")
-        .psColorFun(d3.interpolatePRGn)
+        .psStrokeWidth(1)
+        // .psColorFun(d3.interpolatePRGn)
+        .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
         .psClassifMethod("threshold")
         .psThreshold([10000,20000,30200,40000,50000])
 
@@ -77,21 +79,21 @@
         .legend({
           x: 580,
           ascending: false,
-           boxPadding: 15,
+          boxPadding: 15,
           sizeLegend: {
             title: "Total GDP (million EUR)",
             cellNb: 3,
-            format: d3.format(",.2r"),
-            shapePadding: 70,
+            labelFormat: d3.format(",.2r"),
+            shapePadding: 65,
             titlePadding: -40,
             shapeOffset:{x:0, y:-30},
             labelOffset: 50,
           },
           colorLegend: {
             title: "GDP per inhabitant (EUR)",
-            format: d3.format(".0f"),
+            labelFormat: d3.format(".0f"),
           },
-          legendSpacing:30
+          legendSpacing:20
         })
         //.labelling(true)
         .build();
@@ -121,7 +123,7 @@
           sizeLegend: {
             title: "Total organic arable land (HA)",
             cellNb: 3,
-            format: d3.format(",.2r"),
+            labelFormat: d3.format(",.2r"),
             ascending: false,
             labelOffset: 65,
             shapePadding: -1
@@ -150,10 +152,11 @@
         .tooltipShowFlags("long")
         .legend({
           x:610,
+          boxPadding: 15,
           sizeLegend: {
             title: "Total population",
             cellNb: 3,
-            format: format,
+            labelFormat: format,
           },
           colorLegend: {
             title: "Inhabitants per km²"
@@ -179,10 +182,11 @@
         .legend({
           x:550,
           y:20,
+          boxPadding: 15,
           sizeLegend: {
             title: "Total nights spent",
             cellNb: 3,
-            format: format,
+            labelFormat: format,
             labelOffset: -10
           },
           colorLegend: {
@@ -208,7 +212,7 @@
       //     title: "Population",
       //     cellNb: 3,
       //     shapePadding: 10,
-      //     format: format,
+      //     labelFormat: format,
 
       //   })
       //   .build();
@@ -230,7 +234,7 @@
       //     cellNb: 3,
       //     shapePadding: 10,
       //     labelOffset: 30,
-      //     //format: d3.format(",.2r"),
+      //     //labelFormat: d3.format(",.2r"),
       //     x: 330,
       //   })
       //   .build();
