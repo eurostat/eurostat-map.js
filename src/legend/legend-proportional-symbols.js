@@ -138,7 +138,7 @@ export const legend = function (map, config) {
 				// x and y for all other symbols
 				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
 				x = out.boxPadding + out._xOffset; //set X offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
+				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
 			}
 			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
 
@@ -177,7 +177,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", labelX).attr("y", labelY)
 				.attr("alignment-baseline", "middle")
 				.text(f(val))
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 	}
 
@@ -271,7 +271,7 @@ export const legend = function (map, config) {
 						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
 						return text;
 					})
-					.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+					.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 			}
 		}
 
@@ -322,7 +322,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 	}
 

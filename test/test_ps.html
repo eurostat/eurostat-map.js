@@ -82,7 +82,8 @@
             title: "Total GDP (million EUR)",
             cellNb: 3,
             format: d3.format(",.2r"),
-            shapePadding: 60,
+            shapePadding: 70,
+            titlePadding: -40,
             shapeOffset:{x:0, y:-30},
             labelOffset: 50,
           },
@@ -90,7 +91,7 @@
             title: "GDP per inhabitant (EUR)",
             format: d3.format(".0f"),
           },
-          legendSpacing:70
+          legendSpacing:30
         })
         //.labelling(true)
         .build();
