@@ -219,7 +219,8 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | -------- | ------ | ---------- | ----------- |
 | *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
 | *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
-| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. |
+| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. For optimized (single path) svg icons check out https://materialdesignicons.com/.  |
+| *map*.**psOffset**([*value*]) | Object | {x:0,y:0} | Defines the offsets to apply to the symbols on the map. Only applicable to symbols where custom paths are specified ( through psCustomPath) |
 | *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it. |
 | *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size/scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |

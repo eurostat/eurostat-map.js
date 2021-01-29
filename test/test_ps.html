@@ -8,7 +8,10 @@
   <body>
     <!-- <svg id="basic"></svg> -->
     <svg id="map"></svg>
+
     <svg id="map1"></svg>
+    <svg id="tractorMap"></svg>
+
     <svg id="map2"></svg>
     <svg id="map3"></svg>
     <svg id="map4"></svg>
@@ -39,10 +42,13 @@
       };
 
       let customCircle = d3.symbol().type(customShapeCircle);
+
+      // for optimized (single path) svg icons check out https://materialdesignicons.com/
       let customPath = "M32.41,28.414c-4.193,0.706-6.717,3.079-6.719,3.08c0.77-3.909,1.76-6.55,2.206-7.626   c3.055-0.57,10.352-2.229,10.271-12.682c-10.406,0.188-11.143,8.994-11.102,11.904c-1.237,1.697-2.196,3.707-2.94,5.83   c-1.283-3.52-1.49-7-1.508-8.667c1.955-1.983,6.456-6.933,1.053-14.563c-6.805,4.924-4.248,11.207-2.566,13.9   C20.464,28.407,23.324,32,23.324,32h0.002c-0.266,1-0.492,1.779-0.686,2.774c-0.004-0.005-2.012-3.212-5.094-5.116   c-1.158-2.195-4.041-6.902-11.471-4.588c2.193,6.79,7.732,6.328,10.385,5.678c0.002,0.002,4.678,2.908,5.686,6.851   c-0.699,5.218-0.551,9.435-0.551,9.435c0,1.934,3.195,2.151,3.195-0.449c-0.318-4.706-0.063-8.839,0.424-12.265   c2.44-3.273,7.975-4.317,7.975-4.317l0,0c6.025,4.43,11.188-1.902,11.188-1.902C42.986,27.165,38.205,23.144,32.41,28.414z"
       let euroPath = "m 224.99996,16.22698 -8.11342,36.41161 q -24.14255,-19.78892 -54.61741,-19.78892 -41.3588,0 -65.00658,23.74671 -23.647774,23.7467 -28.397115,53.23215 l 134.960355,0 -5.14505,26.71508 -132.981532,0 -0.395848,7.71771 0.395848,18.20566 127.242642,0 -5.14505,26.71508 -117.941954,0 q 7.519719,40.17154 32.552754,59.06997 25.03303,18.89844 56.49745,18.89844 37.20302,0 57.98149,-19.59107 l 0,40.9631 Q 192.34828,300 162.26913,300 53.034301,300 30.474864,189.18206 l -30.474864,0 5.738751,-26.71508 20.580475,0 q -0.395708,-4.74934 -0.395708,-17.80995 l 0,-8.11342 -25.923518,0 5.738751,-26.71508 23.152999,0 Q 39.181988,55.21112 76.583149,27.60556 113.98417,0 163.06069,0 199.868,0 224.99996,16.22698 z"
+      let tractorPath = "M5,4V11.26C3.2,11.9 2,13.6 2,15.5C2,18 4,20 6.5,20C8.79,20 10.71,18.28 10.97,16H15.17C15.06,16.32 15,16.66 15,17A3,3 0 0,0 18,20A3,3 0 0,0 21,17C21,16.66 20.94,16.32 20.82,16H22V13C22,11.89 21.11,11 20,11H15.04L13.65,4H5M7,6H12L13,11V14H10.74C10.16,12.38 8.71,11.23 7,11.03V6M6.5,13.25A2.25,2.25 0 0,1 8.75,15.5A2.25,2.25 0 0,1 6.5,17.75A2.25,2.25 0 0,1 4.25,15.5A2.25,2.25 0 0,1 6.5,13.25M18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5Z"
       
-// basic
+      // basic example
       // eurostatmap.map("ps")
       // .svgId("basic")
       // .nutsLvl(1)
@@ -62,18 +68,19 @@
         .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
         // total GDP
         .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
+
         //prop symbols configuration
         .psCustomPath(euroPath) // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
-        .psMaxSize(0.2)
+        .psMaxSize(0.26)
         .psMinSize(0.05) //minSize for customPaths indicates scale() value, not pixel size
         .psFillOpacity(1)
-        .psOffset({x:-15, y:-20})
+        .psOffset({x:-150, y:-150})
         .psStroke("black")
         .psStrokeWidth(10)
-        // .psColorFun(d3.interpolatePRGn)
-        .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
+        
         .psClassifMethod("threshold")
         .psThreshold([10000,20000,30200,40000,50000])
+        .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
         //legend config
         .legend({
@@ -84,21 +91,21 @@
             title: "Total GDP (million EUR)",
             cellNb: 3,
             labelFormat: d3.format(",.2r"),
-            shapePadding: 65,
-            titlePadding: -40,
+            shapePadding: 90,
+            titlePadding: -60,
             shapeOffset:{x:0, y:-30},
-            labelOffset: 50,
+            labelOffset: 70,
           },
           colorLegend: {
             title: "GDP per inhabitant (EUR)",
             labelFormat: d3.format(".0f"),
           },
-          legendSpacing:20
+          legendSpacing:0
         })
         //.labelling(true)
         .build();
 
-      // semi-circles
+      // semi-circles, farmland
       eurostatmap
         .map("ps")
         .svgId("map1")
@@ -107,7 +114,6 @@
         //.stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
         .stat("size",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"HA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
         .stat("color",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"PC_UAA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
-        .psShape("custom")
         .psCustomShape(customCircle)
         .psMaxSize(55)
         .psColorFun(d3.interpolateGreens)
@@ -125,7 +131,7 @@
             cellNb: 3,
             labelFormat: d3.format(",.2r"),
             ascending: false,
-            labelOffset: 65,
+            labelOffset: 50,
             shapePadding: -1
           },
           colorLegend: {
@@ -136,11 +142,95 @@
         })
         .build();
 
-      // // vertical bars
+
+        // tractors
+        eurostatmap
+        .map("ps")
+        .svgId("tractorMap")
+        .title("Organic Farmland, 2018")
+        .nutsLvl(0)
+        //.stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+        .stat("size",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"HA",agprdmet:"TOTAL" }, unitText: "HA of organic arable land" })
+        .stat("color",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"PC_UAA",agprdmet:"TOTAL" }, unitText: "% of total agricultural area" })
+        .psShape("custom")
+        .psCustomPath(tractorPath)
+        .psMaxSize(4)
+        .psMinSize(1)
+        .psOffset({x:-10, y:-10})
+        .psColorFun(d3.interpolateGreens)
+        .psClasses(6)
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .tooltipShowFlags("long")
+        .nutsrgSelFillSty("cyan")
+        .legend({
+          x:530,
+          y:10,
+          boxPadding: 15,
+          sizeLegend: {
+            title: "Total organic arable land (HA)",
+            cellNb: 3,
+            labelFormat: d3.format(",.2r"),
+            shapePadding: 65,
+            titlePadding: -40,
+            shapeOffset:{x:0, y:-30},
+            labelOffset: 80,
+          },
+          colorLegend: {
+            title: "% of total utilised agricultural area",
+            shapePadding: 2
+          },
+          legendSpacing: 50
+        })
+        .build();
+
+
+      // tourism
+      eurostatmap
+        .map("ps")
+        .svgId("map2")
+        .nutsLvl(0)
+        .title("Tourism August 2020")
+        .stat("size", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "NR", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK" }, unitText: "total nights spent" })
+        .stat("color", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "PCH_SM", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK", }, unitText: "% change compared to previous year" })
+        .psShape("square") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
+        .psFill("#fa8dfc")
+        .psStroke("black")
+        .psStrokeWidth("1")
+        .psMaxSize(70)
+        .tooltipShowFlags("long")
+        .psColors([
+        "#fee5d9",
+          "#fcbba1",
+          "#fc9272",
+          "#fb6a4a",
+          "#de2d26",
+          "#a50f15"
+        ].reverse())
+        .legend({
+          x:550,
+          y:20,
+          boxPadding: 15,
+          sizeLegend: {
+            title: "Total nights spent",
+            titlePadding: -5,
+            cellNb: 3,
+            labelFormat: format,
+            labelOffset: -10
+          },
+          colorLegend: {
+            title: "% change compared to 2019",
+            shapePadding: 1,
+          },
+          legendSpacing: 45
+        })
+        .build();
+
+        // vertical bars
       eurostatmap
         .map("ps")
        .title("Population & population density, 2019")
-        .svgId("map2")
+        .svgId("map3")
         .nutsLvl(0)
         .stat("size", { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: "2019" }, unitText: "inhabitants" })
         .stat("color", { eurostatDatasetCode:"demo_r_d3dens", unitText: "inh./km²",time: "2019" } )
@@ -160,38 +250,6 @@
           },
           colorLegend: {
             title: "Inhabitants per km²"
-          }
-        })
-        .build();
-
-      // 
-      eurostatmap
-        .map("ps")
-        .svgId("map3")
-        .nutsLvl(0)
-        .title("Tourism August 2020")
-        .stat("size", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "NR", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK" }, unitText: "total nights spent" })
-        .stat("color", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "PCH_SM", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK", }, unitText: "% change compared to previous year" })
-        .psShape("square") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
-        .psFill("#fa8dfc")
-        .psStroke("black")
-        .psStrokeWidth("1")
-        .psMaxSize(70)
-        .tooltipShowFlags("long")
-        .psColorFun(d3.interpolateReds)
-        .legend({
-          x:550,
-          y:20,
-          boxPadding: 15,
-          sizeLegend: {
-            title: "Total nights spent",
-            cellNb: 3,
-            labelFormat: format,
-            labelOffset: -10
-          },
-          colorLegend: {
-            title: "% change compared to 2019",
-            shapePadding: 1,
           }
         })
         .build();
