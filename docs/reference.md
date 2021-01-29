@@ -20,6 +20,8 @@ Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``
 - ``"ch"`` for a [choropleth map](#choropleth-map),
 - ``"ps"`` for a [proportional symbol map](#proportional-symbol-map),
 - ``"ct"`` for a [categorical map](#categorical-map).
+- ``"chbi"`` for a [bivariate choropleth map](#bivariate-choropleth-map).
+- ``"scomp"`` for a [stripe composition map](#stripe-composition-map).
 
 The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
@@ -301,8 +303,8 @@ eurostatmap.map("ct")
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**classToFillStyle**([*value*]) | Object | null | An object giving the fill style depending on the class code. |
-| *map*.**classToText**([*value*]) | Object | null | An object giving the legend label text depending on the class code. |
+| *map*.**classToFillStyle**([*value*]) | Object | *auto* | An object giving the fill style depending on the class code. If not specify, use default colors. |
+| *map*.**classToText**([*value*]) | Object | *auto* | An object giving the legend label text depending on the class code. If not specified, use the class code. |
 | *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), categorical maps have the following specific legend parameters:
