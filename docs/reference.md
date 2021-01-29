@@ -206,32 +206,82 @@ eurostatmap.map("ps")
 	.psFill("red")
 	.build();
 ```
+Along with data-driven sizing, it is possible to colour the symbols according to a statistical variable as well. This is achieved by adding the "size" and "color" strings to their corresponding stat methods. For example:
+
+```javascript
+    //GDP per inhabitant (colour of symbol)
+    .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
+    // Total GDP (size of symbol)
+    .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
+```
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
 | *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
-| *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol, in pixels. |
+| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. |
+| *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it. |
+| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size/scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
-| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size of the symbol, for non null values, in pixels. |
 | *map*.**psMinValue**([*value*]) | number | *0* | The minimum value of the range domain. |
-| *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol. |
+| *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol, for when a colour scheme is not defined. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
 | *map*.**psStrokeWidth**([*value*]) | number | *0.3* | The width of the stroke. |
+| *map*.**psClasses**([*value*]) | number | *5* | The number of classes to use when applying data-driven colour for the symbols. Similar to clnb() for choropleth maps. |
+| *map*.**psColorFun**([*value*]) | function | *d3.interpolateOrRd* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
+| *map*.**psClassifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshold (see threshold method). |
+| *map*.**psThreshold**([*value*]) | Array | *[0]* | If *psClassifMethod = "threshold"*, the breaks of the classification. |
+| *map*.**psColours**([*value*]) | Array | null | If *psClassifMethod = "threshold"*, the colours of the classification that correspond with the threshold values. |
+| *map*.**psNoDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
+As proportional symbol maps allow for two visual variables (size and colour), a legend configuration object can be specified for each variable (sizeLegend and colorLegend).
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **cellNb** | int | *4* | Number of legend elements. |
-| **ascending** | String | *true* | The legend cells order. Set to false to invert. |
-| **shapePadding** | number | *5* | The distance between consecutive legend elements |
-| **labelFontSize** | int | *13* | The label font size. |
-| **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
-| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
-| **format** | Function | *format(",." + labelDecNb + "r")* | D3 format function which formats the labels. |
+| **ascending** | Boolean | *true* | The order of the legend elements. Set to false to invert. |
+| **legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
+| **labelFontSize** | Number | *12* | The font size of the legend labels |
+| **sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |
+| **colorLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol colours |
 
+**sizeLegend**
+
+The following parameters are properties of the sizeLegend object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body |
+| **cellNb** | Number | *4* | Number of elements in the legend |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **shapeOffset** | Object | *{x:0, y:0}* | The offset applied to the shape elements in the legend. Applicable for use with psCustomPath() |
+| **shapeFill** | String | *white* | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used.  |
+| **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
+| **labelDecNb** | Number | *0* | The number of decimals for each label.  |
+| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+
+**colorLegend**
+
+The following parameters are properties of the colorLegend object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body |
+| **shapeWidth** | Number | *13* | The width of the legend box elements |
+| **shapeHeight** | Number | *13* | The height of the legend box elements |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
+| **labelDecNb** | Number | *0* | The number of decimals for each label.  |
+| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+| **noData** | Boolean | *true* | Show a legend element that represents "no data" values. |
+| **noDataText** | String | *No data* | No data element label text. |
+| **sepLineLength** | Number | *17* | The length of the separation line between classes. |
+| **sepLineStroke** | Number | *black* | The colour of the separation line between classes. |
+| **sepLineStrokeWidth** | Number | *1* | The width of the separation line between classes. |
 
 ## Categorical map
 

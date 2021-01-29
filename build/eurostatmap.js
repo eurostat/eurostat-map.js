@@ -32567,9 +32567,11 @@ const legend = function (map, config) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "legend", function() { return legend; });
 /* harmony import */ var d3_format__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3-format */ "./node_modules/d3-format/src/index.js");
-/* harmony import */ var _core_legend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/legend */ "./src/core/legend.js");
-/* harmony import */ var _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../maptypes/map-proportional-symbols */ "./src/maptypes/map-proportional-symbols.js");
-/* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/index.js");
+/* harmony import */ var _core_legend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/legend */ "./src/core/legend.js");
+/* harmony import */ var _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../maptypes/map-proportional-symbols */ "./src/maptypes/map-proportional-symbols.js");
+/* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
+
 
 
 
@@ -32583,30 +32585,60 @@ __webpack_require__.r(__webpack_exports__);
 const legend = function (map, config) {
 
 	//build generic legend object for the map
-	const out = _core_legend__WEBPACK_IMPORTED_MODULE_1__["legend"](map);
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_2__["legend"](map);
 
-	//number of elements in the legend
-	out.cellNb = 4;
-	//the order of the legend elements. Set to false to invert.
-	out.ascending = true;
-	//the distance between consecutive legend box elements
-	out.shapePadding = 5;
-	//the font size of the legend label
-	out.labelFontSize = 12;
-	// user-defined d3 format function
-	out.format = undefined;
-	//the number of decimal for the legend labels
-	out.labelDecNb = 2;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 25;
+	out.ascending = true; //the order of the legend elements. Set to false to invert.
+	out.legendSpacing = 35; //spacing between color & size legends (if applicable)
+	out.labelFontSize = 12; //the font size of the legend labels
+
+	//size legend config (legend illustrating the values of different symbol sizes)
+	out.sizeLegend = {
+		title: null,
+		titlePadding: 10,//padding between title and legend body
+		cellNb: 4, //number of elements in the legend
+		shapePadding: 10, //the y distance between consecutive legend shape elements
+		shapeOffset:{x:0, y:0},
+		shapeFill: "white",
+		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
+		labelDecNb: 0, //the number of decimal for the legend labels
+		labelFormat: undefined
+	}
+
+	// color legend config (legend illustrating the data-driven colour classes)
+	out.colorLegend = {
+		title: null,
+		titlePadding: 10, //padding between title and legend body
+		shapeWidth: 13, //the width of the legend box elements
+		shapeHeight: 15, //the height of the legend box elements
+		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
+		labelOffset: 25, //distance (x) between label text and its corresponding shape element
+		labelDecNb: 0, //the number of decimal for the legend labels
+		labelFormat: undefined, // user-defined d3 format function	
+		noData: true, //show no data
+		noDataText: "No data", //no data text label
+		sepLineLength: 17,// //the separation line length
+		sepLineStroke: "black", //the separation line color
+		sepLineStrokeWidth: 1, //the separation line width
+	}
 
 	//override attribute values with config values
-	if (config) for (let key in config) out[key] = config[key];
+	if (config) for (let key in config) {
+		if (key == "colorLegend" || key == "sizeLegend") {
+			for (let p in out[key]) {
+				//override each property in size and color legend configs
+				if (config[key][p]) {
+					out[key][p] = config[key][p]
+				}
+			}
+		} else {
+			out[key] = config[key];
+		}
+	}
+
 
 	//@override
 	out.update = function () {
 		const m = out.map;
-		const svgMap = m.svg();
 		const lgg = out.lgg;
 
 		//remove previous content
@@ -32615,25 +32647,257 @@ const legend = function (map, config) {
 		//draw legend background box
 		out.makeBackgroundBox();
 
-		//draw title
-		if (out.title)
-			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-				.text(out.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
-				.style("font-family", out.fontFamily).style("fill", out.fontFill)
-
 		//set font family
 		lgg.style("font-family", out.fontFamily);
 
+		// legend for 
+		if (m.classifierSize_) {
+			buildSizeLegend(m, lgg, out.sizeLegend)
+		}
+		// legend for ps color values
+		if (m.classifierColor_) {
+			buildColorLegend(m, lgg, out.colorLegend)
+		}
+
+		//set legend box dimensions
+		out.setBoxDimension();
+	}
+
+	/**
+	 * Builds a legend which illustrates the statistical values of different symbol sizes
+	 * 
+	 * @param {*} m map 
+	 * @param {*} lgg parent legend object from core/legend.js 
+	 * @param {*} config size legend config object (sizeLegend object specified as property of legend() config object)
+	 */
+	function buildSizeLegend(m, lgg, config) {
 		//define format for labels
-		const f = out.format || Object(d3_format__WEBPACK_IMPORTED_MODULE_0__["format"])(",." + out.labelDecNb + "r");
+		const f = config.labelFormat || Object(d3_format__WEBPACK_IMPORTED_MODULE_0__["format"])("." + config.labelDecNb + "f");
+		//draw title
+		if (config.title) {
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+				.text(config.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
 
-		//custom and d3.symbol shapes
-		// use legendSize() with custom scale for d3 shapes
+		let shape = getShape();
+		let domain = m.classifierSize_.domain();
+		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol)
+		out._sizeLegendHeight = 0; //sum of shape sizes: used for positioning legend elements and color legend
 
-		let shape; //d3.symbol
+		//draw legend elements for classes: symbol + label
+		for (let i = 1; i < config.cellNb + 1; i++) {
+			//calculate shape size using cellNb
+			const ecl = out.ascending ? config.cellNb - i + 1 : i;
+			let val = maxVal / ecl;
+			let size = m.classifierSize_(val);
 
-		if (out.map.psShape_ == "custom") {
+			//set shape size and define 'd'
+			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(size * size)();
+
+			//define position of the legend element
+			let x;
+			let y;
+			if (out.map.psShape_ == "bar") {
+				// for vertical bars we dont use a dynamic X offset because all bars have the same width
+				x = out.boxPadding + 10;
+				//we also dont need the y offset
+				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight);
+			} else {
+				// x and y for all other symbols
+				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
+				x = out.boxPadding + out._xOffset; //set X offset
+				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
+			}
+			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
+
+			//append symbol & style
+			let symb = lgg.append("g")
+				.attr("transform", `translate(${x},${y})`)
+				.style("fill", d => {
+					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+						return config.shapeFill ? config.shapeFill:m.psFill()
+				})
+				.style("fill-opacity", m.psFillOpacity())
+				.style("stroke", m.psStroke())
+				.style("stroke-width", m.psStrokeWidth())
+				.attr("stroke", "black").attr("stroke-width", 0.5)
+				.append("path")
+				.attr('d', d)
+				.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y})`)
+
+			//scale the custom path using the transform attribute
+			if (out.map.psCustomPath_) {
+				symb.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`)
+			}
+
+			//label position
+			let labelX = x + config.labelOffset;
+			let labelY = y;
+			if (out.map.psShape_ == "bar") {
+				labelY = labelY + (size / 2)
+			}
+
+			//append label
+			lgg.append("text").attr("x", labelX).attr("y", labelY)
+				.attr("alignment-baseline", "middle")
+				.text(f(val))
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
+	}
+
+
+	/**
+ * Builds a legend illustrating the statistical values of different symbol colours
+ * 
+ * @param {*} m map 
+ * @param {*} lgg parent legend object from core/legend.js 
+ * @param {*} config color legend config object (colorLegend object specified as property of legend config parameter)
+ */
+	function buildColorLegend(m, lgg, config) {
+		//define format for labels
+		const f = config.labelFormat || Object(d3_format__WEBPACK_IMPORTED_MODULE_0__["format"])("." + config.labelDecNb + "f");
+		const svgMap = m.svg();
+
+		//title
+		if (config.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + config.titlePadding)
+				.text(config.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+		// x position of color legend cells
+		let x = out.boxPadding;
+
+		//draw legend elements for classes: rectangle + label
+		let clnb = m.psClasses_;
+
+		for (let i = 0; i < clnb; i++) {
+
+			//the vertical position of the legend element
+			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize  + (config.titlePadding * 2) : 0) + i * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+
+			//the class number, depending on order
+			const ecl = out.ascending ? i : clnb - i - 1;
+
+			// we now use rect instead of shapes
+			// let shape = getShape();
+			// let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+
+			//append symbol & style
+			lgg.append("g")
+				.attr("transform", `translate(${x},${y})`)
+				.attr("fill", m.psClassToFillStyle()(ecl, clnb))
+				.style("fill-opacity", m.psFillOpacity())
+				.style("stroke", m.psStroke())
+				.style("stroke-width", 1)
+				.attr("stroke", "black").attr("stroke-width", 0.5)
+				// .append("path")
+				// .attr('d', d)
+				.append("rect")
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
+				.on("mouseover", function () {
+					//for ps, the symbols are the children of each g_ps element
+					const parents = svgMap.select("#g_ps").selectAll("[ecl='" + ecl + "']");
+					let cellFill = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.parentNode).attr("fill")
+					// save legend cell fill color to revert during mouseout:
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).attr("fill___", cellFill);
+					parents.each(function (d, i) {
+						let ps = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.childNodes[0]);
+						ps.style("fill", m.nutsrgSelFillSty());
+
+					});
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.nutsrgSelFillSty());
+				})
+				.on("mouseout", function () {
+					//for ps, the symbols are the children of each g_ps element
+					const parents = svgMap.select("#g_ps").selectAll("[ecl='" + ecl + "']");
+					let cellFill = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).attr("fill___");
+					parents.each(function (d, i) {
+						let ps = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.childNodes[0]);
+						ps.style("fill", cellFill);
+					});
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.psClassToFillStyle()(ecl, clnb));
+				});
+
+			//separation line
+			let lineY = out.map.psShape_ == "bar" ? y : y;
+			if (i > 0) {
+				lgg.append("line").attr("x1", x).attr("y1", lineY).attr("x2", x + config.sepLineLength).attr("y2", lineY)
+					.attr("stroke", config.sepLineStroke).attr("stroke-width", config.sepLineStrokeWidth);
+			}
+
+			//label
+			let labelY = y + (out.labelFontSize*1.2);
+			if (i < clnb - 1) {
+				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
+					.attr("alignment-baseline", "middle")
+					.text(d => {
+						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
+						return text;
+					})
+					.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+			}
+		}
+
+		//'no data' legend box
+		if (config.noData) {
+			const y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + m.psClasses_ * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+
+			//shape
+			// let shape = getShape();
+			// let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+			//append symbol & style
+			lgg.append("g")
+				.attr("transform", `translate(${x},${y})`)
+				.attr("fill", m.psNoDataFillStyle())
+				.style("fill-opacity", m.psFillOpacity())
+				.style("stroke", m.psStroke())
+				.attr("stroke-width", 1)
+				// .append("path")
+				// .attr('d', d)
+				.append("rect")
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
+				.on("mouseover", function () {
+					const parents = svgMap.select("#g_ps").selectAll("[ecl='nd']");
+					let cellFill = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.parentNode).attr("fill")
+					// save legend cell fill color to revert during mouseout:
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).attr("fill___", cellFill);
+					//for ps, the symbols are the children of each g_ps element
+					parents.each(function (d, i) {
+						let ps = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.childNodes[0]);
+						ps.style("fill", m.psNoDataFillStyle());
+
+					});
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.nutsrgSelFillSty());
+				})
+				.on("mouseout", function () {
+					//for ps, the symbols are the children of each g_ps element
+					const parents = svgMap.select("#g_ps").selectAll("[ecl='nd']");
+					let cellFill = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).attr("fill___");
+					parents.each(function (d, i) {
+						let ps = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.childNodes[0]);
+						ps.style("fill", cellFill);
+					});
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.psNoDataFillStyle());
+				});
+
+			//'no data' label
+			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
+				.attr("alignment-baseline", "middle")
+				.text(config.noDataText)
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+		}
+	}
+
+
+	// returns the d3.symbol object chosen by the user
+	function getShape() {
+		let shape;
+		if (out.map.psCustomPath_) {
+			shape = out.map.psCustomPath_;
+		} else if (out.map.psCustomShape_) {
 			shape = out.map.psCustomShape_;
 		} else if (out.map.psShape_ == "bar") {
 			//for rectangles, we use a custom d3 symbol
@@ -32648,65 +32912,10 @@ const legend = function (map, config) {
 			}
 			shape = d3.symbol().type({ draw: drawRectangle })
 		} else {
-			let symbolType = _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_2__["symbolsLibrary"][out.map.psShape_] || _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_2__["symbolsLibrary"]["circle"];
-			shape = Object(d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbol"])().type(symbolType);
+			let symbolType = _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_3__["symbolsLibrary"][out.map.psShape_] || _maptypes_map_proportional_symbols__WEBPACK_IMPORTED_MODULE_3__["symbolsLibrary"]["circle"];
+			shape = Object(d3_shape__WEBPACK_IMPORTED_MODULE_4__["symbol"])().type(symbolType);
 		}
-
-		let domain = m.classifier_.domain();
-		let maxVal = domain[1]; //maximum value of dataset (used for first symbol)
-
-		//draw legend elements for classes: rectangle + label
-		let totalHeight = 0; //sum of shape sizes
-		for (let i = 1; i < out.cellNb + 1; i++) {
-
-			//class number
-			const ecl = out.ascending? out.cellNb-i+1 : i;
-
-			let val = maxVal / ecl; // divide the maxVal by the 'cell number' index
-			let size = m.classifier_(val); //size 
-
-
-			//d3 symbol
-			let d = shape.size(size * size)(); //set shape size and call
-
-			//the vertical position of the legend element
-			let x;
-			let y;
-			if (out.map.psShape_ == "bar") {
-				// for vertical bars we dont use a dynamic X offset because all bars have the same width
-				x = out.map.psBarWidth_ * 2;
-				//we also dont need the y offset
-				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight);
-			} else {
-				x = out.boxPadding + (m.classifier_(maxVal)/1.5); //set X offset by the largest symbol size
-				y = (out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + totalHeight) + size;
-			}
-			totalHeight = totalHeight + size + out.shapePadding;
-
-			lgg.append("g")
-				.attr("transform", `translate(${x},${y})`)
-				.style("fill", m.psFill())
-				.style("fill-opacity", m.psFillOpacity())
-				.style("stroke", m.psStroke())
-				.style("stroke-width", m.psStrokeWidth())
-				.attr("stroke", "black").attr("stroke-width", 0.5)
-				.append("path")
-				.attr('d', d)
-
-			//label
-			let labelX = x + out.labelOffset;
-			let labelY = y;
-			if (out.map.psShape_ == "bar") {
-				labelY = labelY + (size / 2)
-			}
-			lgg.append("text").attr("x", labelX).attr("y", labelY)
-				.attr("alignment-baseline", "middle")
-				.text(f(val))
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
-		}
-
-		//set legend box dimensions
-		out.setBoxDimension();
+		return shape;
 	}
 
 	return out;
@@ -34113,17 +34322,22 @@ const getColorLegend = function (colorFun) {
 /*!**************************************************!*\
   !*** ./src/maptypes/map-proportional-symbols.js ***!
   \**************************************************/
-/*! exports provided: map, symbolsLibrary */
+/*! exports provided: map, getColorLegend, symbolsLibrary */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "map", function() { return map; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColorLegend", function() { return getColorLegend; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "symbolsLibrary", function() { return symbolsLibrary; });
 /* harmony import */ var d3_scale__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3-scale */ "./node_modules/d3-scale/src/index.js");
-/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/stat-map */ "./src/core/stat-map.js");
-/* harmony import */ var _legend_legend_proportional_symbols__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../legend/legend-proportional-symbols */ "./src/legend/legend-proportional-symbols.js");
-/* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/index.js");
+/* harmony import */ var d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! d3-scale-chromatic */ "./node_modules/d3-scale-chromatic/src/index.js");
+/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/stat-map */ "./src/core/stat-map.js");
+/* harmony import */ var _legend_legend_proportional_symbols__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../legend/legend-proportional-symbols */ "./src/legend/legend-proportional-symbols.js");
+/* harmony import */ var d3_shape__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! d3-shape */ "./node_modules/d3-shape/src/index.js");
+
+
 
 
 
@@ -34137,20 +34351,40 @@ __webpack_require__.r(__webpack_exports__);
 const map = function (config) {
 
 	//create map object to return, using the template
-	const out = _core_stat_map__WEBPACK_IMPORTED_MODULE_1__["statMap"](config, true);
+	const out = _core_stat_map__WEBPACK_IMPORTED_MODULE_3__["statMap"](config, true);
 
-	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross or custom
+	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
+	out.psCustomPath_; // see http://bl.ocks.org/jessihamel/9648495
+	out.psOffset_ = {x:0,y:0}
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 1; //for circle
-	out.psBarWidth_ = 5; //for vertical bars
+	out.psBarWidth_ = 10; //for vertical bars
 	out.psMinValue_ = 0;
-	out.psFill_ = "#B45F04";
+	out.psFill_ = "#B45F04"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#fff";
 	out.psStrokeWidth_ = 0.3;
-	//the classifier: a function which return the symbol size from the stat value.
-	out.classifier_ = undefined;
+	//colour
+	out.psClasses_ = 5; // number of classes to use for colouring
+	out.psColors_ = null; //colours to use for threshold colouring
+	out.psColorFun_ = d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_2__["interpolateOrRd"];
+		
+	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
+	out.psNoDataFillStyle_ = "darkgray"; //style for no data regions
+
+	//the threshold, when the classificatio method is 'threshold'
+	out.psThreshold_ = [0];
+	//the classification method
+	out.psClassifMethod_ = "quantile"; // or: equinter, threshold
+	//when computed automatically, ensure the threshold are nice rounded values
+	out.makeClassifNice_ = true;
+	//
+	//the classifier: a function which return the symbol size/color from the stat value.
+	out.classifierSize_ = undefined;
+	out.classifierColor_ = undefined;
+	//specific tooltip text function
+	out.tooltipText_ = tooltipTextFunPs;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -34159,106 +34393,237 @@ const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifier_", "psShape_", "psCustomShape_","psBarWidth_"]
+	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
+		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifier", "psShape", "psCustomShape","psBarWidth"].forEach(function (key) {
-		if (config[key] != undefined) out[key](config[key]);
-	});
+	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
+		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
+			if (config[key] != undefined) out[key](config[key]);
+		});
+
+	//override of some special getters/setters
+	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.psClassToFillStyle_ = getColorLegend(out.psColorFun_,out.psColors_); return out; };
+	out.psThreshold = function (v) { if (!arguments.length) return out.psThreshold_; out.psThreshold_ = v; out.psClasses(v.length + 1); return out; };
 
 	//@override
 	out.updateClassification = function () {
-		//get max value
-		const maxValue = out.statData().getMax();
-		//define classifier
-		out.classifier(Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleSqrt"])().domain([out.psMinValue_, maxValue]).range([out.psMinSize_, out.psMaxSize_]));
+
+		//define classifiers for sizing and colouring (out.classifierSize_ & out.classifierColor_)
+		defineClassifiers();
+
+		if (out.classifierColor_) {
+			//assign color class to each symbol, based on their value
+			// at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
+			out.svg().selectAll(".symbol")
+				.attr("ecl", function (rg) {
+					const sv = out.statData("color").get(rg.properties.id);
+					if (!sv) return "nd";
+					const v = sv.value;
+					if (v != 0 && !v) return "nd";
+					let c = +out.classifierColor()(+v);
+					return c
+				})
+		}
+
 		return out;
 	};
 
 
+	function defineClassifiers() {
+		//simply return the array [0,1,2,3,...,nb-1]
+		const getA = function (nb) { return [...Array(nb).keys()]; }
+
+		// size
+		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
+		out.classifierSize(Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleSqrt"])().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
+
+		// colour
+		if (out.statData("color")) {
+			//use suitable classification type for colouring
+			if (out.psClassifMethod_ === "quantile") {
+				//https://github.com/d3/d3-scale#quantile-scales
+				const domain = out.statData("color").getArray();
+				const range = getA(out.psClasses_);
+				out.classifierColor(Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleQuantile"])().domain(domain).range(range));
+			} else if (out.psClassifMethod_ === "equinter") {
+				//https://github.com/d3/d3-scale#quantize-scales
+				const domain = out.statData("color").getArray();
+				const range = getA(out.psClasses_);
+				out.classifierColor(Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleQuantize"])().domain([min(domain), max(domain)]).range(range));
+				if (out.makeClassifNice_) out.classifierColor().nice();
+			} else if (out.psClassifMethod_ === "threshold") {
+				//https://github.com/d3/d3-scale#threshold-scales
+					out.psClasses(out.psThreshold().length + 1);
+					const range = getA(out.psClasses_);
+					out.classifierColor(Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleThreshold"])().domain(out.psThreshold()).range(range));
+			}
+
+		}
+
+	}
 
 	//@override
 	out.updateStyle = function () {
 		//see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
 
-		if (out.psShape_ == "bar") {
-			let rect = out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("rect");
+		//define style per class
+		if (!out.psClassToFillStyle())
+			out.psClassToFillStyle(getColorLegend(out.psColorFun_,out.psColors_))
 
-			rect.style("fill", out.psFill())
-				.style("fill-opacity", out.psFillOpacity())
-				.style("stroke", out.psStroke())
-				.style("stroke-width", out.psStrokeWidth())
+		// define symbol then apply styling
+		let symb;
+		if (out.psCustomPath_) {
+			//custom path
+			symb = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg=>{
+				//calculate size
+				const v = out.statData("size") ? out.statData("size") : out.statData();
+				const sv = v.get(rg.properties.id);
+				let size;
+				if (!sv || !sv.value) {
+					size = 0;
+				} else {
+					size = out.classifierSize_(+sv.value);
+				}
+			return `translate(${out.psOffset_.x},${out.psOffset_.y}) scale(${size})`})
+		} else if (out.psShape_ == "bar") {
+			// vertical bars
+			symb = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("rect")
 				.attr("width", out.psBarWidth_)
+				//for vertical bars we scale the height attribute using the classifier
 				.attr("height", function (rg) {
-					const sv = out.statData().get(rg.properties.id);
+					const s = out.statData("size") ? out.statData("size") : out.statData();
+					const sv = s.get(rg.properties.id);
 					if (!sv || !sv.value) {
 						return 0;
 					}
-					let v = out.classifier()(+sv.value);
+					let v = out.classifierSize_(+sv.value);
 					return v;
 				})
 				.attr('transform', function () {
 					let bRect = this.getBoundingClientRect();
-					//console.log(bRect)
 					return `translate(${-this.getAttribute('width') / 2}` +
 						`, -${this.getAttribute('height')})`;
 				})
 				.transition().duration(out.transitionDuration())
 		} else {
 			// d3.symbol symbols
-			// circle, cross, star, triangle, diamond, square, wye
-
-			let path = out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("path");
-
-			path.attr("d", rg => {
-				const sv = out.statData().get(rg.properties.id);
+			// circle, cross, star, triangle, diamond, square, wye or custom
+			symb = out.svg().select("#g_ps").selectAll("g.symbol")
+				.append("path").attr("class", "ps").attr("d", rg => {
+				const v = out.statData("size") ? out.statData("size") : out.statData();
+				const sv = v.get(rg.properties.id);
 				let size;
+				//calculate size
 				if (!sv || !sv.value) {
 					size = 0;
 				} else {
-					size = out.classifier()(+sv.value);
+					size = out.classifierSize_(+sv.value);
 				}
+				//apply size to shape
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()
 				} else {
 					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
-					return Object(d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbol"])().type(symbolType).size(size * size)()
+					return Object(d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbol"])().type(symbolType).size(size * size)()
 				}
 			})
-				.style("fill", out.psFill())
-				.style("fill-opacity", out.psFillOpacity())
-				.style("stroke", out.psStroke())
-				.style("stroke-width", out.psStrokeWidth())
 		}
+
+		//common methods
+		symb.style("fill-opacity", out.psFillOpacity())
+		.style("stroke", out.psStroke())
+		.style("stroke-width", out.psStrokeWidth())
+		.style("fill", function () {
+			// use colour classifier when applicable
+			if (out.classifierColor_) {
+				//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+				var ecl = Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this.parentNode).attr("ecl");
+				if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
+				let color = out.psClassToFillStyle_(ecl, out.psClasses_);
+				return color;
+			} else {
+				return out.psFill();
+			}
+		})
 		return out;
 	};
 
 
 	//@override
-	out.getLegendConstructor = function() {
-		return _legend_legend_proportional_symbols__WEBPACK_IMPORTED_MODULE_2__["legend"];
+	out.getLegendConstructor = function () {
+		return _legend_legend_proportional_symbols__WEBPACK_IMPORTED_MODULE_4__["legend"];
 	}
 
 	return out;
+}
+
+//build a color legend object
+const getColorLegend = function (colorFun, colorArray) {
+	colorFun = colorFun || d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_2__["interpolateOrRd"];
+	if (colorArray) {
+		return function (ecl, clnb) { return colorArray[ecl]; }
+	}
+	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
 
 /**
 * @description give a d3 symbol from a shape name
 */
 const symbolsLibrary = {
-	cross: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolCross"],
-	square: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolSquare"],
-	diamond: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolDiamond"],
-	triangle: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolTriangle"],
-	star: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolStar"],
-	wye: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolWye"],
-	circle: d3_shape__WEBPACK_IMPORTED_MODULE_3__["symbolCircle"],
+	cross: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolCross"],
+	square: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolSquare"],
+	diamond: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolDiamond"],
+	triangle: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolTriangle"],
+	star: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolStar"],
+	wye: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolWye"],
+	circle: d3_shape__WEBPACK_IMPORTED_MODULE_5__["symbolCircle"],
 }
+
+
+/**
+ * Specific function for tooltip text.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tooltipTextFunPs = function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+
+	//stat 1 value
+	const v1 = map.statData("size") ? map.statData("size") : map.statData();
+	const sv1 = v1.get(rg.properties.id);
+	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
+	else {
+		buf.push(sv1.value);
+		//unit 1
+		const unit1 = v1.unitText();
+		if (unit1) buf.push(" " + unit1);
+	}
+	buf.push("<br>");
+
+
+	//stat 2 value
+	if (map.statData("color")) {
+		const sv2 = map.statData("color").get(rg.properties.id);
+		if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
+		else {
+			buf.push(sv2.value);
+			//unit 2
+			const unit2 = map.statData("color").unitText();
+			if (unit2) buf.push(" " + unit2);
+		}
+	}
+
+	return buf.join("");
+};
 
 
 /***/ }),
