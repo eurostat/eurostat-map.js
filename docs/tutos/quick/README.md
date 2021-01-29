@@ -57,11 +57,27 @@ The new map appears:
 
 For each map characteristic to change, insert a line with the **name** of the characteristic (such as ```.title```) and the desired **value** (such ```"Population in Europe"```).
 
+List of caracteristics is described on the API reference.
+
 The most important characteristic is of course the statistical data to show on the map, as described in the next section.
 
 ### Choose the statistics
 
 TODO: explain how to find data from Eurostat data. +CSV case
+
+Get code of the database
+https://ec.europa.eu/eurostat/web/main/data/database
+example
+
+Use query builder
+https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder
+
+get url
+transform into:
+
+
+
+CSV case ?
 
 
 
