@@ -66,7 +66,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//countries
 	out.cntrgFillStyle_ = "#eeeeee";
 	out.cntrgSelFillSty_ = undefined; //"darkgray";
-	out.cntbnStroke_ = { def: "none", co: "#1f78b4" }; //{ def: "#777", co: "#1f78b4" }
+	out.cntbnStroke_ = { def: "none", co: "#ccc" }; //{ def: "#777", co: "#1f78b4" }
 	out.cntbnStrokeWidth_ = { def: 0, co: 1 } //{ def: 1, co: 1 }
 	//sea
 	out.seaFillStyle_ = "white";//"#b3cde3";
