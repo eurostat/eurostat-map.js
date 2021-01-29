@@ -64,19 +64,19 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
 	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
 	//countries
-	out.cntrgFillStyle_ = "lightgray";
-	out.cntrgSelFillSty_ = "darkgray";
-	out.cntbnStroke_ = { def: "#777", co: "#1f78b4" };
-	out.cntbnStrokeWidth_ = { def: 1, co: 1 };
+	out.cntrgFillStyle_ = "#eeeeee";
+	out.cntrgSelFillSty_ = undefined; //"darkgray";
+	out.cntbnStroke_ = { def: "none", co: "#1f78b4" }; //{ def: "#777", co: "#1f78b4" }
+	out.cntbnStrokeWidth_ = { def: 0, co: 1 } //{ def: 1, co: 1 }
 	//sea
-	out.seaFillStyle_ = "#b3cde3";
+	out.seaFillStyle_ = "white";//"#b3cde3";
 	out.drawCoastalMargin_ = true;
-	out.coastalMarginColor_ = "white";
-	out.coastalMarginWidth_ = 12;
-	out.coastalMarginStdDev_ = 12;
+	out.coastalMarginColor_ = "#c2daed";
+	out.coastalMarginWidth_ = 5;
+	out.coastalMarginStdDev_ = 2;
 	//graticule
 	out.drawGraticule_ = true;
-	out.graticuleStroke_ = "gray";
+	out.graticuleStroke_ = "lightgray";
 	out.graticuleStrokeWidth_ = 1;
 
 	//default copyright and disclaimer text
@@ -361,13 +361,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw country regions
-		if (cntrg)
-			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
+		if (cntrg) {
+			const a = zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "cntrg")
 				.style("fill", out.cntrgFillStyle_)
-				.on("mouseover", function (rg) {
-					select(this).style("fill", out.cntrgSelFillSty_);
+			if(out.cntrgSelFillSty())
+				a.on("mouseover", function (rg) {
+					select(this).style("fill", out.cntrgSelFillSty());
 					if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
@@ -375,6 +376,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					select(this).style("fill", out.cntrgFillStyle_);
 					if (tooltip) tooltip.mouseout();
 				});
+		}
 
 		//draw NUTS regions
 		if (nutsRG)
