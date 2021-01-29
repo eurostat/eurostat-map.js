@@ -151,7 +151,7 @@ export const map = function (config) {
 				} else {
 					size = out.classifierSize_(+sv.value);
 				}
-			return `translate(${out.psOffset_.x},${out.psOffset_.y}) scale(${size})`})
+			return `translate(${out.psOffset_.x *size},${out.psOffset_.y*size}) scale(${size})`})
 		} else if (out.psShape_ == "bar") {
 			// vertical bars
 			symb = out.svg().select("#g_ps").selectAll("g.symbol")
