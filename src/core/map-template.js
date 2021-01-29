@@ -35,7 +35,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//map title
 	out.title_ = "";
-	out.titleFontSize_ = 25;
+	out.titleFontSize_ = 30;
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
@@ -64,7 +64,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
 	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
 	//countries
-	out.cntrgFillStyle_ = "#eeeeee";
+	out.cntrgFillStyle_ = "#f5f5f5";
 	out.cntrgSelFillSty_ = undefined; //"darkgray";
 	out.cntbnStroke_ = { def: "none", co: "#ccc" }; //{ def: "#777", co: "#1f78b4" }
 	out.cntbnStrokeWidth_ = { def: 0, co: 1 } //{ def: 1, co: 1 }
@@ -477,8 +477,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
 
-				.style("stroke-width", 3)
-				.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				//.style("stroke-width", 3)
+				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
 				.style("stroke-linejoin", "round")
 				.style("paint-order", "stroke")
 		}
