@@ -25,6 +25,7 @@ export const legend = function (map, config) {
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
 		shapeOffset:{x:0, y:0},
+		shapeFill: "white",
 		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined
@@ -37,7 +38,6 @@ export const legend = function (map, config) {
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
-		shapeSize: 13, //the distance between the legend box elements to the corresponding text label
 		labelOffset: 25, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined, // user-defined d3 format function	
@@ -76,7 +76,6 @@ export const legend = function (map, config) {
 
 		//set font family
 		lgg.style("font-family", out.fontFamily);
-
 
 		// legend for 
 		if (m.classifierSize_) {
@@ -145,11 +144,7 @@ export const legend = function (map, config) {
 				.attr("transform", `translate(${x},${y})`)
 				.style("fill", d => {
 					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-					if (!m.classifierColor_) {
-						return m.psFill()
-					} else {
-						return "none"
-					}
+						return config.shapeFill ? config.shapeFill:m.psFill()
 				})
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
@@ -208,7 +203,7 @@ export const legend = function (map, config) {
 		for (let i = 0; i < clnb; i++) {
 
 			//the vertical position of the legend element
-			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize  + (config.titlePadding * 2) : 0) + i * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize  + (config.titlePadding * 2) : 0) + i * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//the class number, depending on order
 			const ecl = out.ascending ? i : clnb - i - 1;
@@ -223,7 +218,7 @@ export const legend = function (map, config) {
 				.attr("fill", m.psClassToFillStyle()(ecl, clnb))
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
-				.style("stroke-width", m.psStrokeWidth())
+				.style("stroke-width", 1)
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				// .append("path")
 				// .attr('d', d)
@@ -275,7 +270,7 @@ export const legend = function (map, config) {
 
 		//'no data' legend box
 		if (config.noData) {
-			const y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + m.psClasses_ * (config.shapeSize + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+			const y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + (config.titlePadding * 2) : 0) + m.psClasses_ * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//shape
 			// let shape = getShape();
@@ -286,8 +281,7 @@ export const legend = function (map, config) {
 				.attr("fill", m.psNoDataFillStyle())
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
-				.style("stroke-width", m.psStrokeWidth())
-				.attr("stroke", "black").attr("stroke-width", 0.5)
+				.attr("stroke-width", 1)
 				// .append("path")
 				// .attr('d', d)
 				.append("rect")

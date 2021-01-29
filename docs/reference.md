@@ -204,6 +204,14 @@ eurostatmap.map("ps")
 	.psFill("red")
 	.build();
 ```
+Along with data-driven sizing, it is possible to colour the symbols according to a statistical variable as well. This is achieved by adding the "size" and "color" strings to their corresponding stat methods. For example:
+
+```javascript
+    //GDP per inhabitant (colour of symbol)
+    .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
+    // Total GDP (size of symbol)
+    .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
+```
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
@@ -230,14 +238,48 @@ As proportional symbol maps allow for two visual variables (size and colour), a 
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **cellNb** | int | *4* | Number of legend elements. |
-| **ascending** | String | *true* | The legend cells order. Set to false to invert. |
-| **shapePadding** | number | *5* | The distance between consecutive legend elements |
-| **labelFontSize** | int | *13* | The label font size. |
-| **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
-| **labelOffset** | int | *5* | The distance between the legend box elements to the corresponding text label. |
-| **format** | Function | *format(",." + labelDecNb + "r")* | D3 format function which formats the labels. |
+| **ascending** | Boolean | *true* | The order of the legend elements. Set to false to invert. |
+| **legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
+| **labelFontSize** | Number | *12* | The font size of the legend labels |
+| **sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |
+| **colorLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol colours |
 
+**sizeLegend**
+
+The following parameters are properties of the sizeLegend object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body |
+| **cellNb** | Number | *4* | Number of elements in the legend |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **shapeOffset** | Object | *{x:0, y:0}* | The offset applied to the shape elements in the legend. Applicable for use with psCustomPath() |
+| **shapeFill** | String | *white* | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used.  |
+| **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
+| **labelDecNb** | Number | *0* | The number of decimals for each label.  |
+| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+
+**colorLegend**
+
+The following parameters are properties of the colorLegend object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body |
+| **shapeWidth** | Number | *13* | The width of the legend box elements |
+| **shapeHeight** | Number | *13* | The height of the legend box elements |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
+| **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
+| **labelDecNb** | Number | *0* | The number of decimals for each label.  |
+| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+| **noData** | Boolean | *true* | Show a legend element that represents "no data" values. |
+| **noDataText** | String | *No data* | No data element label text. |
+| **sepLineLength** | Number | *17* | The length of the separation line between classes. |
+| **sepLineStroke** | Number | *black* | The colour of the separation line between classes. |
+| **sepLineStrokeWidth** | Number | *1* | The width of the separation line between classes. |
 
 ## Categorical map
 
