@@ -63,13 +63,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsrgSelFillSty_ = "purple";
 	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
 	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
-	//countries
-	out.cntrgFillStyle_ = "#f5f5f5";
-	out.cntrgSelFillSty_ = undefined; //"darkgray";
-	out.cntbnStroke_ = { def: "none", co: "#ccc" }; //{ def: "#777", co: "#1f78b4" }
-	out.cntbnStrokeWidth_ = { def: 0, co: 1 } //{ def: 1, co: 1 }
+	//land
+	out.landFillStyle_ = "#f5f5f5";
+	out.landStroke_ = "#ccc";
+	out.landStrokeWidth_ = 1
 	//sea
-	out.seaFillStyle_ = "white";//"#b3cde3";
+	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
 	out.coastalMarginColor_ = "#c2daed";
 	out.coastalMarginWidth_ = 5;
@@ -362,20 +361,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//draw country regions
 		if (cntrg) {
-			const a = zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
+			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "cntrg")
-				.style("fill", out.cntrgFillStyle_)
-			if(out.cntrgSelFillSty())
-				a.on("mouseover", function (rg) {
-					select(this).style("fill", out.cntrgSelFillSty());
-					if (tooltip) tooltip.mouseover("<b>" + rg.properties.na + "</b>");
-				}).on("mousemove", function () {
-					if (tooltip) tooltip.mousemove();
-				}).on("mouseout", function () {
-					select(this).style("fill", out.cntrgFillStyle_);
-					if (tooltip) tooltip.mouseout();
-				});
+				.style("fill", out.landFillStyle())
 		}
 
 		//draw NUTS regions
@@ -404,8 +393,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path").data(cntbn)
 				.enter().append("path").attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.cntbnStroke_.co : out.cntbnStroke_.def })
-				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.cntbnStrokeWidth_.co : out.cntbnStrokeWidth_.def });
+				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
+				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -617,7 +606,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		mt.tooltipText_ = null;*/
 
 		//copy template attributes
-		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntrgSelFillSty_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
 			"labelFill_", "labelOpacity_", "labelFontSize_", "labelFontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 
