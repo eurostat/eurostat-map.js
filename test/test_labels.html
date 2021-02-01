@@ -9,7 +9,7 @@
 <body>
     <svg id="map"></svg>
     <svg id="map1"></svg>
-    <script src="../build/eurostatmap.min.js"></script>
+    <script src="../build/eurostatmap.js"></script>
     <script src="https://d3js.org/d3-color.v2.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
@@ -56,8 +56,6 @@
             .seaFillStyle('aliceblue')
             .drawCoastalMargin(false)
             .nutsbnStroke({0:"black", 1:"grey", 2:"grey", 3:"grey", oth:"lightgrey", co:"black"})
-            .cntrgFillStyle("#f4f4f4")
-            .cntbnStroke({def:"lightgrey", co:"lightgrey"})
             .graticuleStroke("lightgrey")
             .graticuleStrokeWidth(0.4)
             .labelling(true)
