@@ -347,7 +347,7 @@ eurostatmap.map("chbi")
 | *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
 | *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
 | *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
-| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
@@ -413,7 +413,7 @@ eurostatmap.map("scomp")
 | *map*.**catColors**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. If not specified, different colors are proposed. |
 | *map*.**catLabels**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. |
 | *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
-| *map*.**noDataFillStyle**([*value*]) |  | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**noDataFillStyle**([*value*]) |  | *"lightgray"* | The fill style to be used for regions where no data is available. |
 | *map*.**pieChartRadius**([*value*]) |  | *40* | Radius of the pie chart to show in the tooltip. |
 | *map*.**pieChartInnerRadius**([*value*]) |  | *15* | Inner radius of the pie chart to show in the tooltip. |
 
@@ -478,8 +478,8 @@ map = eurostatmap.map(...)
 | **boxMargin** | number | *10* | The legend box margin, in pixel. |
 | **boxPadding** | number | *7* | The legend box padding, in pixel. |
 | **boxCornerRad** | number | *7* | The legend box corner radius, in pixel. |
-| **boxFill** | color | *"#eeeeee"* | The legend box fill style. |
-| **boxOpacity** | number | *0.5* | The legend box opacity, from 0 to 1. |
+| **boxFill** | color | *"white"* | The legend box fill style. |
+| **boxOpacity** | number | *0.7* | The legend box opacity, from 0 to 1. |
 | **fontFamily** | font | *"Helvetica, Arial, sans-serif"* | The legend font family. |
 | **fontFill** | Color | *"black"* | The legend font color. |
 | **title** | Text | *""* | The legend title. |
