@@ -29,19 +29,13 @@
     <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
     <script>
-      let format = d3.format(".2s");
-
-      //Custom Semi Circle, accurate center and size
-      let customShapeCircle = {
-        draw: function (context, size) {
-          let r = Math.sqrt((2 * size) / Math.PI);
-          let orgin = (4 * r) / (3 * Math.PI); //the orgin of the circle, not of the symbol
-          context.arc(0, -orgin, r, Math.PI, 2 * Math.PI, true);
-          context.closePath();
-        },
-      };
-
-      let customCircle = d3.symbol().type(customShapeCircle);
+        //set legend labels locale
+        d3.formatDefaultLocale({  
+            "decimal": ",",
+            "thousands": " ",
+            "grouping": [3],
+            "currency": ["", "€"]
+        })
 
       // for optimized (single path) svg icons check out https://materialdesignicons.com/
       let customPath = "M32.41,28.414c-4.193,0.706-6.717,3.079-6.719,3.08c0.77-3.909,1.76-6.55,2.206-7.626   c3.055-0.57,10.352-2.229,10.271-12.682c-10.406,0.188-11.143,8.994-11.102,11.904c-1.237,1.697-2.196,3.707-2.94,5.83   c-1.283-3.52-1.49-7-1.508-8.667c1.955-1.983,6.456-6.933,1.053-14.563c-6.805,4.924-4.248,11.207-2.566,13.9   C20.464,28.407,23.324,32,23.324,32h0.002c-0.266,1-0.492,1.779-0.686,2.774c-0.004-0.005-2.012-3.212-5.094-5.116   c-1.158-2.195-4.041-6.902-11.471-4.588c2.193,6.79,7.732,6.328,10.385,5.678c0.002,0.002,4.678,2.908,5.686,6.851   c-0.699,5.218-0.551,9.435-0.551,9.435c0,1.934,3.195,2.151,3.195-0.449c-0.318-4.706-0.063-8.839,0.424-12.265   c2.44-3.273,7.975-4.317,7.975-4.317l0,0c6.025,4.43,11.188-1.902,11.188-1.902C42.986,27.165,38.205,23.144,32.41,28.414z"
@@ -98,7 +92,7 @@
           },
           colorLegend: {
             title: "GDP per inhabitant (EUR)",
-            labelFormat: d3.format(".0f"),
+            labelFormat: d3.format(",.2r"),
           },
           legendSpacing:0
         })
@@ -106,6 +100,18 @@
         .build();
 
       // semi-circles, farmland
+            //Custom Semi Circle, accurate center and size
+            let customShapeCircle = {
+        draw: function (context, size) {
+          let r = Math.sqrt((2 * size) / Math.PI);
+          let orgin = (4 * r) / (3 * Math.PI); //the orgin of the circle, not of the symbol
+          context.arc(0, -orgin, r, Math.PI, 2 * Math.PI, true);
+          context.closePath();
+        },
+      };
+
+      let customCircle = d3.symbol().type(customShapeCircle);
+
       eurostatmap
         .map("ps")
         .svgId("map1")
@@ -215,7 +221,7 @@
             title: "Total nights spent",
             titlePadding: -5,
             cellNb: 3,
-            labelFormat: format,
+            labelFormat: d3.format(".2s"),
             labelOffset: -10
           },
           colorLegend: {
@@ -249,7 +255,7 @@
           sizeLegend: {
             title: "Total population",
             cellNb: 3,
-            labelFormat: format,
+            labelFormat: d3.format(",.2r"),
           },
           colorLegend: {
             title: "Inhabitants per km²"
