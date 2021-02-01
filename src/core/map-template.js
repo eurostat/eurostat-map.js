@@ -436,6 +436,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
+			if (nutsRG) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
@@ -456,6 +457,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					select(this).style("fill", out.psFill_);
 					if (tooltip) tooltip.mouseout();
 				});
+			}
 		}
 
 		// add geographical labels to map

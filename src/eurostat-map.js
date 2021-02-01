@@ -3,6 +3,7 @@ import * as mapps from './maptypes/map-proportional-symbols';
 import * as mapct from './maptypes/map-categorical';
 import * as mapchbi from './maptypes/map-choropleth-bivariate';
 import * as mapscomp from './maptypes/map-stripe-composition';
+import * as mappie from './maptypes/map-piecharts';
 import * as mt from './core/stat-map';
 
 /**
@@ -23,6 +24,8 @@ import * as mt from './core/stat-map';
 	if(type == "chbi") return mapchbi.map(config);
 	//stripes composition
 	if(type == "scomp") return mapscomp.map(config);
+	//proportional pie charts
+	if(type == "pie") return mappie.map(config);
 	//add new map types here
 	//if(type == "XX") return mapXX.map(config);
 
