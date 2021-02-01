@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <!-- <svg id="basic"></svg> -->
+     <svg id="basic"></svg>
     <svg id="map"></svg>
 
     <svg id="map1"></svg>
@@ -48,14 +48,13 @@
       let euroPath = "m 224.99996,16.22698 -8.11342,36.41161 q -24.14255,-19.78892 -54.61741,-19.78892 -41.3588,0 -65.00658,23.74671 -23.647774,23.7467 -28.397115,53.23215 l 134.960355,0 -5.14505,26.71508 -132.981532,0 -0.395848,7.71771 0.395848,18.20566 127.242642,0 -5.14505,26.71508 -117.941954,0 q 7.519719,40.17154 32.552754,59.06997 25.03303,18.89844 56.49745,18.89844 37.20302,0 57.98149,-19.59107 l 0,40.9631 Q 192.34828,300 162.26913,300 53.034301,300 30.474864,189.18206 l -30.474864,0 5.738751,-26.71508 20.580475,0 q -0.395708,-4.74934 -0.395708,-17.80995 l 0,-8.11342 -25.923518,0 5.738751,-26.71508 23.152999,0 Q 39.181988,55.21112 76.583149,27.60556 113.98417,0 163.06069,0 199.868,0 224.99996,16.22698 z"
       let tractorPath = "M5,4V11.26C3.2,11.9 2,13.6 2,15.5C2,18 4,20 6.5,20C8.79,20 10.71,18.28 10.97,16H15.17C15.06,16.32 15,16.66 15,17A3,3 0 0,0 18,20A3,3 0 0,0 21,17C21,16.66 20.94,16.32 20.82,16H22V13C22,11.89 21.11,11 20,11H15.04L13.65,4H5M7,6H12L13,11V14H10.74C10.16,12.38 8.71,11.23 7,11.03V6M6.5,13.25A2.25,2.25 0 0,1 8.75,15.5A2.25,2.25 0 0,1 6.5,17.75A2.25,2.25 0 0,1 4.25,15.5A2.25,2.25 0 0,1 6.5,13.25M18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5Z"
       
-      // basic example
-      // eurostatmap.map("ps")
-      // .svgId("basic")
-      // .nutsLvl(1)
-      // .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
-      // .psMaxSize(25)
-      // .psFill("red")
-      // .build();
+      // basic barebones example
+      eurostatmap.map("ps")
+      .svgId("basic")
+      .nutsLvl(1)
+      .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
+      .legend({ x:600, y: 40, title: "Population" })
+      .build();
   
       // custom path
       eurostatmap
@@ -112,8 +111,8 @@
         .title("Organic Farmland, 2018")
         .nutsLvl(0)
         //.stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
-        .stat("size",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"HA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
-        .stat("color",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"PC_UAA",agprdmet:"TOTAL" }, unitText: "inhabitants" })
+        .stat("size",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"HA",agprdmet:"TOTAL" }, unitText:"HA of organic arable land" })
+        .stat("color",{ eurostatDatasetCode: "org_cropar", filters: { crops:"ARA", time: 2018, unit:"PC_UAA",agprdmet:"TOTAL" }, unitText:"% of total agricultural area" })
         .psCustomShape(customCircle)
         .psMaxSize(55)
         .psColorFun(d3.interpolateGreens)
@@ -237,9 +236,12 @@
         .psShape("bar") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
         .psFill("#35aeff")
         .psMaxSize(70)
+        .psBarWidth(20)
+        .psFillOpacity(1)
         .psStroke("black")
         .psStrokeWidth("1")
         .tooltipShowFlags("long")
+        .psColorFun(d3.interpolateCividis)
         .legend({
           x:610,
           boxPadding: 15,

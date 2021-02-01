@@ -14,7 +14,7 @@ export const legend = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map);
 
-	out.ascending = true; //the order of the legend elements. Set to false to invert.
+	out.ascending = false; //the order of the legend elements. Set to false to invert.
 	out.legendSpacing = 35; //spacing between color & size legends (if applicable)
 	out.labelFontSize = 12; //the font size of the legend labels
 
