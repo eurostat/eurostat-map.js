@@ -241,7 +241,7 @@ As proportional symbol maps allow for two visual variables (size and colour), a 
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **ascending** | Boolean | *true* | The order of the legend elements. Set to false to invert. |
+| **ascending** | Boolean | *false* | The order of the legend elements. Set to true to invert. |
 | **legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
 | **labelFontSize** | Number | *12* | The font size of the legend labels |
 | **sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |

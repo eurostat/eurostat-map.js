@@ -23,9 +23,9 @@ export const map = function (config) {
 	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 10; //for vertical bars
 	out.psMinValue_ = 0;
-	out.psFill_ = "#B45F04"; //same fill for all symbols
+	out.psFill_ = "#2d50a0"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
-	out.psStroke_ = "#fff";
+	out.psStroke_ = "#000";
 	out.psStrokeWidth_ = 0.3;
 	//colour
 	out.psClasses_ = 5; // number of classes to use for colouring
