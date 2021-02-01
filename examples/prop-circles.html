@@ -10,17 +10,16 @@
 <body>
     <svg id="map"></svg>
     <script src="https://unpkg.com/eurostat-map"></script>
+
     <script>
-        eurostatmap.map("ps")
-            .title("Population in Europe, 2019")
-            .width(800)
-            .stat( { eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2019 }, unitText: "inhabitants" } )
-            .psMaxSize(25)
-            .psStrokeWidth(0.3)
-            .tooltipShowFlags("long")
-            //.insets("default")
-            .legend({ x:600, y: 40, title: "Population", cellNb: 6, labelDecNb: 0 })
-            .build();
+
+     // basic barebones proportional circles example
+     eurostatmap.map("ps")
+      .nutsLvl(1)
+      .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
+      .legend({ x:600, y: 40 })
+      .psShape("circle") // try: cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
+      .build();
     </script>
 </body>
 
