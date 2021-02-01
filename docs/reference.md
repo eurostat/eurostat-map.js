@@ -192,6 +192,7 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 
 ## Proportional symbol map
 
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pc_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
 
 A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
