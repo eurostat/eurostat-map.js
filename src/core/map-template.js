@@ -41,13 +41,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 
-	//labelling (country names and geographical features)
-	out.labelling_ = false;
-	out.labelFill_ = { "seas": "#003399", "countries": "#383838" };
-	out.labelOpacity_ = { "seas": 1, "countries": 0.8 };
-	out.labelFontSize_ = { "seas": 12, "countries": 12 };
-	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
-
 	//map frame
 	out.frameStroke_ = "#222";
 	out.frameStrokeWidth_ = 2;
@@ -77,6 +70,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.drawGraticule_ = true;
 	out.graticuleStroke_ = "lightgray";
 	out.graticuleStrokeWidth_ = 1;
+
+	//labelling (country names and geographical features)
+	out.labelling_ = false;
+	out.labelFill_ = { "seas": "#003399", "countries": "#383838" };
+	out.labelOpacity_ = { "seas": 1, "countries": 0.8 };
+	out.labelFontSize_ = { "seas": 12, "countries": 12 };
+	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";

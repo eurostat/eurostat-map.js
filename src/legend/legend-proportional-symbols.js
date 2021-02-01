@@ -14,7 +14,7 @@ export const legend = function (map, config) {
 	//build generic legend object for the map
 	const out = lg.legend(map);
 
-	out.ascending = true; //the order of the legend elements. Set to false to invert.
+	out.ascending = false; //the order of the legend elements. Set to false to invert.
 	out.legendSpacing = 35; //spacing between color & size legends (if applicable)
 	out.labelFontSize = 12; //the font size of the legend labels
 
@@ -144,7 +144,7 @@ export const legend = function (map, config) {
 				.attr("transform", `translate(${x},${y})`)
 				.style("fill", d => {
 					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-						return config.shapeFill ? config.shapeFill:m.psFill()
+						return m.classifierColor_ ? config.shapeFill : m.psFill_
 				})
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())

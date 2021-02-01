@@ -50,7 +50,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 | *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
 | *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto* | The geographical coordinates of the position where to center the map view. These coordinates are expected to be expressed in the map projection. If not specified, a position is computed automatically. |
 | *map*.**pixSize**([*value*]) | number | *auto* | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, a value is computed automatically to show the map extent. |
-| *map*.**zoomExtent**([*value*]) | Array | *null* | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
+| *map*.**zoomExtent**([*value*]) | Array | *undefined* | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 
 ## Statistical data
 
@@ -219,11 +219,12 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | -------- | ------ | ---------- | ----------- |
 | *map*.**psShape**([*value*]) | string | *circle* | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom |
 | *map*.**psCustomShape**([*value*]) | Object | null | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT |
-| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. |
+| *map*.**psCustomPath**([*value*]) | Object | null | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. For optimized (single path) svg icons check out https://materialdesignicons.com/.  |
+| *map*.**psOffset**([*value*]) | Object | {x:0,y:0} | Defines the offsets to apply to the symbols on the map. Only applicable to symbols where custom paths are specified ( through psCustomPath) |
 | *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it. |
-| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size/scale of the symbol. |
+| *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size / scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
-| *map*.**psMinValue**([*value*]) | number | *0* | The minimum value of the range domain. |
+| *map*.**psMinValue**([*value*]) | number | *0* | The minimum size / scale of the symbol. |
 | *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol, for when a colour scheme is not defined. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
@@ -232,7 +233,7 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | *map*.**psColorFun**([*value*]) | function | *d3.interpolateOrRd* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
 | *map*.**psClassifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshold (see threshold method). |
 | *map*.**psThreshold**([*value*]) | Array | *[0]* | If *psClassifMethod = "threshold"*, the breaks of the classification. |
-| *map*.**psColours**([*value*]) | Array | null | If *psClassifMethod = "threshold"*, the colours of the classification that correspond with the threshold values. |
+| *map*.**psColours**([*value*]) | Array | null | The colours to be using data-driven colour. The number of colours specified in the array should match the number of classes (specified using psClasses()) |
 | *map*.**psNoDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
@@ -240,7 +241,7 @@ As proportional symbol maps allow for two visual variables (size and colour), a 
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **ascending** | Boolean | *true* | The order of the legend elements. Set to false to invert. |
+| **ascending** | Boolean | *false* | The order of the legend elements. Set to true to invert. |
 | **legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
 | **labelFontSize** | Number | *12* | The font size of the legend labels |
 | **sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |
@@ -435,7 +436,7 @@ Specify the map title, its style and position.
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**title**([*value*]) | String | "" | The title text. |
-| *map*.**titleFontSize**([*value*]) | int | 25 | The title font size. |
+| *map*.**titleFontSize**([*value*]) | int | 30 | The title font size. |
 | *map*.**titleFill**([*value*]) | String | "black" | The title text color. |
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontFamily**([*value*]) | String | "Helvetica, Arial, sans-serif" | The title font. |
@@ -506,17 +507,16 @@ Specify specific map styles.
 | *map*.**nutsrgSelFillSty**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
 | *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
-| *map*.**cntrgFillStyle**([*value*]) | String | *"lightgray"* | The fill style of the countries. |
-| *map*.**cntrgSelFillSty**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
-| *map*.**cntbnStroke**([*value*]) | Object | *{def:"#777", co:"#1f78b4"}* | The stroke style of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**cntbnStrokeWidth**([*value*]) | Object | *{def:1, co:1}* | The stroke width of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**seaFillStyle**([*value*]) | String | *"#b3cde3"* | The fill style of the sea areas. |
+| *map*.**landFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the land area. |
+| *map*.**landStroke**([*value*]) | Color | *"#ccc"* | The stroke style of the land area. |
+| *map*.**landStrokeWidth**([*value*]) | Number | *1* | The stroke width of the land area. |
+| *map*.**seaFillStyle**([*value*]) | String | *"white"* | The fill style of the sea areas. |
 | *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
-| *map*.**coastalMarginColor**([*value*]) | String | *"white"* | The color of the coastal blurry margin. |
-| *map*.**coastalMarginWidth**([*value*]) | number | *12* | The width of the coastal blurry margin. |
-| *map*.**coastalMarginStdDev**([*value*]) | number | *12* | The standard deviation of the coastal blurry margin. |
+| *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
+| *map*.**coastalMarginWidth**([*value*]) | number | *5* | The width of the coastal blurry margin. |
+| *map*.**coastalMarginStdDev**([*value*]) | number | *2* | The standard deviation of the coastal blurry margin. |
 | *map*.**drawGraticule**([*value*]) | boolean | *true* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
-| *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
+| *map*.**graticuleStroke**([*value*]) | String | *"lightgray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 
 ## Labelling
