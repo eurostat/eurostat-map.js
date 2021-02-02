@@ -1,5 +1,5 @@
 import { scaleSqrt, scaleQuantile, scaleQuantize, scaleThreshold } from "d3-scale";
-import { select, arc, pie } from "d3";
+import { select, arc, pie, extent } from "d3";
 import { interpolateOrRd } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgpc from '../legend/legend-piecharts';
@@ -17,9 +17,13 @@ export const map = function (config) {
     out.pieMinRadius = 5;
     out.pieMaxRadius = 30;
 
-    //tooltip pie chart
+    // pie charts
     out.pieChartRadius_ = 10;
-    out.pieChartInnerRadius_ =1;
+    out.pieChartInnerRadius_ =0;
+
+        //tooltip pie chart
+        out.tooltipPieRadius_ = 60;
+        out.tooltipPieInnerRadius_ = 0;
 
     //colors - indexed by category code
     out.catColors_ = undefined;
@@ -32,6 +36,8 @@ export const map = function (config) {
     //style for no data regions
     out.noDataFillStyle_ = "darkgray";
 
+    out.sizeClassifier_ = null; //d3 scale for scaling pie sizes
+
     /**
      * Definition of getters/setters for all previously defined attributes.
      * Each method follow the same pattern:
@@ -39,13 +45,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_"]
+    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_","pieChartRadius_", "pieChartInnerRadius_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius"].forEach(function (key) {
+    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius","pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -139,10 +145,54 @@ export const map = function (config) {
 			//remove "default", if present
 			const index = statCodes.indexOf("default");
 			if (index > -1) statCodes.splice(index, 1);
-		}
+        }
+        
+
+        //define size scaling function
+        let domain = getDatasetMaxMin();
+        console.log(domain)
+        //out.sizeClassifier_ = d3.scaleSqrt().domain(domain).range([out.pieMinRadius_,out.pieMaxRadius_])
 
 		return out;
-	};
+    };
+    
+
+    /**
+     * @function getDatasetMaxMin
+     * @description gets the max and min totals of all datasets for each region. Used to define domain of pie size scaling function.
+     * @returns [min,max]
+     */
+    function getDatasetMaxMin() {
+
+        let totals = [];
+        let sel = out.svg().select("#g_ps").selectAll("g.symbol").data();
+
+        sel.forEach((rg)=>{
+            let id = rg.properties.id;
+            let sum = 0;
+            //get stat value for each category of the region. Compute the sum.
+            for (let i = 0; i < statCodes.length; i++) {
+    
+                //retrieve code and stat value
+                const sc = statCodes[i]
+                const s = out.statData(sc).get(id);
+    
+                //case when some data is missing
+                if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+                    if (out.showOnlyWhenComplete()) return undefined;
+                    else continue;
+                }
+                sum += s.value;
+            }
+            if (sum) {
+                totals.push(sum)
+            }   
+        })
+
+        let minmax = extent(totals);
+        return minmax;
+
+    }
 
     //@override
     out.updateStyle = function () {
@@ -189,7 +239,8 @@ export const map = function (config) {
             //make pie chart. See https://observablehq.com/@d3/pie-chart
             const pie_ = pie().sort(null).value(d => d.value)
             svg.append("g")
-                .attr("stroke", "darkgray")
+                .attr("stroke", "white")
+                .attr("stroke-width", "0.5px")
                 .selectAll("path")
                 .data(pie_(data))
                 .join("path")
@@ -228,6 +279,47 @@ export const map = function (config) {
     out.getLegendConstructor = function () {
         return lgpc.legend;
     }
+
+
+    //specific tooltip text function
+	out.tooltipText_ =  function (rg, map) {
+
+		//get tooltip
+		const tp = select("#tooltip_eurostat")
+
+		//clear
+		tp.html("")
+		tp.selectAll("*").remove();
+
+		//write region name
+		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+
+		//prepare data for pie chart
+		const data = []
+		const comp = getComposition(rg.properties.id);
+		for(const key in comp) data.push({ code:key, value:comp[key] })
+
+		//case of regions with no data
+		if(!data || data.length == 0) {
+			tp.append("div").html( out.noDataText() );
+			return;
+		};
+
+		//create svg for pie chart
+		const r = out.tooltipPieRadius_, ir = out.tooltipPieInnerRadius_;
+		const svg = tp.append("svg").attr("viewBox", [-r, -r, 2*r, 2*r]).attr("width", 2*r);
+
+		//make pie chart. See https://observablehq.com/@d3/pie-chart
+		const pie_ = pie().sort(null).value(d => d.value)
+		svg.append("g")
+		.attr("stroke", "darkgray")
+		.selectAll("path")
+		.data( pie_(data) )
+		.join("path")
+		.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray"} )
+		.attr("d", arc().innerRadius(ir).outerRadius(r) )
+    };
+    
 
     return out;
 }
