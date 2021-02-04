@@ -21,7 +21,7 @@
             //.nutsYear(2016)
             .statPie( { eurostatDatasetCode: "agr_r_animal", filters: { unit: "THS_HD", time: "2018" }, unitText: "thousand heads" },
                 "animals",
-                ["A2000", "A3100", "A4100", "A4200"], ["bovines", "pigs", "sheep", "goats"],
+                ["A2000", "A3100", "A4100", "A4200"], ["Bovines", "Pigs", "Sheep", "Goats"],
                 ["#9cccfc",
                 "#ffb2c6",
                 '#ffc97a',
@@ -29,11 +29,25 @@
             )
             .insets("default")
             .title("European livestock composition (2018)")
-            .legend({x:10, y:150, title: "Animals", boxOpacity: 0.8, boxFill: "white" })
+            .legend({
+                x:550, 
+                y:190, 
+                boxOpacity: 0.8, 
+                boxFill: "white",
+                titleFontWeight:"bold",
+                sizeLegend: {
+                    title: "Total livestock",
+                    values: [1000, 20000] 
+                },
+                colorLegend: {
+                    title: "Animal", 
+                }
+            })
 
             //styling
             .seaFillStyle("aliceblue")
             .nutsrgFillStyle("white")
+            .nutsrgSelFillSty("#9af6ce")
             .nutsbnStroke({0:"black", 1:"grey", 2:"grey", 3:"grey", oth:"grey", co:"black"})
             .nutsbnStrokeWidth({0:0.5, 1:0.4, 2:0.4, 3:0.4, oth:0.4, co:0.5})
             .cntrgFillStyle("#f4f4f4")

@@ -1,5 +1,5 @@
 import { scaleSqrt } from "d3-scale";
-import { select, arc, pie, extent, sum } from "d3";
+import { select, arc, pie, extent, sum, selectAll } from "d3";
 import { interpolateOrRd } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgpc from '../legend/legend-piecharts';
@@ -229,7 +229,9 @@ export const map = function (config) {
         //build and assign pie charts to the regions
         //collect nuts ids from g elements. TODO: find better way of getting IDs
         let nutsIds = [];
-        out.svg().select("#g_ps").selectAll("g.symbol").append("g").attr("id", rg => { nutsIds.push(rg.properties.id); return "pie_" + rg.properties.id; })
+        let s = out.svg().selectAll("#g_ps");
+        let sym = s.selectAll("g.symbol");
+        sym.append("g").attr("id", rg => { nutsIds.push(rg.properties.id); return "pie_" + rg.properties.id; })
         addPieChartsToMap(nutsIds);
 
         return out;
@@ -249,8 +251,9 @@ export const map = function (config) {
             };
 
             //create svg for pie chart
-            let node = select("#pie_" + nutsid);
-            const svg = node.append("g")
+            // can be more than one center point for each nuts ID (e.g. Malta when included in insets)
+            let nodes = selectAll("#pie_" + nutsid);
+            const svg = nodes.append("g")
 
             // define radius
             const r = out.sizeClassifier_(getRegionTotal(nutsid));
@@ -294,51 +297,39 @@ export const map = function (config) {
         const comp = getComposition(rg.properties.id);
         for (const key in comp) data.push({ code: key, value: comp[key] })
 
+
         //case of regions with no data
         if (!data || data.length == 0) {
             tp.append("div").html(out.noDataText());
             return;
         };
 
+
         //create svg for pie chart
         // set the dimensions and margins of the graph
-        var width = 150,
-            height = 150,
+        const width = 120,
+            height = 120,
             margin = 30
 
         // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-        var radius = Math.min(width, height) / 2 - margin
+        const radius = Math.min(width, height) / 2 - margin
 
-        // append the svg object to the div called 'my_dataviz'
-        var svg = tp
+        const svg = tp
             .append("svg")
             .attr("width", width)
             .attr("height", height)
             .append("g")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        // const svg = tp.append("svg")
-        // .attr("viewBox", [-radius, -radius, 3 * radius, 3 * radius])
-        // .attr("width", 3 * radius);
-
-        let units = out.statData(statCodes[0]).unitText();
-
         //make pie chart. See https://observablehq.com/@d3/pie-chart
         const pie_ = pie().sort(null).value(d => d.value)
-        // svg.append("g")
-        //     .attr("stroke", "black")
-        //     .selectAll("path")
-        //     .data(pie_(data))
-        //     .join("path")
-        //     .attr("fill", d => { return out.catColors()[d.data.code] || "lightgray" })
-        //     .attr("d", arc().innerRadius(ir).outerRadius(r))
-        // const arcGenerator = arc().innerRadius(ir).outerRadius(r)
-        var innerArc = arc()
-            .innerRadius(radius * 0.5)         // This is the size of the donut hole
+
+        const innerArc = arc()
+            .innerRadius(0) // This is the size of the donut hole
             .outerRadius(radius * 0.8)
 
         // Another arc that won't be drawn. Just for labels positioning
-        var outerArc = arc()
+        const outerArc = arc()
             .innerRadius(radius * 0.9)
             .outerRadius(radius * 0.9)
 
@@ -364,21 +355,23 @@ export const map = function (config) {
             .style("fill", "none")
             .attr("stroke-width", 1)
             .attr('points', function (d) {
-                var posA = innerArc.centroid(d) // line insertion in the slice
-                var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
-                var posC = outerArc.centroid(d); // Label position = almost the same as posB
-                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
-                posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
-                return [posA, posB, posC]
+                if (d.data.value > 0.02) {
+                    const posA = innerArc.centroid(d) // line insertion in the slice
+                    const posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+                    const posC = outerArc.centroid(d); // Label position = almost the same as posB
+                    const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+                    posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+                    return [posA, posB, posC]
+                }
             })
 
-        // Add the polylines between chart and labels:
+        // Add the labels:
         svg
             .selectAll('allLabels')
             .data(pieData)
             .enter()
             .append('text')
-            .text(function (d) { let n = (d.data.value * 100).toFixed(); if (!isNaN(n)) return n + "%"; })
+            .text(function (d) { if (d.data.value > 0.02) { let n = (d.data.value * 100).toFixed(); if (!isNaN(n)) return n + "%"; } })
             .attr('transform', function (d) {
                 var pos = outerArc.centroid(d);
                 var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
@@ -389,24 +382,33 @@ export const map = function (config) {
                 var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
                 return (midangle < Math.PI ? 'start' : 'end')
             })
-            .style("font-size", 12)
+            .style("font-size", "12px")
 
-        // Now add the annotation. Use the centroid method to get the best coordinates
-        // svg
-        //     .selectAll('mySlices')
-        //     .data(pieData)
-        //     .enter()
-        //     .append('text')
-        //     .text(function (d) { let num = d.data.value.toFixed(2); if(!isNaN(num)) return num; else return; })
-        //     .attr("transform", function (d) { return "translate(" + arcGenerator.centroid(d) + ")"; })
-        //     .style("text-anchor", "middle")
-        //     .style("font-size", 12)
 
-        // region total
-        tp.append("g").append("text").text((d) => {
-            if (rg)
-                return "Total: " + Math.floor(getRegionTotal(rg.properties.id)) + " " + units
-        })
+        // add region values to tooltip
+        let breakdownDiv = document.createElement("div");
+        breakdownDiv.style.padding = "10px";
+        breakdownDiv.style.paddingTop = "0px";
+        breakdownDiv.style.fontSize = "13px";
+        //let units = out.statData(statCodes[0]).unitText();
+
+        // show value for each category
+        for (let i = 0; i < statCodes.length; i++) {
+            //retrieve code and stat value
+            const sc = statCodes[i]
+            const s = out.statData(sc).get(rg.properties.id);
+            if (s && s.value) {
+                let string = "<strong>" + out.catLabels_[sc] + "</strong>: " + s.value.toFixed() + "<br>";
+                breakdownDiv.innerHTML = breakdownDiv.innerHTML + string;
+            }
+        }
+
+        //write total
+        let total = getRegionTotal(rg.properties.id);
+        breakdownDiv.innerHTML = breakdownDiv.innerHTML + `<hr><strong>Total</strong>: ${total.toFixed()} <br>`
+        // append div to tooltip
+        tp.node().appendChild(breakdownDiv);
+
     };
 
 

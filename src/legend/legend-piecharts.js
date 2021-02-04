@@ -1,5 +1,6 @@
 import { format } from "d3-format";
 import { select } from "d3-selection";
+import { max } from "d3-array";
 import * as lg from '../core/legend';
 
 /**
@@ -13,7 +14,7 @@ export const legend = function (map, config) {
 	const out = lg.legend(map);
 
 	//spacing between color & size legends (if applicable)
-	out.legendSpacing = 35;
+	out.legendSpacing = 15;
 	//the width of the legend box elements
 	out.shapeWidth = 13;
 	//the height of the legend box elements
@@ -28,36 +29,19 @@ export const legend = function (map, config) {
 	out.noData = true;
 	//no data label text
 	out.noDataText = "No data";
+	out.titleFontSize = 12;
 
 	//size legend config (legend illustrating the values of different symbol sizes)
 	out.sizeLegend = {
 		title: null,
-		titlePadding: 10,//padding between title and legend body
-		cellNb: 4, //number of elements in the legend
-		shapePadding: 10, //the y distance between consecutive legend shape elements
-		shapeOffset: { x: 0, y: 0 },
-		shapeFill: "white",
-		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
-		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined
+		titlePadding: 15, //padding between title and body
+		values: null
 	}
 
-	// color legend config (legend illustrating the data-driven colour classes)
 	out.colorLegend = {
 		title: null,
-		titlePadding: 10, //padding between title and legend body
-		shapeWidth: 13, //the width of the legend box elements
-		shapeHeight: 15, //the height of the legend box elements
-		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
-		labelOffset: 25, //distance (x) between label text and its corresponding shape element
-		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined, // user-defined d3 format function	
-		noData: true, //show no data
-		noDataText: "No data", //no data text label
-		sepLineLength: 17,// //the separation line length
-		sepLineStroke: "black", //the separation line color
-		sepLineStrokeWidth: 1, //the separation line width
 	}
+	out._sizeLegendHeight = 0;
 
 	//override attribute values with config values
 	if (config) for (let key in config) {
@@ -89,9 +73,8 @@ export const legend = function (map, config) {
 		lgg.style("font-family", out.fontFamily);
 
 		// legend for sizes
-		if (m.classifierSize_) {
-			buildSizeLegend(m, lgg, out.sizeLegend)
-		}
+		buildSizeLegend(m, lgg, out.sizeLegend)
+
 		// legend for ps color values
 		buildColorLegend(m, lgg, out.colorLegend)
 
@@ -107,7 +90,69 @@ export const legend = function (map, config) {
 	 * @param {*} config size legend config object (sizeLegend object specified as property of legend() config object)
 	 */
 	function buildSizeLegend(m, lgg, config) {
+		let domain = m.sizeClassifier_.domain();
+			//assign default circle radiuses if none specified by user
+			if (!config.values) {
+			  config.values = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[1] / 10)]
+			}
+		
+		//draw title
+		if (config.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+				.text(config.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
+			//circles
+			let maxSize = m.sizeClassifier_(max(config.values)); //maximum circle radius to be shown in legend
+			let y = out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + (maxSize*2);
+			let container = lgg
+			  .append("g")
+			  .attr("fill", "black")
+			  .attr("transform", `translate(${maxSize + out.boxPadding},${y})`) //needs to be dynamic
+			  .attr("text-anchor", "right")
+			  .selectAll("g")
+			  .data(config.values)
+			  .join("g");
+			  container
+			  .append("circle")
+			  .attr("fill", "none")
+			  .attr("stroke", "black")
+			  .attr("cy", (d) => -m.sizeClassifier_(d))
+			  .attr("r", m.sizeClassifier_);
+		
+			//labels
+			container
+			  .append("text")
+			  .style("font-size", out.labelFontSize)
+			  .attr("y", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d) - out.labelFontSize;
+				return y;
+			  })
+			  .attr("x", 30)
+			  .attr("dy", "1.2em")
+			  .attr("xml:space", "preserve")
+			  .text((d) => {
+				return d.toLocaleString("en").replace(/,/gi, " ");
+			  })
+			//line pointing to top of corresponding circle:
+			container.append("line")
+			  .style("stroke-dasharray", 2)
+			  .style("stroke", "grey")
+			  .attr("x1", 2)
+			  .attr("y1", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d); //add padding
+				return y;
+			  })
+			  .attr("xml:space", "preserve")
+			  .attr("x2", 30)
+			  .attr("y2", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d); //add padding
+				return y;
+			  })
+
+			  out._sizeLegendHeight = y; //save height value for positioning colorLegend
+return out;
 	}
 
 
@@ -122,16 +167,10 @@ export const legend = function (map, config) {
 
 		const svgMap = m.svg();
 
-		//remove previous content
-		lgg.selectAll("*").remove();
-
-		//draw legend background box
-		out.makeBackgroundBox();
-
 		//draw title
-		if (out.title)
-			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
-				.text(out.title)
+		if (config.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.legendSpacing + out.boxPadding + out.titleFontSize)
+				.text(config.title)
 				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
@@ -145,8 +184,7 @@ export const legend = function (map, config) {
 		for (let code in scs) {
 
 			//the vertical position of the legend element
-			const y = out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
-
+			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
 			//the color
 			const col = m.catColors()[code] || "lightgray";
 
@@ -186,7 +224,7 @@ export const legend = function (map, config) {
 
 		//'no data' legend box
 		if (out.noData) {
-			const y = out.boxPadding + (out.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
+			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
