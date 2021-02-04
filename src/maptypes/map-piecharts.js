@@ -30,6 +30,10 @@ export const map = function (config) {
     //labels - indexed by category code
     out.catLabels_ = undefined;
 
+    // 'other' section of the pie chart for when 'totalCode' is defined with statPie()
+    out.otherColor_ = "#FFCC80"
+    out.otherText_ = "Other"
+
     //show stripes only when data for all categories is complete.
     //Otherwise, consider the regions as being with no data at all.
     out.showOnlyWhenComplete_ = false;
@@ -58,6 +62,8 @@ export const map = function (config) {
 
     /** The codes of the categories to consider for the composition. */
     let statCodes = undefined;
+    /** The code of the "total" category in the eurostat database */
+    let totalCode = undefined;
 
     /**
      * A function to define a pie chart map easily, without repetition of information.
@@ -68,8 +74,9 @@ export const map = function (config) {
      * @param {Array} codes The category codes of the composition
      * @param {Array} labels Optional: The labels for the category codes
      * @param {Array} colors Optional: The colors for the category
+     * @param {string} totalCode Optional: The category code of the total (used to calculate total & "other" values if codes array dont represent all possible categories)
      */
-    out.statPie = function (stat, dim, codes, labels, colors) {
+    out.statPie = function (stat, dim, codes, labels, colors, tCode) {
 
         //set unitText of stat() from statPie()
         // out.statData().unitText(stat.unitText);
@@ -102,7 +109,21 @@ export const map = function (config) {
         //set statCodes
         statCodes = codes;
 
-        //set 
+        //set totalCode
+        if (tCode) {
+            totalCode = tCode;
+            stat.filters[dim] = tCode
+            const sc_ = {};
+            for (let key in stat) sc_[key] = stat[key]
+            sc_.filters = {};
+            for (let key in stat.filters) sc_.filters[key] = stat.filters[key]
+            out.stat(tCode, sc_)
+
+            //when total code is used, an 'other' section is added to the pie
+            out.catColors_["other"] = out.otherColor_
+            out.catLabels_["other"] = out.otherText_
+        }
+
 
         return out;
     }
@@ -132,11 +153,31 @@ export const map = function (config) {
             sum += s.value;
         }
 
+        // where totalCode is used:
+        if (totalCode) {
+            let s = out.statData(totalCode).get(id);
+            if (s) {
+                sum = s.value
+            } else { sum == 0 }
+        }
+
         //case when no data
         if (sum == 0) return undefined;
 
         //compute ratios
-        for (let i = 0; i < statCodes.length; i++) comp[statCodes[i]] /= sum;
+        for (let i = 0; i < statCodes.length; i++) {
+            comp[statCodes[i]] /= sum;
+        }
+
+        //add "other" when totalCode is used
+        if (totalCode) {
+            let totalPerc = 0;
+            for (let key in comp) {
+                totalPerc = totalPerc + comp[key]
+            }
+            comp["other"] = 1 - totalPerc
+        }
+
 
         return comp;
     }
@@ -170,7 +211,7 @@ export const map = function (config) {
     function getDatasetMaxMin() {
 
         let totals = [];
-        let sel = out.svg().select("#g_ps").selectAll("g.symbol").data();
+        let sel = out.svg().selectAll("#g_ps").selectAll("g.symbol").data();
 
         sel.forEach((rg) => {
             let id = rg.properties.id;
@@ -191,20 +232,35 @@ export const map = function (config) {
  */
     const getRegionTotal = function (id) {
         let sum = 0;
-        //get stat value for each category. Compute the sum.
-        for (let i = 0; i < statCodes.length; i++) {
+        let s;
 
-            //retrieve code and stat value
-            const sc = statCodes[i]
-            const s = out.statData(sc).get(id);
+        if (totalCode) {
+            //when total is a stat code
+            s = out.statData(totalCode).get(id);
 
             //case when some data is missing
             if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
-                if (out.showOnlyWhenComplete()) return undefined;
-                else continue;
+                if (out.showOnlyWhenComplete()) { sum = undefined; }
+            } else {
+                sum = s.value
             }
 
-            sum += s.value;
+        } else {
+            //get stat value for each category. Compute the sum.
+            for (let i = 0; i < statCodes.length; i++) {
+
+                //retrieve code and stat value
+                const sc = statCodes[i]
+                s = out.statData(sc).get(id);
+
+                //case when some data is missing
+                if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+                    if (out.showOnlyWhenComplete()) return undefined;
+                    else continue;
+                }
+
+                sum += s.value;
+            }
         }
 
         //case when no data
@@ -252,8 +308,7 @@ export const map = function (config) {
 
             //create svg for pie chart
             // can be more than one center point for each nuts ID (e.g. Malta when included in insets)
-            let nodes = selectAll("#pie_" + nutsid);
-            const svg = nodes.append("g")
+            let nodes = out.svg().selectAll("#pie_" + nutsid);
 
             // define radius
             const r = out.sizeClassifier_(getRegionTotal(nutsid));
@@ -261,13 +316,15 @@ export const map = function (config) {
 
             //make pie chart. See https://observablehq.com/@d3/pie-chart
             const pie_ = pie().sort(null).value(d => d.value)
-            svg.append("g")
+            nodes.append("g")
                 .attr("stroke", "white")
                 .attr("stroke-width", "0.5px")
+                .attr("class", "piechart")
                 .selectAll("path")
                 .data(pie_(data))
                 .join("path")
                 .attr("fill", d => { return out.catColors()[d.data.code] || "lightgray" })
+                .attr("code", d => d.data.code) //for mouseover legend highlighting function
                 .attr("d", arc().innerRadius(ir).outerRadius(r))
 
         })

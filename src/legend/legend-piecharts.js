@@ -15,32 +15,30 @@ export const legend = function (map, config) {
 
 	//spacing between color & size legends (if applicable)
 	out.legendSpacing = 15;
-	//the width of the legend box elements
-	out.shapeWidth = 13;
-	//the height of the legend box elements
-	out.shapeHeight = 15;
 	//the distance between consecutive legend box elements
 	out.shapePadding = 5;
 	//the font size of the legend label
 	out.labelFontSize = 12;
-	//the distance between the legend box elements to the corresponding text label
-	out.labelOffset = 5;
-	//show no data
-	out.noData = true;
-	//no data label text
-	out.noDataText = "No data";
+	//titles' font size
 	out.titleFontSize = 12;
 
-	//size legend config (legend illustrating the values of different symbol sizes)
+	//size legend config (legend illustrating the values of different pie sizes)
 	out.sizeLegend = {
 		title: null,
 		titlePadding: 15, //padding between title and body
 		values: null
 	}
 
+	//colour legend config (legend illustrating the values of different pie colours)
 	out.colorLegend = {
 		title: null,
+		labelOffset: 5, //the distance between the legend box elements to the corresponding text label
+		shapeWidth: 13, //the width of the legend box elements
+		shapeHeight: 15, //the height of the legend box elements
+		noData : true, //show no data
+        noDataText : "No data" //no data label text
 	}
+
 	out._sizeLegendHeight = 0;
 
 	//override attribute values with config values
@@ -93,7 +91,7 @@ export const legend = function (map, config) {
 		let domain = m.sizeClassifier_.domain();
 			//assign default circle radiuses if none specified by user
 			if (!config.values) {
-			  config.values = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[1] / 10)]
+			  config.values = [Math.floor(domain[1]), Math.floor(domain[0])]
 			}
 		
 		//draw title
@@ -184,28 +182,28 @@ return out;
 		for (let code in scs) {
 
 			//the vertical position of the legend element
-			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
+			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + out.shapePadding);
 			//the color
 			const col = m.catColors()[code] || "lightgray";
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-				.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
 				.attr("fill", scs[code])
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				.on("mouseover", function () {
-					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
+					svgMap.selectAll(".piechart").selectAll("path[code='" + code + "']")
 						.style("fill", m.nutsrgSelFillSty())
 					select(this).style("fill", m.nutsrgSelFillSty())
 				})
 				.on("mouseout", function () {
-					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
+					svgMap.selectAll(".piechart").selectAll("path[code='" + code + "']")
 						.style("fill", col)
 					select(this).style("fill", col)
 				})
 
 			//label
-			lgg.append("text").attr("x", out.boxPadding + out.shapeWidth + out.labelOffset).attr("y", y + out.shapeHeight * 0.5)
+			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
 				.text(m.catLabels()[code] || code)
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
@@ -223,12 +221,12 @@ return out;
 		}
 
 		//'no data' legend box
-		if (out.noData) {
-			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (out.shapeHeight + out.shapePadding);
+		if (config.noData) {
+			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + out.shapePadding);
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
-				.attr("width", out.shapeWidth).attr("height", out.shapeHeight)
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
 				.attr("fill", m.noDataFillStyle())
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				.on("mouseover", function () {
@@ -243,9 +241,9 @@ return out;
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", out.boxPadding + out.shapeWidth + out.labelOffset).attr("y", y + out.shapeHeight * 0.5)
+			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
-				.text(out.noDataText)
+				.text(config.noDataText)
 				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
 				.on("mouseover", function () {
 					svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
