@@ -15,8 +15,7 @@ export const legend = function (map, config) {
 
 	//spacing between color & size legends (if applicable)
 	out.legendSpacing = 15;
-	//the distance between consecutive legend box elements
-	out.shapePadding = 5;
+
 	//the font size of the legend label
 	out.labelFontSize = 12;
 	//titles' font size
@@ -35,6 +34,7 @@ export const legend = function (map, config) {
 		labelOffset: 5, //the distance between the legend box elements to the corresponding text label
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
+		shapePadding: 5, //the distance between consecutive legend box elements
 		noData : true, //show no data
         noDataText : "No data" //no data label text
 	}
@@ -95,6 +95,7 @@ export const legend = function (map, config) {
 			}
 		
 		//draw title
+		if (!config.title && out.title) config.title = out.title; //allow root legend title
 		if (config.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 				.text(config.title)
@@ -182,7 +183,7 @@ return out;
 		for (let code in scs) {
 
 			//the vertical position of the legend element
-			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + out.shapePadding);
+			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + config.shapePadding);
 			//the color
 			const col = m.catColors()[code] || "lightgray";
 
@@ -222,7 +223,7 @@ return out;
 
 		//'no data' legend box
 		if (config.noData) {
-			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + out.shapePadding);
+			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + config.shapePadding);
 
 			//rectangle
 			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)

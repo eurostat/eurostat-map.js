@@ -241,11 +241,11 @@ As proportional symbol maps allow for two visual variables (size and colour), a 
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **ascending** | Boolean | *false* | The order of the legend elements. Set to true to invert. |
-| **legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
-| **labelFontSize** | Number | *12* | The font size of the legend labels |
-| **sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |
-| **colorLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol colours |
+| *map*.**ascending** | Boolean | *false* | The order of the legend elements. Set to true to invert. |
+| *map*.**legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable) |
+| *map*.**labelFontSize** | Number | *12* | The font size of the legend labels |
+| *map*.**sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol sizes |
+| *map*.**colorLegend** | Object | see below | The configuration object of the legend which illustrates the values of different symbol colours |
 
 **sizeLegend**
 
@@ -283,6 +283,105 @@ The following parameters are properties of the colorLegend object:
 | **sepLineLength** | Number | *17* | The length of the separation line between classes. |
 | **sepLineStroke** | Number | *black* | The colour of the separation line between classes. |
 | **sepLineStrokeWidth** | Number | *1* | The width of the separation line between classes. |
+
+
+## Proportional symbol map
+
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
+
+A proportional pie chart map shows pie charts **sized** in proportion to a statistical variable. The slices of the pie chart are made up of the different categories of that statistical variable. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-piecharts.html)).
+
+Example:
+
+```javascript
+//population composition by age
+eurostatmap.map("pie")
+	.nutsLvl(1)
+    .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+    .catLabels({"Y_LT15":"< 15", "Y15-64":"15 to 64", "Y_GE65":"> 65"})
+    .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+    .legend({x:550, y:200, sizeLegend: {title: "Total Population"}, colorLegend: {title: "Population by Age"}})
+```
+
+Or simpler:
+
+```javascript
+//population composition by age
+eurostatmap.map("pie")
+	.nutsLvl(3)
+    .nutsYear(2016)
+    .stripeWidth(10)
+    .stripeOrientation(45)
+	.statPie( { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR", time: "2019" }, unitText: "people" },
+		"age", //parameter that the categories belong to
+		["Y_LT15", "Y15-64", "Y_GE65"], //category codes
+		["< 15", "15 to 64", "> 65"], //labels
+		["#33a02c", "#cab2d6", "#ff7f00"] //colours
+	)
+	  .legend({x:550, y:200, sizeLegend: {title: "Total Population"}, colorLegend: {title: "Population by Age"}})
+```
+
+If the sum of the chosen categories do not represent the complete total for that variable, then an optional code can be included as the last parameter passed to the statPie() method. For example, when making a proportional pie chart map for different causes of death, the chosen categories "Respiratory", "Cancer", "Circulatory" do not represent all causes of death. In this case, the code for "all causes of death" is specified ("A-R_V-Y"). The shares of each categories are then calculated according to this total and not just the total of the specified categories. The remaining share is then given the label "other", which can be changed using the pieOtherText() method and the colour of its pie slices can be changed using the pieOtherColor() method.
+
+```javascript
+         .statPie(
+            { eurostatDatasetCode: "hlth_cd_asdr2", filters: { sex: "T", time: "2016", age: "TOTAL", unit: "RT" }, unitText: "death rate per 100 000" },
+            "icd10", //parameter that the categories belong to
+            ["J", "C", "I"], //category codes
+            ["Respiratory", "Cancer", "Circulatory"], //category labels
+            ["orange", "#A4CDF8", "#2E7AF9", "blue"], //colours
+            "A-R_V-Y" //code for the total (all causes of death)
+          )
+```
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**catColors**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. If not specified, different colors are proposed. |
+| *map*.**catLabels**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. |
+| *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
+| *map*.**noDataFillStyle**([*value*]) | string | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**pieChartInnerRadius**([*value*]) | number | *0* | Inner radius of the pie charts. Increase this value to turn the pie charts into donut charts. |
+| *map*.**pieStrokeFill**([*value*]) | string | *white* | The colour of the pie chart stroke. |
+| *map*.**pieStrokeWidth**([*value*]) | number | 0.3 | The width of the pie chart stroke. |
+| *map*.**pieOtherText**([*value*]) | string | *Other* | The colour of the "other" segments of the pie charts (only applicable when the total is calculated using a separate category code, specified in the statPie method) |
+| *map*.**pieOtherColor**([*value*]) | string | *"#FFCC80"* | The colour of the "other" segments of the pie charts (only applicable when the total is calculated using a separate category code, specified in the statPie method) |
+
+In addition to [the default legend parameters](#map-legend), proportional pie chart maps have the following specific legend parameters:
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**labelFontSize**([*value*]) | int | *12* | Font size of the legend label. |
+| *map*.**legendSpacing** | Number | *35* | Spacing between the color & size legends (if applicable). |
+| *map*.**sizeLegend** | Object | see below | The configuration object of the legend which illustrates the values of different pie sizes. |
+| *map*.**colorLegend** | Object | see below | The configuration object of the legend which illustrates the values of different pie colours. |
+
+**sizeLegend**
+
+The following parameters are properties of the **sizeLegend** object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend. |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body. |
+| **values** | Array | auto (max and min radius) | The values used to size the pie charts in the legend. If unspecified, the highest and lowest values shown on the map are used. |
+
+**colorLegend**
+
+The following parameters are properties of the **colorLegend** object:
+
+| Parameter | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| **title** | String | *null* | Title of the size legend. |
+| **titlePadding** | Number | *10* | Padding between the legend title and legend body. |
+| **shapeWidth**([*value*]) | number | *13* | Width of the legend box elements. |
+| **shapeHeight**([*value*]) | number | *15* | Height of the legend box elements. |
+| **shapePadding**([*value*]) | number | *5* | Distance between consecutive legend box elements. |
+| **labelOffset**([*value*]) | number | *5* | Distance between the legend box elements to the corresponding text label. |
+| **noData**([*value*]) | boolean | *true* | Show/hide 'no data' legend box element. |
+| **noDataText**([*value*]) | string | *"No data"* | 'No data' label text. |
+
 
 ## Categorical map
 
@@ -367,7 +466,7 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html)
 
-A stripe composition map is a choropleth map showing the composition of a statistical variable using a pattern of stripes of different colors and widths. The color of a stripe corresponds to its category, and its width is proportional to the share of this categroy in the total. A stripe composition map shows how proportions vary across space.
+A stripe composition map is a choropleth map showing the composition of a statistical variable using a pattern of stripes of different colors and widths. The color of a stripe corresponds to its category, and its width is proportional to the share of this category in the total. A stripe composition map shows how proportions vary across space.
 
 Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
 

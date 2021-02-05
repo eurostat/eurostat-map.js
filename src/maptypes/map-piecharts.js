@@ -14,12 +14,12 @@ export const map = function (config) {
     //create map object to return, using the template
     const out = smap.statMap(config, true);
 
+    // pie charts
     out.pieMinRadius_ = 5;
     out.pieMaxRadius_ = 15;
-
-    // pie charts
-    out.pieChartRadius_ = 10;
     out.pieChartInnerRadius_ = 0;
+    out.pieStrokeFill_ = "white";
+    out.pieStrokeWidth_ = 0.3;
 
     //tooltip pie chart
     out.tooltipPieRadius_ = 40;
@@ -31,10 +31,10 @@ export const map = function (config) {
     out.catLabels_ = undefined;
 
     // 'other' section of the pie chart for when 'totalCode' is defined with statPie()
-    out.otherColor_ = "#FFCC80"
-    out.otherText_ = "Other"
+    out.pieOtherColor_ = "#FFCC80";
+    out.pieOtherText_ = "Other";
 
-    //show stripes only when data for all categories is complete.
+    //show piecharts only when data for all categories is complete.
     //Otherwise, consider the regions as being with no data at all.
     out.showOnlyWhenComplete_ = false;
     //style for no data regions
@@ -50,13 +50,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_", "pieChartRadius_", "pieChartInnerRadius_"]
+    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_", "pieChartInnerRadius_", "pieOtherColor_", "pieOtherText_", "pieStrokeFill_","pieStrokeWidth_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
+    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius",  "pieChartInnerRadius", "pieOtherColor", "pieOtherText","pieStrokeFill","pieStrokeWidth"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -120,8 +120,8 @@ export const map = function (config) {
             out.stat(tCode, sc_)
 
             //when total code is used, an 'other' section is added to the pie
-            out.catColors_["other"] = out.otherColor_
-            out.catLabels_["other"] = out.otherText_
+            out.catColors_["other"] = out.pieOtherColor_
+            out.catLabels_["other"] = out.pieOtherText_
         }
 
 
@@ -317,8 +317,8 @@ export const map = function (config) {
             //make pie chart. See https://observablehq.com/@d3/pie-chart
             const pie_ = pie().sort(null).value(d => d.value)
             nodes.append("g")
-                .attr("stroke", "white")
-                .attr("stroke-width", "0.5px")
+                .attr("stroke", out.pieStrokeFill_)
+                .attr("stroke-width", out.pieStrokeWidth_ + "px")
                 .attr("class", "piechart")
                 .selectAll("path")
                 .data(pie_(data))
