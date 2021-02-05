@@ -5,7 +5,7 @@ This page describes how to quickly create a statistical map with Eurostat data. 
 ## Create a map
 
 - Download [this file](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html).
-- Double click on it. You will see this map appearing in your web browser:
+- Double click on it: This map appearing in your web browser:
 
 ![map 1](map1.png)
 
@@ -28,31 +28,56 @@ eurostatmap.map("ch")
 </script>
 ``` 
 
-As modification, you could add a title, change the background color and 
+As first modifications, we propose to:
+- add a title: *Population in Europe*,
+- change the background color in light gray,
+- show place name labels.
+
+This can be achieved by simply inserting the three lines below:
 
 ```html
 <svg id="map"></svg>
 <script src="https://unpkg.com/eurostat-map@3.1.2"></script>
 <script>
 eurostatmap.map("ch")
-.title("Population in Europe")
-.seaFillStyle("lightgray")
-.labelling(true)
+   .title("Population in Europe")
+   .seaFillStyle("lightgray")
+   .labelling(true)
 .build();
 </script>
 ```
 
-Save, re-open the **eurostat_map.html** file or fresh the web browser content by pressing F5 button. The map is modified:
+To show themodified map,
+1. save the file (CTRL+S),
+2. re-open it (with double-click), or fresh the web browser content by pressing F5 button.
+
+The new map appears:
 
 ![map 2](map2.png)
 
-For each characteristic of the map to change, there is a need to insert a line with the **name** of the characteristic (such as ```.title```) and the desired **value** (such ```"Population in Europe"```).
+For each map characteristic to change, insert a line with the **name** of the characteristic (such as ```.title```) and the desired **value** (such ```"Population in Europe"```).
 
-The most important characteristic is of course the statistical data to show on the map as described in the next section.
+List of caracteristics is described on the API reference.
+
+The most important characteristic is of course the statistical data to show on the map, as described in the next section.
 
 ### Choose the statistics
 
-<TODO> explain how to find data from Eurostat data. +CSV case
+TODO: explain how to find data from Eurostat data. +CSV case
+
+Get code of the database
+https://ec.europa.eu/eurostat/web/main/data/database
+example
+
+Use query builder
+https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder
+
+get url
+transform into:
+
+
+
+CSV case ?
 
 
 

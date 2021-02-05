@@ -28,7 +28,7 @@ export const map = function (config) {
 	//Otherwise, consider the regions as being with no data at all.
 	out.showOnlyWhenComplete_ = false;
 	//style for no data regions
-	out.noDataFillStyle_ = "darkgray";
+	out.noDataFillStyle_ = "lightgray";
 
 	//tooltip pie chart
 	out.pieChartRadius_ = 40;

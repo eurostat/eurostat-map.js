@@ -50,7 +50,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 | *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
 | *map*.**geoCenter**([*value*]) | Array ([x,y]) | *auto* | The geographical coordinates of the position where to center the map view. These coordinates are expected to be expressed in the map projection. If not specified, a position is computed automatically. |
 | *map*.**pixSize**([*value*]) | number | *auto* | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, a value is computed automatically to show the map extent. |
-| *map*.**zoomExtent**([*value*]) | Array | *null* | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
+| *map*.**zoomExtent**([*value*]) | Array | *undefined* | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 
 ## Statistical data
 
@@ -192,6 +192,7 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 
 ## Proportional symbol map
 
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pc_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
 [![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
 
 A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical *extensive* variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
@@ -446,7 +447,7 @@ eurostatmap.map("chbi")
 | *map*.**color2**([*value*]) | color | *"#6c83b5"* | The color for the highest values of variable 2, and lowest of variable 1. |
 | *map*.**endColor**([*value*]) | color | *"#2a5a5b"* | The color for highest values of both variables. |
 | *map*.**classToFillStyle**([*value*]) | Function | *auto* | A function returning the colors for each pair of classes i,j. |
-| *map*.**noDataFillStyle**([*value*]) | color | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**noDataFillStyle**([*value*]) | color | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
@@ -512,7 +513,7 @@ eurostatmap.map("scomp")
 | *map*.**catColors**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. If not specified, different colors are proposed. |
 | *map*.**catLabels**([*value*]) | object | *auto* | The colors of the stripes, indexed by category code. |
 | *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
-| *map*.**noDataFillStyle**([*value*]) |  | *"darkgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**noDataFillStyle**([*value*]) |  | *"lightgray"* | The fill style to be used for regions where no data is available. |
 | *map*.**pieChartRadius**([*value*]) |  | *40* | Radius of the pie chart to show in the tooltip. |
 | *map*.**pieChartInnerRadius**([*value*]) |  | *15* | Inner radius of the pie chart to show in the tooltip. |
 
@@ -535,7 +536,7 @@ Specify the map title, its style and position.
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**title**([*value*]) | String | "" | The title text. |
-| *map*.**titleFontSize**([*value*]) | int | 25 | The title font size. |
+| *map*.**titleFontSize**([*value*]) | int | 30 | The title font size. |
 | *map*.**titleFill**([*value*]) | String | "black" | The title text color. |
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontFamily**([*value*]) | String | "Helvetica, Arial, sans-serif" | The title font. |
@@ -577,8 +578,8 @@ map = eurostatmap.map(...)
 | **boxMargin** | number | *10* | The legend box margin, in pixel. |
 | **boxPadding** | number | *7* | The legend box padding, in pixel. |
 | **boxCornerRad** | number | *7* | The legend box corner radius, in pixel. |
-| **boxFill** | color | *"#eeeeee"* | The legend box fill style. |
-| **boxOpacity** | number | *0.5* | The legend box opacity, from 0 to 1. |
+| **boxFill** | color | *"white"* | The legend box fill style. |
+| **boxOpacity** | number | *0.7* | The legend box opacity, from 0 to 1. |
 | **fontFamily** | font | *"Helvetica, Arial, sans-serif"* | The legend font family. |
 | **fontFill** | Color | *"black"* | The legend font color. |
 | **title** | Text | *""* | The legend title. |
@@ -606,17 +607,16 @@ Specify specific map styles.
 | *map*.**nutsrgSelFillSty**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
 | *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
-| *map*.**cntrgFillStyle**([*value*]) | String | *"lightgray"* | The fill style of the countries. |
-| *map*.**cntrgSelFillSty**([*value*]) | String | *"darkgray"* | The fill style of the selected countries. |
-| *map*.**cntbnStroke**([*value*]) | Object | *{def:"#777", co:"#1f78b4"}* | The stroke style of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**cntbnStrokeWidth**([*value*]) | Object | *{def:1, co:1}* | The stroke width of the country boundaries. *'co'* is for coastal boundaries, *'def'* for other boundaries. |
-| *map*.**seaFillStyle**([*value*]) | String | *"#b3cde3"* | The fill style of the sea areas. |
+| *map*.**landFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the land area. |
+| *map*.**landStroke**([*value*]) | Color | *"#ccc"* | The stroke style of the land area. |
+| *map*.**landStrokeWidth**([*value*]) | Number | *1* | The stroke width of the land area. |
+| *map*.**seaFillStyle**([*value*]) | String | *"white"* | The fill style of the sea areas. |
 | *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
-| *map*.**coastalMarginColor**([*value*]) | String | *"white"* | The color of the coastal blurry margin. |
-| *map*.**coastalMarginWidth**([*value*]) | number | *12* | The width of the coastal blurry margin. |
-| *map*.**coastalMarginStdDev**([*value*]) | number | *12* | The standard deviation of the coastal blurry margin. |
+| *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
+| *map*.**coastalMarginWidth**([*value*]) | number | *5* | The width of the coastal blurry margin. |
+| *map*.**coastalMarginStdDev**([*value*]) | number | *2* | The standard deviation of the coastal blurry margin. |
 | *map*.**drawGraticule**([*value*]) | boolean | *true* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
-| *map*.**graticuleStroke**([*value*]) | String | *"gray"* | The stroke style of the graticule. |
+| *map*.**graticuleStroke**([*value*]) | String | *"lightgray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 
 ## Labelling

@@ -24,8 +24,8 @@ export const legend = function (map) {
 	out.boxMargin = 10;
 	out.boxPadding = 7;
 	out.boxCornerRad = 7;
-	out.boxFill = "#eeeeee";
-	out.boxOpacity = 0.5;
+	out.boxFill = "white";
+	out.boxOpacity = 0.7;
 
 	//font
 	out.fontFamily = "Helvetica, Arial, sans-serif";

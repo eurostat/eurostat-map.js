@@ -28,7 +28,7 @@ export const map = function (config) {
 	//a function returning the color from the class i
 	out.classToFillStyle_ = undefined;
 	//style for no data regions
-	out.noDataFillStyle_ = "darkgray";
+	out.noDataFillStyle_ = "lightgray";
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;
 
