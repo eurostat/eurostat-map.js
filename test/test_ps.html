@@ -76,6 +76,20 @@
         .psThreshold([10000,20000,30200,40000,50000])
         .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
+        .seaFillStyle("aliceblue")
+        .nutsrgFillStyle("white")
+        .nutsrgSelFillSty("#3a724d")
+        .nutsbnStroke({ 0: "#000", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" })
+        .nutsbnStrokeWidth({ 0: 0.4, 1: 0.2, 2: 0, 3: 0, oth: 0, co: 0.4 })
+        .landFillStyle("#f4f4f4")
+        .landStroke({ def: "none", co: "none" })
+        .landStrokeWidth({ def: 0, co: 0 })
+        .drawCoastalMargin("false")
+        .drawGraticule(true)
+        .graticuleStroke("lightgrey")
+        .graticuleStrokeWidth(1)
+    
+
         //legend config
         .legend({
           x: 580,

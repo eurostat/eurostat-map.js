@@ -19,6 +19,7 @@ Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/euro
 Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``mapType`` to a value corresponding with the desired map type:
 - ``"ch"`` for a [choropleth map](#choropleth-map),
 - ``"ps"`` for a [proportional symbol map](#proportional-symbol-map),
+- ``"pie"`` for a [proportional pie chart map](#proportional-pie-chart-map),
 - ``"ct"`` for a [categorical map](#categorical-map).
 - ``"chbi"`` for a [bivariate choropleth map](#bivariate-choropleth-map).
 - ``"scomp"`` for a [stripe composition map](#stripe-composition-map).
@@ -286,9 +287,9 @@ The following parameters are properties of the colorLegend object:
 | **sepLineStrokeWidth** | Number | *1* | The width of the separation line between classes. |
 
 
-## Proportional symbol map
+## Proportional pie chart map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pie_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
 
 A proportional pie chart map shows pie charts **sized** in proportion to a statistical variable. The slices of the pie chart are made up of the different categories of that statistical variable. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-piecharts.html)).
 
