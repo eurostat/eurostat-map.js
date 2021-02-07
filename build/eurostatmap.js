@@ -30767,6 +30767,7 @@ const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
+			if (nutsRG) {
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
@@ -30787,6 +30788,7 @@ const mapTemplate = function (config, withCenterPoints) {
 					Object(d3_selection__WEBPACK_IMPORTED_MODULE_2__["select"])(this).style("fill", out.psFill_);
 					if (tooltip) tooltip.mouseout();
 				});
+			}
 		}
 
 		// add geographical labels to map
@@ -31974,7 +31976,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maptypes_map_categorical__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maptypes/map-categorical */ "./src/maptypes/map-categorical.js");
 /* harmony import */ var _maptypes_map_choropleth_bivariate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maptypes/map-choropleth-bivariate */ "./src/maptypes/map-choropleth-bivariate.js");
 /* harmony import */ var _maptypes_map_stripe_composition__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./maptypes/map-stripe-composition */ "./src/maptypes/map-stripe-composition.js");
-/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./core/stat-map */ "./src/core/stat-map.js");
+/* harmony import */ var _maptypes_map_piecharts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./maptypes/map-piecharts */ "./src/maptypes/map-piecharts.js");
+/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./core/stat-map */ "./src/core/stat-map.js");
+
 
 
 
@@ -32000,11 +32004,13 @@ __webpack_require__.r(__webpack_exports__);
 	if(type == "chbi") return _maptypes_map_choropleth_bivariate__WEBPACK_IMPORTED_MODULE_3__["map"](config);
 	//stripes composition
 	if(type == "scomp") return _maptypes_map_stripe_composition__WEBPACK_IMPORTED_MODULE_4__["map"](config);
+	//proportional pie charts
+	if(type == "pie") return _maptypes_map_piecharts__WEBPACK_IMPORTED_MODULE_5__["map"](config);
 	//add new map types here
 	//if(type == "XX") return mapXX.map(config);
 
 	console.log("Unexpected map type: " + type);
-	return _core_stat_map__WEBPACK_IMPORTED_MODULE_5__["statMap"](config, true);
+	return _core_stat_map__WEBPACK_IMPORTED_MODULE_6__["statMap"](config, true);
 };
 
 
@@ -32542,6 +32548,287 @@ const legend = function (map, config) {
 	}
 
 	return out;
+}
+
+
+/***/ }),
+
+/***/ "./src/legend/legend-piecharts.js":
+/*!****************************************!*\
+  !*** ./src/legend/legend-piecharts.js ***!
+  \****************************************/
+/*! exports provided: legend */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "legend", function() { return legend; });
+/* harmony import */ var d3_format__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3-format */ "./node_modules/d3-format/src/index.js");
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/index.js");
+/* harmony import */ var d3_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! d3-array */ "./node_modules/d3-array/src/index.js");
+/* harmony import */ var _core_legend__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/legend */ "./src/core/legend.js");
+
+
+
+
+
+/**
+ * A legend for proportional symbol map
+ * 
+ * @param {*} map 
+ */
+const legend = function (map, config) {
+
+	//build generic legend object for the map
+	const out = _core_legend__WEBPACK_IMPORTED_MODULE_3__["legend"](map);
+
+	//spacing between color & size legends (if applicable)
+	out.legendSpacing = 15;
+
+	//the font size of the legend label
+	out.labelFontSize = 12;
+	//titles' font size
+	out.titleFontSize = 12;
+
+	//size legend config (legend illustrating the values of different pie sizes)
+	out.sizeLegend = {
+		title: null,
+		titlePadding: 15, //padding between title and body
+		values: null
+	}
+
+	//colour legend config (legend illustrating the values of different pie colours)
+	out.colorLegend = {
+		title: null,
+		labelOffset: 5, //the distance between the legend box elements to the corresponding text label
+		shapeWidth: 13, //the width of the legend box elements
+		shapeHeight: 15, //the height of the legend box elements
+		shapePadding: 5, //the distance between consecutive legend box elements
+		noData : true, //show no data
+        noDataText : "No data" //no data label text
+	}
+
+	out._sizeLegendHeight = 0;
+
+	//override attribute values with config values
+	if (config) for (let key in config) {
+		if (key == "colorLegend" || key == "sizeLegend") {
+			for (let p in out[key]) {
+				//override each property in size and color legend configs
+				if (config[key][p]) {
+					out[key][p] = config[key][p]
+				}
+			}
+		} else {
+			out[key] = config[key];
+		}
+	}
+
+
+	//@override
+	out.update = function () {
+		const m = out.map;
+		const lgg = out.lgg;
+
+		//remove previous content
+		lgg.selectAll("*").remove();
+
+		//draw legend background box
+		out.makeBackgroundBox();
+
+		//set font family
+		lgg.style("font-family", out.fontFamily);
+
+		// legend for sizes
+		buildSizeLegend(m, lgg, out.sizeLegend)
+
+		// legend for ps color values
+		buildColorLegend(m, lgg, out.colorLegend)
+
+		//set legend box dimensions
+		out.setBoxDimension();
+	}
+
+	/**
+	 * Builds a legend which illustrates the statistical values of different pie chart sizes
+	 * 
+	 * @param {*} m map 
+	 * @param {*} lgg parent legend object from core/legend.js 
+	 * @param {*} config size legend config object (sizeLegend object specified as property of legend() config object)
+	 */
+	function buildSizeLegend(m, lgg, config) {
+		let domain = m.sizeClassifier_.domain();
+			//assign default circle radiuses if none specified by user
+			if (!config.values) {
+			  config.values = [Math.floor(domain[1]), Math.floor(domain[0])]
+			}
+		
+		//draw title
+		if (!config.title && out.title) config.title = out.title; //allow root legend title
+		if (config.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
+				.text(config.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+			//circles
+			let maxSize = m.sizeClassifier_(Object(d3_array__WEBPACK_IMPORTED_MODULE_2__["max"])(config.values)); //maximum circle radius to be shown in legend
+			let y = out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + (maxSize*2);
+			let container = lgg
+			  .append("g")
+			  .attr("fill", "black")
+			  .attr("transform", `translate(${maxSize + out.boxPadding},${y})`) //needs to be dynamic
+			  .attr("text-anchor", "right")
+			  .selectAll("g")
+			  .data(config.values)
+			  .join("g");
+			  container
+			  .append("circle")
+			  .attr("fill", "none")
+			  .attr("stroke", "black")
+			  .attr("cy", (d) => -m.sizeClassifier_(d))
+			  .attr("r", m.sizeClassifier_);
+		
+			//labels
+			container
+			  .append("text")
+			  .style("font-size", out.labelFontSize)
+			  .attr("y", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d) - out.labelFontSize;
+				return y;
+			  })
+			  .attr("x", 30)
+			  .attr("dy", "1.2em")
+			  .attr("xml:space", "preserve")
+			  .text((d) => {
+				return d.toLocaleString("en").replace(/,/gi, " ");
+			  })
+			//line pointing to top of corresponding circle:
+			container.append("line")
+			  .style("stroke-dasharray", 2)
+			  .style("stroke", "grey")
+			  .attr("x1", 2)
+			  .attr("y1", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d); //add padding
+				return y;
+			  })
+			  .attr("xml:space", "preserve")
+			  .attr("x2", 30)
+			  .attr("y2", (d, i) => {
+				let y = -1 - 2 * m.sizeClassifier_(d); //add padding
+				return y;
+			  })
+
+			  out._sizeLegendHeight = y; //save height value for positioning colorLegend
+return out;
+	}
+
+
+	/**
+ * Builds a legend illustrating the statistical values of the pie charts' different colours
+ * 
+ * @param {*} m map 
+ * @param {*} lgg parent legend object from core/legend.js 
+ * @param {*} config color legend config object (colorLegend object specified as property of legend config parameter)
+ */
+	function buildColorLegend(m, lgg, config) {
+
+		const svgMap = m.svg();
+
+		//draw title
+		if (config.title)
+			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.legendSpacing + out.boxPadding + out.titleFontSize)
+				.text(config.title)
+				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+
+		//set font family
+		lgg.style("font-family", out.fontFamily);
+
+
+		//draw legend elements for classes: rectangle + label
+		let i = 0;
+		const scs = m.catColors();
+		for (let code in scs) {
+
+			//the vertical position of the legend element
+			const y = out._sizeLegendHeight + out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + config.shapePadding);
+			//the color
+			const col = m.catColors()[code] || "lightgray";
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
+				.attr("fill", scs[code])
+				.attr("stroke", "black").attr("stroke-width", 0.5)
+				.on("mouseover", function () {
+					svgMap.selectAll(".piechart").selectAll("path[code='" + code + "']")
+						.style("fill", m.nutsrgSelFillSty())
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.nutsrgSelFillSty())
+				})
+				.on("mouseout", function () {
+					svgMap.selectAll(".piechart").selectAll("path[code='" + code + "']")
+						.style("fill", col)
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", col)
+				})
+
+			//label
+			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
+				.attr("alignment-baseline", "middle")
+				.text(m.catLabels()[code] || code)
+				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.on("mouseover", function () {
+					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
+						.style("fill", m.nutsrgSelFillSty())
+				})
+				.on("mouseout", function () {
+					const col = m.catColors()[code] || "lightgray";
+					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
+						.style("fill", col)
+				})
+
+			i++;
+		}
+
+		//'no data' legend box
+		if (config.noData) {
+			const y = out._sizeLegendHeight+ out.legendSpacing + out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding : 0) + i * (config.shapeHeight + config.shapePadding);
+
+			//rectangle
+			lgg.append("rect").attr("x", out.boxPadding).attr("y", y)
+				.attr("width", config.shapeWidth).attr("height", config.shapeHeight)
+				.attr("fill", m.noDataFillStyle())
+				.attr("stroke", "black").attr("stroke-width", 0.5)
+				.on("mouseover", function () {
+					svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+						.style("fill", m.nutsrgSelFillSty())
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.nutsrgSelFillSty())
+				})
+				.on("mouseout", function () {
+					const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+						.style("fill", function (d) { m.noDataFillStyle() })
+					Object(d3_selection__WEBPACK_IMPORTED_MODULE_1__["select"])(this).style("fill", m.noDataFillStyle())
+				});
+
+			//'no data' label
+			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
+				.attr("alignment-baseline", "middle")
+				.text(config.noDataText)
+				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.on("mouseover", function () {
+					svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+						.style("fill", m.nutsrgSelFillSty())
+				})
+				.on("mouseout", function () {
+					const sel = svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
+						.style("fill", function (d) { m.noDataFillStyle() })
+				});
+		}
+
+	}
+
+	return out;
+
 }
 
 
@@ -34305,6 +34592,499 @@ const getColorLegend = function (colorFun) {
 	colorFun = colorFun || interpolateYlOrRd;
 	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
+
+
+/***/ }),
+
+/***/ "./src/maptypes/map-piecharts.js":
+/*!***************************************!*\
+  !*** ./src/maptypes/map-piecharts.js ***!
+  \***************************************/
+/*! exports provided: map */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "map", function() { return map; });
+/* harmony import */ var d3_scale__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3-scale */ "./node_modules/d3-scale/src/index.js");
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+/* harmony import */ var d3_scale_chromatic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! d3-scale-chromatic */ "./node_modules/d3-scale-chromatic/src/index.js");
+/* harmony import */ var _core_stat_map__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/stat-map */ "./src/core/stat-map.js");
+/* harmony import */ var _legend_legend_piecharts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../legend/legend-piecharts */ "./src/legend/legend-piecharts.js");
+
+
+
+
+
+
+/**
+ * Returns a proportional pie chart map.
+ * 
+ * @param {*} config 
+ */
+const map = function (config) {
+
+    //create map object to return, using the template
+    const out = _core_stat_map__WEBPACK_IMPORTED_MODULE_3__["statMap"](config, true);
+
+    // pie charts
+    out.pieMinRadius_ = 5;
+    out.pieMaxRadius_ = 15;
+    out.pieChartInnerRadius_ = 0;
+    out.pieStrokeFill_ = "white";
+    out.pieStrokeWidth_ = 0.3;
+
+    //tooltip pie chart
+    out.tooltipPieRadius_ = 40;
+    out.tooltipPieInnerRadius_ = 0;
+
+    //colors - indexed by category code
+    out.catColors_ = undefined;
+    //labels - indexed by category code
+    out.catLabels_ = undefined;
+
+    // 'other' section of the pie chart for when 'totalCode' is defined with statPie()
+    out.pieOtherColor_ = "#FFCC80";
+    out.pieOtherText_ = "Other";
+
+    //show piecharts only when data for all categories is complete.
+    //Otherwise, consider the regions as being with no data at all.
+    out.showOnlyWhenComplete_ = false;
+    //style for no data regions
+    out.noDataFillStyle_ = "darkgray";
+
+    out.sizeClassifier_ = null; //d3 scale for scaling pie sizes
+    out.statPie_ = null;
+
+    /**
+     * Definition of getters/setters for all previously defined attributes.
+     * Each method follow the same pattern:
+     *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
+     *  - To get the attribute value, call the method without argument.
+     *  - To set the attribute value, call the same method with the new value as single argument.
+    */
+    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_", "pieChartInnerRadius_", "pieOtherColor_", "pieOtherText_", "pieStrokeFill_","pieStrokeWidth_"]
+        .forEach(function (att) {
+            out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+        });
+
+    //override attribute values with config values
+    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius",  "pieChartInnerRadius", "pieOtherColor", "pieOtherText","pieStrokeFill","pieStrokeWidth"].forEach(function (key) {
+        if (config[key] != undefined) out[key](config[key]);
+    });
+
+    /** The codes of the categories to consider for the composition. */
+    let statCodes = undefined;
+    /** The code of the "total" category in the eurostat database */
+    let totalCode = undefined;
+
+    /**
+     * A function to define a pie chart map easily, without repetition of information.
+     * Only for eurobase data sources.
+     * 
+     * @param {*} stat A pattern for the stat data source
+     * @param {String} dim The dimension (defined in eurostat REST API) of the composition.
+     * @param {Array} codes The category codes of the composition
+     * @param {Array} labels Optional: The labels for the category codes
+     * @param {Array} colors Optional: The colors for the category
+     * @param {string} totalCode Optional: The category code of the total (used to calculate total & "other" values if codes array dont represent all possible categories)
+     */
+    out.statPie = function (stat, dim, codes, labels, colors, tCode) {
+
+        //set unitText of stat() from statPie()
+        // out.statData().unitText(stat.unitText);
+
+        //add one dataset config for each category
+        stat.filters = stat.filters || {};
+        for (let i = 0; i < codes.length; i++) {
+
+            //category code
+            const code = codes[i]
+            stat.filters[dim] = code
+            const sc_ = {};
+            for (let key in stat) sc_[key] = stat[key]
+            sc_.filters = {};
+            for (let key in stat.filters) sc_.filters[key] = stat.filters[key]
+            out.stat(code, sc_)
+
+            //if specified, retrieve and assign color
+            if (colors) {
+                out.catColors_ = out.catColors_ || {};
+                out.catColors_[code] = colors[i];
+            }
+            //if specified, retrieve and assign label
+            if (labels) {
+                out.catLabels_ = out.catLabels_ || {};
+                out.catLabels_[code] = labels[i];
+            }
+        }
+
+        //set statCodes
+        statCodes = codes;
+
+        //set totalCode
+        if (tCode) {
+            totalCode = tCode;
+            stat.filters[dim] = tCode
+            const sc_ = {};
+            for (let key in stat) sc_[key] = stat[key]
+            sc_.filters = {};
+            for (let key in stat.filters) sc_.filters[key] = stat.filters[key]
+            out.stat(tCode, sc_)
+
+            //when total code is used, an 'other' section is added to the pie
+            out.catColors_["other"] = out.pieOtherColor_
+            out.catLabels_["other"] = out.pieOtherText_
+        }
+
+
+        return out;
+    }
+
+
+    /**
+     * Function to compute composition for region id, for each category.
+     * Return an object with, for each category, the share [0,1] of the category.
+     * @param {*} id 
+     */
+    const getComposition = function (id) {
+        let comp = {}, sum = 0;
+        //get stat value for each category. Compute the sum.
+        for (let i = 0; i < statCodes.length; i++) {
+
+            //retrieve code and stat value
+            const sc = statCodes[i]
+            const s = out.statData(sc).get(id);
+
+            //case when some data is missing
+            if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+                if (out.showOnlyWhenComplete()) return undefined;
+                else continue;
+            }
+
+            comp[sc] = s.value;
+            sum += s.value;
+        }
+
+        // where totalCode is used:
+        if (totalCode) {
+            let s = out.statData(totalCode).get(id);
+            if (s) {
+                sum = s.value
+            } else { sum == 0 }
+        }
+
+        //case when no data
+        if (sum == 0) return undefined;
+
+        //compute ratios
+        for (let i = 0; i < statCodes.length; i++) {
+            comp[statCodes[i]] /= sum;
+        }
+
+        //add "other" when totalCode is used
+        if (totalCode) {
+            let totalPerc = 0;
+            for (let key in comp) {
+                totalPerc = totalPerc + comp[key]
+            }
+            comp["other"] = 1 - totalPerc
+        }
+
+
+        return comp;
+    }
+
+    //@override
+    out.updateClassification = function () {
+
+        //if not provided, get list of stat codes from the map stat data
+        if (!statCodes) {
+            //get list of stat codes.
+            statCodes = Object.keys(out.statData_);
+            //remove "default", if present
+            const index = statCodes.indexOf("default");
+            if (index > -1) statCodes.splice(index, 1);
+        }
+
+
+        //define size scaling function
+        let domain = getDatasetMaxMin();
+        out.sizeClassifier_ = Object(d3_scale__WEBPACK_IMPORTED_MODULE_0__["scaleSqrt"])().domain(domain).range([out.pieMinRadius_, out.pieMaxRadius_])
+
+        return out;
+    };
+
+
+    /**
+     * @function getDatasetMaxMin
+     * @description gets the maximum and minimum total of all dimensions combined for each region. Used to define the domain of the pie size scaling function.
+     * @returns [min,max]
+     */
+    function getDatasetMaxMin() {
+
+        let totals = [];
+        let sel = out.svg().selectAll("#g_ps").selectAll("g.symbol").data();
+
+        sel.forEach((rg) => {
+            let id = rg.properties.id;
+            let total = getRegionTotal(id);
+            if (total) {
+                totals.push(total);
+            }
+
+        })
+
+        let minmax = Object(d3__WEBPACK_IMPORTED_MODULE_1__["extent"])(totals);
+        return minmax;
+    }
+
+    /**
+ * Get absolute total value of combined statistical values for a specific region. E.g total livestock
+ * @param {*} id nuts region id
+ */
+    const getRegionTotal = function (id) {
+        let sum = 0;
+        let s;
+
+        if (totalCode) {
+            //when total is a stat code
+            s = out.statData(totalCode).get(id);
+
+            //case when some data is missing
+            if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+                if (out.showOnlyWhenComplete()) { sum = undefined; }
+            } else {
+                sum = s.value
+            }
+
+        } else {
+            //get stat value for each category. Compute the sum.
+            for (let i = 0; i < statCodes.length; i++) {
+
+                //retrieve code and stat value
+                const sc = statCodes[i]
+                s = out.statData(sc).get(id);
+
+                //case when some data is missing
+                if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+                    if (out.showOnlyWhenComplete()) return undefined;
+                    else continue;
+                }
+
+                sum += s.value;
+            }
+        }
+
+        //case when no data
+        if (sum == 0) return undefined;
+
+        return sum;
+    }
+
+    //@override
+    out.updateStyle = function () {
+
+        //if not specified, build default color ramp
+        if (!out.catColors()) {
+            out.catColors({});
+            for (let i = 0; i < statCodes.length; i++)
+                out.catColors()[statCodes[i]] = schemeCategory10[i % 10];
+        }
+
+        //if not specified, initialise category labels
+        out.catLabels_ = out.catLabels_ || {};
+
+        //build and assign pie charts to the regions
+        //collect nuts ids from g elements. TODO: find better way of getting IDs
+        let nutsIds = [];
+        let s = out.svg().selectAll("#g_ps");
+        let sym = s.selectAll("g.symbol");
+        sym.append("g").attr("id", rg => { nutsIds.push(rg.properties.id); return "pie_" + rg.properties.id; })
+        addPieChartsToMap(nutsIds);
+
+        return out;
+    };
+
+    function addPieChartsToMap(ids) {
+
+        ids.forEach((nutsid) => {
+            //prepare data for pie chart
+            const data = []
+            const comp = getComposition(nutsid);
+            for (const key in comp) data.push({ code: key, value: comp[key] })
+
+            //case of regions with no data
+            if (!data || data.length == 0) {
+                return;
+            };
+
+            //create svg for pie chart
+            // can be more than one center point for each nuts ID (e.g. Malta when included in insets)
+            let nodes = out.svg().selectAll("#pie_" + nutsid);
+
+            // define radius
+            const r = out.sizeClassifier_(getRegionTotal(nutsid));
+            const ir = out.pieChartInnerRadius_;
+
+            //make pie chart. See https://observablehq.com/@d3/pie-chart
+            const pie_ = Object(d3__WEBPACK_IMPORTED_MODULE_1__["pie"])().sort(null).value(d => d.value)
+            nodes.append("g")
+                .attr("stroke", out.pieStrokeFill_)
+                .attr("stroke-width", out.pieStrokeWidth_ + "px")
+                .attr("class", "piechart")
+                .selectAll("path")
+                .data(pie_(data))
+                .join("path")
+                .attr("fill", d => { return out.catColors()[d.data.code] || "lightgray" })
+                .attr("code", d => d.data.code) //for mouseover legend highlighting function
+                .attr("d", Object(d3__WEBPACK_IMPORTED_MODULE_1__["arc"])().innerRadius(ir).outerRadius(r))
+
+        })
+    }
+
+    //@override
+    out.getLegendConstructor = function () {
+        return _legend_legend_piecharts__WEBPACK_IMPORTED_MODULE_4__["legend"];
+    }
+
+
+    //specific tooltip text function
+    out.tooltipText_ = function (rg, map) {
+
+        //get tooltip
+        const tp = Object(d3__WEBPACK_IMPORTED_MODULE_1__["select"])("#tooltip_eurostat")
+
+        //clear
+        tp.html("")
+        tp.selectAll("*").remove();
+
+        //write region name
+        tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+
+        //prepare data for pie chart
+        const data = []
+        const comp = getComposition(rg.properties.id);
+        for (const key in comp) data.push({ code: key, value: comp[key] })
+
+
+        //case of regions with no data
+        if (!data || data.length == 0) {
+            tp.append("div").html(out.noDataText());
+            return;
+        };
+
+
+        //create svg for pie chart
+        // set the dimensions and margins of the graph
+        const width = 120,
+            height = 120,
+            margin = 30
+
+        // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+        const radius = Math.min(width, height) / 2 - margin
+
+        const svg = tp
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        //make pie chart. See https://observablehq.com/@d3/pie-chart
+        const pie_ = Object(d3__WEBPACK_IMPORTED_MODULE_1__["pie"])().sort(null).value(d => d.value)
+
+        const innerArc = Object(d3__WEBPACK_IMPORTED_MODULE_1__["arc"])()
+            .innerRadius(0) // This is the size of the donut hole
+            .outerRadius(radius * 0.8)
+
+        // Another arc that won't be drawn. Just for labels positioning
+        const outerArc = Object(d3__WEBPACK_IMPORTED_MODULE_1__["arc"])()
+            .innerRadius(radius * 0.9)
+            .outerRadius(radius * 0.9)
+
+        const pieData = pie_(data);
+        svg
+            .selectAll('allSlices')
+            .data(pieData)
+            .enter()
+            .append('path')
+            .attr('d', innerArc)
+            .attr('fill', d => { return out.catColors()[d.data.code] || "lightgray" })
+            .attr("stroke", "white")
+            .style("stroke-width", "1px")
+            .style("opacity", 0.7)
+
+        // Add the polylines between chart and labels:
+        svg
+            .selectAll('allPolylines')
+            .data(pieData)
+            .enter()
+            .append('polyline')
+            .attr("stroke", "black")
+            .style("fill", "none")
+            .attr("stroke-width", 1)
+            .attr('points', function (d) {
+                if (d.data.value > 0.02) {
+                    const posA = innerArc.centroid(d) // line insertion in the slice
+                    const posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+                    const posC = outerArc.centroid(d); // Label position = almost the same as posB
+                    const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+                    posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+                    return [posA, posB, posC]
+                }
+            })
+
+        // Add the labels:
+        svg
+            .selectAll('allLabels')
+            .data(pieData)
+            .enter()
+            .append('text')
+            .text(function (d) { if (d.data.value > 0.02) { let n = (d.data.value * 100).toFixed(); if (!isNaN(n)) return n + "%"; } })
+            .attr('transform', function (d) {
+                var pos = outerArc.centroid(d);
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+                return 'translate(' + pos + ')';
+            })
+            .style('text-anchor', function (d) {
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                return (midangle < Math.PI ? 'start' : 'end')
+            })
+            .style("font-size", "12px")
+
+
+        // add region values to tooltip
+        let breakdownDiv = document.createElement("div");
+        breakdownDiv.style.padding = "10px";
+        breakdownDiv.style.paddingTop = "0px";
+        breakdownDiv.style.fontSize = "13px";
+        //let units = out.statData(statCodes[0]).unitText();
+
+        // show value for each category
+        for (let i = 0; i < statCodes.length; i++) {
+            //retrieve code and stat value
+            const sc = statCodes[i]
+            const s = out.statData(sc).get(rg.properties.id);
+            if (s && s.value) {
+                let string = "<strong>" + out.catLabels_[sc] + "</strong>: " + s.value.toFixed() + "<br>";
+                breakdownDiv.innerHTML = breakdownDiv.innerHTML + string;
+            }
+        }
+
+        //write total
+        let total = getRegionTotal(rg.properties.id);
+        breakdownDiv.innerHTML = breakdownDiv.innerHTML + `<hr><strong>Total</strong>: ${total.toFixed()} <br>`
+        // append div to tooltip
+        tp.node().appendChild(breakdownDiv);
+
+    };
+
+
+    return out;
+}
+
 
 
 /***/ }),

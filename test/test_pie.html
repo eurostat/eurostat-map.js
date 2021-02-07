@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <svg id="map"></svg>
+    <svg id="map2"></svg>
+    <svg id="map3"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+
+        // LIVESTOCK
+        eurostatmap
+          .map("pie")
+          .svgId("map2")
+          .scale("10M")
+          .width(900)
+          .nutsLvl(1)
+          .nutsYear(2016)
+          //livestock
+          .statPie(
+            { eurostatDatasetCode: "agr_r_animal", filters: { unit: "THS_HD", time: "2018" }, unitText: "thousand heads" },
+            "animals",
+            ["A2000", "A3100", "A4100", "A4200"],
+            ["Bovines", "Pigs", "Sheep", "Goats"],
+            ["#9cccfc", "#ff8ca8", "#ffc97a", "#9af6ce"]
+          )
+          .pieMaxRadius(20)
+          .pieStrokeFill("black")
+          .insets("default")
+          .title("European livestock composition (2018)")
+          .legend({
+            x: 550,
+            y: 190,
+            boxOpacity: 0.8,
+            boxFill: "white",
+            titleFontWeight: "bold",
+            sizeLegend: {
+              title: "Total livestock",
+              values: [1000, 20000],
+            },
+            colorLegend: {
+              title: "Animal",
+            },
+          })
+
+          //map styling
+          .seaFillStyle("aliceblue")
+          .nutsrgFillStyle("white")
+          .nutsrgSelFillSty("#3a724d")
+          .nutsbnStroke({ 0: "#000", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" })
+          .nutsbnStrokeWidth({ 0: 0.4, 1: 0.2, 2: 0, 3: 0, oth: 0, co: 0.4 })
+          .landFillStyle("#f4f4f4")
+          .landStroke({ def: "none", co: "none" })
+          .landStrokeWidth({ def: 0, co: 0 })
+          .drawCoastalMargin("false")
+          .drawGraticule(true)
+          .graticuleStroke("lightgrey")
+          .graticuleStrokeWidth(1)
+          .build();
+
+        //https://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/hlth_cd_asdr2?geoLevel=nuts1&sex=T&precision=1&unit=RT&time=${time}&age=TOTAL&icd10=J
+        // CAUSES OF DEATH
+        eurostatmap
+          .map("pie")
+          .scale("10M")
+          .width(1000)
+          .nutsLvl(1)
+          //.nutsYear(2016)
+          //livestock
+          .statPie(
+            { eurostatDatasetCode: "hlth_cd_asdr2", filters: { sex: "T", time: "2016", age: "TOTAL", unit: "RT" }, unitText: "death rate per 100 000" },
+            "icd10",
+            ["J", "C", "I"],
+            ["Respiratory", "Cancer", "Circulatory", "Other"],
+            ["orange", "#A4CDF8", "#2E7AF9", "blue"],
+            "A-R_V-Y"
+          )
+          .pieOtherColor("#FFCC80")
+          .pieOtherText("Other")
+          .pieMinRadius(6)
+          .insets("default")
+          .title("Causes of death, 2016")
+          .legend({
+            x: 600,
+            y: 250,
+            boxOpacity: 0.8,
+            boxFill: "white",
+            titleFontWeight: "bold",
+            sizeLegend: {
+              title: "Death rate per 100 000 inh.",
+              values: [700, 1600],
+            },
+            colorLegend: {
+              title: "Cause of death",
+            },
+          })
+
+          //map styling
+          .seaFillStyle("aliceblue")
+          .nutsrgFillStyle("white")
+          .nutsrgSelFillSty("#fc9292")
+          .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" })
+          .nutsbnStrokeWidth({ 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 })
+          .landFillStyle("#f4f4f4")
+          .landStroke({ def: "none", co: "none" })
+          .landStrokeWidth({ def: 0, co: 0 })
+          .drawCoastalMargin("false")
+          .drawGraticule(true)
+          .graticuleStroke("lightgrey")
+          .graticuleStrokeWidth(1)
+          .build();
+
+
+          // POPULATION
+      eurostatmap
+        .map("pie")
+        .svgId("map3")
+        .nutsLvl(1)
+        .statPie(
+          { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR", time: "2019" }, unitText: "people" },
+          "age", //dimension
+          ["Y_LT15", "Y15-64", "Y_GE65"], //codes
+          ["< 15", "15 to 64", "> 65"], //labels
+          ["#E6A532", "#41AFAA", "#BE78AA"] //colours
+        )
+        // is the equivalent of
+        // .stat("Y_LT15", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_LT15", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+        // .stat("Y15-64", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y15-64", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+        // .stat("Y_GE65", { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { age: "Y_GE65", sex: "T", unit: "NR", time: "2019" }, unitText: "people" })
+        // .catLabels({"Y_LT15":"< 15", "Y15-64":"15 to 64", "Y_GE65":"> 65"})
+        // .catColors({"Y_LT15":"#33a02c", "Y15-64":"#cab2d6", "Y_GE65":"#ff7f00"})
+        .legend({
+          x: 550,
+          y: 200,
+          sizeLegend: {
+            title: "Total Population",
+          },
+          colorLegend: {
+            title: "Population by Age",
+          },
+        })
+        .build();
+    </script>
+  </body>
+</html>
