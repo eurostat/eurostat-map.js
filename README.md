@@ -45,6 +45,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 See the **[API reference](docs/reference.md)**:
 - For a [choropleth map](docs/reference.md#choropleth-map),
 - For a [proportional symbol map](docs/reference.md#proportional-symbol-map),
+- For a [proportional pie chart map](docs/reference.md#proportional-pie-chart-map),
 - For a [categorical map](docs/reference.md#categorical-map).
 - For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
 - For a [stripe composition map](docs/reference.md#stripe-composition-map).
