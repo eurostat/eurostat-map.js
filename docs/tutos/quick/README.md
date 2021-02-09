@@ -63,17 +63,28 @@ The most important characteristic is of course the statistical data to show on t
 
 ### Choose the statistics
 
-TODO: explain how to find data from Eurostat data. +CSV case
+Too show some specific Eurostat data, note the code of the corresponding database as indicated on [Eurostat website](https://ec.europa.eu/eurostat/web/main/data/database). For example, to select data on at-risk-of-poverty population, note the code is **ilc_li41**.
 
-Get code of the database
-https://ec.europa.eu/eurostat/web/main/data/database
-example
+![Eurostat website code](eb_code.png)
 
-Use query builder
-https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder
+Then use the [query builder](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to specify more precisely the dataset figure to select. For our example, we will select the data for *2018* and the unit *Percentage*.
+
+![Eurostat website code](selection1.png)
+
+Note that:
+- For each dimension, only one value should be selected.
+- Ignore the *geo selection*, *unit code/label* question and *EU aggregate* question.
+- to show the most recent figures, ignore the *time selection*.
 
 get url
+
+**ilc_li41?unit=PC&precision=1&time=2018**
+
 transform into:
+
+
+
+refresh the map
 
 
 CSV case ?
