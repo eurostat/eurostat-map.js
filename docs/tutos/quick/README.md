@@ -61,7 +61,7 @@ List of caracteristics is described in the [API reference](../../reference.md).
 
 The most important characteristic is of course the statistical data to show on the map, as described in the next section.
 
-### Choose the statistics
+### Choose the Eurostat statistics
 
 Too show some specific Eurostat data, note the code of the corresponding database as indicated on [Eurostat website](https://ec.europa.eu/eurostat/web/main/data/database). For example, to select data on at-risk-of-poverty population, note the code is **ilc_li41**.
 
@@ -94,10 +94,29 @@ eurostatmap.map("ch")
 </script>
 ```
 
-refresh the map
+This new version produces the map with the desired statistics:
 
+![map 3](map3.png)
 
-CSV case ?
+### Show your own statistics
+
+To show statistics from a CSV file **example_data.csv** with this content:
+
+TODO
+geo,value
+
+use:
+
+```html
+<svg id="map"></svg>
+<script src="https://unpkg.com/eurostat-map@3.3.0"></script>
+<script>
+eurostatmap.map("ch")
+   .stat( {csvURL: "example_data.csv"} )
+.build();
+</script>
+```
+
 
 
 
