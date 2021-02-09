@@ -88,7 +88,8 @@ And inject it in your map under this format:
 <script>
 eurostatmap.map("ch")
    .title("Population at risk of poverty")
-   .stat()
+   .nutsLvl(2)
+   .stat( { eurostatDatasetCode:"ilc_li41", filters:{ unit: "PC", time: 2018 } } )
 .build();
 </script>
 ```
