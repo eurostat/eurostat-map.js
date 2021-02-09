@@ -2,5 +2,7 @@
 <script src="https://unpkg.com/eurostat-map@3.3.0"></script>
 <script>
     eurostatmap.map("ch")
+    .stat( {csvURL: "./example_data.csv"} )
+
     .build();
 </script>
