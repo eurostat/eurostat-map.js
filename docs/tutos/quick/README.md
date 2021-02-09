@@ -76,13 +76,22 @@ Note that:
 - Ignore the *geo selection*, *unit code/label* question and *EU aggregate* question.
 - to show the most recent figures, ignore the *time selection*.
 
-get url
+Hit the *Generate query filter* button to get a piece of text as:
 
 **ilc_li41?unit=PC&precision=1&time=2018**
 
-transform into:
+And inject it in your map under this format:
 
-
+```html
+<svg id="map"></svg>
+<script src="https://unpkg.com/eurostat-map@3.3.0"></script>
+<script>
+eurostatmap.map("ch")
+   .title("Population at risk of poverty")
+   .stat()
+.build();
+</script>
+```
 
 refresh the map
 
