@@ -100,7 +100,7 @@ For more information on how to specify the map statistics (from a CSV file or re
 
 ## More customisation
 
-Each map can be customised in many different ways. To explore the possibilities, see the [documentation](../../reference.md#eurostat-database).
+Each map can be customised in many different ways. To explore the possibilities, see the [documentation](../../reference.md).
 
 ## Publish the map
 
