@@ -89,36 +89,14 @@ And inject it in your map under this format:
 eurostatmap.map("ch")
    .title("Population at risk of poverty")
    .nutsLvl(2)
-   .stat( { eurostatDatasetCode:"ilc_li41", filters:{ unit: "PC", time: 2018 } } )
-.build();
+   .stat({ eurostatDatasetCode:"ilc_li41", filters:{unit:"PC", time:2018} })
+   .build();
 </script>
 ```
 
 This new version produces the map with the desired statistics:
 
 ![map 3](map3.png)
-
-### Show your own statistics
-
-To show statistics from a CSV file **example_data.csv** with this content:
-
-TODO
-geo,value
-
-use:
-
-```html
-<svg id="map"></svg>
-<script src="https://unpkg.com/eurostat-map@3.3.0"></script>
-<script>
-eurostatmap.map("ch")
-   .stat( {csvURL: "example_data.csv"} )
-.build();
-</script>
-```
-
-
-
 
 
 ## More customisation
@@ -130,5 +108,3 @@ Different types of maps.
 ## Publish the map
 - Explain how to insert the code snippet in a CMS
 
-
-Use ``<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>``, where *X.Y.Z* is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
