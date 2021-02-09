@@ -5,17 +5,15 @@ This page describes how to quickly create a statistical map with Eurostat data. 
 ## Create a map
 
 - Download [**eurostat_map.html**](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html) file (with CTRL+S) on your desktop.
-- Double click on it: This map should appear in a web browser:
+- Double click on it: The map below should appear in a web browser. This is a default map showing the latest Eurostat figures on population.
 
 ![map 1](map1.png)
-
-This is a default map showing the latest Eurostat figures on population.
 
 ## First customisation
 
 To modify this map, edit the **eurostat_map.html** file with a text editor such as Notepad or [Notepad++](https://notepad-plus-plus.org/). For that, you can either:
    - right-click on the file, select "open with..." menu item, and select a text edition program,
-   - or launch a text editor and open the file
+   - or launch a text editor and open the file.
 
 You should see the short code snippet defining the map:
 
@@ -23,8 +21,8 @@ You should see the short code snippet defining the map:
 <svg id="map"></svg>
 <script src="https://unpkg.com/eurostat-map@3.3.0"></script>
 <script>
-eurostatmap.map("ch")
-.build();
+   eurostatmap.map("ch")
+   .build();
 </script>
 ``` 
 
@@ -33,7 +31,7 @@ As first modifications, we propose to:
 - change the background color in light gray,
 - show place name labels.
 
-This can be achieved by simply inserting the three lines below:
+This can be achieved by simply inserting three lines as below:
 
 ```html
 <svg id="map"></svg>
@@ -80,7 +78,7 @@ Hit the *Generate query filter* button to get a selection text such as:
 
 **ilc_li41?unit=PC&precision=1&time=2018**
 
-And inject it in the map definition following this format:
+And insert it in the map definition following this format:
 
 ```html
 <svg id="map"></svg>
@@ -106,5 +104,5 @@ Each map can be customised in many different ways. To explore the possibilities,
 
 ## Publish the map
 
-To publish a map defined with eurostat-map.js, simply insert the code snippet into your HTM webpage.
+To publish a map defined with eurostat-map.js, simply insert the code snippet into your HTML webpage.
 
