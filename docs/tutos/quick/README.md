@@ -21,7 +21,7 @@ You should see the short code snippet defining the map:
 
 ```html
 <svg id="map"></svg>
-<script src="https://unpkg.com/eurostat-map@3.2.2"></script>
+<script src="https://unpkg.com/eurostat-map@3.3.0"></script>
 <script>
 eurostatmap.map("ch")
 .build();
@@ -37,7 +37,7 @@ This can be achieved by simply inserting the three lines below:
 
 ```html
 <svg id="map"></svg>
-<script src="https://unpkg.com/eurostat-map@3.2.2"></script>
+<script src="https://unpkg.com/eurostat-map@3.3.0"></script>
 <script>
 eurostatmap.map("ch")
    .title("Population in Europe")
