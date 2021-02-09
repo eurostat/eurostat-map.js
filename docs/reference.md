@@ -122,14 +122,14 @@ map.stat( {
 
 ### Custom JS
 
-Specify statistical data from JavaScript code, or any kind of JSON data source.
+Specify statistical data region by region, from JavaScript code, or any kind of JSON data source.
 
 Example:
 
 ```javascript
 map = eurostatmap.map(...);
 
-//specify values one by one
+//specify values region by region
 map.statData().set("LU",500).set("DE",400).set("FR",100).set("IT",600)
 
 //or in one time. Note that the 'status' can be specified but is not mandatory.

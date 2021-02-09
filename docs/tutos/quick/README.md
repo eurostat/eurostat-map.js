@@ -4,7 +4,7 @@ This page describes how to quickly create a statistical map with Eurostat data. 
 
 ## Create a map
 
-- Download [**eurostat_map.html**](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html) file.
+- Download [**eurostat_map.html**](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html) file (with CTRL+S) on your desktop.
 - Double click on it: This map should appear in a web browser:
 
 ![map 1](map1.png)
@@ -57,13 +57,13 @@ The new map appears:
 
 For each map characteristic to change, insert a line with the **name** of the characteristic (such as ```.title```) and the desired **value** (such ```"Population in Europe"```).
 
-List of caracteristics is described in the [API reference](../../reference.md).
+The list of caracteristics is described in the [documentation](../../reference.md).
 
 The most important characteristic is of course the statistical data to show on the map, as described in the next section.
 
 ### Choose the Eurostat statistics
 
-Too show some specific Eurostat data, note the code of the corresponding database as indicated on [Eurostat website](https://ec.europa.eu/eurostat/web/main/data/database). For example, to select data on at-risk-of-poverty population, note the code is **ilc_li41**.
+Too show some specific Eurostat data, note the code of the corresponding database as indicated on [Eurostat website](https://ec.europa.eu/eurostat/web/main/data/database). For example, to select *data on at-risk-of-poverty population by NUTS 2 region*, note the code is **ilc_li41**.
 
 ![Eurostat website code](eb_code.png)
 
@@ -76,11 +76,11 @@ Note that:
 - Ignore the *geo selection*, *unit code/label* question and *EU aggregate* question.
 - to show the most recent figures, ignore the *time selection*.
 
-Hit the *Generate query filter* button to get a piece of text as:
+Hit the *Generate query filter* button to get a selection text such as:
 
 **ilc_li41?unit=PC&precision=1&time=2018**
 
-And inject it in your map under this format:
+And inject it in the map definition following this format:
 
 ```html
 <svg id="map"></svg>
@@ -98,13 +98,13 @@ This new version produces the map with the desired statistics:
 
 ![map 3](map3.png)
 
+For more information on how to specify the map statistics (from a CSV file or region by region), see the [documentation](../../reference.md#eurostat-database).
 
 ## More customisation
 
-- Describe how to go through the documentation
-
-Different types of maps.
+Each map can be customised in many different ways. To explore the possibilities, see the [documentation](../../reference.md#eurostat-database).
 
 ## Publish the map
-- Explain how to insert the code snippet in a CMS
+
+To publish a map defined with eurostat-map.js, simply insert the code snippet into your HTM webpage.
 
