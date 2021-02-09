@@ -5,7 +5,7 @@ This page describes how to quickly create a statistical map with Eurostat data. 
 ## Create a map
 
 - Download [**eurostat_map.html**](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/tutos/quick/eurostat_map.html) file.
-- Double click on it: A map appears in your web browser:
+- Double click on it: This map should appear in a web browser:
 
 ![map 1](map1.png)
 
@@ -15,7 +15,7 @@ This is a default map showing the latest Eurostat figures on population.
 
 To modify this map, edit the **eurostat_map.html** file with a text editor such as Notepad or [Notepad++](https://notepad-plus-plus.org/). For that, you can either:
    - right-click on the file, select "open with..." menu item, and select a text edition program,
-   - OR launch a text editor and open the file
+   - or launch a text editor and open the file
 
 You should see the short code snippet defining the map:
 
