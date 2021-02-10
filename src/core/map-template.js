@@ -53,12 +53,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//template default style
 	//nuts
-	out.nutsrgFillStyle_ = "#eee";
+	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "purple";
-	out.nutsbnStroke_ = { 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#1f78b4" };
-	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 };
+	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
+	out.nutsbnStrokeWidth_ = { 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
 	//land
-	out.landFillStyle_ = "#f5f5f5";
+	out.landFillStyle_ = "#f4f4f4";
 	out.landStroke_ = "#ccc";
 	out.landStrokeWidth_ = 1
 	//sea
@@ -78,6 +78,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.labelFill_ = { "seas": "#003399", "countries": "#383838" };
 	out.labelOpacity_ = { "seas": 1, "countries": 0.8 };
 	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
+
+	//dataset source link
+	out.showSourceLink_ = true;
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
@@ -496,6 +499,39 @@ export const mapTemplate = function (config, withCenterPoints) {
 					tooltip.style("font", tooltip.f___);
 				});
 
+		//source dataset URL
+		if (out.showSourceLink_) {
+		//dataset link
+		let code = out.stat().eurostatDatasetCode;
+		let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`; 
+		let link = out.svg().append("a").attr("xlink:href", url).attr("target","_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+			.text("EUROSTAT")
+			.style("font-family", out.botTxtFontFamily_)
+			.style("font-size", out.botTxtFontSize_)
+			.style("font-weight", "bold")
+			.attr("text-anchor", "end")
+			.on("mouseover", function () {
+				const sel = select(this);
+				sel.attr("fill", "lightblue");
+				sel.style("cursor","pointer");
+				sel.style("text-decoration","underline");
+			})
+			.on("mouseout", function () {
+				const sel = select(this);
+				sel.attr("fill", "black");
+				sel.style("cursor","default");
+				sel.style("text-decoration","none");
+			})
+			//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
+
+			//pretext "Source:"
+			let linkW = link.node().getComputedTextLength();
+			out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
+			.style("font-size", out.botTxtFontSize_)
+			.style("stroke-width", "0.3px")
+			.attr("text-anchor", "end")
+		}
+
 		//prepare map tooltip
 		const tooltip = (out.tooltipText_ || out.botTxtTooltipTxt_) ? tp.tooltip() : null;
 
@@ -613,6 +649,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.proj = config.proj || _defaultCRS[config.geo];
 		config.scale = config.scale || out.insetScale_;
 		config.bottomText = config.bottomText || "";
+		config.showSourceLink = config.showSourceLink || false;
 		config.botTxtTooltipTxt = config.botTxtTooltipTxt || "";
 		config.zoomExtent = config.zoomExtent || out.insetZoomExtent_;
 		config.width = config.width || out.insetBoxWidth_;
