@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Proportional pie chart map](#proportional-pie-chart-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map)
 
 **Map elements and methods**<br>
-[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text](#bottom-text) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
+[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
@@ -93,7 +93,7 @@ map.stat( {
 
 | Parameter | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| **datasetCode** | String | *"demo_r_d3dens"* | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them. |
+| **eurostatDatasetCode** | String | *"demo_r_d3dens"* | The Eurostat database code of the statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) to find them. |
 | **filters** | Object | *{ lastTimePeriod : 1 }* | The Eurostat dimension codes to filter/select the chosen statistical variable. See [here](https://ec.europa.eu/eurostat/data/database) or [here](https://ec.europa.eu/eurostat/web/json-and-unicode-web-services/getting-started/query-builder) to find them. |
 | **precision** | int | *2* | The precision of the statistical variable to retrieve (number of decimal places). |
 
@@ -669,9 +669,9 @@ Note that a map inset is built as a proper map within a map: It has all properti
 | *map*.**insetScale**([*value*]) | String | *"03M"* | The default scale of the insets. |
 
 
-## Bottom text
+## Bottom text & link to source data
 
-Specify the note text to be shown at the bottom of the map.
+Specify the text to be shown at the bottom of the map.
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
@@ -681,6 +681,7 @@ Specify the note text to be shown at the bottom of the map.
 | *map*.**botTxtFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
 | *map*.**botTxtPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
+| *map* .**showSourceLink**([*value*]) | Boolean | true | Shows a link to the source dataset in the bottom right corner. (uses eurostatdatabasecode specified when using the stat() function). |
 
 
 
