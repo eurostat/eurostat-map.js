@@ -622,14 +622,14 @@ Specify specific map styles.
 
 ## Labelling
 
-Adjust the country and sea/ocean labels. Labels are displayed in the language set by the map.lg() method.
+Labels for country names, country codes, and/or seas can be added to the map. Labels are displayed in the language set by the map.lg() method.
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**labelling**([*value*]) | Boolean | *false* | Whether or not to show geographic name labels on the map. |
+| *map*.**labelsToShow**([*value*]) | Array | *["countries","seas"]* | The types of labels to show on the map. Accepted values are: "countries","seas","cc". (cc stands for country codes) |
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
-| *map*.**labelFontSize**([*value*]) | Object | *{"seas":13, "countries":13}* | The largest font size of the labels. If the map size is smaller than the default setting, then these values will most likely need to be reduced. |
 | *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
 
 ## Insets
