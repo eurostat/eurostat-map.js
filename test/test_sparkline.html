@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+
+          // POPULATION
+      eurostatmap
+        .map("spark")
+        .nutsLvl(1)
+        .zoomExtent([1,2])
+        .statSpark(
+          { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR"}, unitText: "people" },
+          ["2016", "2017", "2018", "2019"], //dates
+          ["2016", "2017", "2018", "2019"], //labels
+        )
+
+        //map styling
+        .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "black", co: "black" })
+        .nutsbnStrokeWidth({ 0: 0.2, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
+        .landStroke({ def: "none", co: "none" })
+        .landStrokeWidth({ def: 0, co: 0 })
+        .build()
+
+
+    </script>
+  </body>
+</html>

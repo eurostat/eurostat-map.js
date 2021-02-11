@@ -504,8 +504,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.showSourceLink_) {
 			//dataset link
 			let code = out.stat().eurostatDatasetCode;
-			console.log(out.stat())
-			console.log(out.statData())
 			let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
 			let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text("EUROSTAT")
