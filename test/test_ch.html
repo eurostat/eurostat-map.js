@@ -15,10 +15,12 @@
             .title("Population in Europe")
             .insets("default")
             .scale("60M")
+            .nutsLvl(0)
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
             .tooltipShowFlags(false)
             .legend({ labelDecNb:0, x:15, y:160, })
             .labelling(true)
+            .labelsToShow(["seas","values"])
             .build();
     </script>
 </body>

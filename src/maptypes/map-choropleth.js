@@ -110,6 +110,19 @@ export const map = function (config) {
 				return out.classToFillStyle()(ecl, out.clnb());
 			});
 
+		// add labels of stat values if applicable
+		if (out.labelsToShow_.includes("values")) {
+			out.svg().selectAll("g.stat-label").append("text")
+			.text(function (d) {
+				const s = out.statData();
+				const sv = s.get(d.properties.id);
+				if (!sv || !sv.value) {
+					return 0;
+				}
+				 return sv.value; 
+			});
+		}
+
 		return out;
 	};
 

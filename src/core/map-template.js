@@ -75,9 +75,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//labelling (country names and geographical features)
 	out.labelling_ = false;
 	out.labelsToShow_ = ["countries", "seas"]; //accepted: "countries", "cc","seas", "values"
-	out.labelFill_ = { "seas": "#003399", "countries": "#383838" };
-	out.labelOpacity_ = { "seas": 1, "countries": 0.8 };
+	out.labelFill_ = { "seas": "#003399", "countries": "#383838", "cc":"black", "values":"black" };
+	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc":0.7, "values":0.9 };
 	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.labelValuesFontSize_ = 12; //when labelsToShow includes "values", this is their font size
 
 	//dataset source link
 	out.showSourceLink_ = true;
@@ -457,7 +458,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		// add geographical labels to map
 		if (out.labelling_) {
-			addLabelsToMap(out, zg, projection)
+			addLabelsToMap(out, zg, projection, nutsRG, path)
 		}
 
 		//title
@@ -501,35 +502,37 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//source dataset URL
 		if (out.showSourceLink_) {
-		//dataset link
-		let code = out.stat().eurostatDatasetCode;
-		let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`; 
-		let link = out.svg().append("a").attr("xlink:href", url).attr("target","_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
-			.text("EUROSTAT")
-			.style("font-family", out.botTxtFontFamily_)
-			.style("font-size", out.botTxtFontSize_)
-			.style("font-weight", "bold")
-			.attr("text-anchor", "end")
-			.on("mouseover", function () {
-				const sel = select(this);
-				sel.attr("fill", "lightblue");
-				sel.style("cursor","pointer");
-				sel.style("text-decoration","underline");
-			})
-			.on("mouseout", function () {
-				const sel = select(this);
-				sel.attr("fill", "black");
-				sel.style("cursor","default");
-				sel.style("text-decoration","none");
-			})
+			//dataset link
+			let code = out.stat().eurostatDatasetCode;
+			console.log(out.stat())
+			console.log(out.statData())
+			let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
+			let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+				.text("EUROSTAT")
+				.style("font-family", out.botTxtFontFamily_)
+				.style("font-size", out.botTxtFontSize_)
+				.style("font-weight", "bold")
+				.attr("text-anchor", "end")
+				.on("mouseover", function () {
+					const sel = select(this);
+					sel.attr("fill", "lightblue");
+					sel.style("cursor", "pointer");
+					sel.style("text-decoration", "underline");
+				})
+				.on("mouseout", function () {
+					const sel = select(this);
+					sel.attr("fill", "black");
+					sel.style("cursor", "default");
+					sel.style("text-decoration", "none");
+				})
 			//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
 
 			//pretext "Source:"
 			let linkW = link.node().getComputedTextLength();
 			out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
-			.style("font-size", out.botTxtFontSize_)
-			.style("stroke-width", "0.3px")
-			.attr("text-anchor", "end")
+				.style("font-size", out.botTxtFontSize_)
+				.style("stroke-width", "0.3px")
+				.attr("text-anchor", "end")
 		}
 
 		//prepare map tooltip
@@ -541,9 +544,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	/**
 	 * @function addLabelsToMap 
-	 * @description appends text labels of country and ocean names to the map
+	 * @description appends text labels to the map. Labels can be countries, country codes, ocean names or statistical values
 	*/
-	function addLabelsToMap(out, zg, projection) {
+	function addLabelsToMap(out, zg, projection, nutsRG, path) {
 		let labels = out.labelsConfig_ || defaultLabels;
 		let language = out.lg_;
 		let labelsArray = [];
@@ -557,10 +560,40 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//this helps save space by not including labels in other languages that are spelt the same in english
 				labelsArray = labels[out.geo_ + "_" + out.proj_].en;
 			}
-		} 
+		}
 		//add country codes to labels array
 		if (out.labelsToShow_.includes("cc")) {
 			labelsArray = labelsArray.concat(labels[out.geo_ + "_" + out.proj_].cc);
+		}
+
+		//for statistical values we need to add centroids, then add values later
+		if (out.labelsToShow_.includes("values")) {
+			if (nutsRG) {
+				const gcp = zg.append("g").attr("id", "g_stat_labels");
+
+				//allow for stat label positioning by adding a g element here, then adding the values in 
+				gcp.selectAll("g")
+					.data(nutsRG)
+					.enter()
+					.append("g")
+					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+					.attr("class", "stat-label")
+					.attr("font-size",out.labelValuesFontSize_)
+					.attr("font-weight", "bold")
+					.attr("text-anchor","middle")
+					.style("opacity", d => out.labelOpacity_[d.class])
+					.style("fill", d => out.labelFill_[d.class])
+					.style("font-family", out.labelFontFamily_)
+					.on("mouseover", function (rg) {
+						select(this).style("fill", out.nutsrgSelFillSty_);
+						if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+					}).on("mousemove", function () {
+						if (tooltip) tooltip.mousemove();
+					}).on("mouseout", function () {
+						select(this).style("fill", out.psFill_);
+						if (tooltip) tooltip.mouseout();
+					});
+			}
 		}
 
 		if (labelsArray) {
@@ -601,9 +634,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 					return projection([d.x, d.y])[1];
 				})
 				.attr("dy", -7) // set y position of bottom of text
-				.style("opacity", d => d.class == "seas" ? out.labelOpacity_.seas : out.labelOpacity_.countries)
+				.style("opacity", d => out.labelOpacity_[d.class])
 				.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
-				.style("fill", d => d.class == "seas" ? out.labelFill_.seas : out.labelFill_.countries)
+				.style("fill", d => out.labelFill_[d.class])
 
 				//define label size
 				.style("font-size", (d) => d.size + "px")
@@ -624,7 +657,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("pointer-events", "none")
 				.style("font-family", out.labelFontFamily_)
 				.attr("text-anchor", "middle") // set anchor y justification
-				.text(function (d) {return d.text;}); // define the text to display
+				.text(function (d) { return d.text; }); // define the text to display
 		}
 	}
 
