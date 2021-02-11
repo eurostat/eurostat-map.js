@@ -39,7 +39,7 @@
 			{ text:"SI",x: 4655000, y: 2480000, class: "cc", size:10, },
 			{ text:"ES",x: 3160096, y: 1900000, class: "cc", size: 22 },
 			{ text:"SE",x: 4630000, y: 4000000, class: "cc", size: 20, },
-			{ text:"CH", x: 4200000, y: 2564000, class: "cc", size:11 },
+			{ text:"CH", x: 4200000, y: 2564000, class: "cc", size:16 },
 			{ text:"TR",x: 6510000, y: 2100000, class: "cc", size: 22 },
 			{ text:"UK",x: 3558000, y: 3250000, class: "cc", size: 17 }
 		],

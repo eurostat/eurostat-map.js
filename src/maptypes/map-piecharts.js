@@ -78,9 +78,6 @@ export const map = function (config) {
      */
     out.statPie = function (stat, dim, codes, labels, colors, tCode) {
 
-        //set unitText of stat() from statPie()
-        // out.statData().unitText(stat.unitText);
-
         //add one dataset config for each category
         stat.filters = stat.filters || {};
         for (let i = 0; i < codes.length; i++) {
@@ -123,7 +120,6 @@ export const map = function (config) {
             out.catColors_["other"] = out.pieOtherColor_
             out.catLabels_["other"] = out.pieOtherText_
         }
-
 
         return out;
     }
