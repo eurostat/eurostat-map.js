@@ -14,12 +14,19 @@
       eurostatmap
         .map("spark")
         .nutsLvl(1)
+        .width(1000)
         .zoomExtent([1,2])
         .statSpark(
           { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR"}, unitText: "people" },
-          ["2016", "2017", "2018", "2019"], //dates
-          ["2016", "2017", "2018", "2019"], //labels
+          ["2009","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //dates
+          ["2009","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //labels
         )
+        .sparkType("area")
+        .sparkLineWidth(70)
+        .sparkLineHeight(20)
+        .sparkLineStrokeWidth(1)
+        .sparkLineOpacity(0.9)
+        .sparkLineFill("#41afaa")
 
         //map styling
         .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "black", co: "black" })

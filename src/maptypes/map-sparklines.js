@@ -1,4 +1,4 @@
-import { select, scaleLinear, scaleLog, line, extent, area, min } from "d3";
+import { select, scaleLinear, scaleLog, scaleSqrt, line, extent, area, min } from "d3";
 import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
@@ -12,10 +12,13 @@ export const map = function (config) {
     //create map object to return, using the template
     const out = smap.statMap(config, true);
 
-    out.sparkLineColor_ = "blue"
-    out.sparklineWidth_ = 25;
-    out.sparkLineHeight_ = 30;
-    out.sparkType_ = "line";
+    out.sparkLineColor_ = "black";
+    out.sparkLineFill_ = "black";
+    out.sparkLineWidth_ = 30;
+    out.sparkLineHeight_ = 20;
+    out.sparkLineStrokeWidth_ = 0.4;
+    out.sparkLineOpacity_ = 0.6;
+    out.sparkType_ = "area";
 
     //show sparklines only when data for all dates is complete.
     //Otherwise, consider the regions as being with no data at all.
@@ -31,13 +34,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["sparkLineColor_","showOnlyWhenComplete_"]
+    ["sparkLineColor_","showOnlyWhenComplete_","sparkType_","sparkLineWidth_","sparkLineHeight_","sparkLineStrokeWidth_","sparkLineOpacity_","sparkLineFill_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["sparkLineColor","showOnlyWhenComplete"].forEach(function (key) {
+    if (config) ["sparkLineColor","showOnlyWhenComplete","sparkType","sparkLineWidth","sparkLineHeight","sparkLineStrokeWidth","sparkLineOpacity","sparkLineFill"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -122,8 +125,9 @@ export const map = function (config) {
         }
 
         // //define size scaling function
-        // let domain = getDatasetMaxMin();
-        // out.sparkHeightClassifier_ = scaleLog().domain(domain).range([0, out.sparkLineHeight_])
+         let domain = getDatasetMaxMin();
+         out.widthClassifier_ = scaleSqrt().domain(domain).range([0, out.sparkLineWidth_])
+         out.heightClassifier_ = scaleSqrt().domain(domain).range([0, out.sparkLineHeight_])
 
         return out;
     };
@@ -132,39 +136,121 @@ export const map = function (config) {
     //@override
     out.updateStyle = function () {
 
-        //define X scale
-        // const xScale = scaleLinear()
-        // .domain(statDates)
-        // .range([0, out.sparklineWidth_]);
-
-        const xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, out.sparklineWidth_ - 0.5]);
-        
-        //const area = d3.area().x((d, i) => x(i)).y1(y).y0(y(d3.min(values)));
-        //return area(values);
-        
+                //build and assign pie charts to the regions
+        //collect nuts ids from g elements. TODO: find better way of getting IDs
+        let nutsIds = [];
+        let s = out.svg().selectAll("#g_ps");
+        let sym = s.selectAll("g.symbol").attr("id", rg => { nutsIds.push(rg.properties.id); return "spark_" + rg.properties.id; })
+        addSparkLinesToMap(nutsIds);
 
         //build and assign sparklines to the regions
-        out.svg().select("#g_ps").selectAll("g.symbol")
-            .append("g")
-            .attr('class', 'spark-container')
-            .append('path')
-            .attr('class', 'sparks')
-            .attr('fill', 'steelblue')
-            .attr('stroke', 'steelblue')
-            .attr('stroke-width', 1)
-            .attr('opacity', 0.9)
-            .attr('d', d => {
-                let values = getComposition(d.properties.id);
-                return sparkline(values, xScale)
-            });
+        // out.svg().select("#g_ps").selectAll("g.symbol")
+        //     .append("g")
+        //     .attr('class', 'spark-container')
+        //     .append('path')
+        //     .attr('class', 'sparks')
+        //     .attr('fill', out.sparkType_ == "area" ? out.sparkLineFill_ : "none")
+        //     .attr('stroke', out.sparkType_ == "area" ? "none" : out.sparkLineColor_)
+        //     .attr('stroke-width', out.sparkLineStrokeWidth_)
+        //     .attr('opacity', out.sparkLineOpacity_)
+        //     .attr('d', d => {
+        //         let values = getComposition(d.properties.id);
+        //         return sparkline(values)
+        //     })
+        //     .attr("transform", (d) => {
+        //         if (out.sparkType_ == "area") {
+        //             return `translate(-${out.sparkLineWidth_/2},-${out.sparkLineHeight_/2})`
+        //         }
+        //         return `translate(0,-${out.sparkLineHeight_})`
+        //     })
         return out;
     };
 
-    function sparkline(values,xScale) {
+    function addSparkLinesToMap(ids) {
+
+        ids.forEach((nutsid) => {
+
+            //create svg for sparkline
+            // can be more than one center point for each nuts ID (e.g. Malta when included in insets)
+            let node = out.svg().select("#spark_" + nutsid);
+            let data = getComposition(nutsid);
+
+            //define scales
+            let ext = extent(data.map(v=>v.value));
+            let xScale;
+            let yScale;
+            let height
+            let width
+            if (out.sparkType_ == "area") {
+                width = out.widthClassifier_(ext[1]);
+                height = out.heightClassifier_(ext[1]);
+                yScale = scaleLog().domain(ext).range([height - 0.5, 0]);
+                xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, width - 0.5]);
+            } else {
+                width = out.sparkLineWidth_ ;
+                height = out.sparkLineHeight_; 
+                yScale = scaleLog().domain(ext).range([out.sparkLineHeight_ - 0.5, 0]);
+                xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, out.sparkLineWidth_ - 0.5]);
+            }
+
+            // Add the area
+    node.append("path")
+    .datum(data)
+    .attr("fill", "#69b3a2")
+    .attr("fill-opacity", .3)
+    .attr("stroke", "none")
+    .attr("d", area()
+      .x(function(d,i) { return xScale(i) })
+      .y0( height )
+      .y1(function(d) { return yScale(d.value) })
+      )
+      .attr("transform", (d) => `translate(-${width/2},-${height/2})`)
+
+  // Add the line
+  node.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "#69b3a2")
+    .attr("stroke-width", 0.5)
+    .attr("d", line()
+      .x(function(d,i) { return xScale(i) })
+      .y(function(d) { return yScale(d.value) })
+      )
+      .attr("transform", (d) => `translate(-${width/2},-${height/2})`)
+
+  // Add the line
+  node.selectAll("myCircles")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("fill", "red")
+      .attr("stroke", "none")
+      .attr("cx", function(d,i) { return xScale(i) })
+      .attr("cy", function(d) { return yScale(d.value) })
+      .attr("r", 0.3)
+      .attr("transform", (d) => `translate(-${width/2},-${height/2})`)
+
+        })
+    }
+
+    function sparkline(values) {
         // adapted from https://beta.observablehq.com/@dankeemahill/texas-county-population-estimates
         //const yScale = scaleLinear().domain(extent(values.map(v=>v.value))).range([0, out.sparkLineHeight_])
-        let ext = extent(values.map(v=>v.value))
-        const yScale = scaleLinear().domain(ext).range([out.sparkLineHeight_ - 0.5, 0.5]);
+        let ext = extent(values.map(v=>v.value));
+        let xScale;
+        let yScale;
+        if (out.sparkType_ == "area") {
+            let width = out.widthClassifier_(ext[1]);
+            let height = out.heightClassifier_(ext[1]);
+            yScale = scaleLog().domain(ext).range([height - 0.5, 0]);
+            xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, width - 0.5]);
+        } else {
+            yScale = scaleLog().domain(ext).range([out.sparkLineHeight_ - 0.5, 0]);
+            xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, out.sparkLineWidth_ - 0.5]);
+        }
+      
+       
+
 
         //lines
         if (out.sparkType_ == "line") {
