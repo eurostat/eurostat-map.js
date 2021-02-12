@@ -196,7 +196,10 @@ export const map = function (config) {
             // Add the area
     node.append("path")
     .datum(data)
-    .attr("fill", "#69b3a2")
+              .attr('fill', out.sparkLineFill_ )
+           .attr('stroke', out.sparkLineColor_)
+            .attr('stroke-width', out.sparkLineStrokeWidth_)
+    .attr('opacity', out.sparkLineOpacity_)
     .attr("fill-opacity", .3)
     .attr("stroke", "none")
     .attr("d", area()
@@ -233,48 +236,6 @@ export const map = function (config) {
         })
     }
 
-    function sparkline(values) {
-        // adapted from https://beta.observablehq.com/@dankeemahill/texas-county-population-estimates
-        //const yScale = scaleLinear().domain(extent(values.map(v=>v.value))).range([0, out.sparkLineHeight_])
-        let ext = extent(values.map(v=>v.value));
-        let xScale;
-        let yScale;
-        if (out.sparkType_ == "area") {
-            let width = out.widthClassifier_(ext[1]);
-            let height = out.heightClassifier_(ext[1]);
-            yScale = scaleLog().domain(ext).range([height - 0.5, 0]);
-            xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, width - 0.5]);
-        } else {
-            yScale = scaleLog().domain(ext).range([out.sparkLineHeight_ - 0.5, 0]);
-            xScale = scaleLinear().domain([0, statDates.length - 1]).range([0.5, out.sparkLineWidth_ - 0.5]);
-        }
-      
-       
-
-
-        //lines
-        if (out.sparkType_ == "line") {
-            const lineFun = line()
-            .x((d, i) => xScale(i))
-            .y(d => yScale(d.value))
-            .defined(d => d.value >= 0)
-            return lineFun(values);
-        }
-
-        //areas
-        if (out.sparkType_ == "area") {
-            const sparklineArea =
-            area()
-            .x((d, i) => xScale(i))
-            .y1(d => yScale(d.value))
-            .y0( d => {
-                let m = min(values.map(v=>v.value))
-                let y0 = yScale(m);
-                return y0;
-            });
-            return sparklineArea(values);
-        }
-    }
 
         /**
     * @function getDatasetMaxMin
