@@ -1,6 +1,6 @@
 import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
-import { select, event } from "d3-selection";
+import { select, event, selectAll } from "d3-selection";
 import { geoIdentity, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
@@ -220,6 +220,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (svg.size() == 0)
 			svg = select("body").append("svg").attr("id", out.svgId())
 		out.svg(svg);
+
+		//clear SVG (to avoid building multiple svgs on top of each other during multiple build() calls)
+		selectAll("#"+out.svgId()+" > *").remove(); 
 
 		//set SVG dimensions
 		//if no height was specified, use 85% of the width.
