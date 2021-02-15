@@ -21,6 +21,8 @@ export const map = function (config) {
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
 	//the threshold, when the classificatio method is 'threshold'
 	out.threshold_ = [0];
+	//colors to use for classes
+	out.colors_ = null; 
 	//when computed automatically, ensure the threshold are nice rounded values
 	out.makeClassifNice_ = true;
 	//the color function [0,1] -> color
@@ -39,17 +41,17 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_"]
+	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_","colors_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override of some special getters/setters
-	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyle_ = getColorLegend(out.colorFun_); return out; };
+	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyle_ = getColorLegend(out.colorFun_, out.colors_); return out; };
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
 	//override attribute values with config values
-	if(config) ["clnb","classifMethod","threshold","makeClassifNice","colorFun","classToFillStyle","noDataFillStyle"].forEach(function (key) {
+	if(config) ["clnb","classifMethod","threshold","makeClassifNice","colorFun","classToFillStyle","noDataFillStyle","colors_"].forEach(function (key) {
 		if(config[key]!=undefined) out[key](config[key]);
 	});
 
@@ -99,7 +101,7 @@ export const map = function (config) {
 
 		//define style per class
 		if(!out.classToFillStyle())
-			out.classToFillStyle( getColorLegend(out.colorFun()) )
+			out.classToFillStyle( getColorLegend(out.colorFun(),out.colors_) )
 
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
@@ -137,7 +139,10 @@ export const map = function (config) {
 
 
 //build a color legend object
-export const getColorLegend = function (colorFun) {
-	colorFun = colorFun || interpolateYlOrRd;
+export const getColorLegend = function (colorFun, colorArray) {
+	colorFun = colorFun || interpolateOrRd;
+	if (colorArray) {
+		return function (ecl, clnb) { return colorArray[ecl]; }
+	}
 	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
 }
