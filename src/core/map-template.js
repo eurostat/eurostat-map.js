@@ -42,6 +42,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 
+	//map subtitle
+	out.subtitle_ = "";
+	out.subtitleFontSize_ = 12;
+	out.subtitleFill_ = "grey";
+	out.subtitlePosition_ = undefined;
+	out.subtitleFontFamily_ = "Helvetica, Arial, sans-serif";
+	out.subtitleFontWeight_ = "bold";
+
 	//map frame
 	out.frameStroke_ = "#222";
 	out.frameStrokeWidth_ = 2;
@@ -142,6 +150,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.svg()) out.svg().select("#title" + out.geo()).text(v);
 		return out;
 	};
+
+		//subtitle getter and setter
+		out.subtitle = function (v) {
+			if (!arguments.length) return out.subtitle_;
+			out.subtitle_ = v;
+			if (out.svg()) out.svg().select("#subtitle" + out.geo()).text(v);
+			return out;
+		};
 
 	//insets getter/setter
 	out.insets = function () {
@@ -475,6 +491,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize())
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
+
+				//.style("stroke-width", 3)
+				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke-linejoin", "round")
+				.style("paint-order", "stroke")
+		}
+
+		if (out.subtitle()) {
+			//define default position
+			if (!out.subtitlePosition()) out.subtitlePosition([10, 8 + out.titleFontSize() + 5 + out.subtitleFontSize()]);
+			//draw subtitle
+			out.svg().append("text").attr("id", "subtitle" + out.geo_).attr("x", out.subtitlePosition()[0]).attr("y", out.subtitlePosition()[1])
+				.text(out.subtitle())
+				.style("font-family", out.subtitleFontFamily())
+				.style("font-size", out.subtitleFontSize())
+				.style("font-weight", out.subtitleFontWeight())
+				.style("fill", out.subtitleFill())
 
 				//.style("stroke-width", 3)
 				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
