@@ -36,7 +36,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//map title
 	out.title_ = "";
-	out.titleFontSize_ = 30;
+	out.titleFontSize_ = 20;
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
 	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
@@ -85,7 +85,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//default copyright and disclaimer text
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
-	out.botTxtFontSize_ = 12;
+	out.botTxtFontSize_ = 10;
 	out.botTxtFill_ = "black";
 	out.botTxtFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.botTxtPadding_ = 10;
