@@ -531,7 +531,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				}).on("mousemove", function () {
 					if (out.botTxtTooltipTxt_) tooltip.mousemove();
 				}).on("mouseout", function () {
-					if (out.bottomTextTooltipTxt_) tooltip.mouseout();
+					if (out.botTxtTooltipTxt_) tooltip.mouseout();
 					tooltip.style("max-width", tooltip.mw___);
 					tooltip.style("font", tooltip.f___);
 				});
