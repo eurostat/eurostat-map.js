@@ -76,7 +76,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.coastalMarginWidth_ = 5;
 	out.coastalMarginStdDev_ = 2;
 	//graticule
-	out.drawGraticule_ = true;
+	out.drawGraticule_ = false;
 	out.graticuleStroke_ = "lightgray";
 	out.graticuleStrokeWidth_ = 1;
 
