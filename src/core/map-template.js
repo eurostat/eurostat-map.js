@@ -83,10 +83,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//labelling (country names and geographical features)
 	out.labelling_ = false;
 	out.labelsToShow_ = ["countries", "seas"]; //accepted: "countries", "cc","seas", "values"
-	out.labelFill_ = { "seas": "#003399", "countries": "#383838", "cc":"black", "values":"black" };
-	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc":0.7, "values":0.9 };
+	out.labelFill_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
+	out.labelStroke_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
+	out.labelStrokeWidth_ = { "seas": 0.5, "countries": 0.5, "cc": 0.5, "values": 0.5 };
+	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc": 0.7, "values": 0.9 };
 	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.labelValuesFontSize_ = 12; //when labelsToShow includes "values", this is their font size
+	out.labelShadow_ = false;
+	out.labelShadowWidth_ = { "seas": 3, "countries": 3, "cc": 3, "values": 3 };
+	out.labelShadowColor_ = { "seas": "white", "countries": "white", "cc": "white", "values": "white" };
 
 	//dataset source link
 	out.showSourceLink_ = true;
@@ -151,13 +156,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		return out;
 	};
 
-		//subtitle getter and setter
-		out.subtitle = function (v) {
-			if (!arguments.length) return out.subtitle_;
-			out.subtitle_ = v;
-			if (out.svg()) out.svg().select("#subtitle" + out.geo()).text(v);
-			return out;
-		};
+	//subtitle getter and setter
+	out.subtitle = function (v) {
+		if (!arguments.length) return out.subtitle_;
+		out.subtitle_ = v;
+		if (out.svg()) out.svg().select("#subtitle" + out.geo()).text(v);
+		return out;
+	};
 
 	//insets getter/setter
 	out.insets = function () {
@@ -238,7 +243,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		out.svg(svg);
 
 		//clear SVG (to avoid building multiple svgs on top of each other during multiple build() calls)
-		selectAll("#"+out.svgId()+" > *").remove(); 
+		selectAll("#" + out.svgId() + " > *").remove();
 
 		//set SVG dimensions
 		//if no height was specified, use 85% of the width.
@@ -607,18 +612,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (nutsRG) {
 				const gcp = zg.append("g").attr("id", "g_stat_labels");
 
-				//allow for stat label positioning by adding a g element here, then adding the values in 
+				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
 				gcp.selectAll("g")
 					.data(nutsRG)
 					.enter()
 					.append("g")
 					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 					.attr("class", "stat-label")
-					.attr("font-size",out.labelValuesFontSize_)
+					.style("font-size", out.labelValuesFontSize_ + "px")
 					.attr("font-weight", "bold")
-					.attr("text-anchor","middle")
+					.attr("text-anchor", "middle")
 					.style("opacity", d => out.labelOpacity_[d.class])
 					.style("fill", d => out.labelFill_[d.class])
+					.attr("stroke", d => out.labelStroke_[d.class])
+					.attr("stroke-width", d => out.labelStrokeWidth_[d.class])
 					.style("font-family", out.labelFontFamily_)
 					.on("mouseover", function (rg) {
 						select(this).style("fill", out.nutsrgSelFillSty_);
@@ -632,6 +639,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}
 		}
 
+		//ADD REST OF LABELS (FROM LABELS.JS)
 		if (labelsArray) {
 			let data = labelsArray.filter((d) => {
 				if (d.class == "countries") {
@@ -650,11 +658,59 @@ export const mapTemplate = function (config, withCenterPoints) {
 					}
 				}
 			})
+
+			const shadowg = zg.append("g").attr("id", "g_labelShadows");
 			const labelg = zg.append("g").attr("id", "g_geolabels");
-			labelg.selectAll("text")
+
+			//SHADOWS
+			if (out.labelShadow_) {
+				let shadows = shadowg.selectAll("text")
+					.data(data)
+					.enter()
+					.append("text")
+					.attr("class", (d) => { return "labelShadow_" + d.class })
+					.attr("x", function (d) {
+						if (d.rotate) {
+							return 0; //for rotated text, x and y positions must be specified in the transform property
+						}
+						return projection([d.x, d.y])[0];
+					})
+					.attr("y", function (d) {
+						if (d.rotate) {
+							return 0; //for rotated text, x and y positions must be specified in the transform property
+						}
+						return projection([d.x, d.y])[1];
+					})
+					.attr("dy", -7) // set y position of bottom of text
+					.style("opacity", d => out.labelOpacity_[d.class])
+					.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
+					.style("fill", d => out.labelShadowColor_[d.class])
+					.attr("stroke", d => out.labelShadowColor_[d.class])
+					.attr("stroke-width", d => out.labelStrokeWidth_[d.class] + out.labelShadowWidth_[d.class])
+					.style("font-size", (d) => d.size + "px")
+					.attr("transform", (d) => {
+						if (d.rotate) {
+							let pos = projection([d.x, d.y])
+							let x = pos[0];
+							let y = pos[1];
+							return `translate(${x},${y}) rotate(${d.rotate})`
+						} else {
+							return "rotate(0)"
+						}
+					})
+					.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
+					.style("pointer-events", "none")
+					.style("font-family", out.labelFontFamily_)
+					.attr("text-anchor", "middle") // set anchor y justification
+					.text(function (d) { return d.text; }); // define the text to display
+			}
+
+			//LABELS
+			let labels = labelg.selectAll("text")
 				.data(data)
 				.enter()
-				.append("text") // append text
+				.append("text")
 				.attr("class", (d) => { return "geolabel_" + d.class })
 				//position label
 				.attr("x", function (d) {
@@ -673,8 +729,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("opacity", d => out.labelOpacity_[d.class])
 				.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
 				.style("fill", d => out.labelFill_[d.class])
+				.attr("stroke", d => out.labelStroke_[d.class])
+				.attr("stroke-width", d => out.labelStrokeWidth_[d.class])
 
-				//define label size
+				//set label size
 				.style("font-size", (d) => d.size + "px")
 				//transform labels which have a "rotate" property in the labels config. For rotated labels, their X,Y must also be set in the transform.
 				// note: dont apply to country code labels
@@ -694,6 +752,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-family", out.labelFontFamily_)
 				.attr("text-anchor", "middle") // set anchor y justification
 				.text(function (d) { return d.text; }); // define the text to display
+
+
 		}
 	}
 
@@ -735,7 +795,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//copy template attributes
 		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
-			"labelFill_", "labelOpacity_", "labelsToShow_", "labelFontFamily_", "lg_"]
+			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_","labelShadowWidth_","labelShadow_","labelShadowColor_", "labelsToShow_", "labelFontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods

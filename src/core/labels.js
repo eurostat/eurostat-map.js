@@ -193,7 +193,7 @@
 	},
 	"GP_32620": {
 		cc: [
-			{ text: "FR", x: 700000, y: 1810000, class: "cc", size: 12 },
+			{ text: "FR", x: 667000, y: 1740000, class: "cc", size: 12 },
 		],
 		en: [
 			{ text: "Guadeloupe", x: 700000, y: 1810000, class: "countries", size: 12 },
@@ -310,7 +310,7 @@
 	},
 	"CARIB_32620": {
 		cc: [
-			{ text: "FR", x: 720000, y: 1810000, class: "cc", size: 10 },
+			{ text: "FR", x: 700000, y: 1810000, class: "cc", size: 10 },
 			{ text: "FR", x: 640000, y: 1590000, class: "cc", size: 10 },
 			{ text: "FR", x: 540000, y: 1962000, class: "cc", size:7 },
 		],
