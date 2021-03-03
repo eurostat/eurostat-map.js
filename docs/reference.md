@@ -341,6 +341,8 @@ If the sum of the chosen categories do not represent the complete total for that
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
+| *map*.**pieMaxRadius**([*value*]) | Number | *15* | The maximum radius of the pie chart. |
+| *map*.**pieMinRadius**([*value*]) | Number | *5* | The minimum radius of the pie chart. |
 | *map*.**catColors**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. If not specified, different colors are proposed. |
 | *map*.**catLabels**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. |
 | *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
@@ -633,6 +635,10 @@ Labels for country names, country codes, and/or seas can be added to the map. La
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838", "cc":"black", "values":"black"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
 | *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
+| *map*.**labelShadow**([*value*]) | Boolean | *false* | Whether or not to add shadows to the labels. |
+| *map*.**labelShadowWidth**([*value*]) | Object | *{ "seas": 3, "countries": 3, "cc": 3, "values": 3 }* | The width of the shadow added to each type of label. |
+| *map*.**labelShadowColor**([*value*]) | Object | *{ "seas": "white", "countries": "white", "cc": "white", "values": "white" }* | The color of the shadow added to each type of label. |
+
 
 ## Insets
 

@@ -98,7 +98,7 @@ export const map = function (config) {
 
 	//@override
 	out.updateStyle = function () {
-
+console.log("updateStyle")
 		//define style per class
 		if(!out.classToFillStyle())
 			out.classToFillStyle( getColorLegend(out.colorFun(),out.colors_) )
@@ -114,15 +114,31 @@ export const map = function (config) {
 
 		// add labels of stat values if applicable
 		if (out.labelsToShow_.includes("values")) {
+			//clear previous labels
+			out.svg().selectAll(".labels-container" + out.svgId() + " > *").remove();
+
 			out.svg().selectAll("g.stat-label").append("text")
 			.text(function (d) {
 				const s = out.statData();
 				const sv = s.get(d.properties.id);
 				if (!sv || !sv.value) {
-					return 0;
+					return "";
 				}
 				 return sv.value; 
 			});
+
+			//add shadows to labels
+			if (out.labelShadow_) {
+				out.svg().selectAll("g.stat-label-shadow").append("text")
+				.text(function (d) {
+					const s = out.statData();
+					const sv = s.get(d.properties.id);
+					if (!sv || !sv.value) {
+						return "";
+					}
+					 return sv.value; 
+				});
+			}
 		}
 
 		return out;
