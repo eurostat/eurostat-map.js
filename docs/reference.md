@@ -673,7 +673,7 @@ Note that a map inset is built as a proper map within a map: It has all properti
 | *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
 | *map*.**insetBoxPadding**([*value*]) | number | *5* | When several insets are specified within the map, the distance between the different insets. |
 | *map*.**insetBoxWidth**([*value*]) | number | *210* | The default width of the insets box, which are squared by default. |
-| *map*.**insetZoomExtent**([*value*]) | Array | *[1,3]* | The default zoom extent of the insets. |
+| *map*.**insetZoomExtent**([*value*]) | Array | *null* | The zoom extent of inset maps. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 | *map*.**insetScale**([*value*]) | String | *"03M"* | The default scale of the insets. |
 
 
