@@ -711,7 +711,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 							return "rotate(0)"
 						}
 					})
-					.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 					.style("pointer-events", "none")
 					.style("font-family", out.labelFontFamily_)
@@ -759,7 +759,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						return "rotate(0)"
 					}
 				})
-				.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+				//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 				.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 				.style("pointer-events", "none")
 				.style("font-family", out.labelFontFamily_)
