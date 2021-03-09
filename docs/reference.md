@@ -167,6 +167,7 @@ eurostatmap.map("ch")
 | -------- | ------ | ---------- | ----------- |
 | *map*.**clnb**([*value*]) | int | *7* | The number of classes. When *classifMethod = "threshold"*, this parameter is inferred from the number of breaks specified. |
 | *map*.**classifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshol (see threshold method). |
+| *map*.**colors**([*value*]) | Array | *null* | The colours to use for the classes. if unspecified, default colorFun is used. |
 | *map*.**threshold**([*value*]) | Array | *[0]* | If *classifMethod = "threshold"*, the breaks of the classification. |
 | *map*.**makeClassifNice**([*value*]) | *boolean* | true | Make nice break values. Works only for *classifMethod = "equinter"*. |
 | *map*.**colorFun**([*value*]) | Function | *d3.interpolateYlOrBr* | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/) |
@@ -340,6 +341,8 @@ If the sum of the chosen categories do not represent the complete total for that
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
+| *map*.**pieMaxRadius**([*value*]) | Number | *15* | The maximum radius of the pie chart. |
+| *map*.**pieMinRadius**([*value*]) | Number | *5* | The minimum radius of the pie chart. |
 | *map*.**catColors**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. If not specified, different colors are proposed. |
 | *map*.**catLabels**([*value*]) | object | *auto* | The colors of the slices, indexed by category code. |
 | *map*.**showOnlyWhenComplete**([*value*]) | boolean | *false* | Draw a region only when data is available for all categories. If one is missing, the region is considered as with 'no data'. If not, the value of missing data is set to 0. |
@@ -616,7 +619,7 @@ Specify specific map styles.
 | *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
 | *map*.**coastalMarginWidth**([*value*]) | number | *5* | The width of the coastal blurry margin. |
 | *map*.**coastalMarginStdDev**([*value*]) | number | *2* | The standard deviation of the coastal blurry margin. |
-| *map*.**drawGraticule**([*value*]) | boolean | *true* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
+| *map*.**drawGraticule**([*value*]) | boolean | *false* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
 | *map*.**graticuleStroke**([*value*]) | String | *"lightgray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 
@@ -632,6 +635,10 @@ Labels for country names, country codes, and/or seas can be added to the map. La
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838", "cc":"black", "values":"black"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
 | *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
+| *map*.**labelShadow**([*value*]) | Boolean | *false* | Whether or not to add shadows to the labels. |
+| *map*.**labelShadowWidth**([*value*]) | Object | *{ "seas": 3, "countries": 3, "cc": 3, "values": 3 }* | The width of the shadow added to each type of label. |
+| *map*.**labelShadowColor**([*value*]) | Object | *{ "seas": "white", "countries": "white", "cc": "white", "values": "white" }* | The color of the shadow added to each type of label. |
+
 
 ## Insets
 
@@ -666,7 +673,7 @@ Note that a map inset is built as a proper map within a map: It has all properti
 | *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
 | *map*.**insetBoxPadding**([*value*]) | number | *5* | When several insets are specified within the map, the distance between the different insets. |
 | *map*.**insetBoxWidth**([*value*]) | number | *210* | The default width of the insets box, which are squared by default. |
-| *map*.**insetZoomExtent**([*value*]) | Array | *[1,3]* | The default zoom extent of the insets. |
+| *map*.**insetZoomExtent**([*value*]) | Array | *null* | The zoom extent of inset maps. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 | *map*.**insetScale**([*value*]) | String | *"03M"* | The default scale of the insets. |
 
 
