@@ -13,12 +13,19 @@ export const map = function (config) {
     const out = smap.statMap(config, true);
 
     out.sparkLineColor_ = "black";
-    out.sparkLineFill_ = "black";
+    out.sparkAreaColor_ = "#41afaa";
     out.sparkLineWidth_ = 30;
     out.sparkLineHeight_ = 20;
     out.sparkLineStrokeWidth_ = 0.4;
     out.sparkLineOpacity_ = 0.6;
     out.sparkType_ = "area";
+    out.sparkChartCircleRadius_ = 0.5;
+    out.sparkTooltipChart_ = {
+        width: 100,
+        height: 80,
+        margin: { left: 60, right: 40, top: 40, bottom: 40 },
+        circleRadius: 1.5
+    }
 
     //show sparklines only when data for all dates is complete.
     //Otherwise, consider the regions as being with no data at all.
@@ -34,13 +41,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineFill_"]
+    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineAreaColor_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineFill"].forEach(function (key) {
+    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineAreaColor"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -149,7 +156,7 @@ export const map = function (config) {
         //     .attr('class', 'spark-container')
         //     .append('path')
         //     .attr('class', 'sparks')
-        //     .attr('fill', out.sparkType_ == "area" ? out.sparkLineFill_ : "none")
+        //     .attr('fill', out.sparkType_ == "area" ? out.sparkLineAreaColor_ : "none")
         //     .attr('stroke', out.sparkType_ == "area" ? "none" : out.sparkLineColor_)
         //     .attr('stroke-width', out.sparkLineStrokeWidth_)
         //     .attr('opacity', out.sparkLineOpacity_)
@@ -200,26 +207,28 @@ export const map = function (config) {
         }
 
         // Add the area
-        node.append("path")
-            .datum(data)
-            .attr('fill', out.sparkLineFill_)
-            .attr('stroke', out.sparkLineColor_)
-            .attr('stroke-width', out.sparkLineStrokeWidth_)
-            .attr('opacity', out.sparkLineOpacity_)
-            .attr("fill-opacity", .3)
-            .attr("stroke", "none")
-            .attr("d", area()
-                .x(function (d, i) { return xScale(i) })
-                .y0(height)
-                .y1(function (d) { return yScale(d.value) })
-            )
-            .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+        if (out.sparkType_ == "area") {
+            node.append("path")
+                .datum(data)
+                .attr('fill', out.sparkAreaColor_)
+                .attr('stroke', out.sparkLineColor_)
+                .attr('stroke-width', out.sparkLineStrokeWidth_)
+                .attr('opacity', out.sparkLineOpacity_)
+                .attr("fill-opacity", .3)
+                .attr("stroke", "none")
+                .attr("d", area()
+                    .x(function (d, i) { return xScale(i) })
+                    .y0(height)
+                    .y1(function (d) { return yScale(d.value) })
+                )
+                .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+        }
 
         // Add the line
         node.append("path")
             .datum(data)
             .attr("fill", "none")
-            .attr("stroke", "#69b3a2")
+            .attr("stroke", out.sparkLineColor_)
             .attr("stroke-width", 0.5)
             .attr("d", line()
                 .x(function (d, i) { return xScale(i) })
@@ -236,7 +245,7 @@ export const map = function (config) {
             .attr("stroke", "none")
             .attr("cx", function (d, i) { return xScale(i) })
             .attr("cy", function (d) { return yScale(d.value) })
-            .attr("r", 0.3)
+            .attr("r", out.sparkChartCircleRadius_)
             .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
     }
 
@@ -311,7 +320,7 @@ export const map = function (config) {
         //prepare data for sparkline chart
         let height = 200
         let width = 200
-        let margin = { left: 60, right: 40, top: 40, bottom: 40 }
+        let margin = out.sparkTooltipChart_.margin;
         const data = getComposition(rg.properties.id);
         let svg = tp.append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -349,27 +358,29 @@ export const map = function (config) {
 
 
         // Add the area
-        node.append("path")
-            .datum(data)
-            .attr('fill', out.sparkLineFill_)
-            .attr('stroke', out.sparkLineColor_)
-            .attr('stroke-width', out.sparkLineStrokeWidth_)
-            .attr('opacity', out.sparkLineOpacity_)
-            .attr("fill-opacity", .3)
-            .attr("stroke", "none")
-            .attr("d", area()
-                .x(function (d, i) { return xScale(d.date) })
-                .y0(height)
-                .y1(function (d) { return yScale(d.value) })
-            )
-        //.attr("transform", (d) => `translate(-${(width / 2) + xOffset},${-(height / 2) + yOffset})`)
+        if (out.sparkType_ == "area") {
+            node.append("path")
+                .datum(data)
+                .attr('fill', out.sparkAreaColor_)
+                .attr('stroke', out.sparkLineColor_)
+                .attr('stroke-width', out.sparkLineStrokeWidth_)
+                .attr('opacity', out.sparkLineOpacity_)
+                .attr("fill-opacity", .3)
+                .attr("stroke", "none")
+                .attr("stroke", "none")
+                .attr("d", area()
+                    .x(function (d, i) { return xScale(d.date) })
+                    .y0(height)
+                    .y1(function (d) { return yScale(d.value) })
+                )
+        }
 
         // Add the line
         node.append("path")
             .datum(data)
             .attr("fill", "none")
-            .attr("stroke", "#69b3a2")
-            .attr("stroke-width", 0.5)
+            .attr("stroke", out.sparkLineColor_)
+            .attr("stroke-width", out.sparkLineStrokeWidth_)
             .attr("d", line()
                 .x(function (d, i) { return xScale(d.date) })
                 .y(function (d) { return yScale(d.value) })
@@ -385,7 +396,7 @@ export const map = function (config) {
             .attr("stroke", "none")
             .attr("cx", function (d, i) { return xScale(d.date) })
             .attr("cy", function (d) { return yScale(d.value) })
-            .attr("r", 0.3)
+            .attr("r", out.sparkTooltipChart_.circleRadius)
         //.attr("transform", (d) => `translate(-${(width / 2) + xOffset},${-(height / 2) + yOffset})`)
     }
 
