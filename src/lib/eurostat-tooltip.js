@@ -7,7 +7,7 @@ import { select, event } from "d3-selection";
 export const tooltip = function (config) {
 	config = config || {};
 	config.div = config.div || "tooltip_eurostat";
-	config.maxWidth = config.maxWidth || "150px";
+	config.maxWidth = config.maxWidth || "200px";
 	config.fontSize = config.fontSize || "16px";
 	config.background = config.background || "white";
 	config.padding = config.padding || "5px";
