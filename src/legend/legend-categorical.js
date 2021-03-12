@@ -46,7 +46,7 @@ export const legend = function (map, config) {
 		if(out.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 			.text(out.title)
-			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 			.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		//set font family
@@ -88,7 +88,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text( m.classToText()? m.classToText()[ecl_] : ecl_ )
-			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 			.on("mouseover", function () {
 				const sel = svgMap.select("#g_nutsrg").selectAll("[ecl='" + ecl + "']");
 				sel.style("fill", m.nutsrgSelFillSty());
@@ -128,7 +128,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 
 		//set legend box dimensions

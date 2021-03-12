@@ -99,7 +99,7 @@ export const legend = function (map, config) {
 		if (config.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 				.text(config.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 			//circles
@@ -123,7 +123,7 @@ export const legend = function (map, config) {
 			//labels
 			container
 			  .append("text")
-			  .style("font-size", out.labelFontSize)
+			  .style("font-size", out.labelFontSize + "px")
 			  .attr("y", (d, i) => {
 				let y = -1 - 2 * m.sizeClassifier_(d) - out.labelFontSize;
 				return y;
@@ -170,7 +170,7 @@ return out;
 		if (config.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.legendSpacing + out.boxPadding + out.titleFontSize)
 				.text(config.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		//set font family
@@ -207,7 +207,7 @@ return out;
 			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
 				.text(m.catLabels()[code] || code)
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 				.on("mouseover", function () {
 					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
 						.style("fill", m.nutsrgSelFillSty())
@@ -245,7 +245,7 @@ return out;
 			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
-				.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 				.on("mouseover", function () {
 					svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
 						.style("fill", m.nutsrgSelFillSty())

@@ -48,7 +48,7 @@ export const legend = function (map, config) {
 		if(out.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 			.text(out.title)
-			.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+			.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 			.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		//set font family
@@ -86,7 +86,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text( m.catLabels()[code] || code )
-			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 			.on("mouseover", function () {
 				svgMap.selectAll("pattern").selectAll("rect[code='"+code+"']")
 					.style("fill", m.nutsrgSelFillSty())
@@ -124,7 +124,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize).style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
 			.on("mouseover", function () {
 				svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
 					.style("fill", m.nutsrgSelFillSty())

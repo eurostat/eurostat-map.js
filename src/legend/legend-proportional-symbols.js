@@ -104,7 +104,7 @@ export const legend = function (map, config) {
 		if (config.title) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 				.text(config.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 		}
 
@@ -191,7 +191,7 @@ export const legend = function (map, config) {
 		if (config.title)
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + config.titlePadding)
 				.text(config.title)
-				.style("font-size", out.titleFontSize).style("font-weight", out.titleFontWeight)
+				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
 				.style("font-family", out.fontFamily).style("fill", out.fontFill)
 
 		// x position of color legend cells

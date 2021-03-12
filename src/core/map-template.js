@@ -494,7 +494,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "title" + out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
 				.style("font-family", out.titleFontFamily())
-				.style("font-size", out.titleFontSize())
+				.style("font-size", out.titleFontSize() + "px")
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
 
@@ -511,7 +511,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "subtitle" + out.geo_).attr("x", out.subtitlePosition()[0]).attr("y", out.subtitlePosition()[1])
 				.text(out.subtitle())
 				.style("font-family", out.subtitleFontFamily())
-				.style("font-size", out.subtitleFontSize())
+				.style("font-size", out.subtitleFontSize() + "px")
 				.style("font-weight", out.subtitleFontWeight())
 				.style("fill", out.subtitleFill())
 
@@ -526,7 +526,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "bottomtext").attr("x", out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text(out.bottomText())
 				.style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
+				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
 					tooltip.mw___ = tooltip.style("max-width");
@@ -552,7 +552,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text("EUROSTAT")
 				.style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
+				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("font-weight", "bold")
 				.attr("text-anchor", "end")
 				.on("mouseover", function () {
@@ -572,7 +572,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//pretext "Source:"
 			let linkW = link.node().getComputedTextLength();
 			out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
+				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("stroke-width", "0.3px")
 				.attr("text-anchor", "end")
 			}

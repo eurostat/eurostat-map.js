@@ -31,7 +31,7 @@ export const tooltip = function (config) {
 		tooltip.style("max-width", config.maxWidth);
 		tooltip.style("overflow", "hidden");
 
-		tooltip.style("font-size", config.fontSize);
+		tooltip.style("font-size", config.fontSize + "px");
 		tooltip.style("background", config.background);
 		tooltip.style("padding", config.padding);
 		tooltip.style("border", config.border);
