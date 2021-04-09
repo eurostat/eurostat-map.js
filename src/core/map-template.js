@@ -60,6 +60,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 
 	//template default style
+	//countries to include
+	out.bordersToShow_ = ["eu","efta","cc","oth"];
 	//nuts
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "purple";
@@ -400,7 +402,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw NUTS regions
 		if (nutsRG)
 			zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
-				.enter().append("path").attr("d", path)
+				.enter().append("path")
+				.attr("d", path)
 				.attr("class", "nutsrg")
 				.attr("fill", out.nutsrgFillStyle_)
 				.on("mouseover", function (rg) {
@@ -421,7 +424,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_cntbn")
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(cntbn)
-				.enter().append("path").attr("d", path)
+				.enter().append("path")
+				.filter(function(bn) { 
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") {
+						return bn;
+					} 
+				})
+				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
 				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
 				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
@@ -431,8 +449,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 			nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
 			zg.append("g").attr("id", "g_nutsbn")
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
-				.selectAll("path").data(nutsbn).enter()
-				.append("path").attr("d", path)
+				.selectAll("path")
+				.data(nutsbn).enter()
+				.filter(function(bn) { 
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") {
+						return bn;
+					} 
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") {
+						return bn;
+					} 
+				})
+				.append("path")
+				.attr("d", path)
 				.attr("class", function (bn) {
 					bn = bn.properties;
 					if (bn.co === "T") return "bn_co";
