@@ -61,7 +61,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//template default style
 	//countries to include
-	out.bordersToShow_ = ["eu","efta","cc","oth"];
+	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
 	//nuts
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "purple";
@@ -425,19 +425,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(cntbn)
 				.enter().append("path")
-				.filter(function(bn) { 
-					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") {
-						return bn;
-					} 
+				.filter(function (bn) {
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") return bn;
+					if (out.bordersToShow_.includes("co") && bn.properties.co == "T") return bn;
 				})
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
@@ -451,19 +444,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path")
 				.data(nutsbn).enter()
-				.filter(function(bn) { 
-					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") {
-						return bn;
-					} 
-					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") {
-						return bn;
-					} 
+				.filter(function (bn) {
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") return bn;
+					if (out.bordersToShow_.includes("co") && bn.properties.co == "T") return bn;
 				})
 				.append("path")
 				.attr("d", path)
@@ -580,35 +566,35 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.showSourceLink_) {
 			if (out.stat().eurostatDatasetCode) {
 
-			//dataset link
-			let code = out.stat().eurostatDatasetCode;
-			let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
-			let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
-				.text("EUROSTAT")
-				.style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_ + "px")
-				.style("font-weight", "bold")
-				.attr("text-anchor", "end")
-				.on("mouseover", function () {
-					const sel = select(this);
-					sel.attr("fill", "lightblue");
-					sel.style("cursor", "pointer");
-					sel.style("text-decoration", "underline");
-				})
-				.on("mouseout", function () {
-					const sel = select(this);
-					sel.attr("fill", "black");
-					sel.style("cursor", "default");
-					sel.style("text-decoration", "none");
-				})
-			//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
+				//dataset link
+				let code = out.stat().eurostatDatasetCode;
+				let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
+				let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+					.text("EUROSTAT")
+					.style("font-family", out.botTxtFontFamily_)
+					.style("font-size", out.botTxtFontSize_ + "px")
+					.style("font-weight", "bold")
+					.attr("text-anchor", "end")
+					.on("mouseover", function () {
+						const sel = select(this);
+						sel.attr("fill", "lightblue");
+						sel.style("cursor", "pointer");
+						sel.style("text-decoration", "underline");
+					})
+					.on("mouseout", function () {
+						const sel = select(this);
+						sel.attr("fill", "black");
+						sel.style("cursor", "default");
+						sel.style("text-decoration", "none");
+					})
+				//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
 
-			//pretext "Source:"
-			let linkW = link.node().getComputedTextLength();
-			out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_ + "px")
-				.style("stroke-width", "0.3px")
-				.attr("text-anchor", "end")
+				//pretext "Source:"
+				let linkW = link.node().getComputedTextLength();
+				out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
+					.style("font-size", out.botTxtFontSize_ + "px")
+					.style("stroke-width", "0.3px")
+					.attr("text-anchor", "end")
 			}
 		}
 
@@ -627,7 +613,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		let labels = out.labelsConfig_ || defaultLabels;
 		let language = out.lg_;
 		let labelsArray = [];
-		let labelsG = zg.append("g").attr("class","labels-container");
+		let labelsG = zg.append("g").attr("class", "labels-container");
 
 		//define which labels to use (cc, countries, seas, values)
 		if (out.labelsToShow_.includes("countries") || out.labelsToShow_.includes("seas")) {
@@ -649,7 +635,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (nutsRG) {
 				const gsls = labelsG.append("g").attr("id", "g_stat_label_shadows");
 				const gsl = labelsG.append("g").attr("id", "g_stat_labels");
-				
+
 				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
 				gsl.selectAll("g")
 					.data(nutsRG)
