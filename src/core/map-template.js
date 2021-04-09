@@ -62,7 +62,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//template default style
 	//countries to include
 	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
-	out.countriesToShow_ = ["DE","DK","FR","ES","CH","CZ","PL","PT","SE","BE","NL","LU","IT","SI","SK","HR","FI","LT","LV","EE","HU","AT","BG","RO","EL","MT","IE","CY","UK","RS","TR","LI"];
+	out.countriesToShow_ = ["AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"]
 
 	//nuts
 	out.nutsrgFillStyle_ = "white";
