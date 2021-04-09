@@ -62,6 +62,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//template default style
 	//countries to include
 	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
+	out.countriesToShow_ = ["DE","DK","FR","ES","CH","CZ","PL","PT","SE","BE","NL","LU","IT","SI","SK","HR","FI","LT","LV","EE","HU","AT","BG","RO","EL","MT","IE","CY","UK","RS","TR","LI"];
+
 	//nuts
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "purple";
@@ -70,7 +72,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//land
 	out.landFillStyle_ = "#f4f4f4";
 	out.landStroke_ = "#ccc";
-	out.landStrokeWidth_ = 1
+	out.landStrokeWidth_ = 1;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
