@@ -60,6 +60,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.tooltipShowFlags_ = "short"; //"short" "long"
 
 	//template default style
+	//countries to include
+	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
+	out.countriesToShow_ = ["AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"]
+
 	//nuts
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "purple";
@@ -68,7 +72,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//land
 	out.landFillStyle_ = "#f4f4f4";
 	out.landStroke_ = "#ccc";
-	out.landStrokeWidth_ = 1
+	out.landStrokeWidth_ = 1;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -120,7 +124,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetBoxPosition_ = undefined;
 	out.insetBoxPadding_ = 5;
 	out.insetBoxWidth_ = 210;
-	out.insetZoomExtent_ = [1, 3];
+	//out.insetZoomExtent_ = [1, 3];
+	out.insetZoomExtent_ = null; //zoom disabled as default
 	out.insetScale_ = "03M";
 
 	/**
@@ -399,7 +404,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw NUTS regions
 		if (nutsRG)
 			zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
-				.enter().append("path").attr("d", path)
+				.enter().append("path")
+				.attr("d", path)
 				.attr("class", "nutsrg")
 				.attr("fill", out.nutsrgFillStyle_)
 				.on("mouseover", function (rg) {
@@ -420,7 +426,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_cntbn")
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(cntbn)
-				.enter().append("path").attr("d", path)
+				.enter().append("path")
+				.filter(function (bn) {
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") return bn;
+					if (out.bordersToShow_.includes("co") && bn.properties.co == "T") return bn;
+				})
+				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
 				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
 				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
@@ -430,8 +444,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 			nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
 			zg.append("g").attr("id", "g_nutsbn")
 				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
-				.selectAll("path").data(nutsbn).enter()
-				.append("path").attr("d", path)
+				.selectAll("path")
+				.data(nutsbn).enter()
+				.filter(function (bn) {
+					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
+					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
+					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
+					if (out.bordersToShow_.includes("oth") && bn.properties.oth == "T") return bn;
+					if (out.bordersToShow_.includes("co") && bn.properties.co == "T") return bn;
+				})
+				.append("path")
+				.attr("d", path)
 				.attr("class", function (bn) {
 					bn = bn.properties;
 					if (bn.co === "T") return "bn_co";
@@ -493,7 +516,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "title" + out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
 				.style("font-family", out.titleFontFamily())
-				.style("font-size", out.titleFontSize())
+				.style("font-size", out.titleFontSize() + "px")
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
 
@@ -510,7 +533,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "subtitle" + out.geo_).attr("x", out.subtitlePosition()[0]).attr("y", out.subtitlePosition()[1])
 				.text(out.subtitle())
 				.style("font-family", out.subtitleFontFamily())
-				.style("font-size", out.subtitleFontSize())
+				.style("font-size", out.subtitleFontSize() + "px")
 				.style("font-weight", out.subtitleFontWeight())
 				.style("fill", out.subtitleFill())
 
@@ -525,7 +548,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			out.svg().append("text").attr("id", "bottomtext").attr("x", out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text(out.bottomText())
 				.style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
+				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
 					tooltip.mw___ = tooltip.style("max-width");
@@ -545,35 +568,35 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.showSourceLink_) {
 			if (out.stat().eurostatDatasetCode) {
 
-			//dataset link
-			let code = out.stat().eurostatDatasetCode;
-			let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
-			let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
-				.text("EUROSTAT")
-				.style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
-				.style("font-weight", "bold")
-				.attr("text-anchor", "end")
-				.on("mouseover", function () {
-					const sel = select(this);
-					sel.attr("fill", "lightblue");
-					sel.style("cursor", "pointer");
-					sel.style("text-decoration", "underline");
-				})
-				.on("mouseout", function () {
-					const sel = select(this);
-					sel.attr("fill", "black");
-					sel.style("cursor", "default");
-					sel.style("text-decoration", "none");
-				})
-			//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
+				//dataset link
+				let code = out.stat().eurostatDatasetCode;
+				let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
+				let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+					.text("EUROSTAT")
+					.style("font-family", out.botTxtFontFamily_)
+					.style("font-size", out.botTxtFontSize_ + "px")
+					.style("font-weight", "bold")
+					.attr("text-anchor", "end")
+					.on("mouseover", function () {
+						const sel = select(this);
+						sel.attr("fill", "lightblue");
+						sel.style("cursor", "pointer");
+						sel.style("text-decoration", "underline");
+					})
+					.on("mouseout", function () {
+						const sel = select(this);
+						sel.attr("fill", "black");
+						sel.style("cursor", "default");
+						sel.style("text-decoration", "none");
+					})
+				//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
 
-			//pretext "Source:"
-			let linkW = link.node().getComputedTextLength();
-			out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
-				.style("font-size", out.botTxtFontSize_)
-				.style("stroke-width", "0.3px")
-				.attr("text-anchor", "end")
+				//pretext "Source:"
+				let linkW = link.node().getComputedTextLength();
+				out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
+					.style("font-size", out.botTxtFontSize_ + "px")
+					.style("stroke-width", "0.3px")
+					.attr("text-anchor", "end")
 			}
 		}
 
@@ -592,7 +615,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		let labels = out.labelsConfig_ || defaultLabels;
 		let language = out.lg_;
 		let labelsArray = [];
-		let labelsG = zg.append("g").attr("class","labels-container");
+		let labelsG = zg.append("g").attr("class", "labels-container");
 
 		//define which labels to use (cc, countries, seas, values)
 		if (out.labelsToShow_.includes("countries") || out.labelsToShow_.includes("seas")) {
@@ -614,7 +637,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (nutsRG) {
 				const gsls = labelsG.append("g").attr("id", "g_stat_label_shadows");
 				const gsl = labelsG.append("g").attr("id", "g_stat_labels");
-				
+
 				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
 				gsl.selectAll("g")
 					.data(nutsRG)
@@ -623,7 +646,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 					.attr("class", "stat-label")
 					.style("font-size", out.labelValuesFontSize_ + "px")
-					.attr("font-weight", "bold")
+					// .attr("font-weight", "bold")
 					.attr("text-anchor", "middle")
 					.style("opacity", d => out.labelOpacity_["values"])
 					.style("fill", d => out.labelFill_["values"])
@@ -640,7 +663,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 						.attr("class", "stat-label-shadow")
 						.style("font-size", out.labelValuesFontSize_ + "px")
-						.attr("font-weight", "bold")
+						// .attr("font-weight", "bold")
 						.attr("text-anchor", "middle")
 						.style("opacity", d => out.labelOpacity_["values"])
 						.style("fill", d => out.labelShadowColor_["values"])
@@ -710,7 +733,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 							return "rotate(0)"
 						}
 					})
-					.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 					.style("pointer-events", "none")
 					.style("font-family", out.labelFontFamily_)
@@ -758,7 +781,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						return "rotate(0)"
 					}
 				})
-				.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+				//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 				.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 				.style("pointer-events", "none")
 				.style("font-family", out.labelFontFamily_)

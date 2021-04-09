@@ -22,7 +22,7 @@ export const map = function (config) {
 	//the threshold, when the classificatio method is 'threshold'
 	out.threshold_ = [0];
 	//colors to use for classes
-	out.colors_ = null; 
+	out.colors_ = null;
 	//when computed automatically, ensure the threshold are nice rounded values
 	out.makeClassifNice_ = true;
 	//the color function [0,1] -> color
@@ -41,9 +41,9 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_","colors_"]
+	["clnb_", "classifMethod_", "threshold_", "makeClassifNice_", "colorFun_", "classToFillStyle_", "noDataFillStyle_", "classifier_", "colors_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override of some special getters/setters
@@ -51,8 +51,8 @@ export const map = function (config) {
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
 	//override attribute values with config values
-	if(config) ["clnb","classifMethod","threshold","makeClassifNice","colorFun","classToFillStyle","noDataFillStyle","colors_"].forEach(function (key) {
-		if(config[key]!=undefined) out[key](config[key]);
+	if (config) ["clnb", "classifMethod", "threshold", "makeClassifNice", "colorFun", "classToFillStyle", "noDataFillStyle", "colors_"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
 	});
 
 	//@override
@@ -98,18 +98,23 @@ export const map = function (config) {
 
 	//@override
 	out.updateStyle = function () {
-console.log("updateStyle")
+		console.log("updateStyle")
 		//define style per class
-		if(!out.classToFillStyle())
-			out.classToFillStyle( getColorLegend(out.colorFun(),out.colors_) )
+		if (!out.classToFillStyle())
+			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 
 		//apply style to nuts regions depending on class
 		out.svg().selectAll("path.nutsrg")
 			.transition().duration(out.transitionDuration())
-			.attr("fill", function () {
-				const ecl = select(this).attr("ecl");
-				if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-				return out.classToFillStyle()(ecl, out.clnb());
+			.attr("fill", function (rg) {
+				// only apply data-driven colour to specified countries
+				if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+					const ecl = select(this).attr("ecl");
+					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+					return out.classToFillStyle()(ecl, out.clnb());
+				} else {
+					return out.nutsrgFillStyle_;
+				}
 			});
 
 		// add labels of stat values if applicable
@@ -118,26 +123,26 @@ console.log("updateStyle")
 			out.svg().selectAll(".labels-container" + out.svgId() + " > *").remove();
 
 			out.svg().selectAll("g.stat-label").append("text")
-			.text(function (d) {
-				const s = out.statData();
-				const sv = s.get(d.properties.id);
-				if (!sv || !sv.value) {
-					return "";
-				}
-				 return sv.value; 
-			});
-
-			//add shadows to labels
-			if (out.labelShadow_) {
-				out.svg().selectAll("g.stat-label-shadow").append("text")
 				.text(function (d) {
 					const s = out.statData();
 					const sv = s.get(d.properties.id);
 					if (!sv || !sv.value) {
 						return "";
 					}
-					 return sv.value; 
+					return sv.value;
 				});
+
+			//add shadows to labels
+			if (out.labelShadow_) {
+				out.svg().selectAll("g.stat-label-shadow").append("text")
+					.text(function (d) {
+						const s = out.statData();
+						const sv = s.get(d.properties.id);
+						if (!sv || !sv.value) {
+							return "";
+						}
+						return sv.value;
+					});
 			}
 		}
 
@@ -146,7 +151,7 @@ console.log("updateStyle")
 
 
 	//@override
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		return lgch.legend;
 	}
 

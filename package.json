@@ -1,6 +1,6 @@
 {
   "name": "eurostat-map",
-  "version": "3.3.5",
+  "version": "3.3.12",
   "description": "Reusable library to quickly create and customise web maps showing Eurostat data directly retrieved from Eurostat database.",
   "keywords": [
     "eurostat",
@@ -33,7 +33,6 @@
     "d3": "^5.15.0",
     "jsonstat-toolkit": "^1.0.8",
     "publish": "^0.6.0",
-    "puppeteer": "^1.13.0",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {

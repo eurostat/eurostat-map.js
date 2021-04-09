@@ -50,13 +50,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_", "pieChartInnerRadius_", "pieOtherColor_", "pieOtherText_", "pieStrokeFill_","pieStrokeWidth_"]
+    ["catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieMaxRadius_", "pieMinRadius_", "pieChartInnerRadius_", "pieOtherColor_", "pieOtherText_", "pieStrokeFill_", "pieStrokeWidth_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius",  "pieChartInnerRadius", "pieOtherColor", "pieOtherText","pieStrokeFill","pieStrokeWidth"].forEach(function (key) {
+    if (config) ["catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieMaxRadius", "pieMinRadius", "pieChartInnerRadius", "pieOtherColor", "pieOtherText", "pieStrokeFill", "pieStrokeWidth"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -149,7 +149,7 @@ export const map = function (config) {
             sum += s.value;
         }
 
-        // where totalCode is used:
+        // when totalCode is specified, use it as the sum instead of the sum of the specified categories.
         if (totalCode) {
             let s = out.statData(totalCode).get(id);
             if (s) {
@@ -165,7 +165,7 @@ export const map = function (config) {
             comp[statCodes[i]] /= sum;
         }
 
-        //add "other" when totalCode is used
+        //add "other" category when totalCode is used
         if (totalCode) {
             let totalPerc = 0;
             for (let key in comp) {
@@ -229,39 +229,32 @@ export const map = function (config) {
     const getRegionTotal = function (id) {
         let sum = 0;
         let s;
-
         if (totalCode) {
             //when total is a stat code
             s = out.statData(totalCode).get(id);
-
             //case when some data is missing
             if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
                 if (out.showOnlyWhenComplete()) { sum = undefined; }
             } else {
                 sum = s.value
             }
-
         } else {
             //get stat value for each category. Compute the sum.
             for (let i = 0; i < statCodes.length; i++) {
-
                 //retrieve code and stat value
                 const sc = statCodes[i]
                 s = out.statData(sc).get(id);
-
                 //case when some data is missing
                 if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
                     if (out.showOnlyWhenComplete()) return undefined;
                     else continue;
                 }
-
                 sum += s.value;
             }
         }
 
         //case when no data
         if (sum == 0) return undefined;
-
         return sum;
     }
 

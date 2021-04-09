@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+      let mapWidth = 638;
+      let mapHeight = 608;
+      let map = eurostatmap
+        .map("ch")
+        .pixSize(7400)
+        .width(mapWidth)
+        .height(mapHeight)
+        .bottomText(null)
+        .showSourceLink(false)
+        .nutsLvl(3)
+        .drawGraticule(true)
+        .graticuleStroke("#ccc")
+        .graticuleStrokeWidth(0.5)
+        .geoCenter([4980000, 3610000])
+        .legend(false)
+        .insets("default")
+        .drawCoastalMargin(false)
+        .seaFillStyle("#E6FFFF")
+        .landFillStyle("#E6E6E6")
+        .nutsrgFillStyle('#E6E6E6')
+        .nutsbnStroke({
+          0: "#000",
+          1: "#000",
+          2: "#000",
+          3: "#000",
+        })
+        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 })
+        .bordersToShow(["eu"])
+        .countriesToShow(["DE","DK","FR","ES","CH","CZ","PL","PT","SE","BE","NL","LU","IT","SI","SK","HR","FI","LT","LV","EE","HU","AT","BG","RO","EL","IE","CY","MT"])
+
+      map.build();
+    </script>
+  </body>
+</html>

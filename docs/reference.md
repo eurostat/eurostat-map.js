@@ -46,6 +46,8 @@ Specify the NUTS geometries and the geographical extent of the map.
 | -------- | ------ | ---------- | ----------- |
 | *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
 | *map*.**nutsYear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
+| *map*.**bordersToShow**([*value*]) | Array | *["eu","efta","cc","oth","co"]* | The types of boundaries to show on the map. See [Nuts2json](https://github.com/eurostat/Nuts2json/#api) for possible types. |
+| *map*.**countriesToShow**([*value*]) | Array | *["AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IT","LI","LT","LU","LV","MT","NL","PL","PT","RO","RS","SE","SI","SK","TR","UK"]* | The country codes of the countries to be shown on the map. Countries not included in the array, but included in NUTS2JSON will be coloured using map.nutsrgFillStyle instead of data-driven colour. (Currently for choropleth maps only).|
 | *map*.**geo**([*value*]) | String | *"EUR"* | The map geographical territory, by default the entire European territory *"EUR"*. Other possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#overseas-territories---map-insets). |
 | *map*.**proj**([*value*]) | String | *"3035"* | The map projection EPSG code. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that these values depend on the geographical territory. |
 | *map*.**scale**([*value*]) | String | *"20M"* | The simplification level of the map, among *"03M"*, *"10M"*, *"20M"*, *"60M"* (for Europe). The most simplified version is *"60M"*. The level *"01M"* is also available for some geographical territories: For more information on possible values by geographical territory, see [Nuts2json](https://github.com/eurostat/Nuts2json/). |
@@ -673,7 +675,7 @@ Note that a map inset is built as a proper map within a map: It has all properti
 | *map*.**insetBoxPosition**([*value*]) | number | *auto* | The position of the insets box element within the map. |
 | *map*.**insetBoxPadding**([*value*]) | number | *5* | When several insets are specified within the map, the distance between the different insets. |
 | *map*.**insetBoxWidth**([*value*]) | number | *210* | The default width of the insets box, which are squared by default. |
-| *map*.**insetZoomExtent**([*value*]) | Array | *[1,3]* | The default zoom extent of the insets. |
+| *map*.**insetZoomExtent**([*value*]) | Array | *null* | The zoom extent of inset maps. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 | *map*.**insetScale**([*value*]) | String | *"03M"* | The default scale of the insets. |
 
 
