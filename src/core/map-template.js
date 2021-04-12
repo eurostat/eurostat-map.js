@@ -62,7 +62,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//template default style
 	//countries to include
 	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
-	out.countriesToShow_ = ["AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"]
+	out.countriesToShow_ = ["AL","AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","ME","MK","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"];
 
 	//nuts
 	out.nutsrgFillStyle_ = "white";
@@ -437,7 +437,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
 				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
-				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
+				.style("stroke-width", function (bn) { return (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
 
 		//draw NUTS boundaries
 		if (nutsbn) {

@@ -24,20 +24,56 @@
         .graticuleStrokeWidth(0.5)
         .geoCenter([4980000, 3610000])
         .legend(false)
-        .insets("default")
         .drawCoastalMargin(false)
         .seaFillStyle("#E6FFFF")
         .landFillStyle("#E6E6E6")
-        .nutsrgFillStyle('#E6E6E6')
+        .nutsrgFillStyle("#E6E6E6")
         .nutsbnStroke({
           0: "#000",
           1: "#000",
           2: "#000",
           3: "#000",
+          co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 })
-        .bordersToShow(["eu"])
-        .countriesToShow(["DE","DK","FR","ES","CH","CZ","PL","PT","SE","BE","NL","LU","IT","SI","SK","HR","FI","LT","LV","EE","HU","AT","BG","RO","EL","IE","CY","MT"])
+        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.4 })
+        .landStrokeWidth(0.4)
+        .landStroke("grey");
+
+      // only show EU regions and borders
+      map
+        .bordersToShow(["eu", "co"])
+        .nutsYear(2016)
+        .countriesToShow([
+          "AT",
+          "BE",
+          "BG",
+          "CY",
+          "CZ",
+          "DE",
+          "DK",
+          "EE",
+          "EL",
+          "ES",
+          "FI",
+          "FR",
+          "HR",
+          "HU",
+          "IE",
+          "IS",
+          "IT",
+          "LI",
+          "LT",
+          "LU",
+          "LV",
+          "MT",
+          "NL",
+          "PL",
+          "PT",
+          "RO",
+          "SE",
+          "SI",
+          "SK",
+        ]);
 
       map.build();
     </script>
