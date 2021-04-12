@@ -437,7 +437,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
 				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
-				.style("stroke-width", function (bn) { (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
+				.style("stroke-width", function (bn) { return (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
 
 		//draw NUTS boundaries
 		if (nutsbn) {
