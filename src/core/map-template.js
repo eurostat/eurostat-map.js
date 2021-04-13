@@ -25,7 +25,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.height_ = 0;
 
 	//geographical focus
-	out.nutsLvl_ = 3;
+	out.nutsLvl_ = 3; // allow mixed?
 	out.nutsYear_ = 2016;
 	out.geo_ = "EUR";
 	out.proj_ = "3035";
@@ -62,7 +62,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//template default style
 	//countries to include
 	out.bordersToShow_ = ["eu", "efta", "cc", "oth", "co"];
-	out.countriesToShow_ = ["AL","AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","ME","MK","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"];
+	out.countriesToShow_ = ["AL", "AT", "BE", "BG", "CH", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "ME", "MK", "MT", "NL", "NO", "PL", "PT", "RO", "RS", "SE", "SI", "SK", "TR", "UK"];
 
 	//nuts
 	out.nutsrgFillStyle_ = "white";
@@ -184,6 +184,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 */
 	let geoData = undefined;
 
+	/**
+	 * geo data of ALL NUTS LEVELS (for mixing NUTS), as the raw topojson objects returned by nuts2json API
+	 */
+	let allNUTSGeoData = undefined;
+
 	/** */
 	out.isGeoReady = function () {
 		if (!geoData) return false;
@@ -197,15 +202,32 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * Return promise for Nuts2JSON topojson data.
 	 */
 	out.getGeoDataPromise = function () {
-		const buf = [];
-		buf.push(out.nuts2jsonBaseURL_);
-		buf.push(out.nutsYear_);
-		if (out.geo_ != "EUR") buf.push("/" + this.geo_);
-		buf.push("/"); buf.push(out.proj_);
-		buf.push("/"); buf.push(out.scale_);
-		buf.push("/"); buf.push(out.nutsLvl_);
-		buf.push(".json");
-		return json(buf.join(""));
+		//for mixing all NUTS levels (i.e IMAGE)
+		if (out.nutsLvl_ == "mixed") {
+			const promises = [];
+			[0, 1, 2, 3].forEach((lvl) => {
+				const buf = [];
+				buf.push(out.nuts2jsonBaseURL_);
+				buf.push(out.nutsYear_);
+				if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+				buf.push("/"); buf.push(out.proj_);
+				buf.push("/"); buf.push(out.scale_);
+				buf.push("/"); buf.push(lvl);
+				buf.push(".json");
+				promises.push(json(buf.join("")));
+			})
+			return promises;
+		} else {
+			const buf = [];
+			buf.push(out.nuts2jsonBaseURL_);
+			buf.push(out.nutsYear_);
+			if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+			buf.push("/"); buf.push(out.proj_);
+			buf.push("/"); buf.push(out.scale_);
+			buf.push("/"); buf.push(out.nutsLvl_);
+			buf.push(".json");
+			return json(buf.join(""));
+		}
 	}
 
 	/**
@@ -215,17 +237,32 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//erase previous data
 		geoData = null;
+		allNUTSGeoData = null;
 
 		//get geo data from Nuts2json API
-		out.getGeoDataPromise().then(function (geo___) {
-			geoData = geo___;
+		if (out.nutsLvl_ == "mixed") {
+			let promises = out.getGeoDataPromise();
+			Promise.all(promises).then((geo___) => {
+				allNUTSGeoData = geo___;
+				geoData = geo___[0];
+				//build map template
+				out.buildMapTemplate();
 
-			//build map template
-			out.buildMapTemplate();
+				//callback
+				callback();
+			})
 
-			//callback
-			callback();
-		});
+		} else {
+			out.getGeoDataPromise().then(function (geo___) {
+				geoData = geo___;
+
+				//build map template
+				out.buildMapTemplate();
+
+				//callback
+				callback();
+			});
+		}
 
 		//recursive call to inset components
 		for (const geo in out.insetTemplates_)
@@ -402,24 +439,51 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw NUTS regions
-		if (nutsRG)
-			zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+		if (nutsRG) {
+
+			if (out.nutsLvl_ == "mixed") {
+				const rg0 = nutsRG;
+				const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
+				const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
+				const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
+
+				// to be able to distinguish level 0 from the other levels when hiding/showing regions
+				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(rg0)
 				.enter().append("path")
 				.attr("d", path)
-				.attr("class", "nutsrg")
-				.attr("fill", out.nutsrgFillStyle_)
-				.on("mouseover", function (rg) {
-					const sel = select(this);
-					sel.attr("fill___", sel.attr("fill"));
-					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
-				}).on("mousemove", function () {
-					if (tooltip) tooltip.mousemove();
-				}).on("mouseout", function () {
-					const sel = select(this);
-					sel.attr("fill", sel.attr("fill___"));
-					if (tooltip) tooltip.mouseout();
-				});
+				.attr("class", "nutsrg0")
+				.attr("fill", out.nutsrgFillStyle_);
+
+				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
+				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
+				[rg1,rg2,rg3].forEach((r)=>{
+					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
+					.enter().append("path")
+					.attr("d", path)
+					.attr("class", "nutsrg")
+					.attr("fill", out.nutsrgFillStyle_)
+				})
+
+			} else {
+				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+					.enter().append("path")
+					.attr("d", path)
+					.attr("class", "nutsrg")
+					.attr("fill", out.nutsrgFillStyle_)
+					.on("mouseover", function (rg) {
+						const sel = select(this);
+						sel.attr("fill___", sel.attr("fill"));
+						sel.attr("fill", out.nutsrgSelFillSty_);
+						if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+					}).on("mousemove", function () {
+						if (tooltip) tooltip.mousemove();
+					}).on("mouseout", function () {
+						const sel = select(this);
+						sel.attr("fill", sel.attr("fill___"));
+						if (tooltip) tooltip.mouseout();
+					});
+			}
+		}
 
 		//draw country boundaries
 		if (cntbn)
