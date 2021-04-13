@@ -131,33 +131,35 @@ export const map = function (config) {
 
 
 		if (out.nutsLvl_ == "mixed") {
-			//when mixing NUTS, level 0 is separated from the rest (class nutsrg0)
-			out.svg().selectAll("path.nutsrg0").transition().duration(out.transitionDuration())
-			.attr("fill", function (rg) {
-				// only apply data-driven colour to specified countries
-				if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-					const ecl = select(this).attr("ecl");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-					return out.classToFillStyle()(ecl, out.clnb());
-				} else {
-					return out.nutsrgFillStyle_;
-				}
-			});
-
 			// Toggle visibility - show NUTS 1,2,3 with stat values when mixing different NUTS levels
 			out.svg().selectAll("path.nutsrg")
 				.style("display", function (rg) {
 					if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 						const ecl = select(this).attr("ecl");
-						if (ecl && ecl !== "nd") {
-							return "block";
-						} else {
-							return "none";
-						}
+						const lvl = select(this).attr("lvl");
+						// always display NUTS 0
+						if (ecl && ecl !== "nd" || lvl == "0") return "block"; else return "none";
+
 					} else {
 						return "none";
 					}
 				})
+
+				//toggle stroke - similar concept to visibility (only show borders of NUTS regions with stat data - a la IMAGE)
+				.style("stroke", function (rg) {
+					const lvl = select(this).attr("lvl");
+					const ecl = select(this).attr("ecl");
+					if (ecl && ecl !== "nd" && lvl !== "0") {
+						return out.nutsbnStroke_[parseInt(lvl)] || "#777";
+					}
+				})
+				.style("stroke-width", function (rg) {
+					const lvl = select(this).attr("lvl");
+					const ecl = select(this).attr("ecl");
+					if (ecl && ecl !== "nd" && lvl !== "0") {
+						return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2;
+					}
+				});
 		}
 
 

@@ -447,21 +447,27 @@ export const mapTemplate = function (config, withCenterPoints) {
 				const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
 				const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
 
-				// to be able to distinguish level 0 from the other levels when hiding/showing regions
-				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(rg0)
-				.enter().append("path")
-				.attr("d", path)
-				.attr("class", "nutsrg0")
-				.attr("fill", out.nutsrgFillStyle_);
-
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
-				[rg1,rg2,rg3].forEach((r)=>{
+				[rg0, rg1, rg2, rg3].forEach((r, i) => {
 					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
-					.enter().append("path")
-					.attr("d", path)
-					.attr("class", "nutsrg")
-					.attr("fill", out.nutsrgFillStyle_)
+						.enter().append("path")
+						.attr("d", path)
+						.attr("class", "nutsrg")
+						.attr("lvl", i) //to be able to distinguish levels
+						.attr("fill", out.nutsrgFillStyle_)
+						.on("mouseover", function (rg) {
+							const sel = select(this);
+							sel.attr("fill___", sel.attr("fill"));
+							sel.attr("fill", out.nutsrgSelFillSty_);
+							if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+						}).on("mousemove", function () {
+							if (tooltip) tooltip.mousemove();
+						}).on("mouseout", function () {
+							const sel = select(this);
+							sel.attr("fill", sel.attr("fill___"));
+							if (tooltip) tooltip.mouseout();
+						});
 				})
 
 			} else {
@@ -548,8 +554,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
 				gcp.selectAll("g")
-					.data(nutsRG/*.sort(function (a, b) { return b.properties.val - a.properties.val; })*/)
-					.enter() //.filter(function (d) { return d.properties.val; })
+					.data(nutsRG)
+					.enter()
 					.append("g")
 					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 					//.attr("r", 1)
@@ -703,8 +709,19 @@ export const mapTemplate = function (config, withCenterPoints) {
 				const gsl = labelsG.append("g").attr("id", "g_stat_labels");
 
 				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
+				let labelRegions;
+				if (out.nutsLvl_ == "mixed") {
+					const rg0 = nutsRG;
+					const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
+					const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
+					const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
+					labelRegions = rg0.concat(rg1, rg2, rg3);
+				} else {
+					labelRegions = nutsRG
+				}
+
 				gsl.selectAll("g")
-					.data(nutsRG)
+					.data(labelRegions)
 					.enter()
 					.append("g")
 					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
@@ -721,7 +738,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//SHADOWS
 				if (out.labelShadow_) {
 					gsls.selectAll("g")
-						.data(nutsRG)
+						.data(labelRegions)
 						.enter()
 						.append("g")
 						.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
