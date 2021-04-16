@@ -44,7 +44,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 | Method | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**nutsLvl**([*value*]) | int | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. |
+| *map*.**nutsLvl**([*value*]) | int/string | *3* | The nuts level to show on the map, from 0 (national level) to 3 (more local level). Note that not all NUTS levels are always available for Eurostat databases. When using custom data sources and mixing different NUTS levels, set this option to "mixed" to show the different levels at once. |
 | *map*.**nutsYear**([*value*]) | int | *2016* | The version of the NUTS dataset to use. Possible values are given in [Nuts2json](https://github.com/eurostat/Nuts2json/#api). Note that the default value will be adjusted in the future depending on the [NUTS legislation in force](https://ec.europa.eu/eurostat/web/nuts/legislation). |
 | *map*.**bordersToShow**([*value*]) | Array | *["eu","efta","cc","oth","co"]* | The types of boundaries to show on the map. See [Nuts2json](https://github.com/eurostat/Nuts2json/#api) for possible types. |
 | *map*.**countriesToShow**([*value*]) | Array | *["AL","AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES", "FI","FR","HR","HU","IE","IS","IT","LI","LT", "LU","LV","ME","MK", "MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","TR","UK"]* | The country codes of the countries to be shown on the map. Countries not included in the array, but included in NUTS2JSON will be coloured using map.nutsrgFillStyle instead of data-driven colour. (Currently for choropleth maps only).|
