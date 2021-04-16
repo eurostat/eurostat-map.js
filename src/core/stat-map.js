@@ -175,7 +175,11 @@ export const statMap = function (config, withCenterPoints) {
 			out.statData( statKey, stdt );
 
 			//launch query
-			stdt.retrieveFromRemote(out.nutsLvl(), out.lg(), ()=>{
+			let nl = out.nutsLvl_;
+			if (out.nutsLvl_ == 'mixed') {
+				nl = 0;
+			}
+			stdt.retrieveFromRemote(nl, out.lg(), ()=>{
 
 				//if geodata has not been loaded, wait again
 				if (!out.isGeoReady()) return;

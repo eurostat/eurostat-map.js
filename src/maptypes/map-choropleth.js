@@ -134,15 +134,10 @@ export const map = function (config) {
 			// Toggle visibility - show NUTS 1,2,3 with stat values when mixing different NUTS levels
 			out.svg().selectAll("path.nutsrg")
 				.style("display", function (rg) {
-					if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-						const ecl = select(this).attr("ecl");
-						const lvl = select(this).attr("lvl");
-						// always display NUTS 0
-						if (ecl && ecl !== "nd" || lvl == "0") return "block"; else return "none";
-
-					} else {
-						return "none";
-					}
+					const ecl = select(this).attr("ecl");
+					const lvl = select(this).attr("lvl");
+					// always display NUTS 0 and filter countries to show
+					if (ecl && ecl !== "nd" && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") return "block"; else return "none";
 				})
 
 				//toggle stroke - similar concept to visibility (only show borders of NUTS regions with stat data - a la IMAGE)
