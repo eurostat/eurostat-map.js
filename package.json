@@ -1,6 +1,6 @@
 {
   "name": "eurostat-map",
-  "version": "3.3.16",
+  "version": "3.3.18",
   "description": "Reusable library to quickly create and customise web maps showing Eurostat data directly retrieved from Eurostat database.",
   "keywords": [
     "eurostat",
@@ -19,7 +19,8 @@
   },
   "main": "build/eurostatmap.min.js",
   "files": [
-    "build/eurostatmap.min.js"
+    "build/eurostatmap.min.js",
+    "build/eurostatmap.js"
   ],
   "scripts": {
     "start": "webpack --config webpack.config.dev.js",

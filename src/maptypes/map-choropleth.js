@@ -140,7 +140,7 @@ export const map = function (config) {
 					if (ecl && ecl !== "nd" && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") return "block"; else return "none";
 				})
 
-				//toggle stroke - similar concept to visibility (only show borders of NUTS regions with stat data - a la IMAGE)
+				//toggle stroke - similar concept to visibility (only show borders of NUTS regions that have stat data - a la IMAGE)
 				.style("stroke", function (rg) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
@@ -159,10 +159,11 @@ export const map = function (config) {
 
 
 
-		// add labels of stat values if applicable
+		// update labels of stat values, appending the stat labels to the region centroids
 		if (out.labelsToShow_.includes("values")) {
 			//clear previous labels
-			out.svg().selectAll(".labels-container" + out.svgId() + " > *").remove();
+			let prevLabels = out.svg_.selectAll("g.stat-label > *")
+			prevLabels.remove();
 
 			out.svg().selectAll("g.stat-label").append("text")
 				.text(function (d) {

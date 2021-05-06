@@ -705,8 +705,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//for statistical values we need to add centroids, then add values later
 		if (out.labelsToShow_.includes("values")) {
 			if (nutsRG) {
-				const gsls = labelsG.append("g").attr("id", "g_stat_label_shadows");
-				const gsl = labelsG.append("g").attr("id", "g_stat_labels");
+				const gsls = labelsG.append("g").attr("class", "g_stat_label_shadows");
+				const gsl = labelsG.append("g").attr("class", "g_stat_labels");
 
 				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
 				let labelRegions;
@@ -755,7 +755,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}
 		}
 
-		//ADD REST OF LABELS (FROM LABELS.JS)
+		// rest of label types (FROM LABELS.JS)
 		if (labelsArray) {
 			let data = labelsArray.filter((d) => {
 				if (d.class == "countries") {
@@ -775,8 +775,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				}
 			})
 
-			const shadowg = labelsG.append("g").attr("id", "g_labelShadows");
-			const labelg = labelsG.append("g").attr("id", "g_geolabels");
+			const shadowg = labelsG.append("g").attr("class", "g_labelShadows");
+			const labelg = labelsG.append("g").attr("class", "g_geolabels");
 
 			//SHADOWS
 			if (out.labelShadow_) {
@@ -868,8 +868,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-family", out.labelFontFamily_)
 				.attr("text-anchor", "middle") // set anchor y justification
 				.text(function (d) { return d.text; }); // define the text to display
-
-
 		}
 	}
 
