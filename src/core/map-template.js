@@ -219,7 +219,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			})
 			return promises;
 		} else if (out.geo_ == "WORLD") {
-			return json('../src/assets/topojson/WORLD_4326.json');
+			return json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json');
 		} else {
 			const buf = [];
 			buf.push(out.nuts2jsonBaseURL_);
