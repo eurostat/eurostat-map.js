@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <svg id="map"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+      let data = {
+        FR: 1,
+        DE: 1,
+        ES: 3,
+        SE: 2,
+        CH: 4,
+        BR: 8,
+        US: 4,
+        CN: 6,
+        SA: 3,
+        AG: 5,
+        ZA: 3,
+        ET: 2,
+        AU: 3,
+        CA: 2,
+        MX: 1
+      };
+      const map = eurostatmap
+        .map("ch")
+        .geo("WORLD")
+        .proj(54030)
+        .title("World map")
+        .drawGraticule(true)
+        .seaFillStyle("#E6FFFF")
+        .landFillStyle("#E6E6E6")
+        .landStroke("black")
+        .landStrokeWidth(0.4)
+        .labelling(true)
+        .labelsToShow(["seas"])
+        .classifMethod("threshold")
+        .threshold([1, 2, 3, 4, 5, 6,7])
+        .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
+
+      map.statData().setData(data);
+      map.build();
+    </script>
+  </body>
+</html>

@@ -1,7 +1,8 @@
 import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
 import { select, event, selectAll } from "d3-selection";
-import { geoIdentity, geoPath } from "d3-geo";
+import { geoIdentity, geoPath, geoGraticule, geoGraticule10 } from "d3-geo";
+import { geoRobinson } from "d3-geo-projection";
 import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
@@ -25,7 +26,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.height_ = 0;
 
 	//geographical focus
-	out.nutsLvl_ = 3; // allow mixed?
+	out.nutsLvl_ = 3; // 0,1,2,3, or 'mixed'
 	out.nutsYear_ = 2016;
 	out.geo_ = "EUR";
 	out.proj_ = "3035";
@@ -217,6 +218,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				promises.push(json(buf.join("")));
 			})
 			return promises;
+		} else if (out.geo_ == "WORLD") {
+			return json('../src/assets/topojson/WORLD_4326.json');
 		} else {
 			const buf = [];
 			buf.push(out.nuts2jsonBaseURL_);
@@ -372,16 +375,35 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//SVG drawing function
 		//compute geo bbox from geocenter, pixsize and SVG dimensions
 		const bbox = [out.geoCenter_[0] - 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] - 0.5 * out.pixSize_ * out.height_, out.geoCenter_[0] + 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] + 0.5 * out.pixSize_ * out.height_];
-		const projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+
+		//WORLD geo uses 4326 geometries and reprojects to 54030 using d3
+		let projection;
+		if (out.geo_ == "WORLD") {
+			projection = geoRobinson()
+				.scale(148)
+				.rotate([352, 0, 0])
+				.translate([out.width_ / 2, out.height_ / 2]);
+		} else {
+			projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+		}
+
 		const path = geoPath().projection(projection);
 
 
 		//decode topojson to geojson
-		const gra = feature(geoData, geoData.objects.gra).features;
-		const nutsRG = feature(geoData, geoData.objects.nutsrg).features;
-		const nutsbn = feature(geoData, geoData.objects.nutsbn).features;
-		const cntrg = feature(geoData, geoData.objects.cntrg).features;
-		const cntbn = feature(geoData, geoData.objects.cntbn).features;
+		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn;
+		if (out.geo_ == "WORLD") {
+			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
+			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
+			gra = geoGraticule10();
+		} else {
+			gra = feature(geoData, geoData.objects.gra).features;
+			nutsRG = feature(geoData, geoData.objects.nutsrg).features;
+			nutsbn = feature(geoData, geoData.objects.nutsbn).features;
+			cntrg = feature(geoData, geoData.objects.cntrg).features;
+			cntbn = feature(geoData, geoData.objects.cntbn).features;
+		}
+
 
 		/*/RS
 		if (cntrg && (out.nutsYear() + "" === "2016" || out.nutsYear() + "" === "2021"))
@@ -418,6 +440,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 				cg.append("g").attr("id", "g_coast_margin_nuts")
 					.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
 					.append("path").attr("d", path);
+			//world bn
+			if (worldbn)
+				cg.append("g").attr("id", "g_coast_margin_nuts")
+					.selectAll("path").data(worldbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.append("path").attr("d", path);
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -438,9 +465,28 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", out.landFillStyle())
 		}
 
+		//draw world map
+		if (worldrg) {
+			zg.append("g").attr("id", "g_worldrg").selectAll("path").data(worldrg)
+				.enter().append("path").attr("d", path)
+				.attr("class", "worldrg")
+				.attr("fill", out.landFillStyle())
+				.on("mouseover", function (rg) {
+					const sel = select(this);
+					sel.attr("fill___", sel.attr("fill"));
+					sel.attr("fill", out.nutsrgSelFillSty_);
+					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+				}).on("mousemove", function () {
+					if (tooltip) tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this);
+					sel.attr("fill", sel.attr("fill___"));
+					if (tooltip) tooltip.mouseout();
+				});
+		}
+
 		//draw NUTS regions
 		if (nutsRG) {
-
 			if (out.nutsLvl_ == "mixed") {
 				const rg0 = nutsRG;
 				const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
@@ -547,6 +593,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 				});
 		}
 
+		//draw world boundaries
+		if (worldbn)
+			zg.append("g").attr("id", "g_worldbn")
+				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.selectAll("path").data(worldbn)
+				.enter().append("path")
+				.attr("d", path)
+				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
+				.style("stroke", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStroke() : "grey" })
+				.style("stroke-width", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStrokeWidth() : "0.2" });
+
+
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
 			if (nutsRG) {
@@ -636,37 +694,39 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//source dataset URL
 		if (out.showSourceLink_) {
-			if (out.stat().eurostatDatasetCode) {
+			if (out.stat()) {
+				if (out.stat().eurostatDatasetCode) {
 
-				//dataset link
-				let code = out.stat().eurostatDatasetCode;
-				let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
-				let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
-					.text("EUROSTAT")
-					.style("font-family", out.botTxtFontFamily_)
-					.style("font-size", out.botTxtFontSize_ + "px")
-					.style("font-weight", "bold")
-					.attr("text-anchor", "end")
-					.on("mouseover", function () {
-						const sel = select(this);
-						sel.attr("fill", "lightblue");
-						sel.style("cursor", "pointer");
-						sel.style("text-decoration", "underline");
-					})
-					.on("mouseout", function () {
-						const sel = select(this);
-						sel.attr("fill", "black");
-						sel.style("cursor", "default");
-						sel.style("text-decoration", "none");
-					})
-				//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
+					//dataset link
+					let code = out.stat().eurostatDatasetCode;
+					let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
+					let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+						.text("EUROSTAT")
+						.style("font-family", out.botTxtFontFamily_)
+						.style("font-size", out.botTxtFontSize_ + "px")
+						.style("font-weight", "bold")
+						.attr("text-anchor", "end")
+						.on("mouseover", function () {
+							const sel = select(this);
+							sel.attr("fill", "lightblue");
+							sel.style("cursor", "pointer");
+							sel.style("text-decoration", "underline");
+						})
+						.on("mouseout", function () {
+							const sel = select(this);
+							sel.attr("fill", "black");
+							sel.style("cursor", "default");
+							sel.style("text-decoration", "none");
+						})
+					//.on("click", function() { window.open(`https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`); }); 
 
-				//pretext "Source:"
-				let linkW = link.node().getComputedTextLength();
-				out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
-					.style("font-size", out.botTxtFontSize_ + "px")
-					.style("stroke-width", "0.3px")
-					.attr("text-anchor", "end")
+					//pretext "Source:"
+					let linkW = link.node().getComputedTextLength();
+					out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
+						.style("font-size", out.botTxtFontSize_ + "px")
+						.style("stroke-width", "0.3px")
+						.attr("text-anchor", "end")
+				}
 			}
 		}
 
@@ -944,6 +1004,7 @@ const _defaultPosition = {
 	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 800 },
 	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 100 },
 	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 500 },
+	"WORLD_54030": { geoCenter: [14, 17], pixSize: 9000 },
 }
 
 /**
@@ -989,4 +1050,5 @@ const _defaultCRS = {
 	"SJ_SV": "3035",
 	"SJ_JM": "3035",
 	"CARIB": "32620",
+	"WORLD": "54030"
 };
