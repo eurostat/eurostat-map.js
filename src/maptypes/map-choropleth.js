@@ -82,15 +82,29 @@ export const map = function (config) {
 			out.classifier(scaleThreshold().domain(out.threshold()).range(range));
 		}
 
-		//assign class to nuts regions, based on their value
-		out.svg().selectAll("path.nutsrg")
+		//assign class to regions, based on their value
+		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+
+		out.svg().selectAll(selector)
 			.attr("ecl", function (rg) {
 				const sv = out.statData().get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
 				return +out.classifier()(+v);
-			})
+			});
+
+		//when mixing NUTS, level 0 is separated from the rest (class nutsrg0)
+		if (out.nutsLvl_ == "mixed") {
+			out.svg().selectAll("path.nutsrg0")
+				.attr("ecl", function (rg) {
+					const sv = out.statData().get(rg.properties.id);
+					if (!sv) return "nd";
+					const v = sv.value;
+					if (v != 0 && !v) return "nd";
+					return +out.classifier()(+v);
+				});
+		}
 
 		return out;
 	};
@@ -103,24 +117,61 @@ export const map = function (config) {
 		if (!out.classToFillStyle())
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 
-		//apply style to nuts regions depending on class
-		out.svg().selectAll("path.nutsrg")
+		//apply style to nuts regions / world regions depending on class
+		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+		out.svg().selectAll(selector)
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
-				// only apply data-driven colour to specified countries
-				if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+				// only apply data-driven colour to specified countries for NUTS templates
+				if (out.geo_ !== "WORLD") {
+					if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						const ecl = select(this).attr("ecl");
+						if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+						return out.classToFillStyle()(ecl, out.clnb());
+					} else {
+						return out.nutsrgFillStyle_;
+					}
+				} else {
+					//world template 
 					const ecl = select(this).attr("ecl");
 					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
 					return out.classToFillStyle()(ecl, out.clnb());
-				} else {
-					return out.nutsrgFillStyle_;
 				}
 			});
 
-		// add labels of stat values if applicable
+
+		if (out.nutsLvl_ == "mixed") {
+			// Toggle visibility - show NUTS 1,2,3 with stat values when mixing different NUTS levels
+			out.svg().selectAll("path.nutsrg")
+				.style("display", function (rg) {
+					const ecl = select(this).attr("ecl");
+					const lvl = select(this).attr("lvl");
+					// always display NUTS 0 and filter countries to show
+					if (ecl && ecl !== "nd" && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") return "block"; else return "none";
+				})
+
+				//toggle stroke - similar concept to visibility (only show borders of NUTS regions that have stat data - a la IMAGE)
+				.style("stroke", function (rg) {
+					const lvl = select(this).attr("lvl");
+					const ecl = select(this).attr("ecl");
+					if (ecl && ecl !== "nd" && lvl !== "0") {
+						return out.nutsbnStroke_[parseInt(lvl)] || "#777";
+					}
+				})
+				.style("stroke-width", function (rg) {
+					const lvl = select(this).attr("lvl");
+					const ecl = select(this).attr("ecl");
+					if (ecl && ecl !== "nd" && lvl !== "0") {
+						return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2;
+					}
+				});
+		}
+
+		// update labels of stat values, appending the stat labels to the region centroids
 		if (out.labelsToShow_.includes("values")) {
 			//clear previous labels
-			out.svg().selectAll(".labels-container" + out.svgId() + " > *").remove();
+			let prevLabels = out.svg_.selectAll("g.stat-label > *")
+			prevLabels.remove();
 
 			out.svg().selectAll("g.stat-label").append("text")
 				.text(function (d) {

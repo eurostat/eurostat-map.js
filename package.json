@@ -1,6 +1,6 @@
 {
   "name": "eurostat-map",
-  "version": "3.3.14",
+  "version": "3.3.19",
   "description": "Reusable library to quickly create and customise web maps showing Eurostat data directly retrieved from Eurostat database.",
   "keywords": [
     "eurostat",
@@ -19,7 +19,8 @@
   },
   "main": "build/eurostatmap.min.js",
   "files": [
-    "build/eurostatmap.min.js"
+    "build/eurostatmap.min.js",
+    "build/eurostatmap.js"
   ],
   "scripts": {
     "start": "webpack --config webpack.config.dev.js",
@@ -28,20 +29,21 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.1",
     "colorbrewer": "^1.3.0",
     "d3": "^5.15.0",
+    "d3-geo-projection": "^3.0.0",
     "jsonstat-toolkit": "^1.0.8",
-    "publish": "^0.6.0",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.9.0",
+    "@babel/runtime": "^7.12.1",
     "babel-loader": "^8.1.0",
     "jest": "^26.6.1",
     "jshint": "^2.12.0",
+    "puppeteer": "^9.1.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
