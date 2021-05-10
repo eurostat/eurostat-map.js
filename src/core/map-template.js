@@ -379,10 +379,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//WORLD geo uses 4326 geometries and reprojects to 54030 using d3
 		let projection;
 		if (out.geo_ == "WORLD") {
-			projection = geoRobinson()
-				.scale(148)
-				.rotate([352, 0, 0])
-				.translate([out.width_ / 2, out.height_ / 2]);
+			if (out.proj_ == "54030") {
+				projection = geoRobinson()
+					.scale(148)
+					.rotate([352, 0, 0])
+					.translate([out.width_ / 2, out.height_ / 2]);
+			} else {
+				console.error("unsupported projection")
+			}
 		} else {
 			projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
 		}
@@ -1004,6 +1008,7 @@ const _defaultPosition = {
 	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 800 },
 	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 100 },
 	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 500 },
+	"WORLD_4326": { geoCenter: [14, 17], pixSize: 9000 },
 	"WORLD_54030": { geoCenter: [14, 17], pixSize: 9000 },
 }
 

@@ -135,9 +135,7 @@ export const map = function (config) {
 					//world template 
 					const ecl = select(this).attr("ecl");
 					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-					let col = out.classToFillStyle()(ecl, out.clnb());
-					console.log(col);
-					return col;
+					return out.classToFillStyle()(ecl, out.clnb());
 				}
 			});
 
