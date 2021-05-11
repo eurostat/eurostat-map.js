@@ -21,21 +21,21 @@ export const statMap = function (config, withCenterPoints) {
 	//the statistical data configuration.
 	//A map can have several stat datasets. This is a dictionnary of all stat configuration
 	out.stat_ = { "default": undefined };
-	out.stat = function(k, v) {
+	out.stat = function (k, v) {
 		//no argument: getter - return the default stat
 		if (!arguments.length) return out.stat_["default"];
 		//two arguments: setter - set the config k with value v
-		if(arguments.length == 2) { out.stat_[k] = v; return out; }
+		if (arguments.length == 2) { out.stat_[k] = v; return out; }
 		//one string argument: getter - return the config k
-		if(typeof k === "string" || k instanceof String) return out.stat_[k];
+		if (typeof k === "string" || k instanceof String) return out.stat_[k];
 		//one non-string argument: setter - set the entire dictionnary
-		out.stat_ = k.default? k : { "default": k }
+		out.stat_ = k.default ? k : { "default": k }
 		return out;
 	};
 
 	//the statistical data, retrieved from the config information. As a dictionnary.
 	out.statData_ = { "default": sd.statData() };
-	out.statData = function(k, v) {
+	out.statData = function (k, v) {
 		//no argument: getter - return the default statData
 		if (!arguments.length) return out.statData_["default"];
 		//one argument: getter
@@ -55,7 +55,7 @@ export const statMap = function (config, withCenterPoints) {
 	//specific tooltip text function
 	out.tooltipText_ = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function() { };
+	out.filtersDefinitionFun_ = function () { };
 	//a callback function to execute after the map build is complete.
 	out.callback_ = undefined;
 
@@ -73,19 +73,19 @@ export const statMap = function (config, withCenterPoints) {
 	*/
 	["legend_", "legendObj_", "noDataText_", "lg_", "transitionDuration_", "tooltipText_", "filtersDefinitionFun_", "callback_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
-	);
+		);
 
 	//override attribute values with config values
-	if(config) for (let key in config)
-		if(out[key] && config[key]!=undefined) out[key](config[key]);
+	if (config) for (let key in config)
+		if (out[key] && config[key] != undefined) out[key](config[key]);
 
 	/**
 	 * Build the map.
 	 * This method should be called once, preferably after the map attributes have been set to some initial values.
 	 */
-	out.build = function() {
+	out.build = function () {
 
 		//build map template base
 		out.buildMapTemplateBase();
@@ -94,19 +94,19 @@ export const statMap = function (config, withCenterPoints) {
 		out.filtersDefinitionFun_(out.svg(), out.clnb_);
 
 		//legend element
-		if ( out.legend() ) {
+		if (out.legend()) {
 
 			//create legend object
-			out.legendObj( out.getLegendConstructor()(out, out.legend()) );
+			out.legendObj(out.getLegendConstructor()(out, out.legend()));
 			const lg = out.legendObj();
 
 			//get legend svg. If it does not exist, create it embeded within the map
-			let lgSvg = select("#"+lg.svgId);
-			if(lgSvg.size() == 0) {
+			let lgSvg = select("#" + lg.svgId);
+			if (lgSvg.size() == 0) {
 
 				//get legend position
-				const x = lg.x==undefined? out.width() - 100 - lg.boxPadding : lg.x;
-				const y = lg.y==undefined? lg.boxPadding : lg.y;
+				const x = lg.x == undefined ? out.width() - 100 - lg.boxPadding : lg.x;
+				const y = lg.y == undefined ? lg.boxPadding : lg.y;
 
 				//build legend SVG in a new group
 				out.svg().append("g").attr("class", "legend")
@@ -130,8 +130,8 @@ export const statMap = function (config, withCenterPoints) {
 	};
 
 	/** Check if all stat datasets have been loaded. */
-	const isStatDataReady = function() {
-		for(let statKey in out.stat_)
+	const isStatDataReady = function () {
+		for (let statKey in out.stat_)
 			if (!out.statData(statKey).isReady()) return false;
 		return true;
 	}
@@ -140,8 +140,9 @@ export const statMap = function (config, withCenterPoints) {
 	 * Launch map geo data retrieval, and make/update the map once received.
 	 * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
 	 */
-	out.updateGeoData = function() {
-		out.updateGeoMT( ()=>{
+	out.updateGeoData = function () {
+
+		out.updateGeoMT(() => {
 
 			//if stat datasets have not been loaded, wait again
 			if (!isStatDataReady()) return;
@@ -149,8 +150,9 @@ export const statMap = function (config, withCenterPoints) {
 			//proceed with map construction
 			out.updateStatValues();
 			//execute callback function
-			if(out.callback()) out.callback()();
+			if (out.callback()) out.callback()();
 		});
+
 		return out;
 	}
 
@@ -158,28 +160,28 @@ export const statMap = function (config, withCenterPoints) {
 	 * Launch map geo stat datasets retrieval, and make/update the map once received.
 	 * This method should be called after specifications on the stat data sources attached to the map have changed, to retrieve this new data and refresh the map.
 	 */
-	out.updateStatData = function() {
+	out.updateStatData = function () {
 
-		for(let statKey in out.stat_) {
+		for (let statKey in out.stat_) {
 
 			//case when no stat data source is specified and stat data where specified programmatically
-			if(!out.stat(statKey) && out.statData(statKey).get()) return;
+			if (!out.stat(statKey) && out.statData(statKey).get()) return;
 
 			//if no config is specified, use default data source: population density
 			//TODO move that out of loop ?
-			if(statKey == "default" && !out.stat(statKey))
-				out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" } );
+			if (statKey == "default" && !out.stat(statKey))
+				out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" });
 
 			//build stat data object from stat configuration and store it
 			const stdt = sd.statData(out.stat(statKey));
-			out.statData( statKey, stdt );
+			out.statData(statKey, stdt);
 
 			//launch query
 			let nl = out.nutsLvl_;
 			if (out.nutsLvl_ == 'mixed') {
 				nl = 0;
 			}
-			stdt.retrieveFromRemote(nl, out.lg(), ()=>{
+			stdt.retrieveFromRemote(nl, out.lg(), () => {
 
 				//if geodata has not been loaded, wait again
 				if (!out.isGeoReady()) return;
@@ -189,7 +191,7 @@ export const statMap = function (config, withCenterPoints) {
 				//proceed with map construction
 				out.updateStatValues();
 				//execute callback function
-				if(out.callback()) out.callback()();
+				if (out.callback()) out.callback()();
 			});
 		}
 
@@ -203,7 +205,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * This method should be called after stat data attached to the map have changed, to refresh the map.
 	 * If the stat data sources have changed, call *updateStatData* instead.
 	 */
-	out.updateStatValues = function() {
+	out.updateStatValues = function () {
 
 		//update classification and styles
 		out.updateClassification();
@@ -220,7 +222,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * Make/update the map after classification attributes have been changed.
 	 * For example, if the number of classes, or the classification method has changed, call this method to update the map.
 	 */
-	out.updateClassification = function() {
+	out.updateClassification = function () {
 		console.log("Map updateClassification function not implemented")
 		return out;
 	}
@@ -231,7 +233,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * Make/update the map after styling attributes have been changed.
 	 * For example, if the style (color?) for one legend element has changed, call this method to update the map.
 	 */
-	out.updateStyle = function() {
+	out.updateStyle = function () {
 		console.log("Map updateStyle function not implemented")
 		return out;
 	}
@@ -240,7 +242,7 @@ export const statMap = function (config, withCenterPoints) {
 	 * Abstract method.
 	 * Function which return the legend constructor function for the map.
 	 */
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		console.log("Map getLegendConstructor function not implemented")
 		return lg.legend;
 	}
@@ -365,40 +367,40 @@ function rasterize(svg) {
 
 
 
-	/**
-	 * Default function for tooltip text, for statistical maps.
-	 * It simply shows the name of the region and the statistical value.
-	 * 
-	 * @param {*} rg The region to show information on.
-	 * @param {*} map The map element
-	 */
-	const tootipTextFunStat = function (rg, map) {
-		const buf = [];
-		//region name
-		buf.push("<b>" + rg.properties.na + "</b><br>");
-		//case when no data available
-		const sv = map.statData().get(rg.properties.id);
-		if (!sv || (sv.value != 0 && !sv.value)) {
-			buf.push(map.noDataText_);
-			return buf.join("");
-		}
-		//display value
-		buf.push(sv.value);
-		//unit
-		const unit = map.statData("default").unitText();
-		if (unit) buf.push(" " + unit);
-		//flag
-		const f = sv.status;
-		if (f && map.tooltipShowFlags_) {
-			if (map.tooltipShowFlags_ === "short")
-				buf.push(" " + f);
-			else {
-				const f_ = flags[f];
-				buf.push(f_ ? " (" + f_ + ")" : " " + f);
-			}
-		}
+/**
+ * Default function for tooltip text, for statistical maps.
+ * It simply shows the name of the region and the statistical value.
+ * 
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const tootipTextFunStat = function (rg, map) {
+	const buf = [];
+	//region name
+	buf.push("<b>" + rg.properties.na + "</b><br>");
+	//case when no data available
+	const sv = map.statData().get(rg.properties.id);
+	if (!sv || (sv.value != 0 && !sv.value)) {
+		buf.push(map.noDataText_);
 		return buf.join("");
-	};
+	}
+	//display value
+	buf.push(sv.value);
+	//unit
+	const unit = map.statData("default").unitText();
+	if (unit) buf.push(" " + unit);
+	//flag
+	const f = sv.status;
+	if (f && map.tooltipShowFlags_) {
+		if (map.tooltipShowFlags_ === "short")
+			buf.push(" " + f);
+		else {
+			const f_ = flags[f];
+			buf.push(f_ ? " (" + f_ + ")" : " " + f);
+		}
+	}
+	return buf.join("");
+};
 
 
 /**

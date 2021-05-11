@@ -203,8 +203,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * Return promise for Nuts2JSON topojson data.
 	 */
 	out.getGeoDataPromise = function () {
-		//for mixing all NUTS levels (i.e IMAGE)
-		if (out.nutsLvl_ == "mixed") {
+		// for mixing all NUTS levels (i.e IMAGE)
+		if (out.nutsLvl_ == "mixed" && out.geo_ !== "WORLD") {
 			const promises = [];
 			[0, 1, 2, 3].forEach((lvl) => {
 				const buf = [];
@@ -218,9 +218,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				promises.push(json(buf.join("")));
 			})
 			return promises;
+
+			// world maps
 		} else if (out.geo_ == "WORLD") {
 			return json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json');
 		} else {
+			//NUTS maps for eurobase data
 			const buf = [];
 			buf.push(out.nuts2jsonBaseURL_);
 			buf.push(out.nutsYear_);
@@ -234,7 +237,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	}
 
 	/**
-	 * 
+	 * ?
 	 */
 	out.updateGeoMT = function (callback) {
 
@@ -243,7 +246,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		allNUTSGeoData = null;
 
 		//get geo data from Nuts2json API
-		if (out.nutsLvl_ == "mixed") {
+		if (out.nutsLvl_ == "mixed" && out.geo_ !== "WORLD") {
+			// mixed retrieves all NUTS levels, world doesnt
 			let promises = out.getGeoDataPromise();
 			Promise.all(promises).then((geo___) => {
 				allNUTSGeoData = geo___;
@@ -399,7 +403,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
-			gra = geoGraticule10();
+			gra = [geoGraticule10()];
 		} else {
 			gra = feature(geoData, geoData.objects.gra).features;
 			nutsRG = feature(geoData, geoData.objects.nutsrg).features;
