@@ -87,6 +87,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//labelling (country names and geographical features)
 	out.labelling_ = false;
+	out.labelsConfig_ = defaultLabels; // allow user to override map labels | see ./labels.js for example config
 	out.labelsToShow_ = ["countries", "seas"]; //accepted: "countries", "cc","seas", "values"
 	out.labelFill_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
 	out.labelStroke_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
@@ -750,7 +751,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * @description appends text labels to the map. Labels can be countries, country codes, ocean names or statistical values
 	*/
 	function addLabelsToMap(out, zg, projection, nutsRG, path) {
-		let labels = out.labelsConfig_ || defaultLabels;
+		let labels = out.labelsConfig_;
 		let language = out.lg_;
 		let labelsArray = [];
 		let labelsG = zg.append("g").attr("class", "labels-container");
