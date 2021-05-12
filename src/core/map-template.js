@@ -148,7 +148,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 				out[att] = v;
 				//recursive call to inset components
 				for (const geo in out.insetTemplates_) {
-					out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
+					// check for insets with same geo
+					if (Array.isArray(out.insetTemplates_[geo])) {
+						for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+							out.insetTemplates_[geo][i][att.substring(0, att.length - 1)](v);
+						}
+					} else {
+						out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
+					}
+
 				}
 				return out;
 			};
@@ -195,8 +203,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.isGeoReady = function () {
 		if (!geoData) return false;
 		//recursive call to inset components
-		for (const geo in out.insetTemplates_)
+		for (const geo in out.insetTemplates_) 
 			if (!out.insetTemplates_[geo].isGeoReady()) return false;
+
 		return true;
 	}
 
@@ -273,8 +282,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//recursive call to inset components
-		for (const geo in out.insetTemplates_)
-			out.insetTemplates_[geo].updateGeoMT(callback);
+		for (const geo in out.insetTemplates_) {
+			// check for insets with same geo
+			if (Array.isArray(out.insetTemplates_[geo])) {
+				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+					out.insetTemplates_[geo][i].updateGeoMT(callback);
+				}
+			} else {
+				out.insetTemplates_[geo].updateGeoMT(callback);
+			}
+		}
+
 
 		return out;
 	}
@@ -329,8 +347,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 				ggeo.append("svg").attr("id", config.svgId);
 			}
 
-			//build inset
-			out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
+			// build inset
+			// GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
+			if (out.insetTemplates_[config.geo]) {
+				//if inset already exists in map with same geo, then push both to an array
+				out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo]]
+				out.insetTemplates_[config.geo].push(buildInset(config, out).buildMapTemplateBase())
+			} else {
+				out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
+			}
+
 
 		}
 
@@ -404,7 +430,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
-			gra = [geoGraticule().step([30,30])()];
+			gra = [geoGraticule().step([30, 30])()];
 		} else {
 			gra = feature(geoData, geoData.objects.gra).features;
 			nutsRG = feature(geoData, geoData.objects.nutsrg).features;
@@ -464,8 +490,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("d", path);
 
 			zg.append("use")
-				.attr("stroke",out.graticuleStroke())
-				.attr("stroke-width",out.graticuleStrokeWidth())
+				.attr("stroke", out.graticuleStroke())
+				.attr("stroke-width", out.graticuleStrokeWidth())
 				.attr("fill", out.seaFillStyle_)
 				.attr("xlink:href", "#sphere");
 		}
@@ -624,7 +650,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.enter().append("path")
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
-				.attr("id",(bn)=>bn.properties.CNTR_BN_ID)
+				.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStroke() : "grey" })
 				.style("stroke-width", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStrokeWidth() : "0.2" });
 
