@@ -386,8 +386,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.geo_ == "WORLD") {
 			if (out.proj_ == "54030") {
 				projection = geoRobinson()
-					.scale(148)
-					.rotate([352, 0, 0])
+					// .scale(148)
+					// .rotate([352, 0, 0])
 					.translate([out.width_ / 2, out.height_ / 2]);
 			} else {
 				console.error("unsupported projection")
@@ -404,7 +404,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
-			gra = [geoGraticule10()];
+			gra = [geoGraticule().step([30,30])()];
 		} else {
 			gra = feature(geoData, geoData.objects.gra).features;
 			nutsRG = feature(geoData, geoData.objects.nutsrg).features;
@@ -428,7 +428,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw background rectangle
 		zg.append("rect").attr("id", "sea").attr("x", -5 * out.width_).attr("y", -5 * out.height_)
 			.attr("width", 11 * out.width_).attr("height", 11 * out.height_)
-			.style("fill", out.seaFillStyle_);
+			.style("fill", () => out.geo_ == "WORLD" ? "white" : out.seaFillStyle_); //for world templates sea colour is only for the sphere
 
 		if (out.drawCoastalMargin_) {
 			//draw coastal margin
@@ -454,6 +454,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 				cg.append("g").attr("id", "g_coast_margin_nuts")
 					.selectAll("path").data(worldbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
 					.append("path").attr("d", path);
+		}
+
+		//sphere for world map
+		if (out.geo_ == "WORLD") {
+			zg.append("defs").append("path")
+				.datum({ type: "Sphere" })
+				.attr("id", "sphere")
+				.attr("d", path);
+
+			zg.append("use")
+				.attr("stroke",out.graticuleStroke())
+				.attr("stroke-width",out.graticuleStrokeWidth())
+				.attr("fill", out.seaFillStyle_)
+				.attr("xlink:href", "#sphere");
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -610,6 +624,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.enter().append("path")
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
+				.attr("id",(bn)=>bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStroke() : "grey" })
 				.style("stroke-width", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStrokeWidth() : "0.2" });
 
@@ -1013,7 +1028,6 @@ const _defaultPosition = {
 	"SJ_SV_3035": { geoCenter: [4570000, 6160156], pixSize: 800 },
 	"SJ_JM_3035": { geoCenter: [3647762, 5408300], pixSize: 100 },
 	"CARIB_32620": { geoCenter: [636345, 1669439], pixSize: 500 },
-	"WORLD_4326": { geoCenter: [14, 17], pixSize: 9000 },
 	"WORLD_54030": { geoCenter: [14, 17], pixSize: 9000 },
 }
 
