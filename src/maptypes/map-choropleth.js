@@ -88,9 +88,10 @@ export const map = function (config) {
 		out.svg().selectAll(selector)
 			.attr("ecl", function (rg) {
 				const sv = out.statData().get(rg.properties.id);
-				if (!sv) return "nd";
+				if (!sv) return; // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'. 
 				const v = sv.value;
-				if (v != 0 && !v) return "nd";
+				if (v != 0 && !v) return;
+				if (v == ":") return "nd";
 				return +out.classifier()(+v);
 			});
 
@@ -99,9 +100,10 @@ export const map = function (config) {
 			out.svg().selectAll("path.nutsrg0")
 				.attr("ecl", function (rg) {
 					const sv = out.statData().get(rg.properties.id);
-					if (!sv) return "nd";
+					if (!sv) return; // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'. 
 					const v = sv.value;
-					if (v != 0 && !v) return "nd";
+					if (v != 0 && !v) return;
+					if (v == ":") return "nd";
 					return +out.classifier()(+v);
 				});
 		}
@@ -112,7 +114,7 @@ export const map = function (config) {
 
 	//@override
 	out.updateStyle = function () {
-		console.log("updateStyle")
+		console.log("updateStyle ", out.geo_)
 		//define style per class
 		if (!out.classToFillStyle())
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
@@ -122,20 +124,22 @@ export const map = function (config) {
 		out.svg().selectAll(selector)
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
-				// only apply data-driven colour to specified countries for NUTS templates
-				if (out.geo_ !== "WORLD") {
+				if (out.geo_ == "WORLD") {
+					//world template 
+					const ecl = select(this).attr("ecl");
+					if (!ecl) return out.nutsrgFillStyle_;
+					if (ecl === "nd") return out.noDataFillStyle() || "gray";
+					return out.classToFillStyle()(ecl, out.clnb());
+				} else {
+					// only apply data-driven colour to included countries for NUTS templates
 					if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 						const ecl = select(this).attr("ecl");
-						if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
+						if (!ecl) return out.nutsrgFillStyle_;
+						if (ecl === "nd") return out.noDataFillStyle() || "gray";
 						return out.classToFillStyle()(ecl, out.clnb());
 					} else {
 						return out.nutsrgFillStyle_;
 					}
-				} else {
-					//world template 
-					const ecl = select(this).attr("ecl");
-					if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
-					return out.classToFillStyle()(ecl, out.clnb());
 				}
 			});
 
@@ -146,22 +150,27 @@ export const map = function (config) {
 				.style("display", function (rg) {
 					const ecl = select(this).attr("ecl");
 					const lvl = select(this).attr("lvl");
-					// always display NUTS 0 and filter countries to show
-					if (ecl && ecl !== "nd" && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") return "block"; else return "none";
+					// always display NUTS 0 for mixed, and filter countries to show
+					if (ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") {
+						return "block";
+					 } else { 
+						 // dont show unclassified regions
+						 return "none"
+					 };
 				})
 
-				//toggle stroke - similar concept to visibility (only show borders of NUTS regions that have stat data - a la IMAGE)
+				//toggle stroke - similar concept to visibility (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
 				.style("stroke", function (rg) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
-					if (ecl && ecl !== "nd" && lvl !== "0") {
+					if (ecl && lvl !== "0") {
 						return out.nutsbnStroke_[parseInt(lvl)] || "#777";
 					}
 				})
 				.style("stroke-width", function (rg) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
-					if (ecl && ecl !== "nd" && lvl !== "0") {
+					if (ecl && lvl !== "0") {
 						return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2;
 					}
 				});
