@@ -303,6 +303,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * Build a map object.
 	 */
 	out.buildMapTemplateBase = function () {
+		
+		out.insetTemplates_ = {}; //  GISCO-2676 
 
 		//get svg element. Create it if it does not exists
 		let svg = select("#" + out.svgId());
@@ -351,8 +353,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			// GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
 			if (out.insetTemplates_[config.geo]) {
 				//if inset already exists in map with same geo, then push both to an array
-				out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo]]
-				out.insetTemplates_[config.geo].push(buildInset(config, out).buildMapTemplateBase())
+				out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo],buildInset(config, out).buildMapTemplateBase()]
 			} else {
 				out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
 			}
