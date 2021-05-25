@@ -232,100 +232,6 @@
         (c.titleFontWeight = 100);
     });
 
-    basemap = function () {
-      return eurostatmap
-        .map("ch")
-        .pixSize(7400)
-        .width(mapWidth)
-        .height(mapHeight)
-        .bottomText(null)
-        .showSourceLink(false)
-        .nutsLvl("mixed")
-        .classifMethod("threshold")
-        .colors(["#FF6633", "#FFB399", "#FF33FF", "#FFFF99", "#00B3E6"])
-        .threshold([1, 2, 3, 4, 5])
-        .drawGraticule(true)
-        .graticuleStroke("#ccc")
-        .graticuleStrokeWidth(0.5)
-        .geoCenter([4980000, 3610000])
-        .legend(false)
-        .drawCoastalMargin(false)
-        .seaFillStyle("#E6FFFF")
-        .landFillStyle("#E6E6E6")
-        .nutsrgFillStyle("#E6E6E6")
-        .nutsbnStroke({
-          0: "#000",
-          1: "#000",
-          2: "#000",
-          3: "#000",
-          co: "grey",
-        })
-        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.4 })
-        .landStrokeWidth(0.4)
-        .landStroke("grey")
-        .insets(insetsConfig)
-
-      // only show EU regions and borders
-      map
-        .bordersToShow(["eu", "co"])
-        .nutsYear(2016)
-        .countriesToShow([
-          "AT",
-          "BE",
-          "BG",
-          "CY",
-          "CZ",
-          "DE",
-          "DK",
-          "EE",
-          "EL",
-          "ES",
-          "FI",
-          "FR",
-          "HR",
-          "HU",
-          "IE",
-          "IS",
-          "IT",
-          "LI",
-          "LT",
-          "LU",
-          "LV",
-          "MT",
-          "NL",
-          "PL",
-          "PT",
-          "RO",
-          "SE",
-          "SI",
-          "SK",
-        ]);
-    };
-
-    let map = basemap();
-    map.statData().setData(data);
-    map.build();
-
-    let i = 0;
-    loopBetweenNUTS = function () {
-      setTimeout(() => {
-        let map = basemap();
-        i++;
-        let g = i % 2;
-        if (g == 0) {
-          map.statData().setData(data);
-          map.build();
-        } else {
-          map.statData().setData(data3);
-          map.build();
-        }
-
-        loopBetweenNUTS();
-      }, 3000);
-    };
-
-    //loopBetweenNUTS();
-
     let data3 = {
       AL011: -16.9,
       AL012: 1.7,
@@ -1852,6 +1758,72 @@
       UKN15: 3.7,
       UKN16: 3.8,
     };
+
+    basemap = function () {
+      return eurostatmap
+        .map("ch")
+        .pixSize(7400)
+        .width(mapWidth)
+        .height(mapHeight)
+        .bottomText(null)
+        .showSourceLink(false)
+        .nutsLvl(3)
+        .classifMethod("threshold")
+        .colors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
+        .threshold([-10, -5, 0, 4, 5,6,7,8,999,999])
+        .drawGraticule(true)
+        .graticuleStroke("#ccc")
+        .graticuleStrokeWidth(0.5)
+        .geoCenter([4980000, 3610000])
+        .legend(false)
+        .drawCoastalMargin(false)
+        .seaFillStyle("#E6FFFF")
+        .landFillStyle("#E6E6E6")
+        .nutsrgFillStyle("#E6E6E6")
+        .nutsbnStroke({
+          0: "#000",
+          1: "#000",
+          2: "#000",
+          3: "#000",
+          co: "grey",
+        })
+        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.4 })
+        .landStrokeWidth(0.4)
+        .landStroke("grey")
+        .insets(insetsConfig)
+        .zoomExtent([1,10])
+
+      // adjust regions to show
+        .bordersToShow(["eu", "co"])
+        .nutsYear(2016)
+        .countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK']);
+    };
+
+    let map = basemap();
+    map.statData().setData(data3);
+    map.build();
+
+    let i = 0;
+    loopBetweenNUTS = function () {
+      setTimeout(() => {
+        let map = basemap();
+        i++;
+        let g = i % 2;
+        if (g == 0) {
+          map.statData().setData(data);
+          map.build();
+        } else {
+          map.statData().setData(data3);
+          map.build();
+        }
+
+        loopBetweenNUTS();
+      }, 3000);
+    };
+
+    //loopBetweenNUTS();
+
+    
   </script>
 </body>
 
