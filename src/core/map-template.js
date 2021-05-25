@@ -203,7 +203,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.isGeoReady = function () {
 		if (!geoData) return false;
 		//recursive call to inset components
-		for (const geo in out.insetTemplates_) 
+		for (const geo in out.insetTemplates_)
 			if (!out.insetTemplates_[geo].isGeoReady()) return false;
 
 		return true;
@@ -303,7 +303,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * Build a map object.
 	 */
 	out.buildMapTemplateBase = function () {
-		
+
 		out.insetTemplates_ = {}; //  GISCO-2676 
 
 		//get svg element. Create it if it does not exists
@@ -353,7 +353,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			// GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
 			if (out.insetTemplates_[config.geo]) {
 				//if inset already exists in map with same geo, then push both to an array
-				out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo],buildInset(config, out).buildMapTemplateBase()]
+				out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo], buildInset(config, out).buildMapTemplateBase()]
 			} else {
 				out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
 			}
@@ -613,6 +613,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
+					// if (bn.properties.id == 4054) {
+					// debug
+					// 	console.log(bn)
+					// }
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -652,8 +656,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
 				.attr("id", (bn) => bn.properties.CNTR_BN_ID)
-				.style("stroke", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStroke() : "grey" })
-				.style("stroke-width", function (bn) { return (bn.properties.COAS_FLAG === "F") ? out.landStrokeWidth() : "0.2" });
+				.style("stroke", function (bn) {
+					if (bn.properties.COAS_FLAG === "F") return "grey";
+				})
+				.style("stroke-width", function (bn) {
+					if (bn.properties.COAS_FLAG === "F") return out.landStrokeWidth();
+					// 0 and 4 are normal boundaries, anything else is disputed
+					if (bn.properties.POL_STAT !== 0 && bn.properties.POL_STAT !== 4) return 0.1;
+				});
 
 
 		//prepare group for proportional symbols, with nuts region centroids

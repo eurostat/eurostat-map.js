@@ -159,7 +159,7 @@ export const map = function (config) {
 					 };
 				})
 
-				//toggle stroke - similar concept to visibility (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
+				//toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
 				.style("stroke", function (rg) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
