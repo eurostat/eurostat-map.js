@@ -320,13 +320,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
 
+		// each map tempalte needs a mask to avoid overflow. See GISCO-2707
+		// <defs>
+		// 	<mask id="theMask" >
+		// 		<rect x="17.1" y="26.9" width="214.8" height="121.3" fill="white" />
+		// 	</mask>
+		// </defs>
+		svg.append('defs').append("clipPath").attr("id", out.svgId_ + "_clipPath").append("rect").attr("x", 0).attr("y", 0)
+			.attr("width", out.width_).attr("height", out.height_)
+
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
 			svg.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
 				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 
 		//create drawing group, as first child
-		const dg = svg.insert("g", ":first-child").attr("id", "drawing");
+		const dg = svg.insert("g", ":first-child").attr("id", "drawing").attr("clip-path","url(#"+out.svgId_ + "_clipPath" +")")
 
 		//create main zoom group
 		const zg = dg.append("g").attr("id", "zoomgroup" + out.geo_);
@@ -357,8 +366,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 			} else {
 				out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
 			}
-
-
 		}
 
 		//draw frame
