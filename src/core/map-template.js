@@ -597,7 +597,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw country boundaries
 		if (cntbn)
 			zg.append("g").attr("id", "g_cntbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(cntbn)
 				.enter().append("path")
 				.filter(function (bn) {
@@ -616,7 +617,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (nutsbn) {
 			nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
 			zg.append("g").attr("id", "g_nutsbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
@@ -657,12 +659,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw world boundaries
 		if (worldbn)
 			zg.append("g").attr("id", "g_worldbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(worldbn)
 				.enter().append("path")
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
-				.attr("id", (bn) => bn.properties.CNTR_BN_ID)
+				//.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) {
 					if (bn.properties.COAS_FLAG === "F") return "grey";
 				})

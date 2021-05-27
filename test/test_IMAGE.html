@@ -1767,7 +1767,7 @@
         .height(mapHeight)
         .bottomText(null)
         .showSourceLink(false)
-        .nutsLvl(3)
+        .nutsLvl('mixed')
         .classifMethod("threshold")
         .colors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
         .threshold([-10, -5, 0, 4, 5,6,7,8,999,999])
@@ -1787,8 +1787,8 @@
           3: "#000",
           co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.4 })
-        .landStrokeWidth(0.4)
+        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.2 })
+        .landStrokeWidth(0.3)
         .landStroke("grey")
         .insets(insetsConfig)
         .zoomExtent([1,10])
@@ -1800,7 +1800,7 @@
     };
 
     let map = basemap();
-    map.statData().setData(data3);
+    map.statData().setData(data2);
     map.build();
 
     let i = 0;
