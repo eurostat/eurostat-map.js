@@ -148,10 +148,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 				out[att] = v;
 				//recursive call to inset components
 				for (const geo in out.insetTemplates_) {
-					// check for insets with same geo
+					// insets with same geo that share the same parent inset
 					if (Array.isArray(out.insetTemplates_[geo])) {
 						for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-							out.insetTemplates_[geo][i][att.substring(0, att.length - 1)](v);
+							// insets with same geo that do not share the same parent inset
+							if (Array.isArray(out.insetTemplates_[geo][i])) {
+								// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+								for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+									out.insetTemplates_[geo][i][c][att.substring(0, att.length - 1)](v);
+								}
+							} else {
+								out.insetTemplates_[geo][i][att.substring(0, att.length - 1)](v);
+							}
 						}
 					} else {
 						out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
@@ -286,7 +294,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 			// check for insets with same geo
 			if (Array.isArray(out.insetTemplates_[geo])) {
 				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-					out.insetTemplates_[geo][i].updateGeoMT(callback);
+					// insets with same geo that do not share the same parent inset
+					if (Array.isArray(out.insetTemplates_[geo][i])) {
+						// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+						for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+							out.insetTemplates_[geo][i][c].updateGeoMT(callback);
+						}
+					} else {
+						out.insetTemplates_[geo][i].updateGeoMT(callback);
+					}
 				}
 			} else {
 				out.insetTemplates_[geo].updateGeoMT(callback);
@@ -327,10 +343,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 		// 	</mask>
 		// </defs>
 		svg.append('defs')
-		.append("clipPath")
-		.attr("id", out.svgId_ + "_clipP")
-		.append("path")
-		.attr("d", convertRectangles(0,0,out.width_,out.height_))
+			.append("clipPath")
+			.attr("id", out.svgId_ + "_clipP")
+			.append("path")
+			.attr("d", convertRectangles(0, 0, out.width_, out.height_))
 		// .attr("x", 0)
 		// .attr("y", 0)
 		// .attr("width", out.width_)
@@ -342,7 +358,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 
 		//create drawing group, as first child
-		const dg = svg.insert("g", ":first-child").attr("id", "drawing"+out.svgId_).attr("clip-path","url(#"+out.svgId_ + "_clipP" +")")
+		const dg = svg.insert("g", ":first-child").attr("id", "drawing" + out.svgId_).attr("clip-path", "url(#" + out.svgId_ + "_clipP" + ")")
 
 		//create main zoom group
 		const zg = dg.append("g").attr("id", "zoomgroup" + out.svgId_); //out.geo changed to out.svgId in order to be unique
@@ -506,7 +522,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("stroke", out.graticuleStroke())
 				.attr("stroke-width", out.graticuleStrokeWidth())
 				.attr("fill", out.seaFillStyle_)
-				//.attr("href", "#sphere");
+			//.attr("href", "#sphere");
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -1132,14 +1148,14 @@ const _defaultCRS = {
 // convert rect attributes into an SVG path string
 // used for workaround whereby clipPaths which use rect elements do not work in adobe illustrator
 function convertRectangles(x, y, width, height) {
-    var x = parseFloat(x, 10);
-    var y = parseFloat(y, 10);
-    var width = parseFloat(width, 10);
-    var height = parseFloat(height, 10);
+	var x = parseFloat(x, 10);
+	var y = parseFloat(y, 10);
+	var width = parseFloat(width, 10);
+	var height = parseFloat(height, 10);
 
-    if (x < 0 || y < 0 || width < 0 || height < 0) {
-        return '';
-    }
+	if (x < 0 || y < 0 || width < 0 || height < 0) {
+		return '';
+	}
 
-    return 'M' + x + ',' + y + 'L' + (x + width) + ',' + y + ' ' + (x + width) + ',' + (y + height) + ' ' + x + ',' + (y + height) + 'z';
+	return 'M' + x + ',' + y + 'L' + (x + width) + ',' + y + ' ' + (x + width) + ',' + (y + height) + ' ' + x + ',' + (y + height) + 'z';
 }
