@@ -391,8 +391,8 @@ const tootipTextFunStat = function (rg, map) {
 	if (unit) buf.push(" " + unit);
 	//flag
 	const f = sv.status;
-	if (f && map.tooltip.showFlags_) {
-		if (map.tooltip.showFlags_ === "short")
+	if (f && map.tooltip_.showFlags) {
+		if (map.tooltip_.showFlags === "short")
 			buf.push(" " + f);
 		else {
 			const f_ = flags[f];
