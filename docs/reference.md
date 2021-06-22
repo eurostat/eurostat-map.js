@@ -601,10 +601,44 @@ map = eurostatmap.map(...)
 
 The tooltip is the little rectangle showing information on the map feature under the mouse/finger pointer.
 
-| Method | Type | Default value | Description |
+You can configure the style and content of the tooltip.
+
+Example:
+
+```javascript
+map = eurostatmap.map(...)
+	.tooltip({
+		maxWidth: "200px",
+		fontSize: "16px",
+		background: "white", 
+		padding: "5px",
+		border: "0px",
+		borderRadius: "5px",
+		boxShadow: "5px 5px 5px grey",
+		transitionDuration: 200,
+		xOffset: 30,
+		yOffset: 20,
+		textFunction: (rg => { return rg.properties.na;  }) //rg is the hovered NUTS2JSON feature 
+		showFlags: false
+	});
+```
+| Property | Type | Default value | Description |
 | -------- | ------ | ---------- | ----------- |
-| *map*.**tooltipText**([*value*]) | Function | *auto* | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed.|
-| *map*.**tooltipShowFlags**([*value*]) | String | *"short"* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
+| **maxWidth** | String | *"200px"* | The maximum width of the tooltip container. |
+| **fontSize** | String | *"16px"* | The font size of the tooltip text. |
+| **background** | String | *"white"* | The background colour of the tooltip. |
+| **padding** | String | *"5px"* | The padding of the tooltip container. |
+| **border** | number | *"0px"* | The border styling of the tooltip container. |
+| **borderRadius** | String | *"5px"* | The border-radius of the tooltip container. |
+| **boxShadow** | String | *"5px 5px 5px grey"* | The box-shadow of the tooltip container.. |
+| **transitionDuration** | Number | *200* | The transition time applied to the tooltip. |
+| **xOffset** | Number | *30* | The x offset between the tooltip and the cursor. |
+| **yOffset** | Number | *20* | The y offset between the tooltip and the cursor. |
+| **textFunction** | Function | *see example above* | A function returning the text to show in a tooltip which appears when the mouse passes over map features. The function signature is `function(rg, map)` where `rg` is the selected region and `map` is the map. Set to *null* if no tooltip is needed. |
+| **showFlags** | String | *false* | Set to *null*, *0* or *false* if no [flag](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Tutorial:Symbols_and_abbreviations#Statistical_symbols.2C_abbreviations_and_units_of_measurement) should be shown in the tooltip. Set to *"short"* to show the flag as a letter. Set to *"long"* to show the flag as a text. |
+
+
+
 
 ## Styling
 

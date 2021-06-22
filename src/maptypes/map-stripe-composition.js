@@ -226,7 +226,7 @@ export const map = function (config) {
 
 
 	//specific tooltip text function
-	out.tooltipText_ =  function (rg, map) {
+	out.tooltip_.textFunction =  function (rg, map) {
 
 		//get tooltip
 		const tp = select("#tooltip_eurostat")

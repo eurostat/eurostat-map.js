@@ -68,7 +68,7 @@ export const legend = function (map, config) {
 		out.makeBackgroundBox();
 
 		//set font family
-		lgg.style("font-family", m.fontFamily);
+		lgg.style("font-family", m.fontFamily_);
 
 		// legend for sizes
 		buildSizeLegend(m, lgg, out.sizeLegend)
@@ -100,7 +100,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 				.text(config.title)
 				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-				.style("font-family", m.fontFamily).style("fill", out.fontFill)
+				.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 			//circles
 			let maxSize = m.sizeClassifier_(max(config.values)); //maximum circle radius to be shown in legend
@@ -171,10 +171,10 @@ return out;
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.legendSpacing + out.boxPadding + out.titleFontSize)
 				.text(config.title)
 				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-				.style("font-family", m.fontFamily).style("fill", out.fontFill)
+				.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 		//set font family
-		lgg.style("font-family", m.fontFamily);
+		lgg.style("font-family", m.fontFamily_);
 
 
 		//draw legend elements for classes: rectangle + label
@@ -207,7 +207,7 @@ return out;
 			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
 				.text(m.catLabels()[code] || code)
-				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 				.on("mouseover", function () {
 					svgMap.selectAll("pattern").selectAll("rect[code='" + code + "']")
 						.style("fill", m.nutsrgSelFillSty())
@@ -245,7 +245,7 @@ return out;
 			lgg.append("text").attr("x", out.boxPadding + config.shapeWidth + config.labelOffset).attr("y", y + config.shapeHeight * 0.5)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
-				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 				.on("mouseover", function () {
 					svgMap.select("#g_nutsrg").selectAll("[nd='nd']")
 						.style("fill", m.nutsrgSelFillSty())

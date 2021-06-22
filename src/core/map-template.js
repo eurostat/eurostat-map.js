@@ -58,8 +58,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//tooltip
 	//the function returning the tooltip text
-	out.tooltipText_ = (rg => { return rg.properties.na; });
-	out.tooltipShowFlags_ = "short"; //"short" "long"
+	out.tooltip_ = {
+		maxWidth: "200px",
+		fontSize: "16px",
+		background: "white",
+		padding: "5px",
+		border: "0px",
+		borderRadius: "5px",
+		boxShadow: "5px 5px 5px grey",
+		transitionDuration: 200,
+		xOffset: 30,
+		yOffset: 20,
+		textFunction: (rg => { return rg.properties.na; }),
+		showFlags: false
+	}; // tooltip config. See eurostat-tooltip.js for more details
+
+	out.tooltip_.textFunction = (rg => { return rg.properties.na; }); //DEPRECATED use tooltip_.textFunction
+	out.tooltipShowFlags_ = false; //DEPRECATED use tooltip_.textFunction
 
 	//template default style
 	//countries to include
@@ -140,7 +155,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 	//special ones which affect also the insets
-	["tooltipText_"]
+	["tooltip_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) {
 				if (!arguments.length) return out[att];
@@ -169,6 +184,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 			};
 		}
 		);
+
+	// override deprecated tooltipText
+	out.tooltipText = function (v) {
+		console.log("map.tooltipText() is now deprecated. Please use map.tooltip(config.textFunction) instead. See API reference for details.")
+		out.tooltip_.textFunction = v;
+		return out;
+	};
 
 	//title getter and setter
 	out.title = function (v) {
@@ -423,6 +445,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 	*/
 	out.buildMapTemplate = function () {
 
+		//prepare map tooltip
+		let tooltip;
+		if (out.tooltip_) {
+			// if user specifies config
+			tooltip = tp.tooltip(out.tooltip_);
+		} else {
+			//no config specified, use default
+			tooltip = tp.tooltip();
+		}
+
+
 		//geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
 		const dp = _defaultPosition[out.geo() + "_" + out.proj()];
 		if (!out.geoCenter())
@@ -552,7 +585,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					const sel = select(this);
 					sel.attr("fill___", sel.attr("fill"));
 					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+					if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 				}).on("mousemove", function () {
 					if (tooltip) tooltip.mousemove();
 				}).on("mouseout", function () {
@@ -583,7 +616,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 							const sel = select(this);
 							sel.attr("fill___", sel.attr("fill"));
 							sel.attr("fill", out.nutsrgSelFillSty_);
-							if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+							if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 						}).on("mousemove", function () {
 							if (tooltip) tooltip.mousemove();
 						}).on("mouseout", function () {
@@ -603,7 +636,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						const sel = select(this);
 						sel.attr("fill___", sel.attr("fill"));
 						sel.attr("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 					}).on("mousemove", function () {
 						if (tooltip) tooltip.mousemove();
 					}).on("mouseout", function () {
@@ -712,7 +745,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.style("fill", "gray")
 					.on("mouseover", function (rg) {
 						select(this).style("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltipText_(rg, out))
+						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 					}).on("mousemove", function () {
 						if (tooltip) tooltip.mousemove();
 					}).on("mouseout", function () {
@@ -772,7 +805,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.on("mouseover", function () {
 					tooltip.mw___ = tooltip.style("max-width");
 					tooltip.f___ = tooltip.style("font");
-					tooltip.style("max-width", "800px");
+					tooltip.style("max-width", "400px");
 					tooltip.style("font", "6px");
 					if (out.botTxtTooltipTxt_) tooltip.mouseover(out.botTxtTooltipTxt_);
 				}).on("mousemove", function () {
@@ -820,9 +853,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				}
 			}
 		}
-
-		//prepare map tooltip
-		const tooltip = (out.tooltipText_ || out.botTxtTooltipTxt_) ? tp.tooltip() : null;
 
 		return out;
 	};
@@ -1052,11 +1082,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 		config.insetTemplates = config.insetTemplates || {};
 		config.callback = config.callback || undefined;
 
-		/*
-		mt.stat_ = null;
-		mt.legend_ = null;
-		mt.filtersDefinitionFun_ = null;
-		mt.tooltipText_ = null;*/
 
 		//copy template attributes
 		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
@@ -1064,7 +1089,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods
-		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "tooltipText_", "classToText_"]
+		["stat", "statData", "legend", "legendObj", "noDataText", "lg", "transitionDuration", "tooltip_", "classToText_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 
 		//apply config values for inset
