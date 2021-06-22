@@ -8,14 +8,14 @@
 Reusable library to quickly create and customise web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
 <div>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png" href="https://eurostat.github.io/eurostat-map.js/examples/population-   density.html" target="_blank" alt="choropleth" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html" target="_blank" alt="proportional circles" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/euro.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html" target="_blank" alt="proportional symbols" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/pie.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html" target="_blank" alt="pie charts" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/stripe.png" href="https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html" target="_blank" alt="stripes" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png" href="https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html" target="_blank" alt="bivariate choropleth" width="450"/>
-<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png" href="https://eurostat.github.io/eurostat-map.js/examples/categorical.html" target="_blank" alt="categorical" width="450"/>
-  <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/dot.png" href="https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html" target="_blank" alt="dot density" width="450"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png" href="https://eurostat.github.io/eurostat-map.js/examples/population-   density.html" target="_blank" alt="choropleth" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html" target="_blank" alt="proportional circles" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/euro.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html" target="_blank" alt="proportional symbols" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/pie.png" href="https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html" target="_blank" alt="pie charts" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/stripe.png" href="https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html" target="_blank" alt="stripes" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png" href="https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html" target="_blank" alt="bivariate choropleth" width="440"/>
+<img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png" href="https://eurostat.github.io/eurostat-map.js/examples/categorical.html" target="_blank" alt="categorical" width="440"/>
+  <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/dot.png" href="https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html" target="_blank" alt="dot density" width="440"/>
 </div>
 
 ## Examples
