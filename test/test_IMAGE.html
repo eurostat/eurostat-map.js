@@ -174,36 +174,33 @@
       {
         geo: 'PT20',
         x: w + p,
-        y: 3 * h + 3 * p,
+        y: 2 * h + 2 * p,
         width: w,
         height: h,
         pixSize: 4000,
         title: 'Açores (PT)',
-        insetBoxPosition: [1, 1],
         geoCenter: [440000, 4360000],
-        insets: [
-          {
-            geo: 'PT20',
-            x: 40,
-            y: 17,
-            pixSize: 5000,
-            geoCenter: [650000, 4150000],
-            width: 23,
-            height: 30,
-            frameStrokeWidth: 0.8
-          },
-          {
-            geo: 'PT20',
-            x: 4,
-            y: 17,
-            pixSize: 3500,
-            geoCenter: [140000, 4390000],
-            width: 15,
-            height: 20,
-            frameStrokeWidth: 0.8
-          }
-        ]
-      },
+    },
+    {
+        geo: 'PT20',
+        x: w + p + 40,
+        y: (2 * h + 2 * p) + 17,
+        width: 23,
+        height: 30,
+        pixSize: 5000,
+        geoCenter: [650000, 4150000],
+        frameStrokeWidth: 0.8
+    },
+    {
+        geo: 'PT20',
+        x: w + p + 4,
+        y: (2 * h + 2 * p) + 17,
+        width: 15,
+        height: 20,
+        pixSize: 3500,
+        geoCenter: [140000, 4390000],
+        frameStrokeWidth: 0.8
+    },
       {
         geo: 'PT30',
         x: 0,
@@ -1767,7 +1764,7 @@
         .height(mapHeight)
         .bottomText(null)
         .showSourceLink(false)
-        .nutsLvl(3)
+        .nutsLvl('mixed')
         .classifMethod("threshold")
         .colors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
         .threshold([-10, -5, 0, 4, 5,6,7,8,999,999])
@@ -1787,8 +1784,8 @@
           3: "#000",
           co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.4 })
-        .landStrokeWidth(0.4)
+        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.2 })
+        .landStrokeWidth(0.3)
         .landStroke("grey")
         .insets(insetsConfig)
         .zoomExtent([1,10])
@@ -1800,7 +1797,7 @@
     };
 
     let map = basemap();
-    map.statData().setData(data3);
+    map.statData().setData(data2);
     map.build();
 
     let i = 0;

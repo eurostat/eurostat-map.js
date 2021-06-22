@@ -148,10 +148,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 				out[att] = v;
 				//recursive call to inset components
 				for (const geo in out.insetTemplates_) {
-					// check for insets with same geo
+					// insets with same geo that share the same parent inset
 					if (Array.isArray(out.insetTemplates_[geo])) {
 						for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-							out.insetTemplates_[geo][i][att.substring(0, att.length - 1)](v);
+							// insets with same geo that do not share the same parent inset
+							if (Array.isArray(out.insetTemplates_[geo][i])) {
+								// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+								for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+									out.insetTemplates_[geo][i][c][att.substring(0, att.length - 1)](v);
+								}
+							} else {
+								out.insetTemplates_[geo][i][att.substring(0, att.length - 1)](v);
+							}
 						}
 					} else {
 						out.insetTemplates_[geo][att.substring(0, att.length - 1)](v);
@@ -286,7 +294,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 			// check for insets with same geo
 			if (Array.isArray(out.insetTemplates_[geo])) {
 				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-					out.insetTemplates_[geo][i].updateGeoMT(callback);
+					// insets with same geo that do not share the same parent inset
+					if (Array.isArray(out.insetTemplates_[geo][i])) {
+						// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+						for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+							out.insetTemplates_[geo][i][c].updateGeoMT(callback);
+						}
+					} else {
+						out.insetTemplates_[geo][i].updateGeoMT(callback);
+					}
 				}
 			} else {
 				out.insetTemplates_[geo].updateGeoMT(callback);
@@ -320,16 +336,32 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
 
+		// each map tempalte needs a mask to avoid overflow. See GISCO-2707
+		// <defs>
+		// 	<mask id="theMask" >
+		// 		<rect x="17.1" y="26.9" width="214.8" height="121.3" fill="white" />
+		// 	</mask>
+		// </defs>
+		svg.append('defs')
+			.append("clipPath")
+			.attr("id", out.svgId_ + "_clipP")
+			.append("path")
+			.attr("d", convertRectangles(0, 0, out.width_, out.height_))
+		// .attr("x", 0)
+		// .attr("y", 0)
+		// .attr("width", out.width_)
+		// .attr("height", out.height_)
+
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
 			svg.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
 				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 
 		//create drawing group, as first child
-		const dg = svg.insert("g", ":first-child").attr("id", "drawing");
+		const dg = svg.insert("g", ":first-child").attr("id", "drawing" + out.svgId_).attr("clip-path", "url(#" + out.svgId_ + "_clipP" + ")")
 
 		//create main zoom group
-		const zg = dg.append("g").attr("id", "zoomgroup" + out.geo_);
+		const zg = dg.append("g").attr("id", "zoomgroup" + out.svgId_); //out.geo changed to out.svgId in order to be unique
 
 		//insets
 		if (!out.insetBoxPosition_) out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2 * out.insetBoxPadding(), 2 * out.insetBoxPadding()];
@@ -345,7 +377,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (svg.size() == 0) {
 				const x = config.x == undefined ? out.insetBoxPadding_ : config.x;
 				const y = config.y == undefined ? out.insetBoxPadding_ + i * (out.insetBoxPadding_ + out.insetBoxWidth_) : config.y;
-				const ggeo = ing.append("g").attr("id", "zoomgroup" + config.geo).attr("transform", "translate(" + x + "," + y + ")");
+				const ggeo = ing.append("g").attr("id", "insetzg" + config.svgId).attr("transform", "translate(" + x + "," + y + ")");
 				ggeo.append("svg").attr("id", config.svgId);
 			}
 
@@ -357,8 +389,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 			} else {
 				out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase();
 			}
-
-
 		}
 
 		//draw frame
@@ -449,7 +479,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}*/
 
 		//prepare drawing group
-		const zg = out.svg().select("#zoomgroup" + out.geo_);
+		const zg = out.svg().select("#zoomgroup" + out.svgId_);
 		zg.selectAll("*").remove();
 
 		//draw background rectangle
@@ -485,16 +515,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//sphere for world map
 		if (out.geo_ == "WORLD") {
-			zg.append("defs").append("path")
+			zg.append("path")
 				.datum({ type: "Sphere" })
 				.attr("id", "sphere")
-				.attr("d", path);
-
-			zg.append("use")
+				.attr("d", path)
 				.attr("stroke", out.graticuleStroke())
 				.attr("stroke-width", out.graticuleStrokeWidth())
 				.attr("fill", out.seaFillStyle_)
-				.attr("xlink:href", "#sphere");
+			//.attr("href", "#sphere");
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -590,7 +618,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw country boundaries
 		if (cntbn)
 			zg.append("g").attr("id", "g_cntbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(cntbn)
 				.enter().append("path")
 				.filter(function (bn) {
@@ -609,7 +638,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (nutsbn) {
 			nutsbn.sort(function (bn1, bn2) { return bn2.properties.lvl - bn1.properties.lvl; });
 			zg.append("g").attr("id", "g_nutsbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
@@ -650,12 +680,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw world boundaries
 		if (worldbn)
 			zg.append("g").attr("id", "g_worldbn")
-				.style("fill", "none").style("stroke-linecap", "round").style("stroke-linejoin", "round")
+				.style("fill", "none")
+				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 				.selectAll("path").data(worldbn)
 				.enter().append("path")
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
-				.attr("id", (bn) => bn.properties.CNTR_BN_ID)
+				//.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) {
 					if (bn.properties.COAS_FLAG === "F") return "grey";
 				})
@@ -761,7 +792,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//dataset link
 					let code = out.stat().eurostatDatasetCode;
 					let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
-					let link = out.svg().append("a").attr("xlink:href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
+					let link = out.svg().append("a").attr("href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 						.text("EUROSTAT")
 						.style("font-family", out.botTxtFontFamily_)
 						.style("font-size", out.botTxtFontSize_ + "px")
@@ -1113,3 +1144,18 @@ const _defaultCRS = {
 	"CARIB": "32620",
 	"WORLD": "54030"
 };
+
+// convert rect attributes into an SVG path string
+// used for workaround whereby clipPaths which use rect elements do not work in adobe illustrator
+function convertRectangles(x, y, width, height) {
+	var x = parseFloat(x, 10);
+	var y = parseFloat(y, 10);
+	var width = parseFloat(width, 10);
+	var height = parseFloat(height, 10);
+
+	if (x < 0 || y < 0 || width < 0 || height < 0) {
+		return '';
+	}
+
+	return 'M' + x + ',' + y + 'L' + (x + width) + ',' + y + ' ' + (x + width) + ',' + (y + height) + ' ' + x + ',' + (y + height) + 'z';
+}

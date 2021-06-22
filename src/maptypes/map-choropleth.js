@@ -188,8 +188,11 @@ export const map = function (config) {
 					const sv = s.get(d.properties.id);
 					if (!sv || !sv.value) {
 						return "";
+					} else {
+						if (sv.value !== ':') {
+							return sv.value;
+						}
 					}
-					return sv.value;
 				});
 
 			//add shadows to labels
@@ -200,8 +203,11 @@ export const map = function (config) {
 						const sv = s.get(d.properties.id);
 						if (!sv || !sv.value) {
 							return "";
+						}else {
+							if (sv.value !== ':') {
+								return sv.value;
+							}
 						}
-						return sv.value;
 					});
 			}
 		}
