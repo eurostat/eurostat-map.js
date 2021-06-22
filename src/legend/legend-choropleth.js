@@ -60,10 +60,10 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 			.text(out.title)
 			.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-			.style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 		//set font family
-		lgg.style("font-family", out.fontFamily);
+		lgg.style("font-family", m.fontFamily_);
 
 		//define format for labels
 		const f = format("." + out.labelDecNb + "f");
@@ -103,7 +103,7 @@ export const legend = function (map, config) {
 				lgg.append("text").attr("x", out.boxPadding+Math.max(out.shapeWidth, out.sepLineLength)+out.labelOffset).attr("y", y+out.shapeHeight)
 				.attr("alignment-baseline", "middle")
 				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
-				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 
 		//'no data' legend box
@@ -131,7 +131,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.shapeWidth+out.labelOffset).attr("y", y+out.shapeHeight*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 
 		//set legend box dimensions

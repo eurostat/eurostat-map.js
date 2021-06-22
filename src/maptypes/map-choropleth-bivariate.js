@@ -32,7 +32,7 @@ export const map = function (config) {
 	out.classifier1_ = undefined;
 	out.classifier2_ = undefined;
 	//specific tooltip text function
-	out.tooltipText_ = tooltipTextFunBiv;
+	out.tooltip_.textFunction = tooltipTextFunBiv;
 
 
     /**

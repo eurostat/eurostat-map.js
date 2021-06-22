@@ -46,7 +46,7 @@ export const map = function (config) {
 	out.classifierSize_ = undefined;
 	out.classifierColor_ = undefined;
 	//specific tooltip text function
-	out.tooltipText_ = tooltipTextFunPs;
+	out.tooltip_.textFunction = tooltipTextFunPs;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.

@@ -39,12 +39,11 @@
 	out.titleFontSize_ = 25;
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
-	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 */
 	/*/tooltip
 	//the function returning the tooltip text
-	out.tooltipText_ = tooltipTextDefaultFunction;
+	out.tooltip_.textFunction = tooltipTextDefaultFunction;
 	out.tooltipShowFlags_ = "short"; //"short" "long"*/
 
 	//template default style
@@ -77,7 +76,6 @@
 	        .bottomText("Bottom text")
 	        .botTxtFontSize(18)
 	        .botTxtFill("red")
-	        .botTxtFontFamily("Comic Sans MS", "Comic Sans")
 	        .botTxtPadding(30)
 	        .botTxtTooltipTxt("Tooltip test text!")
 

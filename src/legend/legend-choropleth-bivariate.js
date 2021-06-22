@@ -52,10 +52,10 @@ export const legend = function (map, config) {
 			.text(out.title)
 			.style("text-anchor", "middle")
 			.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-			.style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 		//set font family
-		lgg.style("font-family", out.fontFamily);
+		lgg.style("font-family", m.fontFamily_);
 
 		//the vertical position of the legend element
 		let y = out.boxPadding + (out.title? out.titleFontSize + out.boxPadding : 0);
@@ -92,12 +92,12 @@ export const legend = function (map, config) {
 		//labels
 		square.append("text").attr("x", 0).attr("y", out.squareSize + out.labelFontSize)
 		.text(out.label1)
-		.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+		.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 		square.append("text").attr("x", -out.labelFontSize).attr("y", out.labelFontSize)
 		.text(out.label2)
 		.attr("transform", "rotate(90) translate("+out.labelFontSize+",0)")
-		.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+		.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		//https://stackoverflow.com/questions/16726115/svg-text-rotation-around-the-center/30022443
 
 
@@ -131,7 +131,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding+out.noDataShapeSize+out.boxPadding).attr("y", y+out.noDataShapeSize*0.5)
 			.attr("alignment-baseline", "middle")
 			.text(out.noDataText)
-			.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+			.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 
 		//set legend box dimensions

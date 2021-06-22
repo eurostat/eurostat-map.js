@@ -75,7 +75,7 @@ export const legend = function (map, config) {
 		out.makeBackgroundBox();
 
 		//set font family
-		lgg.style("font-family", out.fontFamily);
+		lgg.style("font-family", m.fontFamily_);
 
 		// legend for 
 		if (m.classifierSize_) {
@@ -105,7 +105,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
 				.text(config.title)
 				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 
 		let shape = getShape();
@@ -170,7 +170,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", labelX).attr("y", labelY)
 				.attr("alignment-baseline", "middle")
 				.text(f(val))
-				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 	}
 
@@ -192,7 +192,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + config.titlePadding)
 				.text(config.title)
 				.style("font-size", out.titleFontSize + "px").style("font-weight", out.titleFontWeight)
-				.style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
 		// x position of color legend cells
 		let x = out.boxPadding;
@@ -264,7 +264,7 @@ export const legend = function (map, config) {
 						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
 						return text;
 					})
-					.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+					.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 			}
 		}
 
@@ -314,7 +314,7 @@ export const legend = function (map, config) {
 			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
-				.style("font-size", out.labelFontSize + "px").style("font-family", out.fontFamily).style("fill", out.fontFill)
+				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 	}
 

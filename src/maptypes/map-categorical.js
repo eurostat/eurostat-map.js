@@ -21,7 +21,7 @@ export const map = function (config) {
 	/** The color for non data regions */
 	out.noDataFillStyle_ = "lightgray";
 	//specific tooltip text function
-	out.tooltipText_ = tooltipTextFunCat;
+	out.tooltip_.textFunction = tooltipTextFunCat;
 
 	//the classifier: a function which return a class number from a stat value.
 	out.classifier_ = undefined;

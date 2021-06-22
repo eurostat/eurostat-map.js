@@ -53,7 +53,7 @@ export const statMap = function (config, withCenterPoints) {
 	//transition time for rendering
 	out.transitionDuration_ = 800;
 	//specific tooltip text function
-	out.tooltipText_ = tootipTextFunStat;
+	out.tooltip_.textFunction = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
 	out.filtersDefinitionFun_ = function () { };
 	//a callback function to execute after the map build is complete.
@@ -80,6 +80,8 @@ export const statMap = function (config, withCenterPoints) {
 	//override attribute values with config values
 	if (config) for (let key in config)
 		if (out[key] && config[key] != undefined) out[key](config[key]);
+
+
 
 	/**
 	 * Build the map.
@@ -117,8 +119,6 @@ export const statMap = function (config, withCenterPoints) {
 			lg.build();
 		}
 
-		//set tooltip text
-		out.tooltipText(out.tooltipText_);
 
 		//launch geo data retrieval
 		out.updateGeoData();
@@ -391,8 +391,8 @@ const tootipTextFunStat = function (rg, map) {
 	if (unit) buf.push(" " + unit);
 	//flag
 	const f = sv.status;
-	if (f && map.tooltipShowFlags_) {
-		if (map.tooltipShowFlags_ === "short")
+	if (f && map.tooltip.showFlags_) {
+		if (map.tooltip.showFlags_ === "short")
 			buf.push(" " + f);
 		else {
 			const f_ = flags[f];
