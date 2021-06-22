@@ -7,16 +7,13 @@
 
 Reusable library to quickly create and customise web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pc_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pie_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/euro.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/pie.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/stripe.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
 
 ## Examples
 
