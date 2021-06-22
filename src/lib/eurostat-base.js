@@ -6,7 +6,6 @@
  *
  */
 
-export const fontFamilyDefault = "'Myriad Pro', Myriad, MyriadPro-Regular,'Myriad Pro Regular', MyriadPro, 'Myriad Pro', 'Liberation Sans','Nimbus Sans L', 'Helvetica Neue', vegur, Vegur, Helvetica, Arial, sans-serif";
 
 //colors
 //official colors for Eurostat logo and statistical domains

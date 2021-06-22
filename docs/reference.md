@@ -545,9 +545,13 @@ Specify the map title, its style and position.
 | *map*.**titleFontSize**([*value*]) | int | 30 | The title font size. |
 | *map*.**titleFill**([*value*]) | String | "black" | The title text color. |
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
-| *map*.**titleFontFamily**([*value*]) | String | "Helvetica, Arial, sans-serif" | The title font. |
 | *map*.**titleFontWeight**([*value*]) | String | "bold" | The title font weight. |
 
+
+## Map font
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**fontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family to use for all map components (titles, legend, labelling etc.) |
 
 ## Map frame
 
@@ -586,7 +590,6 @@ map = eurostatmap.map(...)
 | **boxCornerRad** | number | *7* | The legend box corner radius, in pixel. |
 | **boxFill** | color | *"white"* | The legend box fill style. |
 | **boxOpacity** | number | *0.7* | The legend box opacity, from 0 to 1. |
-| **fontFamily** | font | *"Helvetica, Arial, sans-serif"* | The legend font family. |
 | **fontFill** | Color | *"black"* | The legend font color. |
 | **title** | Text | *""* | The legend title. |
 | **titleFontSize** | int | *15* | The legend title font size. |
@@ -636,7 +639,6 @@ Labels for country names, country codes, and/or seas can be added to the map. La
 | *map*.**labelValuesFontSize**([*value*]) | Number | *10* | For when labelsToShow includes "values". The font size of the labels for the statistical values. |
 | *map*.**labelFill**([*value*]) | Object | *{"seas":"#003399", "countries":"#383838", "cc":"black", "values":"black"}* | The colours of the labels. |
 | *map*.**labelOpacity**([*value*]) | Object | *{"seas":1, "countries":0.8}* | The opacity of the labels. |
-| *map*.**labelFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family of the labels. |
 | *map*.**labelShadow**([*value*]) | Boolean | *false* | Whether or not to add shadows to the labels. |
 | *map*.**labelShadowWidth**([*value*]) | Object | *{ "seas": 3, "countries": 3, "cc": 3, "values": 3 }* | The width of the shadow added to each type of label. |
 | *map*.**labelShadowColor**([*value*]) | Object | *{ "seas": "white", "countries": "white", "cc": "white", "values": "white" }* | The color of the shadow added to each type of label. |
@@ -688,7 +690,6 @@ Specify the text to be shown at the bottom of the map.
 | *map*.**bottomText**([*value*]) | String | *Some default text* | The text. Note that the default value is mandatory. |
 | *map*.**botTxtFontSize**([*value*]) | int | *12* | The font size. |
 | *map*.**botTxtFill**([*value*]) | String | *"black"* | The text color. |
-| *map*.**botTxtFontFamily**([*value*]) | String | *"Helvetica, Arial, sans-serif"* | The font family. |
 | *map*.**botTxtPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | *map* .**showSourceLink**([*value*]) | Boolean | true | Shows a link to the source dataset in the bottom right corner. (uses eurostatdatabasecode specified when using the stat() function). |

@@ -35,12 +35,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.pixSize_ = undefined;
 	out.zoomExtent_ = undefined;
 
+	//common / shared styles
+	out.fontFamily_ = "Helvetica, Arial, sans-serif";
+
 	//map title
 	out.title_ = "";
 	out.titleFontSize_ = 20;
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
-	out.titleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.titleFontWeight_ = "bold";
 
 	//map subtitle
@@ -48,7 +50,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitleFontSize_ = 12;
 	out.subtitleFill_ = "grey";
 	out.subtitlePosition_ = undefined;
-	out.subtitleFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.subtitleFontWeight_ = "bold";
 
 	//map frame
@@ -93,7 +94,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.labelStroke_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
 	out.labelStrokeWidth_ = { "seas": 0.5, "countries": 0.5, "cc": 0.5, "values": 0.5 };
 	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc": 0.7, "values": 0.9 };
-	out.labelFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.labelValuesFontSize_ = 10; //when labelsToShow includes "values", this is their font size
 	out.labelShadow_ = false;
 	out.labelShadowWidth_ = { "seas": 3, "countries": 3, "cc": 3, "values": 1 };
@@ -106,7 +106,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.bottomText_ = "Administrative boundaries: \u00A9EuroGeographics \u00A9UN-FAO \u00A9INSTAT \u00A9Turkstat"; //"(C)EuroGeographics (C)UN-FAO (C)Turkstat";
 	out.botTxtFontSize_ = 10;
 	out.botTxtFill_ = "black";
-	out.botTxtFontFamily_ = "Helvetica, Arial, sans-serif";
 	out.botTxtPadding_ = 10;
 	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
@@ -735,7 +734,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//draw title
 			out.svg().append("text").attr("id", "title" + out.geo_).attr("x", out.titlePosition()[0]).attr("y", out.titlePosition()[1])
 				.text(out.title())
-				.style("font-family", out.titleFontFamily())
+				.style("font-family", out.fontFamily_)
 				.style("font-size", out.titleFontSize() + "px")
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
@@ -752,7 +751,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//draw subtitle
 			out.svg().append("text").attr("id", "subtitle" + out.geo_).attr("x", out.subtitlePosition()[0]).attr("y", out.subtitlePosition()[1])
 				.text(out.subtitle())
-				.style("font-family", out.subtitleFontFamily())
+				.style("font-family", out.fontFamily_)
 				.style("font-size", out.subtitleFontSize() + "px")
 				.style("font-weight", out.subtitleFontWeight())
 				.style("fill", out.subtitleFill())
@@ -767,7 +766,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.bottomText())
 			out.svg().append("text").attr("id", "bottomtext").attr("x", out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 				.text(out.bottomText())
-				.style("font-family", out.botTxtFontFamily_)
+				.style("font-family", out.fontFamily_)
 				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
@@ -794,7 +793,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`;
 					let link = out.svg().append("a").attr("href", url).attr("target", "_blank").append("text").attr("id", "source-dataset-link").attr("x", out.width_ - out.botTxtPadding_).attr("y", out.height_ - out.botTxtPadding_)
 						.text("EUROSTAT")
-						.style("font-family", out.botTxtFontFamily_)
+						.style("font-family", out.fontFamily_)
 						.style("font-size", out.botTxtFontSize_ + "px")
 						.style("font-weight", "bold")
 						.attr("text-anchor", "end")
@@ -814,7 +813,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 					//pretext "Source:"
 					let linkW = link.node().getComputedTextLength();
-					out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.botTxtFontFamily_)
+					out.svg().append("text").attr("x", out.width_ - out.botTxtPadding_ - linkW - 2).attr("y", out.height_ - out.botTxtPadding_).text("Source:").style("font-family", out.fontFamily_)
 						.style("font-size", out.botTxtFontSize_ + "px")
 						.style("stroke-width", "0.3px")
 						.attr("text-anchor", "end")
@@ -885,7 +884,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.style("fill", d => out.labelFill_["values"])
 					.attr("stroke", d => out.labelStroke_["values"])
 					.attr("stroke-width", d => out.labelStrokeWidth_["values"])
-					.style("font-family", out.labelFontFamily_)
+					.style("font-family", out.fontFamily_)
 
 				//SHADOWS
 				if (out.labelShadow_) {
@@ -902,7 +901,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						.style("fill", d => out.labelShadowColor_["values"])
 						.attr("stroke", d => out.labelShadowColor_["values"])
 						.attr("stroke-width", d => out.labelStrokeWidth_["values"] + out.labelShadowWidth_["values"])
-						.style("font-family", out.labelFontFamily_)
+						.style("font-family", out.fontFamily_)
 				}
 			}
 		}
@@ -969,7 +968,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 					.style("pointer-events", "none")
-					.style("font-family", out.labelFontFamily_)
+					.style("font-family", out.fontFamily_)
 					.attr("text-anchor", "middle") // set anchor y justification
 					.text(function (d) { return d.text; }); // define the text to display
 			}
@@ -1017,7 +1016,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 				.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 				.style("pointer-events", "none")
-				.style("font-family", out.labelFontFamily_)
+				.style("font-family", out.fontFamily_)
 				.attr("text-anchor", "middle") // set anchor y justification
 				.text(function (d) { return d.text; }); // define the text to display
 		}
@@ -1061,7 +1060,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//copy template attributes
 		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
-			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_", "labelShadowWidth_", "labelShadow_", "labelShadowColor_", "labelsToShow_", "labelFontFamily_", "lg_"]
+			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_", "labelShadowWidth_", "labelShadow_", "labelShadowColor_", "labelsToShow_", "fontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 
 		//copy stat map attributes/methods

@@ -28,7 +28,6 @@ export const legend = function (map) {
 	out.boxOpacity = 0.7;
 
 	//font
-	out.fontFamily = "Helvetica, Arial, sans-serif";
 	out.fontFill = "black";
 
 	//legend title
