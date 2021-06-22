@@ -73,7 +73,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		showFlags: false
 	}; // tooltip config. See eurostat-tooltip.js for more details
 
-	out.tooltip_.textFunction = (rg => { return rg.properties.na; }); //DEPRECATED use tooltip_.textFunction
+	out.tooltipText_ = (rg => { return rg.properties.na; }); //DEPRECATED use tooltip_.textFunction
 	out.tooltipShowFlags_ = false; //DEPRECATED use tooltip_.textFunction
 
 	//template default style
@@ -159,7 +159,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) {
 				if (!arguments.length) return out[att];
-				out[att] = v;
+
+				if (typeof v === 'object' && v !== null) {
+					//override default tooltip properties
+					for (const p in v) {
+						out[att][p] = v[p];
+					}
+				} else { out[att] = v; }
+
 				//recursive call to inset components
 				for (const geo in out.insetTemplates_) {
 					// insets with same geo that share the same parent inset
@@ -886,8 +893,25 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//for statistical values we need to add centroids, then add values later
 		if (out.labelsToShow_.includes("values")) {
 			if (nutsRG) {
-				const gsls = labelsG.append("g").attr("class", "g_stat_label_shadows");
-				const gsl = labelsG.append("g").attr("class", "g_stat_labels");
+				//values label shadows parent <g>
+				const gsls = labelsG.append("g").attr("class", "g_stat_label_shadows")
+					.style("font-size", out.labelValuesFontSize_ + "px")
+					.attr("text-anchor", "middle")
+					.style("opacity", d => out.labelOpacity_["values"])
+					.style("fill", d => out.labelShadowColor_["values"])
+					.attr("stroke", d => out.labelShadowColor_["values"])
+					.attr("stroke-width", d => out.labelStrokeWidth_["values"] + out.labelShadowWidth_["values"])
+					.style("font-family", out.fontFamily_);
+
+				// values labels parent <g>
+				const gsl = labelsG.append("g").attr("class", "g_stat_labels")
+					.style("font-size", out.labelValuesFontSize_ + "px")
+					.attr("text-anchor", "middle")
+					.style("opacity", d => out.labelOpacity_["values"])
+					.style("fill", d => out.labelFill_["values"])
+					.attr("stroke", d => out.labelStroke_["values"])
+					.attr("stroke-width", d => out.labelStrokeWidth_["values"])
+					.style("font-family", out.fontFamily_);
 
 				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
 				let labelRegions;
@@ -907,14 +931,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.append("g")
 					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 					.attr("class", "stat-label")
-					.style("font-size", out.labelValuesFontSize_ + "px")
-					// .attr("font-weight", "bold")
-					.attr("text-anchor", "middle")
-					.style("opacity", d => out.labelOpacity_["values"])
-					.style("fill", d => out.labelFill_["values"])
-					.attr("stroke", d => out.labelStroke_["values"])
-					.attr("stroke-width", d => out.labelStrokeWidth_["values"])
-					.style("font-family", out.fontFamily_)
 
 				//SHADOWS
 				if (out.labelShadow_) {
@@ -924,14 +940,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 						.append("g")
 						.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
 						.attr("class", "stat-label-shadow")
-						.style("font-size", out.labelValuesFontSize_ + "px")
-						// .attr("font-weight", "bold")
-						.attr("text-anchor", "middle")
-						.style("opacity", d => out.labelOpacity_["values"])
-						.style("fill", d => out.labelShadowColor_["values"])
-						.attr("stroke", d => out.labelShadowColor_["values"])
-						.attr("stroke-width", d => out.labelStrokeWidth_["values"] + out.labelShadowWidth_["values"])
-						.style("font-family", out.fontFamily_)
 				}
 			}
 		}
@@ -956,8 +964,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 				}
 			})
 
-			const shadowg = labelsG.append("g").attr("class", "g_labelShadows");
-			const labelg = labelsG.append("g").attr("class", "g_geolabels");
+			//common styles between all label shadows
+			const shadowg = labelsG.append("g").attr("class", "g_labelShadows")
+				.style("pointer-events", "none")
+				.style("font-family", out.fontFamily_)
+				.attr("text-anchor", "middle");
+
+			//common styles between all labels
+			const labelg = labelsG.append("g").attr("class", "g_geolabels")
+				.style("pointer-events", "none")
+				.style("font-family", out.fontFamily_)
+				.attr("text-anchor", "middle")
 
 			//SHADOWS
 			if (out.labelShadow_) {
@@ -985,6 +1002,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr("stroke", d => out.labelShadowColor_[d.class])
 					.attr("stroke-width", d => out.labelStrokeWidth_[d.class] + out.labelShadowWidth_[d.class])
 					.style("font-size", (d) => d.size + "px")
+					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
 					.attr("transform", (d) => {
 						if (d.rotate) {
 							let pos = projection([d.x, d.y])
@@ -997,9 +1015,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 					})
 					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
 					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
-					.style("pointer-events", "none")
-					.style("font-family", out.fontFamily_)
-					.attr("text-anchor", "middle") // set anchor y justification
 					.text(function (d) { return d.text; }); // define the text to display
 			}
 
@@ -1028,7 +1043,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", d => out.labelFill_[d.class])
 				.attr("stroke", d => out.labelStroke_[d.class])
 				.attr("stroke-width", d => out.labelStrokeWidth_[d.class])
-
 				//set label size
 				.style("font-size", (d) => d.size + "px")
 				//transform labels which have a "rotate" property in the labels config. For rotated labels, their X,Y must also be set in the transform.
@@ -1043,11 +1057,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 						return "rotate(0)"
 					}
 				})
-				//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
-				.style("font-style", d => d.class == "seas" ? "italic" : "normal")
-				.style("pointer-events", "none")
-				.style("font-family", out.fontFamily_)
-				.attr("text-anchor", "middle") // set anchor y justification
 				.text(function (d) { return d.text; }); // define the text to display
 		}
 	}
