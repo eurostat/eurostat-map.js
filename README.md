@@ -32,6 +32,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [Unemployment/population relation](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html))
 - [Farm sizes composition](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
 - [Livestock composition](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html))
+- [Population in Europe since 2012](https://eurostat.github.io/eurostat-map.js/examples/sparklines.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/sparklines.html))
 
 
 ## Installation
@@ -49,6 +50,7 @@ See the **[API reference](docs/reference.md)**:
 - For a [categorical map](docs/reference.md#categorical-map).
 - For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
 - For a [stripe composition map](docs/reference.md#stripe-composition-map).
+- For a [sparkline map](docs/reference.md#sparkline-map).
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 

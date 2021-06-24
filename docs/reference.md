@@ -557,7 +557,7 @@ Example:
         .sparkType("area")
         .sparkLineWidth(70)
         .sparkLineHeight(20)
-        .sparkLineOpacity(0.9)
+		.sparkLineOpacity(0.9)
         .build()
 ```
 | Method | Type | Default | Description |

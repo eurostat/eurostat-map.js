@@ -22,7 +22,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//map
 	out.svgId_ = "map";
 	out.svg_ = undefined;
-	out.width_ = 800;
+	out.width_ = Math.min(800,window.innerWidth);
 	out.height_ = 0;
 
 	//geographical focus
@@ -811,16 +811,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
 					tooltip.mw___ = tooltip.style("max-width");
-					tooltip.f___ = tooltip.style("font");
+					// tooltip.f___ = tooltip.style("font");
 					tooltip.style("max-width", "400px");
-					tooltip.style("font", "6px");
+					tooltip.style("font-size", out.botTxtFontSize_);
 					if (out.botTxtTooltipTxt_) tooltip.mouseover(out.botTxtTooltipTxt_);
 				}).on("mousemove", function () {
 					if (out.botTxtTooltipTxt_) tooltip.mousemove();
 				}).on("mouseout", function () {
 					if (out.botTxtTooltipTxt_) tooltip.mouseout();
 					tooltip.style("max-width", tooltip.mw___);
-					tooltip.style("font", tooltip.f___);
+					// tooltip.style("font", tooltip.f___);
 				});
 
 		//source dataset URL
