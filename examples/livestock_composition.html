@@ -24,12 +24,24 @@
                 ["bovines", "cows", "buffalos", "pigs", "sheeps", "goats"],
                 ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
             )
-            .insets("default")
             .legend({x:10, y:150, title: "Animals", boxOpacity: 0.8, boxFill: "white" })
             .seaFillStyle("white")
             .coastalMarginColor("lightgray")
             .drawGraticule(false)
-            .build();
+
+            if (window.innerWidth > 800) {
+                map.insets("default")
+            } else {
+                // settings for smaller devices
+                map.legend({ boxOpacity: 0.8, boxFill: "white", x: window.innerWidth - 90, y:10 })
+                .titleFontSize(12)
+                .botTxtFontSize(6)
+                .tooltip({fontSize:10})
+                .legend({labelFontSize:9})
+            }
+
+            map.build();
+
 </script>
 </body>
 
