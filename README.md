@@ -7,13 +7,16 @@
 
 Reusable library to quickly create and customise web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database).
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/euro.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/pie.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/stripe.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
+<div>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/population-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png" alt="choropleth" width="400"/> </a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png"  alt="proportional circles" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/prop-symbols.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/euro.png"  alt="proportional symbols" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/pie.png" alt="pie charts" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/stripe.png" alt="stripes" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png"  alt="bivariate choropleth" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/categorical.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png"  alt="categorical" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/dot.png"  alt="dot density" width="400"/></a>
+</div>
 
 ## Examples
 
@@ -29,6 +32,7 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 - [Unemployment/population relation](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html))
 - [Farm sizes composition](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
 - [Livestock composition](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html))
+- [Population in Europe since 2012](https://eurostat.github.io/eurostat-map.js/examples/sparklines.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/sparklines.html))
 
 
 ## Installation
@@ -46,6 +50,7 @@ See the **[API reference](docs/reference.md)**:
 - For a [categorical map](docs/reference.md#categorical-map).
 - For a [bivariate choropleth map](docs/reference.md#bivariate-choropleth-map).
 - For a [stripe composition map](docs/reference.md#stripe-composition-map).
+- For a [sparkline map](docs/reference.md#sparkline-map).
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 

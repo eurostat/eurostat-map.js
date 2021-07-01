@@ -13,13 +13,28 @@
 
     <script>
 
-     // basic barebones proportional circles example
-     eurostatmap.map("ps")
-      .nutsLvl(1)
-      .stat( { eurostatDatasetCode:"demo_r_pjangrp3", filters:{ age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" } )
-      .legend({ x:600, y: 40 })
-      .psShape("circle") // try: cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
-      .build();
+        // basic barebones proportional circles example
+        let map = eurostatmap.map("ps")
+            .nutsLvl(1)
+            .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+            .legend({ x: 600, y: 40 })
+            .psShape("circle") // try: cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
+
+        if (window.innerWidth > 800) {
+            map.insets("default")
+        } else {
+            // settings for smaller devices
+            map.legend({ x: window.innerWidth - 90, y: 10 })
+                .psMaxSize(15)
+                .psMinSize(1)
+                .titleFontSize(12)
+                .botTxtFontSize(6)
+                .tooltip({ fontSize: 10 })
+                .legend({ labelFontSize: 9 })
+        }
+
+        map.build();
+
     </script>
 </body>
 

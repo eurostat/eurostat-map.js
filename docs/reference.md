@@ -7,7 +7,7 @@
 [Eurostat](#eurostat-database) - [CSV](#csv) - [Custom JS](#custom-js)
 
 **Map types**<br>
-[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Proportional pie chart map](#proportional-pie-chart-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map)
+[Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Proportional pie chart map](#proportional-pie-chart-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map) - [Sparkline map](#sparkline-map)
 
 **Map elements and methods**<br>
 [Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
@@ -23,6 +23,7 @@ Create a map with ``let map = eurostatmap.map( mapType )``. Set the parameter ``
 - ``"ct"`` for a [categorical map](#categorical-map).
 - ``"chbi"`` for a [bivariate choropleth map](#bivariate-choropleth-map).
 - ``"scomp"`` for a [stripe composition map](#stripe-composition-map).
+- ``"spark"`` for a [spark line map](#sparkline-map).
 
 The ``map`` can then be customised with the methods listed in the tables below. Most of the map methods follow the pattern *map*.**myMethod**([*value*]): If a *value* is specified, the method sets the parameter value and returns the *map* object itself. If no *value* is specified, the method returns the current value of the parameter.
 
@@ -534,6 +535,42 @@ In addition to [the default legend parameters](#map-legend), stripe composition 
 | *map*.**labelOffset**([*value*]) | number | *5* | Distance between the legend box elements to the corresponding text label. |
 | *map*.**noData**([*value*]) | boolean | *true* | Show/hide 'no data' legend box element. |
 | *map*.**noDataText**([*value*]) | string | *"No data"* | 'No data' label text. |
+
+
+## Sparkline map
+
+A sparkline is a very small line chart, typically drawn without axes or coordinates. It presents the general shape of the variation (typically over time) in some measurement, such as temperature, in a simple and highly condensed way. A chart is drawn for each region showing the temporal variations of each.
+
+Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/sparklines.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/sparklines.html))
+
+Example:
+
+```javascript
+    eurostatmap
+        .map("spark")
+        .nutsLvl(1)
+        .statSpark(
+          { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR"}, unitText: "people" },
+          ["2009","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //dates
+          ["2009","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //labels
+        )
+        .sparkType("area")
+        .sparkLineWidth(70)
+        .sparkLineHeight(20)
+	.sparkLineOpacity(0.9)
+        .build()
+```
+| Method | Type | Default | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**sparkType**([*value*]) | string | "area" | Type of chart to use. Can be 'line' or 'area' |
+| *map*.**sparkLineColor**([*value*]) | string | "black" | colour of the sparklines |
+| *map*.**sparkAreaColor**([*value*]) | string | "#41afaa" | colour of the area chart fill (when sparkType set to area) |
+| *map*.**sparkLineWidth**([*value*]) |  number | 30 | width of the spark charts |
+| *map*.**sparkLineHeight**([*value*]) |  number | 20 | height of the spark charts |
+| *map*.**sparkLineStrokeWidth**([*value*]) | number | 0.4 | stroke width of the spark lines |
+| *map*.**sparkLineOpacity**([*value*]) |  number | 0.6 | opacity of the spark lines|
+| *map*.**sparkChartCircleRadius**([*value*]) | number | 0.5 | Radius of the circles at each record |
+| *map*.**sparkTooltipChart**([*value*]) | object | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip |
 
 ## Map title
 
