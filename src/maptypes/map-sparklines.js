@@ -19,7 +19,7 @@ export const map = function (config) {
     out.sparkLineStrokeWidth_ = 0.4;
     out.sparkLineOpacity_ = 0.6;
     out.sparkType_ = "line";
-    out.sparkChartCircleRadius_ = 0.5;
+    out.sparkLineCircleRadius_ = 0.5;
     out.sparkTooltipChart_ = {
         width: 100,
         height: 80,
@@ -224,7 +224,7 @@ export const map = function (config) {
             .attr("stroke", "none")
             .attr("cx", function (d, i) { return xScale(i) })
             .attr("cy", function (d) { return yScale(d.value) })
-            .attr("r", out.sparkChartCircleRadius_)
+            .attr("r", out.sparkLineCircleRadius_)
             .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
     }
 
