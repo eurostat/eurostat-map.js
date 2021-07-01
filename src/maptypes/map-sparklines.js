@@ -22,7 +22,7 @@ export const map = function (config) {
     out.sparkLineCircleRadius_ = 0;
     out.sparkTooltipChart_ = {
         width: 100,
-        height: 60,
+        height: 50,
         margin: { left: 60, right: 40, top: 40, bottom: 40 },
         circleRadius: 1.5
     }
@@ -41,13 +41,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineCircleRadius_", "sparkLineAreaColor_"]
+    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineCircleRadius_", "sparkLineAreaColor_","sparkTooltipChart_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineCircleRadius_", "sparkLineAreaColor"].forEach(function (key) {
+    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineCircleRadius_", "sparkLineAreaColor","sparkTooltipChart_"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -294,11 +294,17 @@ export const map = function (config) {
         tp.selectAll("*").remove();
 
         //write region name
-        tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        if (rg.properties.id) {
+            //name and code
+            tp.append("div").html("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+        } else {
+            //region name
+            tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        }
 
         //prepare data for sparkline chart
-        let height = 200
-        let width = 200
+        let height = out.sparkTooltipChart_.height;
+        let width = out.sparkTooltipChart_.width;
         let margin = out.sparkTooltipChart_.margin;
         const data = getComposition(rg.properties.id);
         let svg = tp.append("svg")

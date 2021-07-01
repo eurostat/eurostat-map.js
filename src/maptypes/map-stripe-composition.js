@@ -236,7 +236,13 @@ export const map = function (config) {
 		tp.selectAll("*").remove();
 
 		//write region name
-		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+		if (rg.properties.id) {
+            //name and code
+            tp.append("div").html("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+        } else {
+            //region name
+            tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        }
 
 		//prepare data for pie chart
 		const data = []

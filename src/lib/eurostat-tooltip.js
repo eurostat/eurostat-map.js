@@ -8,7 +8,7 @@ export const tooltip = function (config) {
 	config = config || {};
 	config.div = config.div || "tooltip_eurostat";
 	config.maxWidth = config.maxWidth || "200px";
-	config.fontSize = config.fontSize || "16px";
+	config.fontSize = config.fontSize || "14px";
 	config.background = config.background || "white";
 	config.padding = config.padding || "5px";
 	config.border = config.border || "0px";
@@ -30,8 +30,7 @@ export const tooltip = function (config) {
 		//tooltip.style("width",config.width);
 		tooltip.style("max-width", config.maxWidth);
 		tooltip.style("overflow", "hidden");
-
-		tooltip.style("font-size", config.fontSize + "px");
+		tooltip.style("font-size", config.fontSize);
 		tooltip.style("background", config.background);
 		tooltip.style("padding", config.padding);
 		tooltip.style("border", config.border);
@@ -39,7 +38,6 @@ export const tooltip = function (config) {
 		tooltip.style("box-shadow", config["box-shadow"]);
 		tooltip.style("position", "absolute");
 		tooltip.style("font-family", config["font-family"]);
-
 		tooltip.style("position", "absolute");
 		tooltip.style("pointer-events", "none");
 		tooltip.style("opacity", "0");

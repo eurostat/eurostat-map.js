@@ -33,7 +33,18 @@
         .nutsbnStrokeWidth({ 0: 0.2, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
         .landStroke({ def: "none", co: "none" })
         .landStrokeWidth({ def: 0, co: 0 })
-        .tooltip({maxWidth:Math.min(400,window.innerWidth)})
+        .tooltip({
+                xOffset: 30,
+                yOffset: 150,
+                fontSize:"12px",
+                maxWidth: Math.min(400, window.innerWidth)
+        })
+        .sparkTooltipChart({
+                width: 150,
+                height: 50,
+                margin: { left: 60, right: 40, top: 40, bottom: 40 },
+                circleRadius: 1.5
+          })
         .build()
 
         //deaths per week 

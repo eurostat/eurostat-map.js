@@ -256,8 +256,13 @@ export const symbolsLibrary = {
  */
 const tooltipTextFunPs = function (rg, map) {
 	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 
 	//stat 1 value
 	const v1 = map.statData("size") ? map.statData("size") : map.statData();

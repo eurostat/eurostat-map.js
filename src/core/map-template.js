@@ -67,10 +67,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.frameStrokeWidth_ = 2;
 
 	//tooltip
-	//the function returning the tooltip text
+	//default config
 	out.tooltip_ = {
 		maxWidth: "200px",
-		fontSize: "16px",
+		fontSize: "14px",
 		background: "white",
 		padding: "5px",
 		border: "0px",
@@ -79,9 +79,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 		transitionDuration: 200,
 		xOffset: 30,
 		yOffset: 20,
-		textFunction: (rg => { return rg.properties.na; }),
+		textFunction: null,
 		showFlags: false
-	}; // tooltip config. See eurostat-tooltip.js for more details
+	}; //  See eurostat-tooltip.js for more details
 
 	out.tooltipText_ = (rg => { return rg.properties.na; }); //DEPRECATED use tooltip_.textFunction
 	out.tooltipShowFlags_ = false; //DEPRECATED use tooltip_.textFunction
@@ -506,7 +506,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 		//decode topojson to geojson
-		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn;
+		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;

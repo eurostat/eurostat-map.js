@@ -369,15 +369,21 @@ function rasterize(svg) {
 
 /**
  * Default function for tooltip text, for statistical maps.
- * It simply shows the name of the region and the statistical value.
+ * It simply shows the name and code of the region and the statistical value.
  * 
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
  */
 const tootipTextFunStat = function (rg, map) {
 	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 	//case when no data available
 	const sv = map.statData().get(rg.properties.id);
 	if (!sv || (sv.value != 0 && !sv.value)) {
