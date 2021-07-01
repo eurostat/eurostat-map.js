@@ -215,7 +215,7 @@ export const map = function (config) {
             )
             .attr("transform", (d) => `translate(0,-${height / 2})`)
 
-        // Add the line
+        // Add the dots
         node.selectAll("myCircles")
             .data(data)
             .enter()
@@ -225,7 +225,7 @@ export const map = function (config) {
             .attr("cx", function (d, i) { return xScale(i) })
             .attr("cy", function (d) { return yScale(d.value) })
             .attr("r", out.sparkLineCircleRadius_)
-            .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+            .attr("transform", (d) => `translate(0,-${height / 2})`)
     }
 
 
