@@ -510,6 +510,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
+			kosovo = feature(geoData, geoData.objects.NUTS_BN_20M_2021_RS_XK_border).features;
 			gra = [geoGraticule().step([30, 30])()];
 		} else {
 			gra = feature(geoData, geoData.objects.gra).features;
@@ -737,8 +738,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
 				//.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) {
-					if (bn.properties.COAS_FLAG == "F") return out.landStroke();
-					if (bn.properties.POL_STAT > 0) return 'grey'; //disputed
+					if (bn.properties.POL_STAT > 0) {
+						//disputed
+						return '#b2b2b2'
+					} else if (bn.properties.COAS_FLAG == "F"){
+						return out.landStroke();
+					}; 
 				})
 				.style("stroke-width", function (bn) {
 					if (bn.properties.COAS_FLAG == "F") return out.landStrokeWidth() + 'px';
@@ -746,6 +751,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 					// if (bn.properties.POL_STAT > 0) return out.landStrokeWidth() + 'px';
 				});
 
+		if (kosovo) {
+			//add kosovo to world map
+			zg.append("g").attr("id", "g_worldbn")
+			.style("fill", "none")
+			.selectAll("path").data(kosovo)
+			.enter().append("path")
+			.attr("d", path)
+			.style("stroke", '#b2b2b2')
+			.style("stroke-width", function (bn) {
+				return out.landStrokeWidth() + 'px';
+			});
+		}
 
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {

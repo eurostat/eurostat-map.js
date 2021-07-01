@@ -41,13 +41,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineAreaColor_"]
+    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineCircleRadius_", "sparkLineAreaColor_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineAreaColor"].forEach(function (key) {
+    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineCircleRadius_", "sparkLineAreaColor"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
