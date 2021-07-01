@@ -19,10 +19,10 @@ export const map = function (config) {
     out.sparkLineStrokeWidth_ = 0.4;
     out.sparkLineOpacity_ = 0.6;
     out.sparkType_ = "line";
-    out.sparkLineCircleRadius_ = 0.5;
+    out.sparkLineCircleRadius_ = 0;
     out.sparkTooltipChart_ = {
         width: 100,
-        height: 80,
+        height: 60,
         margin: { left: 60, right: 40, top: 40, bottom: 40 },
         circleRadius: 1.5
     }
@@ -200,7 +200,7 @@ export const map = function (config) {
                     .y0(height)
                     .y1(function (d) { return yScale(d.value) })
                 )
-                .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+                .attr("transform", (d) => `translate(0,-${height / 2})`)
         }
 
         // Add the line
@@ -213,7 +213,7 @@ export const map = function (config) {
                 .x(function (d, i) { return xScale(i) })
                 .y(function (d) { return yScale(d.value) })
             )
-            .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+            .attr("transform", (d) => `translate(0,-${height / 2})`)
 
         // Add the line
         node.selectAll("myCircles")
@@ -333,7 +333,7 @@ export const map = function (config) {
         let tickValues = [domainY[0], Math.round((domainY[0] + domainY[1]) / 2), domainY[1]]
         node.append("g")
             .attr("class", "axis")
-            .call(axisLeft(yScale).tickValues(tickValues).tickFormat(format(".0f")));
+            .call(axisLeft(yScale).tickValues(tickValues).tickFormat(format(",.2r")));
 
 
         // Add the area
