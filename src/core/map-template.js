@@ -1,12 +1,22 @@
 import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
 import { select, event, selectAll } from "d3-selection";
+import { formatDefaultLocale } from "d3-format";
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10 } from "d3-geo";
 import { geoRobinson } from "d3-geo-projection";
 import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
+
+
+// set d3 locale
+formatDefaultLocale({  
+	"decimal": ".",
+	"thousands": " ",
+	"grouping": [3],
+	"currency": ["", "€"]
+})
 
 /**
  * The map template: only the geometrical part.
