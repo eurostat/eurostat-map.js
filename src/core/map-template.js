@@ -724,15 +724,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path").data(worldbn)
 				.enter().append("path")
 				.attr("d", path)
-				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
+				//.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
 				//.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) {
-					if (bn.properties.COAS_FLAG === "F") return "grey";
+					if (bn.properties.COAS_FLAG == "F") return out.landStroke();
+					if (bn.properties.POL_STAT > 0) return 'grey'; //disputed
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG === "F") return out.landStrokeWidth();
+					if (bn.properties.COAS_FLAG == "F") return out.landStrokeWidth() + 'px';
 					// 0 and 4 are normal boundaries, anything else is disputed
-					if (bn.properties.POL_STAT !== 0 && bn.properties.POL_STAT !== 4) return 0.1;
+					// if (bn.properties.POL_STAT > 0) return out.landStrokeWidth() + 'px';
 				});
 
 
