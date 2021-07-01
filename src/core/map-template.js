@@ -11,7 +11,7 @@ import { defaultLabels } from './labels';
 
 
 // set d3 locale
-formatDefaultLocale({  
+formatDefaultLocale({
 	"decimal": ".",
 	"thousands": " ",
 	"grouping": [3],
@@ -32,7 +32,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//map
 	out.svgId_ = "map";
 	out.svg_ = undefined;
-	out.width_ = Math.min(800,window.innerWidth);
+	out.width_ = Math.min(800, window.innerWidth);
 	out.height_ = 0;
 
 	//geographical focus
@@ -370,6 +370,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		selectAll("#" + out.svgId() + " > *").remove();
 
 		//set SVG dimensions
+		if (out.geo_.toUpperCase() == "WORLD") {
+			//if no height was specified, use 45% of the width.
+			if (!out.height()) out.height(0.55 * out.width());
+			svg.attr("width", out.width()).attr("height", out.height());
+
+			//WORLD geo only accepts proj 54030 at the moment
+			out.proj_ = 54030
+		}
 		//if no height was specified, use 85% of the width.
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
@@ -494,7 +502,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				projection = geoRobinson()
 					// .scale(148)
 					// .rotate([352, 0, 0])
-					.translate([out.width_ / 2, out.height_ / 2]);
+					.translate([out.width_ / 2, out.height_ / 2]).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
 			} else {
 				console.error("unsupported projection")
 			}
@@ -741,9 +749,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 					if (bn.properties.POL_STAT > 0) {
 						//disputed
 						return '#b2b2b2'
-					} else if (bn.properties.COAS_FLAG == "F"){
+					} else if (bn.properties.COAS_FLAG == "F") {
 						return out.landStroke();
-					}; 
+					};
 				})
 				.style("stroke-width", function (bn) {
 					if (bn.properties.COAS_FLAG == "F") return out.landStrokeWidth() + 'px';
@@ -754,14 +762,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (kosovo) {
 			//add kosovo to world map
 			zg.append("g").attr("id", "g_worldbn")
-			.style("fill", "none")
-			.selectAll("path").data(kosovo)
-			.enter().append("path")
-			.attr("d", path)
-			.style("stroke", '#b2b2b2')
-			.style("stroke-width", function (bn) {
-				return out.landStrokeWidth() + 'px';
-			});
+				.style("fill", "none")
+				.selectAll("path").data(kosovo)
+				.enter().append("path")
+				.attr("d", path)
+				.style("stroke", '#b2b2b2')
+				.style("stroke-width", function (bn) {
+					return out.landStrokeWidth() + 'px';
+				});
 		}
 
 		//prepare group for proportional symbols, with nuts region centroids
