@@ -18,7 +18,7 @@ export const map = function (config) {
     out.sparkLineHeight_ = 20;
     out.sparkLineStrokeWidth_ = 0.4;
     out.sparkLineOpacity_ = 0.6;
-    out.sparkType_ = "area";
+    out.sparkType_ = "line";
     out.sparkChartCircleRadius_ = 0.5;
     out.sparkTooltipChart_ = {
         width: 100,
@@ -149,27 +149,6 @@ export const map = function (config) {
         let s = out.svg().selectAll("#g_ps");
         let sym = s.selectAll("g.symbol").attr("id", rg => { nutsIds.push(rg.properties.id); return "spark_" + rg.properties.id; })
         addSparkLinesToMap(nutsIds);
-
-        //build and assign sparklines to the regions
-        // out.svg().select("#g_ps").selectAll("g.symbol")
-        //     .append("g")
-        //     .attr('class', 'spark-container')
-        //     .append('path')
-        //     .attr('class', 'sparks')
-        //     .attr('fill', out.sparkType_ == "area" ? out.sparkLineAreaColor_ : "none")
-        //     .attr('stroke', out.sparkType_ == "area" ? "none" : out.sparkLineColor_)
-        //     .attr('stroke-width', out.sparkLineStrokeWidth_)
-        //     .attr('opacity', out.sparkLineOpacity_)
-        //     .attr('d', d => {
-        //         let values = getComposition(d.properties.id);
-        //         return sparkline(values)
-        //     })
-        //     .attr("transform", (d) => {
-        //         if (out.sparkType_ == "area") {
-        //             return `translate(-${out.sparkLineWidth_/2},-${out.sparkLineHeight_/2})`
-        //         }
-        //         return `translate(0,-${out.sparkLineHeight_})`
-        //     })
         return out;
     };
 
