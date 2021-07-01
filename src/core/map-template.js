@@ -93,7 +93,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//nuts
 	out.nutsrgFillStyle_ = "white";
-	out.nutsrgSelFillSty_ = "purple";
+	out.nutsrgSelFillSty_ = "#e0bcdf";
 	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
 	out.nutsbnStrokeWidth_ = { 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
 	//land

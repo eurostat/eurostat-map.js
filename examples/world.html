@@ -272,10 +272,7 @@
         const map = eurostatmap
             .map("ch")
             .geo("WORLD")
-            //.proj(54030) //54030
             .width(Math.min(window.innerHeight, window.innerWidth))
-            // .width(982.68)
-            // .height(491.34)
             .nutsLvl("mixed")
             .title("World map")
             .drawGraticule(true)
@@ -284,8 +281,8 @@
             .landFillStyle("#E6E6E6")
             .landStroke("black")
             .landStrokeWidth(0.4)
-            // .labelling(true)
-            // .labelsToShow(["seas"])
+            .labelling(true)
+            .labelsToShow(["seas"])
             .classifMethod("threshold")
             .threshold([10, 20, 30, 40, 50, 60, 70])
             .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
