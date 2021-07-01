@@ -560,6 +560,7 @@ Example:
 	.sparkLineOpacity(0.9)
         .build()
 ```
+
 | Method | Type | Default | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**sparkType**([*value*]) | string | "area" | Type of chart to use. Can be 'line' or 'area' |
@@ -571,6 +572,7 @@ Example:
 | *map*.**sparkLineOpacity**([*value*]) |  number | 0.6 | opacity of the spark lines|
 | *map*.**sparkChartCircleRadius**([*value*]) | number | 0.5 | Radius of the circles at each record |
 | *map*.**sparkTooltipChart**([*value*]) | object | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip |
+
 
 ## Map title
 
