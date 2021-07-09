@@ -14,7 +14,6 @@
         eurostatmap
             .map("spark")
             .nutsLvl(1)
-            .height(Math.min(800, window.innerWidth))
             .statSpark(
                 { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR" }, unitText: "people" },
                 ["2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"], //dates
@@ -22,6 +21,8 @@
             )
             .sparkType("line")
             .sparkLineWidth(30)
+            .sparkLineStrokeWidth(2)
+            .sparkLineColor("#c44a4a")
             .sparkLineHeight(20)
             .sparkLineOpacity(0.9)
             .sparkLineCircleRadius(0.1)
