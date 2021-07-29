@@ -645,11 +645,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
 				const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
 				const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
-				const kosovoBn = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsbn).features.filter((f) => {
-					if (kosovoBnIds[out.nutsYear_].includes(f.properties.id)) {
-						return f;
-					}
-				}); // XK NUTS1
 
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
@@ -681,7 +676,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 							.style("fill", "none")
 							//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 							.selectAll("path")
-							.data(kosovoBn)
+							.data(kosovoBnFeatures)
 							.enter()
 							.append("path")
 							.attr("d", path)
