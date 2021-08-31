@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Proportional pie chart map](#proportional-pie-chart-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map) - [Sparkline map](#sparkline-map)
 
 **Map elements and methods**<br>
-[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
+[Title](#map-title-&-subtitle) - [Frame](#map-frame) - [Legend](#map-legend) - [Scalebar](#scalebar) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
@@ -640,7 +640,16 @@ map = eurostatmap.map(...)
 | **titleFontSize** | int | *15* | The legend title font size. |
 | **titleFontWeight** | String | *"normal"* | The legend title font weight. |
 
+## Scalebar  
 
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**showScalebar**([*value*]) | Boolean | *false* | Adds a scalebar to the map |
+| *map*.**scaleBarPosition**([*value*]) | array | *calculated (bottom left)* | The X/Y position of the scalebar. |
+| *map*.**scalebarFontSize**([*value*]) | int | *8* | The font size in pixels of the scalebar text. |
+| *map*.**scalebarTicks**([*value*]) | int | *5* | The number of ticks in the scalebar. |
+| *map*.**scalebarTickHeight**([*value*]) | int | *13* | The height of each tick in pixels. |
+| *map*.**scalebarSegmentWidth**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
 
 ## Tooltip
 
@@ -772,6 +781,9 @@ Specify the text to be shown at the bottom of the map.
 | *map*.**botTxtPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | *map* .**showSourceLink**([*value*]) | Boolean | true | Shows a link to the source dataset in the bottom right corner. (uses eurostatdatabasecode specified when using the stat() function). |
+
+
+
 
 
 
