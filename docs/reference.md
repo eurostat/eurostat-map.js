@@ -574,7 +574,7 @@ Example:
 | *map*.**sparkTooltipChart**([*value*]) | object | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip |
 
 
-## Map title
+## Map title & subtitle
 
 Specify the map title, its style and position.
 
@@ -585,6 +585,12 @@ Specify the map title, its style and position.
 | *map*.**titleFill**([*value*]) | String | "black" | The title text color. |
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontWeight**([*value*]) | String | "bold" | The title font weight. |
+| *map*.**subtitle**([*value*]) | String | "" | The subtitle text. |
+| *map*.**subtitleFontSize**([*value*]) | int | 30 | The subtitle font size. |
+| *map*.**subtitleFontWeight**([*value*]) | String | "bold" | The subtitle text weight. |
+| *map*.**subtitleFill**([*value*]) | String | "black" | The subtitle text color. |
+| *map*.**subtitlePosition**([*value*]) | Array ([x,y]) | auto | The subtitle position. If not specified, a position is automatically computed, on the top left corner. |
+
 
 
 ## Map font

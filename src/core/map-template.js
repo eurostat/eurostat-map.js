@@ -8,6 +8,7 @@ import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
+import { kosovoBnIds, kosovoBnFeatures } from './kosovo';
 
 
 // set d3 locale
@@ -249,8 +250,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.isGeoReady = function () {
 		if (!geoData) return false;
 		//recursive call to inset components
-		for (const geo in out.insetTemplates_)
-			if (!out.insetTemplates_[geo].isGeoReady()) return false;
+		for (const geo in out.insetTemplates_) {
+			// check for insets with same geo
+			if (Array.isArray(out.insetTemplates_[geo])) {
+				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+					// insets with same geo that do not share the same parent inset
+					if (Array.isArray(out.insetTemplates_[geo][i])) {
+						// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+						for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+							if (!out.insetTemplates_[geo][i][c].isGeoReady()) return false;
+						}
+					} else {
+						if (!out.insetTemplates_[geo][i].isGeoReady()) return false;
+					}
+				}
+			} else {
+				if (!out.insetTemplates_[geo].isGeoReady()) return false;
+			}
+		}
 
 		return true;
 	}
@@ -652,6 +669,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 						});
 				})
 
+				//add kosovo
+				if (out.geo_ == "EUR") {
+					if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+						zg.append("g").attr("id", "g_kosovo")
+							.style("fill", "none")
+							//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
+							.selectAll("path")
+							.data(kosovoBnFeatures)
+							.enter()
+							.append("path")
+							.attr("d", path)
+							.style("stroke", "grey")
+							.style("stroke-width", 0.3);
+					}
+				}
+
+
 			} else {
 				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
@@ -701,10 +735,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
-					// if (bn.properties.id == 4054) {
-					// debug
-					// 	console.log(bn)
-					// }
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -733,7 +763,25 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
 					return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
 				});
+
+
+			if (out.geo_ == "EUR") {
+				if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+					zg.append("g").attr("id", "g_kosovo")
+						.style("fill", "none")
+						//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
+						.selectAll("path")
+						.data(kosovoBnFeatures)
+						.enter()
+						.append("path")
+						.attr("d", path)
+						.style("stroke", "grey")
+						.style("stroke-width", 0.3);
+				}
+			}
 		}
+
+
 
 		//draw world boundaries
 		if (worldbn)
@@ -766,9 +814,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path").data(kosovo)
 				.enter().append("path")
 				.attr("d", path)
-				.style("stroke", '#b2b2b2')
+				.style("stroke", '#4f4f4f')
 				.style("stroke-width", function (bn) {
-					return out.landStrokeWidth() + 'px';
+					return 0.3 + 'px';
 				});
 		}
 

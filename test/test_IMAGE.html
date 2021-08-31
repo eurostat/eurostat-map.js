@@ -44,7 +44,7 @@
       SI: 0,
       SK: 0,
       UK: 0,
-      RS: 0,
+      //RS: 0,
       CH: 0,
       NO: 0,
       ME: 0,
@@ -83,7 +83,7 @@
       SI: 0,
       SK: 0,
       UK: 0,
-      RS: 0,
+      //RS: 0,
       CH: 0,
       NO: 0,
       ME: 0,
@@ -98,19 +98,18 @@
     const s = 70; // inset size
     const p = 4; // inset padding
 
-    // see https://github.com/eurostat/eurostat-map.js/blob/master/docs/reference.md#insets for documentation
-    let insetsConfig = [
-      {
+   const insetsConfig = [
+    {
         geo: 'IC',
         x: 0,
         y: 0,
         width: w,
         height: h,
-        pixSize: 8000,
-        drawGraticule: false,
-        title: 'Canarias (ES)'
-      },
-      {
+        pixSize: 7500,
+        title: 'Canarias (ES)',
+        geoCenter: [410000, 3180000]
+    },
+    {
         geo: 'GP',
         x: w + p,
         y: 0,
@@ -118,60 +117,63 @@
         height: h,
         title: 'Guadeloupe (FR)',
         geoCenter: [660000, 1800000],
-        insetBoxPosition: [1, 10],
-        insets: [
-          {
-            geo: 'GP',
-            width: 23,
-            height: 15,
-            pixSize: 1500,
-            geoCenter: [493000, 1999000],
-            frameStrokeWidth: 0.8
-          }
-        ]
-      },
-      {
+    },
+    {
+        geo: 'GP',
+        x: w + p + 5,
+        y: 15,
+        width: 23,
+        height: 15,
+        pixSize: 1500,
+        geoCenter: [493000, 1999000],
+        frameStrokeWidth: 0.8
+    },
+    {
+        geo: 'GF',
+        x: w * 2 + p * 2,
+        y: 0,
+        width: w,
+        height: h,
+        pixSize: 7000,
+        title: 'Guyane (FR)',
+        geoCenter: [266852, 484074]
+    },
+    {
         geo: 'MQ',
         x: 0,
         y: h + p,
         width: w,
         height: h,
-        title: 'Martinique (FR)'
-      },
-      {
-        geo: 'GF',
+        title: 'Martinique (FR)',
+        pixSize: 1000,
+        geoCenter: [716521, 1621322]
+    },
+    {
+        geo: 'YT',
         x: w + p,
         y: h + p,
         width: w,
         height: h,
-        pixSize: 7000,
-        title: 'Guyane (FR)'
-      },
-      {
+        title: 'Mayotte (FR)'
+    },
+    {
         geo: 'RE',
-        x: 0,
-        y: 2 * h + 2 * p,
+        x: w * 2 + p * 2,
+        y: h + p,
         width: w,
         height: h,
         title: 'Réunion (FR)'
-      },
-      {
-        geo: 'YT',
-        x: w + p,
+    },
+
+    {
+        geo: 'MT',
+        x: 0,
         y: 2 * h + 2 * p,
         width: w,
         height: h,
-        title: 'Mayotte (FR)'
-      },
-      {
-        geo: 'MT',
-        x: 0,
-        y: 3 * h + 3 * p,
-        width: w,
-        height: h,
         title: 'Malta'
-      },
-      {
+    },
+    {
         geo: 'PT20',
         x: w + p,
         y: 2 * h + 2 * p,
@@ -193,7 +195,7 @@
     },
     {
         geo: 'PT20',
-        x: w + p + 4,
+        x: w + p + 5,
         y: (2 * h + 2 * p) + 17,
         width: 15,
         height: 20,
@@ -201,24 +203,36 @@
         geoCenter: [140000, 4390000],
         frameStrokeWidth: 0.8
     },
-      {
+    {
         geo: 'PT30',
-        x: 0,
-        y: 4 * h + 4 * p,
+        x: 2 * w + 2 * p,
+        y: 2 * h + 2 * p,
         width: w,
         height: h,
         title: 'Madeira (PT)'
-      },
-      {
+    },
+    {
         geo: 'LI',
         x: w + p,
-        y: 4 * h + 4 * p,
+        y: 3 * h + 3 * p,
         width: w,
         height: h,
         title: 'Liechtenstein',
+        geoCenter: [4287060, 2674000],
         scale: '01M'
-      }
-    ];
+    },
+    {
+        geo: 'SJ_SV',
+        x: w * 2 + p * 2,
+        y: 3 * h + 3 * p,
+        width: w,
+        height: h,
+        title: 'Svalbard (NO)',
+        geoCenter: [4550000, 6210156],
+        pixSize: 8000,
+        scale: '10M'
+    }
+];
 
     insetsConfig.forEach(c => {
       (c.frameStroke = 'grey'),
@@ -1764,7 +1778,8 @@
         .height(mapHeight)
         .bottomText(null)
         .showSourceLink(false)
-        .nutsLvl('mixed')
+        //.nutsLvl("mixed")
+        .nutsLvl(0)
         .classifMethod("threshold")
         .colors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
         .threshold([-10, -5, 0, 4, 5,6,7,8,999,999])
@@ -1791,15 +1806,20 @@
         .zoomExtent([1,10])
 
       // adjust regions to show
-        .bordersToShow(["eu", "co"])
+        //.bordersToShow(["eu", "co","cc"])
         .nutsYear(2016)
-        .countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK']);
+        //.countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'RS']);
     };
 
     let map = basemap();
-    map.statData().setData(data2);
+    map.statData().setData({ES:2});
     map.build();
 
+    setTimeout(()=>{
+      map.nutsLvl("mixed")
+      map.statData().setData(data2);
+      map.build();
+    },8000)
     let i = 0;
     loopBetweenNUTS = function () {
       setTimeout(() => {
