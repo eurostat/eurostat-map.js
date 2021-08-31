@@ -73,6 +73,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.scalebarTicks_ = 5;
 	out.scalebarTickHeight_ = 5;
 	out.scalebarSegmentWidth_ = 30; //px
+	out.scalebarSegmentHeight_ = 6;
 	out.scalebarFontSize_ = 9; //px
 
 	//tooltip
@@ -976,7 +977,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 			.attr("y", out.scalebarPosition_[1])
 
 		let ticks = out.scalebarTicks_;
-		let height = out.scalebarTickHeight_;
+		let tickHeight = out.scalebarTickHeight_;
+		let segmentHeight = out.scalebarSegmentHeight_;
 		let gap = out.scalebarSegmentWidth_;
 
 		//add horizontal lines
@@ -986,15 +988,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 			.attr('x1', 1).attr('y1', 1).attr('x2', gap * (ticks - 1)).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
 		//bottom full width
 		sb.append('line')
-			.attr('x1', 1).attr('y1', 7.5).attr('x2', gap * (ticks - 1)).attr('y2', 7.5).style('stroke', '#000').style('stroke-width', '0.8px')
+			.attr('x1', 1).attr('y1', segmentHeight).attr('x2', gap * (ticks - 1)).attr('y2', segmentHeight).style('stroke', '#000').style('stroke-width', '0.8px')
 		// midlines for every other segment
 		for (let i = -1; i < ticks; i += 2) {
 			if (i == 1) {
 				sb.append('line')
-					.attr('x1', 1).attr('y1', 3.5).attr('x2', gap * i).attr('y2', 3.5).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', 1).attr('y1', segmentHeight/2).attr('x2', gap * i).attr('y2', segmentHeight/2).style('stroke', '#000').style('stroke-width', '0.8px')
 			} else {
 				sb.append('line')
-					.attr('x1', gap * (i - 1)).attr('y1', 3.5).attr('x2', gap * i).attr('y2', 3.5).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', gap * (i - 1)).attr('y1', segmentHeight/2).attr('x2', gap * i).attr('y2', segmentHeight/2).style('stroke', '#000').style('stroke-width', '0.8px')
 			}
 		}
 
@@ -1015,21 +1017,21 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (i == 0) {
 				//first line
 				sb.append('line')
-					.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', height).style('stroke', '#000').style('stroke-width', '0.8px')
-				sbText.append('text').attr('x', 3).attr('y', height+textOffsetY).text('0')
+					.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
+				sbText.append('text').attr('x', 3).attr('y', tickHeight+textOffsetY).text('0')
 			} else if (i == ticks - 1) {
 				// add 'km' to last text value
-				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', height + textOffsetY).text(
+				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
 					round5(out.pixSize_ * (gap * i) / 1000) + ' km')
 				//last line
 				sb.append('line')
-					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', height).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
 			} else {
 				// all other lines
 				sb.append('line')
-					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', height).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
 				// all other texts
-				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', height + textOffsetY).text(
+				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
 					round5(out.pixSize_ * (gap * i) / 1000))
 			}
 		}
