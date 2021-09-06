@@ -75,6 +75,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.scalebarSegmentWidth_ = 30; //px
 	out.scalebarSegmentHeight_ = 6;
 	out.scalebarFontSize_ = 9; //px
+	out.scalebarUnits_ = ' km'; //label
+	out.scalebarTextOffset_ = [4, 8]
 
 	//tooltip
 	//default config
@@ -497,13 +499,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.buildMapTemplate = function () {
 
 		//prepare map tooltip
-		let tooltip;
 		if (out.tooltip_) {
 			// if user specifies config
-			tooltip = tp.tooltip(out.tooltip_);
+			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
-			tooltip = tp.tooltip();
+			out._tooltip = tp.tooltip();
 		}
 
 
@@ -633,18 +634,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
 				.attr("fill", out.landFillStyle())
-				.on("mouseover", function (rg) {
-					const sel = select(this);
-					sel.attr("fill___", sel.attr("fill"));
-					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-				}).on("mousemove", function () {
-					if (tooltip) tooltip.mousemove();
-				}).on("mouseout", function () {
-					const sel = select(this);
-					sel.attr("fill", sel.attr("fill___"));
-					if (tooltip) tooltip.mouseout();
-				});
+				// .on("mouseover", function (rg) {
+				// 	const sel = select(this);
+				// 	sel.attr("fill___", sel.attr("fill"));
+				// 	sel.attr("fill", out.nutsrgSelFillSty_);
+				// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				// }).on("mousemove", function () {
+				// 	if (tooltip) tooltip.mousemove();
+				// }).on("mouseout", function () {
+				// 	const sel = select(this);
+				// 	sel.attr("fill", sel.attr("fill___"));
+				// 	if (tooltip) tooltip.mouseout();
+				// });
 		}
 
 		//draw NUTS regions
@@ -658,24 +659,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
 				[rg0, rg1, rg2, rg3].forEach((r, i) => {
-					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
+					out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
 						.enter().append("path")
 						.attr("d", path)
 						.attr("class", "nutsrg")
 						.attr("lvl", i) //to be able to distinguish levels
 						.attr("fill", out.nutsrgFillStyle_)
-						.on("mouseover", function (rg) {
-							const sel = select(this);
-							sel.attr("fill___", sel.attr("fill"));
-							sel.attr("fill", out.nutsrgSelFillSty_);
-							if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-						}).on("mousemove", function () {
-							if (tooltip) tooltip.mousemove();
-						}).on("mouseout", function () {
-							const sel = select(this);
-							sel.attr("fill", sel.attr("fill___"));
-							if (tooltip) tooltip.mouseout();
-						});
+
 				})
 
 				//add kosovo
@@ -696,23 +686,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 			} else {
-				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+
+				out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
 					.attr("d", path)
 					.attr("class", "nutsrg")
 					.attr("fill", out.nutsrgFillStyle_)
-					.on("mouseover", function (rg) {
-						const sel = select(this);
-						sel.attr("fill___", sel.attr("fill"));
-						sel.attr("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
-					}).on("mouseout", function () {
-						const sel = select(this);
-						sel.attr("fill", sel.attr("fill___"));
-						if (tooltip) tooltip.mouseout();
-					});
+
 			}
 		}
 
@@ -844,13 +824,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr("class", "symbol")
 					.style("fill", "gray")
 					.on("mouseover", function (rg) {
-						select(this).style("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+						const sel = select(this.childNodes[0]);
+						sel.attr("fill___", sel.style("fill"));
+						sel.style("fill", out.nutsrgSelFillSty_);
+						if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
+						if (out._tooltip) out._tooltip.mousemove();
 					}).on("mouseout", function () {
-						select(this).style("fill", out.psFill_);
-						if (tooltip) tooltip.mouseout();
+						const sel = select(this.childNodes[0]);
+						sel.style("fill", sel.attr("fill___"));
+						if (out._tooltip) out._tooltip.mouseout();
 					});
 			}
 		}
@@ -903,16 +886,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
-					tooltip.mw___ = tooltip.style("max-width");
+					out._tooltip.mw___ = out._tooltip.style("max-width");
 					// tooltip.f___ = tooltip.style("font");
-					tooltip.style("max-width", "400px");
-					tooltip.style("font-size", out.botTxtFontSize_);
-					if (out.botTxtTooltipTxt_) tooltip.mouseover(out.botTxtTooltipTxt_);
+					out._tooltip.style("max-width", "400px");
+					out._tooltip.style("font-size", out.botTxtFontSize_);
+					if (out.botTxtTooltipTxt_) out._tooltip.mouseover(out.botTxtTooltipTxt_);
 				}).on("mousemove", function () {
-					if (out.botTxtTooltipTxt_) tooltip.mousemove();
+					if (out.botTxtTooltipTxt_) out._tooltip.mousemove();
 				}).on("mouseout", function () {
-					if (out.botTxtTooltipTxt_) tooltip.mouseout();
-					tooltip.style("max-width", tooltip.mw___);
+					if (out.botTxtTooltipTxt_) out._tooltip.mouseout();
+					out._tooltip.style("max-width", out._tooltip.mw___);
 					// tooltip.style("font", tooltip.f___);
 				});
 
@@ -993,23 +976,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 		for (let i = -1; i < ticks; i += 2) {
 			if (i == 1) {
 				sb.append('line')
-					.attr('x1', 1).attr('y1', segmentHeight/2).attr('x2', gap * i).attr('y2', segmentHeight/2).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
 			} else {
 				sb.append('line')
-					.attr('x1', gap * (i - 1)).attr('y1', segmentHeight/2).attr('x2', gap * i).attr('y2', segmentHeight/2).style('stroke', '#000').style('stroke-width', '0.8px')
+					.attr('x1', gap * (i - 1)).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
 			}
 		}
 
 		//add text svg
+		let textOffsetX = out.scalebarTextOffset_[0];
+		let textOffsetY = out.scalebarTextOffset_[1];
 		let sbText = out.svg().append("svg").attr("id", "scalebarText")
-			.attr("x", out.scalebarPosition_[0])
+			.attr("x", out.scalebarPosition_[0] - 3)
 			.attr("y", out.scalebarPosition_[1])
 			.style('font-size', out.scalebarFontSize_ + 'px')
 			.style('font-family', out.fontFamily_)
-			.attr('text-anchor','middle')
+			.attr('text-anchor', 'middle')
 
-		let textOffsetX = 0;
-		let textOffsetY = 10
+
 
 		// for each tick...
 		for (let i = 0; i < ticks; i++) {
@@ -1018,11 +1002,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//first line
 				sb.append('line')
 					.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-				sbText.append('text').attr('x', 3).attr('y', tickHeight+textOffsetY).text('0')
+				sbText.append('text').attr('x', textOffsetX).attr('y', tickHeight + textOffsetY).text('0')
 			} else if (i == ticks - 1) {
 				// add 'km' to last text value
 				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					round5(out.pixSize_ * (gap * i) / 1000) + ' km')
+					round5(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
 				//last line
 				sb.append('line')
 					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
