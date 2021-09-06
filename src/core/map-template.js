@@ -341,6 +341,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				console.log(err);// rejection
 			})
 
 		} else {
@@ -352,6 +354,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				console.log(err);// rejection
 			});
 		}
 
@@ -658,14 +662,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
+
 				[rg0, rg1, rg2, rg3].forEach((r, i) => {
-					out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
+					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
 						.enter().append("path")
 						.attr("d", path)
 						.attr("class", "nutsrg")
 						.attr("lvl", i) //to be able to distinguish levels
 						.attr("fill", out.nutsrgFillStyle_)
-
 				})
 
 				//add kosovo
@@ -687,7 +691,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 			} else {
 
-				out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
 					.attr("d", path)
 					.attr("class", "nutsrg")

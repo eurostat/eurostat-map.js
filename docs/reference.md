@@ -650,6 +650,10 @@ map = eurostatmap.map(...)
 | *map*.**scalebarTicks**([*value*]) | int | *5* | The number of ticks in the scalebar. |
 | *map*.**scalebarTickHeight**([*value*]) | int | *13* | The height of each tick in pixels. |
 | *map*.**scalebarSegmentWidth**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarSegmenHeight**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarTextOffset**([*value*]) | array | *[4,8]* | The offset in pixels for the scalebar text ([x,y]). |
+| *map*.**scalebarUnits**([*value*]) | string | *' km'* | The suffix text for the last scalebar label | 
+
 
 ## Tooltip
 
