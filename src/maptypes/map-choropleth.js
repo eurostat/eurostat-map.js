@@ -141,6 +141,27 @@ export const map = function (config) {
 						return out.nutsrgFillStyle_;
 					}
 				}
+			})
+			//GISCO-2767 - mouseover region fill bug before transition ends
+			.end()
+			.then(() => {
+				out.nutsRG.on("mouseover", function (rg) {
+					const sel = select(this);
+					sel.attr("fill___", sel.attr("fill"));
+					sel.attr("fill", out.nutsrgSelFillSty_);
+					if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				}).on("mousemove", function () {
+					if (out._tooltip) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this);
+					let currentFill = sel.attr("fill");
+					let newFill = sel.attr("fill___");
+					if (newFill) {
+						sel.attr("fill", sel.attr("fill___"));
+						if (out._tooltip) out._tooltip.mouseout();
+					}
+
+				})
 			});
 
 
@@ -153,10 +174,10 @@ export const map = function (config) {
 					// always display NUTS 0 for mixed, and filter countries to show
 					if (ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") {
 						return "block";
-					 } else { 
-						 // dont show unclassified regions
-						 return "none"
-					 };
+					} else {
+						// dont show unclassified regions
+						return "none"
+					};
 				})
 
 				//toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
@@ -203,7 +224,7 @@ export const map = function (config) {
 						const sv = s.get(d.properties.id);
 						if (!sv || !sv.value) {
 							return "";
-						}else {
+						} else {
 							if (sv.value !== ':') {
 								return sv.value;
 							}
