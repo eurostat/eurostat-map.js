@@ -19,7 +19,7 @@ export const map = function (config) {
 	out.clnb_ = 7;
 	//the classification method
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
-	//the threshold, when the classificatio method is 'threshold'
+	//the threshold, when the classification method is 'threshold'
 	out.threshold_ = [0];
 	//colors to use for classes
 	out.colors_ = null;
@@ -164,7 +164,7 @@ export const map = function (config) {
 				});
 
 			}, err => {
-				console.log(err);// rejection
+				// rejection
 			});
 
 

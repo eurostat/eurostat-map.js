@@ -342,7 +342,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//callback
 				callback();
 			}, err => {
-				console.log(err);// rejection
+				// rejection
 			})
 
 		} else {
@@ -355,7 +355,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//callback
 				callback();
 			}, err => {
-				console.log(err);// rejection
+				// rejection
 			});
 		}
 
@@ -530,10 +530,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		let projection;
 		if (out.geo_ == "WORLD") {
 			if (out.proj_ == "54030") {
+				//out.geoCenter([1, 1])
+				//let geojsonbbox = getBBOXAsGeoJSON(bbox);
 				projection = geoRobinson()
-					// .scale(148)
-					// .rotate([352, 0, 0])
-					.translate([out.width_ / 2, out.height_ / 2]).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+					// center and scale to container properly
+					.translate([out.width_ / 2, out.height_ / 2])
+					.scale((out.width_ - 20) / 2 / Math.PI);
+				//.translate([out.width_ / 2, out.height_ / 2])
+				//.fitSize([out.width_, out.height_], geojsonbbox);
 			} else {
 				console.error("unsupported projection")
 			}
@@ -638,18 +642,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
 				.attr("fill", out.landFillStyle())
-				// .on("mouseover", function (rg) {
-				// 	const sel = select(this);
-				// 	sel.attr("fill___", sel.attr("fill"));
-				// 	sel.attr("fill", out.nutsrgSelFillSty_);
-				// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-				// }).on("mousemove", function () {
-				// 	if (tooltip) tooltip.mousemove();
-				// }).on("mouseout", function () {
-				// 	const sel = select(this);
-				// 	sel.attr("fill", sel.attr("fill___"));
-				// 	if (tooltip) tooltip.mouseout();
-				// });
+			// .on("mouseover", function (rg) {
+			// 	const sel = select(this);
+			// 	sel.attr("fill___", sel.attr("fill"));
+			// 	sel.attr("fill", out.nutsrgSelFillSty_);
+			// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+			// }).on("mousemove", function () {
+			// 	if (tooltip) tooltip.mousemove();
+			// }).on("mouseout", function () {
+			// 	const sel = select(this);
+			// 	sel.attr("fill", sel.attr("fill___"));
+			// 	if (tooltip) tooltip.mouseout();
+			// });
 		}
 
 		//draw NUTS regions
@@ -982,8 +986,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				sb.append('line')
 					.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
 			} else {
-				sb.append('line')
-					.attr('x1', gap * (i - 1)).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+				let x1 = gap * (i - 1);
+				if (x1 > 0) {
+					sb.append('line')
+						.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+				}
+
 			}
 		}
 
