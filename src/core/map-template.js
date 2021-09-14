@@ -107,11 +107,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "#e0bcdf";
 	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
-	out.nutsbnStrokeWidth_ = { 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
-	//land
+	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
+	//land borders
 	out.landFillStyle_ = "#f4f4f4";
 	out.landStroke_ = "#ccc";
 	out.landStrokeWidth_ = 1;
+	//coastal borders
+	out.coastStroke_ = 'grey';
+	out.coastStrokeWidth_ = 0.4;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -146,7 +149,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.botTxtPadding_ = 10;
 	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
-	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
 
 	/**
@@ -678,6 +681,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//add kosovo
 				if (out.geo_ == "EUR") {
+					// add kosovo manually
 					if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
 						zg.append("g").attr("id", "g_kosovo")
 							.style("fill", "none")
@@ -694,7 +698,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 			} else {
-
+				// when nutsLvl is not 'mixed'
 				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
 					.attr("d", path)
@@ -720,8 +724,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
-				.style("stroke-width", function (bn) { return (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
+				.style("stroke", function (bn) { 
+					// stroke for country boundaries
+
+					//coastal borders
+					if (bn.properties.co === "T") return out.coastStroke_;
+
+					//land borders
+					return out.landStroke_
+				})
+				.style("stroke-width", function (bn) { 
+					// stroke width for country boundaries
+					if (bn.properties.co === "T") return out.coastStrokeWidth_;
+					return out.landStrokeWidth_ 
+				});
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -732,6 +748,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
+					if (bn.properties.id > 100000) {
+						console.log(bn)
+					}
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -763,6 +782,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 			if (out.geo_ == "EUR") {
+				// add kosovo manually
 				if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
 					zg.append("g").attr("id", "g_kosovo")
 						.style("fill", "none")

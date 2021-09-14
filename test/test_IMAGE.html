@@ -1756,9 +1756,9 @@ insetsConfig.forEach(c => {
           3: "#000",
           co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.2 })
-        .landStrokeWidth(0.3)
-        .landStroke("grey")
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.2 })
+        .landStrokeWidth(1)
+        .landStroke("black")
         .insets(insetsConfig)
         .zoomExtent([1,10])
         .showScalebar(true)
@@ -1771,31 +1771,31 @@ insetsConfig.forEach(c => {
     };
 
     let map = basemap();
-    map.statData().setData({ES:0.00, DE:'0.00'});
+    map.statData().setData({ES:0.00, DE:'0.00', XK: 2});
     map.build();
 
     setTimeout(()=>{
       map.nutsLvl("mixed")
-      map.statData().setData(data2);
+      map.statData().setData({UK: 7});
       map.build();
-    },8000)
-    let i = 0;
-    loopBetweenNUTS = function () {
-      setTimeout(() => {
-        let map = basemap();
-        i++;
-        let g = i % 2;
-        if (g == 0) {
-          map.statData().setData(data);
-          map.build();
-        } else {
-          map.statData().setData(data3);
-          map.build();
-        }
+    },5000)
+    // let i = 0;
+    // loopBetweenNUTS = function () {
+    //   setTimeout(() => {
+    //     let map = basemap();
+    //     i++;
+    //     let g = i % 2;
+    //     if (g == 0) {
+    //       map.statData().setData(data);
+    //       map.build();
+    //     } else {
+    //       map.statData().setData(data3);
+    //       map.build();
+    //     }
 
-        loopBetweenNUTS();
-      }, 3000);
-    };
+    //     loopBetweenNUTS();
+    //   }, 3000);
+    // };
 
     //loopBetweenNUTS();
 
