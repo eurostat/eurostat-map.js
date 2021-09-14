@@ -1747,7 +1747,7 @@ insetsConfig.forEach(c => {
         .legend(false)
         .drawCoastalMargin(false)
         .seaFillStyle("#E6FFFF")
-        .landFillStyle("#E6E6E6")
+        .cntrgFillStyle("#E6E6E6")
         .nutsrgFillStyle("#E6E6E6")
         .nutsbnStroke({
           0: "#000",
@@ -1756,9 +1756,9 @@ insetsConfig.forEach(c => {
           3: "#000",
           co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, co: 0.2 })
-        .landStrokeWidth(1)
-        .landStroke("black")
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth:0, co:0 })
+        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
+        .bordersToShow(['eu','co','cc','efta'])
         .insets(insetsConfig)
         .zoomExtent([1,10])
         .showScalebar(true)

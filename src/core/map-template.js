@@ -8,7 +8,7 @@ import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
-import { kosovoBnIds, kosovoBnFeatures } from './kosovo';
+import { kosovoBnFeatures } from './kosovo';
 
 
 // set d3 locale
@@ -107,14 +107,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "#e0bcdf";
 	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
-	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
-	//land borders
-	out.landFillStyle_ = "#f4f4f4";
-	out.landStroke_ = "#ccc";
-	out.landStrokeWidth_ = 1;
-	//coastal borders
-	out.coastStroke_ = 'grey';
-	out.coastStrokeWidth_ = 0.4;
+	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+	//country borders
+	out.cntrgFillStyle_ = "#f4f4f4";
+	out.cntbnStroke_ = { eu: "black", efta: "black", cc: "black", oth: "grey", co: "#7f7f7f" };
+	out.cntbnStrokeWidth_ = { eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 };
+	//world map
+	out.worldFillStyle_ = '#E6E6E6';
+	out.worldStroke_ = 'black';
+	out.worldStrokeWidth_ = 1;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -636,7 +637,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "cntrg")
-				.style("fill", out.landFillStyle())
+				.style("fill", out.cntrgFillStyle())
 		}
 
 		//draw world map
@@ -644,7 +645,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_worldrg").selectAll("path").data(worldrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
-				.attr("fill", out.landFillStyle())
+				.attr("fill", out.worldFillStyle_)
 			// .on("mouseover", function (rg) {
 			// 	const sel = select(this);
 			// 	sel.attr("fill___", sel.attr("fill"));
@@ -682,12 +683,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//add kosovo
 				if (out.geo_ == "EUR") {
 					// add kosovo manually
-					if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+					let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+					if (out.bordersToShow_.includes("cc")) {
 						zg.append("g").attr("id", "g_kosovo")
 							.style("fill", "none")
 							//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 							.selectAll("path")
-							.data(kosovoBnFeatures)
+							.data(kosovoBn)
 							.enter()
 							.append("path")
 							.attr("d", path)
@@ -724,19 +726,25 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-				.style("stroke", function (bn) { 
-					// stroke for country boundaries
-
-					//coastal borders
-					if (bn.properties.co === "T") return out.coastStroke_;
-
-					//land borders
-					return out.landStroke_
+				.style("stroke", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStroke_.co;
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStroke_.eu;
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStroke_.efta;
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStroke_.cc;
 				})
-				.style("stroke-width", function (bn) { 
-					// stroke width for country boundaries
-					if (bn.properties.co === "T") return out.coastStrokeWidth_;
-					return out.landStrokeWidth_ 
+				.style("stroke-width", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co + 'px';
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStrokeWidth_.eu + 'px';
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStrokeWidth_.efta+ 'px';
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc+ 'px';
 				});
 
 		//draw NUTS boundaries
@@ -783,12 +791,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 			if (out.geo_ == "EUR") {
 				// add kosovo manually
-				if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+				let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+				if (out.bordersToShow_.includes("cc")) {
 					zg.append("g").attr("id", "g_kosovo")
 						.style("fill", "none")
 						//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 						.selectAll("path")
-						.data(kosovoBnFeatures)
+						.data(kosovoBn)
 						.enter()
 						.append("path")
 						.attr("d", path)
@@ -815,13 +824,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 						//disputed
 						return '#b2b2b2'
 					} else if (bn.properties.COAS_FLAG == "F") {
-						return out.landStroke();
+						return out.worldStroke_;
 					};
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG == "F") return out.landStrokeWidth() + 'px';
+					if (bn.properties.COAS_FLAG == "F") return out.worldStrokeWidth_;
 					// 0 and 4 are normal boundaries, anything else is disputed
-					// if (bn.properties.POL_STAT > 0) return out.landStrokeWidth() + 'px';
+					// if (bn.properties.POL_STAT > 0) return out.cntbnStrokeWidth() + 'px';
 				});
 
 		if (kosovo) {
@@ -1286,7 +1295,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 		//copy template attributes
-		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
 			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_", "labelShadowWidth_", "labelShadow_", "labelShadowColor_", "labelsToShow_", "fontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 

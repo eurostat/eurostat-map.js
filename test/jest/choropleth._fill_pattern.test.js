@@ -35,8 +35,8 @@ test('choropleth with fill pattern', async () => {
             .nutsbnStrokeWidth({ 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 })
             .nutsrgSelFillSty("darkblue")
 
-            .landFillStyle("white")
-            .landStroke({ def: "#777", co: "white" })
+            .cntrgFillStyle("white")
+            .cntbnStroke({ def: "#777", co: "white" })
 
             .seaFillStyle("#e9e9e9")
             .coastalMarginColor("#777")
