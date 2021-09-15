@@ -19,7 +19,7 @@ export const map = function (config) {
 	out.clnb_ = 7;
 	//the classification method
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
-	//the threshold, when the classificatio method is 'threshold'
+	//the threshold, when the classification method is 'threshold'
 	out.threshold_ = [0];
 	//colors to use for classes
 	out.colors_ = null;
@@ -119,9 +119,10 @@ export const map = function (config) {
 		if (!out.classToFillStyle())
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 
-		//apply style to nuts regions / world regions depending on class
+		//apply style and mouse events to nuts regions / world regions depending on class
 		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
-		out.svg().selectAll(selector)
+		let regions = out.svg().selectAll(selector);
+		regions
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
 				if (out.geo_ == "WORLD") {
@@ -145,7 +146,7 @@ export const map = function (config) {
 			//GISCO-2767 - mouseover region fill bug before transition ends
 			.end()
 			.then(() => {
-				out.nutsRG.on("mouseover", function (rg) {
+				regions.on("mouseover", function (rg) {
 					const sel = select(this);
 					sel.attr("fill___", sel.attr("fill"));
 					sel.attr("fill", out.nutsrgSelFillSty_);
@@ -160,9 +161,13 @@ export const map = function (config) {
 						sel.attr("fill", sel.attr("fill___"));
 						if (out._tooltip) out._tooltip.mouseout();
 					}
+				});
 
-				})
+			}, err => {
+				// rejection
 			});
+
+
 
 
 		if (out.nutsLvl_ == "mixed") {
@@ -181,7 +186,7 @@ export const map = function (config) {
 				})
 
 				//toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
-				.style("stroke", function (rg) {
+				.style("stroke", function (bn) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
 					if (ecl && lvl !== "0") {

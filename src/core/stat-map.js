@@ -386,7 +386,7 @@ const tootipTextFunStat = function (rg, map) {
 	}
 	//case when no data available
 	const sv = map.statData().get(rg.properties.id);
-	if (!sv || (sv.value != 0 && !sv.value)) {
+	if (!sv || (sv.value !== 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");
 	}

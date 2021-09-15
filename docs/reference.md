@@ -650,6 +650,10 @@ map = eurostatmap.map(...)
 | *map*.**scalebarTicks**([*value*]) | int | *5* | The number of ticks in the scalebar. |
 | *map*.**scalebarTickHeight**([*value*]) | int | *13* | The height of each tick in pixels. |
 | *map*.**scalebarSegmentWidth**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarSegmenHeight**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarTextOffset**([*value*]) | array | *[4,8]* | The offset in pixels for the scalebar text ([x,y]). |
+| *map*.**scalebarUnits**([*value*]) | string | *' km'* | The suffix text for the last scalebar label | 
+
 
 ## Tooltip
 
@@ -703,10 +707,10 @@ Specify specific map styles.
 | *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
 | *map*.**nutsrgSelFillSty**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
-| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
-| *map*.**landFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the land area. |
-| *map*.**landStroke**([*value*]) | Color | *"#ccc"* | The stroke style of the land area. |
-| *map*.**landStrokeWidth**([*value*]) | Number | *1* | The stroke width of the land area. |
+| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:0, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
+| *map*.**cntrgFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the country areas. |
+| *map*.**cntbnStroke**([*value*]) | Color | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the country boundaries. |
+| *map*.**cntbnStrokeWidth**([*value*]) | Number | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}*  | The stroke width of the country boundaries. |
 | *map*.**seaFillStyle**([*value*]) | String | *"white"* | The fill style of the sea areas. |
 | *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
 | *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |

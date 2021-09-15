@@ -8,7 +8,7 @@ import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
-import { kosovoBnIds, kosovoBnFeatures } from './kosovo';
+import { kosovoBnFeatures } from './kosovo';
 
 
 // set d3 locale
@@ -71,12 +71,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.showScalebar_ = false;
 	out.scalebarPosition_ = [];
 	out.scalebarTicks_ = 5;
-	out.scalebarTickHeight_ = 5;
+	out.scalebarTickHeight_ = 8;
 	out.scalebarSegmentWidth_ = 30; //px
 	out.scalebarSegmentHeight_ = 6;
 	out.scalebarFontSize_ = 9; //px
 	out.scalebarUnits_ = ' km'; //label
-	out.scalebarTextOffset_ = [4, 8]
+	out.scalebarTextOffset_ = [4, 12]
 
 	//tooltip
 	//default config
@@ -107,11 +107,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "#e0bcdf";
 	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
-	out.nutsbnStrokeWidth_ = { 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
-	//land
-	out.landFillStyle_ = "#f4f4f4";
-	out.landStroke_ = "#ccc";
-	out.landStrokeWidth_ = 1;
+	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+	//country borders
+	out.cntrgFillStyle_ = "#f4f4f4";
+	out.cntbnStroke_ = { eu: "black", efta: "black", cc: "black", oth: "grey", co: "#7f7f7f" };
+	out.cntbnStrokeWidth_ = { eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 };
+	//world map
+	out.worldFillStyle_ = '#E6E6E6';
+	out.worldStroke_ = 'black';
+	out.worldStrokeWidth_ = 1;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -146,7 +150,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.botTxtPadding_ = 10;
 	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
-	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
 
 	/**
@@ -341,6 +345,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				// rejection
 			})
 
 		} else {
@@ -352,6 +358,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				// rejection
 			});
 		}
 
@@ -526,10 +534,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		let projection;
 		if (out.geo_ == "WORLD") {
 			if (out.proj_ == "54030") {
+				//out.geoCenter([1, 1])
+				//let geojsonbbox = getBBOXAsGeoJSON(bbox);
 				projection = geoRobinson()
-					// .scale(148)
-					// .rotate([352, 0, 0])
-					.translate([out.width_ / 2, out.height_ / 2]).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+					// center and scale to container properly
+					.translate([out.width_ / 2, out.height_ / 2])
+					.scale((out.width_ - 20) / 2 / Math.PI);
+				//.translate([out.width_ / 2, out.height_ / 2])
+				//.fitSize([out.width_, out.height_], geojsonbbox);
 			} else {
 				console.error("unsupported projection")
 			}
@@ -625,7 +637,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "cntrg")
-				.style("fill", out.landFillStyle())
+				.style("fill", out.cntrgFillStyle())
 		}
 
 		//draw world map
@@ -633,19 +645,19 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_worldrg").selectAll("path").data(worldrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
-				.attr("fill", out.landFillStyle())
-				// .on("mouseover", function (rg) {
-				// 	const sel = select(this);
-				// 	sel.attr("fill___", sel.attr("fill"));
-				// 	sel.attr("fill", out.nutsrgSelFillSty_);
-				// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-				// }).on("mousemove", function () {
-				// 	if (tooltip) tooltip.mousemove();
-				// }).on("mouseout", function () {
-				// 	const sel = select(this);
-				// 	sel.attr("fill", sel.attr("fill___"));
-				// 	if (tooltip) tooltip.mouseout();
-				// });
+				.attr("fill", out.worldFillStyle_)
+			// .on("mouseover", function (rg) {
+			// 	const sel = select(this);
+			// 	sel.attr("fill___", sel.attr("fill"));
+			// 	sel.attr("fill", out.nutsrgSelFillSty_);
+			// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+			// }).on("mousemove", function () {
+			// 	if (tooltip) tooltip.mousemove();
+			// }).on("mouseout", function () {
+			// 	const sel = select(this);
+			// 	sel.attr("fill", sel.attr("fill___"));
+			// 	if (tooltip) tooltip.mouseout();
+			// });
 		}
 
 		//draw NUTS regions
@@ -658,24 +670,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
+
 				[rg0, rg1, rg2, rg3].forEach((r, i) => {
-					out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
+					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
 						.enter().append("path")
 						.attr("d", path)
 						.attr("class", "nutsrg")
 						.attr("lvl", i) //to be able to distinguish levels
 						.attr("fill", out.nutsrgFillStyle_)
-
 				})
 
 				//add kosovo
 				if (out.geo_ == "EUR") {
-					if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+					// add kosovo manually
+					let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+					if (out.bordersToShow_.includes("cc")) {
 						zg.append("g").attr("id", "g_kosovo")
 							.style("fill", "none")
 							//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 							.selectAll("path")
-							.data(kosovoBnFeatures)
+							.data(kosovoBn)
 							.enter()
 							.append("path")
 							.attr("d", path)
@@ -686,8 +700,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 			} else {
-
-				out.nutsRG = zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
+				// when nutsLvl is not 'mixed'
+				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
 					.attr("d", path)
 					.attr("class", "nutsrg")
@@ -712,8 +726,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
-				.style("stroke-width", function (bn) { return (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
+				.style("stroke", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStroke_.co;
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStroke_.eu;
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStroke_.efta;
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStroke_.cc;
+				})
+				.style("stroke-width", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co + 'px';
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStrokeWidth_.eu + 'px';
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStrokeWidth_.efta+ 'px';
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc+ 'px';
+				});
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -724,6 +756,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
+					if (bn.properties.id > 100000) {
+						console.log(bn)
+					}
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -755,12 +790,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 			if (out.geo_ == "EUR") {
-				if (out.bordersToShow_.includes("cc") || out.countriesToShow_.includes("RS")) {
+				// add kosovo manually
+				let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+				if (out.bordersToShow_.includes("cc")) {
 					zg.append("g").attr("id", "g_kosovo")
 						.style("fill", "none")
 						//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
 						.selectAll("path")
-						.data(kosovoBnFeatures)
+						.data(kosovoBn)
 						.enter()
 						.append("path")
 						.attr("d", path)
@@ -787,13 +824,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 						//disputed
 						return '#b2b2b2'
 					} else if (bn.properties.COAS_FLAG == "F") {
-						return out.landStroke();
+						return out.worldStroke_;
 					};
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG == "F") return out.landStrokeWidth() + 'px';
+					if (bn.properties.COAS_FLAG == "F") return out.worldStrokeWidth_;
 					// 0 and 4 are normal boundaries, anything else is disputed
-					// if (bn.properties.POL_STAT > 0) return out.landStrokeWidth() + 'px';
+					// if (bn.properties.POL_STAT > 0) return out.cntbnStrokeWidth() + 'px';
 				});
 
 		if (kosovo) {
@@ -978,8 +1015,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 				sb.append('line')
 					.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
 			} else {
-				sb.append('line')
-					.attr('x1', gap * (i - 1)).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+				let x1 = gap * (i - 1);
+				if (x1 > 0) {
+					sb.append('line')
+						.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+				}
+
 			}
 		}
 
@@ -1006,7 +1047,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			} else if (i == ticks - 1) {
 				// add 'km' to last text value
 				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					round5(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
+					formatScalebarValue(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
 				//last line
 				sb.append('line')
 					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
@@ -1016,14 +1057,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
 				// all other texts
 				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					round5(out.pixSize_ * (gap * i) / 1000))
+					formatScalebarValue(out.pixSize_ * (gap * i) / 1000))
 			}
 		}
 	}
 
-	//round to nearest 5 (used for scalebar values)
-	function round5(x) {
-		return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
+	//format scalebar value
+	function formatScalebarValue(x) {
+		return Math.trunc(x);
+		//round to nearest 5
+		//return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
 	}
 
 	/**
@@ -1254,7 +1297,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 		//copy template attributes
-		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
 			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_", "labelShadowWidth_", "labelShadow_", "labelShadowColor_", "labelsToShow_", "fontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 
