@@ -71,12 +71,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.showScalebar_ = false;
 	out.scalebarPosition_ = [];
 	out.scalebarTicks_ = 5;
-	out.scalebarTickHeight_ = 5;
+	out.scalebarTickHeight_ = 8;
 	out.scalebarSegmentWidth_ = 30; //px
 	out.scalebarSegmentHeight_ = 6;
 	out.scalebarFontSize_ = 9; //px
 	out.scalebarUnits_ = ' km'; //label
-	out.scalebarTextOffset_ = [4, 8]
+	out.scalebarTextOffset_ = [4, 12]
 
 	//tooltip
 	//default config
@@ -1047,7 +1047,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			} else if (i == ticks - 1) {
 				// add 'km' to last text value
 				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					round5(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
+					formatScalebarValue(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
 				//last line
 				sb.append('line')
 					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
@@ -1057,14 +1057,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
 				// all other texts
 				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					round5(out.pixSize_ * (gap * i) / 1000))
+					formatScalebarValue(out.pixSize_ * (gap * i) / 1000))
 			}
 		}
 	}
 
-	//round to nearest 5 (used for scalebar values)
-	function round5(x) {
-		return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
+	//format scalebar value
+	function formatScalebarValue(x) {
+		return Math.trunc(x);
+		//round to nearest 5
+		//return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
 	}
 
 	/**
