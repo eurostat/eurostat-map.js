@@ -70,13 +70,19 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//scalebar
 	out.showScalebar_ = false;
 	out.scalebarPosition_ = [];
-	out.scalebarTicks_ = 5;
-	out.scalebarTickHeight_ = 8;
-	out.scalebarSegmentWidth_ = 30; //px
-	out.scalebarSegmentHeight_ = 6;
 	out.scalebarFontSize_ = 9; //px
 	out.scalebarUnits_ = ' km'; //label
-	out.scalebarTextOffset_ = [4, 12]
+	out.scalebarTextOffset_ = [0, 12];
+	out.scalebarMaxWidth_ = 150; //px
+	out.scalebarHeight_ = 90; //px
+	out.scalebarStrokeWidth_ = 1; //px
+	out.scalebarSegmentHeight_ = 6;
+	out.scalebarTickHeight_ = 8;
+
+	//deprecated (ticks/ tick width now automatic)
+	// out.scalebarTicks_ = 5;
+	//out.scalebarSegmentWidth_ = 30; //px
+
 
 	//tooltip
 	//default config
@@ -742,9 +748,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//eu borders
 					if (bn.properties.eu === "T") return out.cntbnStrokeWidth_.eu + 'px';
 					//efta borders
-					if (bn.properties.efta === "T") return out.cntbnStrokeWidth_.efta+ 'px';
+					if (bn.properties.efta === "T") return out.cntbnStrokeWidth_.efta + 'px';
 					//cc borders
-					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc+ 'px';
+					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
 				});
 
 		//draw NUTS boundaries
@@ -996,70 +1002,164 @@ export const mapTemplate = function (config, withCenterPoints) {
 			.attr("x", out.scalebarPosition_[0])
 			.attr("y", out.scalebarPosition_[1])
 
-		let ticks = out.scalebarTicks_;
-		let tickHeight = out.scalebarTickHeight_;
+		//let ticks = out.scalebarTicks_;
 		let segmentHeight = out.scalebarSegmentHeight_;
-		let gap = out.scalebarSegmentWidth_;
+		//let gap = out.scalebarSegmentWidth_;
 
 		//add horizontal lines
 
 		//top full width
-		sb.append('line')
-			.attr('x1', 1).attr('y1', 1).attr('x2', gap * (ticks - 1)).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
-		//bottom full width
-		sb.append('line')
-			.attr('x1', 1).attr('y1', segmentHeight).attr('x2', gap * (ticks - 1)).attr('y2', segmentHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-		// midlines for every other segment
-		for (let i = -1; i < ticks; i += 2) {
-			if (i == 1) {
-				sb.append('line')
-					.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-			} else {
-				let x1 = gap * (i - 1);
-				if (x1 > 0) {
-					sb.append('line')
-						.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-				}
+		// sb.append('line')
+		// 	.attr('x1', 1).attr('y1', 1).attr('x2', gap * (ticks - 1)).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
+		// //bottom full width
+		// sb.append('line')
+		// 	.attr('x1', 1).attr('y1', segmentHeight).attr('x2', gap * (ticks - 1)).attr('y2', segmentHeight).style('stroke', '#000').style('stroke-width', '0.8px')
+		// // midlines for every other segment
+		// for (let i = -1; i < ticks; i += 2) {
+		// 	if (i == 1) {
+		// 		sb.append('line')
+		// 			.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 	} else {
+		// 		let x1 = gap * (i - 1);
+		// 		if (x1 > 0) {
+		// 			sb.append('line')
+		// 				.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 		}
 
-			}
-		}
+		// 	}
+		// }
 
 		//add text svg
-		let textOffsetX = out.scalebarTextOffset_[0];
-		let textOffsetY = out.scalebarTextOffset_[1];
-		let sbText = out.svg().append("svg").attr("id", "scalebarText")
-			.attr("x", out.scalebarPosition_[0] - 3)
-			.attr("y", out.scalebarPosition_[1])
-			.style('font-size', out.scalebarFontSize_ + 'px')
-			.style('font-family', out.fontFamily_)
-			.attr('text-anchor', 'middle')
-
-
+		// let textOffsetX = out.scalebarTextOffset_[0];
+		// let textOffsetY = out.scalebarTextOffset_[1];
+		// let sbText = out.svg().append("svg").attr("id", "scalebarText")
+		// 	.attr("x", out.scalebarPosition_[0] - 3)
+		// 	.attr("y", out.scalebarPosition_[1])
+		// 	.style('font-size', out.scalebarFontSize_ + 'px')
+		// 	.style('font-family', out.fontFamily_)
+		// 	.attr('text-anchor', 'middle')
 
 		// for each tick...
-		for (let i = 0; i < ticks; i++) {
-			//add vertical lines & text
-			if (i == 0) {
-				//first line
-				sb.append('line')
-					.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-				sbText.append('text').attr('x', textOffsetX).attr('y', tickHeight + textOffsetY).text('0')
-			} else if (i == ticks - 1) {
-				// add 'km' to last text value
-				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					formatScalebarValue(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
-				//last line
-				sb.append('line')
-					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-			} else {
-				// all other lines
-				sb.append('line')
-					.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-				// all other texts
-				sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-					formatScalebarValue(out.pixSize_ * (gap * i) / 1000))
-			}
+		// for (let i = 0; i < ticks; i++) {
+		// 	//add vertical lines & text
+		// 	if (i == 0) {
+		// 		//first line
+		// 		sb.append('line')
+		// 			.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 		sbText.append('text').attr('x', textOffsetX).attr('y', tickHeight + textOffsetY).text('0')
+		// 	} else if (i == ticks - 1) {
+		// 		// add 'km' to last text value
+		// 		sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
+		// 			formatScalebarValue(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
+		// 		//last line
+		// 		sb.append('line')
+		// 			.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 	} else {
+		// 		// all other lines
+		// 		sb.append('line')
+		// 			.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 		// all other texts
+		// 		sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
+		// 			formatScalebarValue(out.pixSize_ * (gap * i) / 1000))
+		// 	}
+		// }
+
+		// Julien's nice scalebars
+		const marginLeft = 5;
+		const maxLengthPix = out.scalebarMaxWidth_;
+		const textOffsetX = out.scalebarTextOffset_[0];
+		const textOffsetY = out.scalebarTextOffset_[1];
+		const pixelSizeM = out.pixSize_;
+		const maxLengthM = maxLengthPix * pixelSizeM;
+		const niceLengthM = niceScaleBarLength(maxLengthM)
+		const niceLengthPixel = niceLengthM[0] / pixelSizeM;
+		const scaleBarStartDigit = niceLengthM[1];
+		const subdivisionNbs = {
+			1: 4, 2: 2, 5: 5
 		}
+
+		const scalebarSVG = out.svg().append("svg").attr("id", "scalebar")
+		.attr("x", out.scalebarPosition_[0])
+		.attr("y", out.scalebarPosition_[1])
+		.attr("width", maxLengthPix + 20)
+		.attr("height", out.scalebarHeight_)
+
+		// top line full width
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
+		//bottom line full width
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', out.scalebarSegmentHeight_).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarSegmentHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
+
+		//first tick
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', 1).attr('x2', marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_+'px')
+		scalebarSVG.append("text").attr("x", marginLeft + textOffsetX).attr("y", out.scalebarTickHeight_ + textOffsetY).text("0")
+			.style('font-size', out.scalebarFontSize_ + 'px')
+			.style('font-family', out.fontFamily_)
+			.attr('text-anchor', 'middle');
+
+		//middle ticks
+		const subdivisionNb = subdivisionNbs[scaleBarStartDigit];
+		const divisionWidth = niceLengthPixel / subdivisionNb;
+		const divisionMinWidth = 15;
+		if (divisionWidth >= divisionMinWidth) {
+		for (let i = 1; i < subdivisionNb; i++) {
+			scalebarSVG
+				.append("line")
+				.attr("x1", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+				.attr("y1", 1)
+				.attr("x2", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+				.attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
+				.style("stroke", "black")
+				.style("stroke-width", out.scalebarStrokeWidth_);
+			scalebarSVG
+				.append("text")
+				.attr("x", marginLeft + textOffsetX + i * divisionWidth)
+				.attr("y", out.scalebarTickHeight_ + textOffsetY)
+				.text(getScalebarLabel((niceLengthM[0] / subdivisionNb) * i))
+				.style('font-size', out.scalebarFontSize_ + 'px')
+				.style('font-family', out.fontFamily_)
+				.attr('text-anchor', 'middle');
+		}
+	}
+
+		//last tick
+		scalebarSVG.append('line')
+		.attr('x1', niceLengthPixel + marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_+'px')
+		scalebarSVG
+			.append("text")
+			.attr("x", niceLengthPixel + marginLeft + textOffsetX)
+			.attr("y", out.scalebarTickHeight_ + textOffsetY)
+			.text(getScalebarLabel(niceLengthM[0]) + out.scalebarUnits_)
+			.style("text-anchor", "middle")
+			.style('font-size', out.scalebarFontSize_ + 'px')
+			.style('font-family', out.fontFamily_);
+
+	}
+
+	function niceScaleBarLength(scaleBarLength) {
+		//compute the 'nice' power of ten
+		const pow10 = Math.pow(
+			10,
+			Math.floor(Math.log(scaleBarLength) / Math.log(10))
+		);
+
+		//check if 5 times this value fits
+		if (5 * pow10 <= scaleBarLength) return [5 * pow10, 5];
+
+		//check if 2 times this value fits
+		if (2 * pow10 <= scaleBarLength) return [2 * pow10, 2];
+
+		//returns the power of ten
+		return [pow10, 1];
+	}
+
+	function getScalebarLabel(valueM) {
+		if (valueM < 0.01) return valueM * 1000 + "mm";
+		if (valueM < 1) return valueM * 100 + "cm";
+		if (valueM < 1000) return valueM * 1 + "m";
+		return valueM / 1000;
 	}
 
 	//format scalebar value

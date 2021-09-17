@@ -31,8 +31,7 @@
         pixSize: 7500,
         title: 'Canarias (ES)',
         geoCenter: [410000, 3180000],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 13.4,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'GP',
@@ -42,8 +41,8 @@
         height: h,
         title: 'Guadeloupe (FR)',
         geoCenter: [660000, 1800000],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 14,
+        scalebarPosition: [1, 65],
+        
     },
     {
         geo: 'GP',
@@ -53,8 +52,7 @@
         height: 15,
         pixSize: 1500,
         geoCenter: [493000, 1999000],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'GF',
@@ -66,7 +64,7 @@
         title: 'Guyane (FR)',
         geoCenter: [295852, 484074],
         scalebarPosition: [45, 65],
-        scalebarSegmentWidth: 14.3,
+        
     },
     {
         geo: 'MQ',
@@ -77,8 +75,7 @@
         title: 'Martinique (FR)',
         pixSize: 1000,
         geoCenter: [716521, 1621322],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'YT',
@@ -87,8 +84,8 @@
         width: w,
         height: h,
         title: 'Mayotte (FR)',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 14,
+        scalebarPosition: [1, 65],
+        
     },
     {
         geo: 'RE',
@@ -97,8 +94,8 @@
         width: w,
         height: h,
         title: 'Réunion (FR)',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 14,
+        scalebarPosition: [1, 65],
+        
     },
 
     {
@@ -108,8 +105,8 @@
         width: w,
         height: h,
         title: 'Malta',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 14,
+        scalebarPosition: [1, 65],
+        
     },
     {
         geo: 'PT20',
@@ -121,7 +118,6 @@
         title: 'Açores (PT)',
         geoCenter: [440000, 4360000],
         scalebarPosition: [48, 65],
-        scalebarSegmentWidth: 15,
     },
     {
         geo: 'PT20',
@@ -131,8 +127,7 @@
         height: 30,
         pixSize: 5000,
         geoCenter: [650000, 4150000],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'PT20',
@@ -142,8 +137,7 @@
         height: 20,
         pixSize: 3500,
         geoCenter: [140000, 4390000],
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'PT30',
@@ -152,8 +146,7 @@
         width: w,
         height: h,
         title: 'Madeira (PT)',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15,
+        scalebarPosition: [1, 65],
     },
     {
         geo: 'LI',
@@ -164,8 +157,7 @@
         title: 'Liechtenstein',
         geoCenter: [4285060, 2674000],
         scale: '01M',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 13
+        scalebarPosition: [1, 65]
     },
     {
         geo: 'SJ_SV',
@@ -177,8 +169,7 @@
         geoCenter: [4540000, 6210156],
         pixSize: 8000,
         scale: '10M',
-        scalebarPosition: [5, 65],
-        scalebarSegmentWidth: 15
+        scalebarPosition: [1, 65]
     }
 ];
 
@@ -197,7 +188,8 @@ insetsConfig.forEach(c => {
     c.scalebarFontSize = 7;
     c.scalebarTicks = 2;
     c.scalebarUnits = '';
-    c.scalebarTextOffset = [4, 8];
+    c.scalebarTextOffset = [0, 8];
+    c.scalebarMaxWidth = 14;
 });
 
     let data3 = {
@@ -1762,7 +1754,7 @@ insetsConfig.forEach(c => {
         .insets(insetsConfig)
         .zoomExtent([1,10])
         .showScalebar(true)
-        .scalebarPosition([500,570])
+        .scalebarPosition([420,560])
 
       // adjust regions to show
         //.bordersToShow(["eu", "co","cc"])
