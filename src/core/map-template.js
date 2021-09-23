@@ -95,8 +95,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		borderRadius: "5px",
 		boxShadow: "5px 5px 5px grey",
 		transitionDuration: 200,
-		xOffset: 30,
-		yOffset: 20,
+		xOffset: 0,
+		yOffset: 0,
 		textFunction: null,
 		showFlags: false
 	}; //  See eurostat-tooltip.js for more details
@@ -514,7 +514,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare map tooltip
 		if (out.tooltip_) {
-			// if user specifies config
+			//tooltip needs to know container dimensions to prevent overflow
+			//out.tooltip_.parentContainerId = out.svgId_; // TODO: this just gives an inset ID. we need the parent element of all maps.
 			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
