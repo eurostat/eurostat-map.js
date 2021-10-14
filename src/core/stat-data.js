@@ -63,7 +63,9 @@ export const statData = function (config) {
 
 	/** Return all stat values as an array. This can be used to classify the values. */
 	out.getArray = function() {
+		if (_data_) {
 		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s));
+		}
 	}
 
 	/** Return stat unique values. This can be used for categorical maps. */
@@ -73,11 +75,15 @@ export const statData = function (config) {
 
 	/** Get min value. */
 	out.getMin = function() {
+		if (_data_) {
 		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
+		}
 	}
 	/** Get max value. */
 	out.getMax = function() {
+		if (_data_) {
 		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
+		}
 	}
 
 	/** Check if the stat data is ready. */
