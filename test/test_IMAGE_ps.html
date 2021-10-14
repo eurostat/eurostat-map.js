@@ -8,12 +8,12 @@
 
 <body>
   <svg id="map"></svg>
-  <script src="../build/eurostatmap.js"></script>
+  <script src="../build/eurostatmap.min.js"></script>
   <script>
     let mapWidth = 638;
     let mapHeight = 608;
 
-    basemap = function () {
+    basemap1 = function () {
       return eurostatmap
         .map("ps")
         .width(mapWidth)
@@ -32,11 +32,11 @@
         .drawCoastalMargin(false)
         .psFill("#4ac499")
         .nutsYear(2016)
-        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth:0, co:0 })
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
         .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
-        .bordersToShow(['eu','co','cc','efta'])
+        .bordersToShow(['eu', 'co', 'cc', 'efta'])
         .showScalebar(true)
-        .scalebarPosition([420,560])
+        .scalebarPosition([420, 560])
         .seaFillStyle("#E6FFFF")
         .cntrgFillStyle("#E6E6E6")
         .nutsrgFillStyle("#E6E6E6")
@@ -49,13 +49,68 @@
         })
     };
 
-    let map = basemap();
-    map.statData('size').setData({DE:10,BE:5,BG:3,DK:4,SE:1,FR:9,ES:8})
+    let map = basemap1();
+
+
+    map.statData('size').setData({ DE: 10, BE: 5, BG: 3, DK: 4, SE: 1, FR: 9, ES: 8 })
     //map.statData('size').setData({DE:10})
     map.build();
 
+    setTimeout(() => {
+      let map = basemap2();
+      map.build();
 
-    
+      setTimeout(() => {
+        let map = basemap1();
+        map.statData('size').setData({ DE: 10, BE: 5, BG: 3, DK: 4, SE: 1, FR: 9, ES: 8 })
+        map.build();
+      }, 2000)
+    }, 2000)
+
+
+
+    basemap2 = function () {
+      return eurostatmap
+        .map("ch")
+        .pixSize(7400)
+        .width(mapWidth)
+        .height(mapHeight)
+        .bottomText(null)
+        .showSourceLink(false)
+        //.nutsLvl("mixed")
+        .nutsLvl(0)
+        .classifMethod("threshold")
+        .colors(['#f7fcfd', '#e5f5f9', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#006d2c', '#00441b'])
+        .threshold([-10, -5, 0, 4, 5, 6, 7, 8, 999, 999])
+        .drawGraticule(true)
+        .graticuleStroke("#ccc")
+        .graticuleStrokeWidth(0.5)
+        .geoCenter([4980000, 3610000])
+        .legend(false)
+        .drawCoastalMargin(false)
+        .seaFillStyle("#E6FFFF")
+        .cntrgFillStyle("#E6E6E6")
+        .nutsrgFillStyle("#E6E6E6")
+        .nutsbnStroke({
+          0: "#000",
+          1: "#000",
+          2: "#000",
+          3: "#000",
+          co: "grey",
+        })
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
+        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
+        .zoomExtent([1, 10])
+        .showScalebar(true)
+        .scalebarPosition([420, 560])
+
+        // adjust regions to show
+        //.bordersToShow(["eu", "co","cc"])
+        .nutsYear(2016)
+      //.countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'RS']);
+    };
+
+
   </script>
 </body>
 
