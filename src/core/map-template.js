@@ -95,8 +95,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 		borderRadius: "5px",
 		boxShadow: "5px 5px 5px grey",
 		transitionDuration: 200,
-		xOffset: 30,
-		yOffset: 20,
+		xOffset: 0,
+		yOffset: 0,
 		textFunction: null,
 		showFlags: false
 	}; //  See eurostat-tooltip.js for more details
@@ -514,7 +514,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare map tooltip
 		if (out.tooltip_) {
-			// if user specifies config
+			//tooltip needs to know container dimensions to prevent overflow
+			//out.tooltip_.parentContainerId = out.svgId_; // TODO: this just gives an inset ID. we need the parent element of all maps.
 			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
@@ -1025,7 +1026,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 		// 			sb.append('line')
 		// 				.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
 		// 		}
+		// for (let i = -1; i < ticks; i += 2) {
+		// 	if (i == 1) {
+		// 		sb.append('line')
+		// 			.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 	} else {
+		// 		let x1 = gap * (i - 1);
+		// 		if (x1 > 0) {
+		// 			sb.append('line')
+		// 				.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+		// 		}
 
+		// 	}
 		// 	}
 		// }
 
@@ -1079,10 +1091,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		const scalebarSVG = out.svg().append("svg").attr("id", "scalebar")
-		.attr("x", out.scalebarPosition_[0])
-		.attr("y", out.scalebarPosition_[1])
-		.attr("width", maxLengthPix + 20)
-		.attr("height", out.scalebarHeight_)
+			.attr("x", out.scalebarPosition_[0])
+			.attr("y", out.scalebarPosition_[1])
+			.attr("width", maxLengthPix + 20)
+			.attr("height", out.scalebarHeight_)
 
 		// top line full width
 		scalebarSVG.append('line')
@@ -1091,9 +1103,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 		scalebarSVG.append('line')
 			.attr('x1', marginLeft).attr('y1', out.scalebarSegmentHeight_).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarSegmentHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
 
+
 		//first tick
 		scalebarSVG.append('line')
-			.attr('x1', marginLeft).attr('y1', 1).attr('x2', marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_+'px')
+			.attr('x1', marginLeft).attr('y1', 1).attr('x2', marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		scalebarSVG.append("text").attr("x", marginLeft + textOffsetX).attr("y", out.scalebarTickHeight_ + textOffsetY).text("0")
 			.style('font-size', out.scalebarFontSize_ + 'px')
 			.style('font-family', out.fontFamily_)
@@ -1104,29 +1117,49 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const divisionWidth = niceLengthPixel / subdivisionNb;
 		const divisionMinWidth = 15;
 		if (divisionWidth >= divisionMinWidth) {
-		for (let i = 1; i < subdivisionNb; i++) {
-			scalebarSVG
-				.append("line")
-				.attr("x1", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
-				.attr("y1", 1)
-				.attr("x2", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
-				.attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
-				.style("stroke", "black")
-				.style("stroke-width", out.scalebarStrokeWidth_);
-			scalebarSVG
-				.append("text")
-				.attr("x", marginLeft + textOffsetX + i * divisionWidth)
-				.attr("y", out.scalebarTickHeight_ + textOffsetY)
-				.text(getScalebarLabel((niceLengthM[0] / subdivisionNb) * i))
-				.style('font-size', out.scalebarFontSize_ + 'px')
-				.style('font-family', out.fontFamily_)
-				.attr('text-anchor', 'middle');
+			for (let i = 1; i < subdivisionNb; i++) {
+				scalebarSVG
+					.append("line")
+					.attr("x1", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+					.attr("y1", 1)
+					.attr("x2", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+					.attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
+					.style("stroke", "black")
+					.style("stroke-width", out.scalebarStrokeWidth_);
+				scalebarSVG
+					.append("text")
+					.attr("x", marginLeft + textOffsetX + i * divisionWidth)
+					.attr("y", out.scalebarTickHeight_ + textOffsetY)
+					.text(getScalebarLabel((niceLengthM[0] / subdivisionNb) * i))
+					.style('font-size', out.scalebarFontSize_ + 'px')
+					.style('font-family', out.fontFamily_)
+					.attr('text-anchor', 'middle');
+			}
+
+		//every other segment mid-line
+		for (let i = -1; i < subdivisionNb; i+=2 ) {
+			if (i == 1) {
+				sb.append('line')
+					.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
+			} else {
+				let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
+				if (x1 > 0) {
+					sb.append('line')
+						.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+				}
+			}
 		}
-	}
+		} else {
+			// single full-length horizontal mid-line
+			sb.append('line')
+			.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth*subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
+		}
+
+
 
 		//last tick
 		scalebarSVG.append('line')
-		.attr('x1', niceLengthPixel + marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_+'px')
+			.attr('x1', niceLengthPixel + marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		scalebarSVG
 			.append("text")
 			.attr("x", niceLengthPixel + marginLeft + textOffsetX)

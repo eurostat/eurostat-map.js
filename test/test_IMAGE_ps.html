@@ -8,12 +8,20 @@
 
 <body>
   <svg id="map"></svg>
+<<<<<<< HEAD
+  <script src="../build/eurostatmap.js"></script>
+=======
   <script src="../build/eurostatmap.min.js"></script>
+>>>>>>> 1cd2a4062f75fc0f1eefe6ca918ad76fa50b1833
   <script>
     let mapWidth = 638;
     let mapHeight = 608;
 
+<<<<<<< HEAD
+    basemap = function () {
+=======
     basemap1 = function () {
+>>>>>>> 1cd2a4062f75fc0f1eefe6ca918ad76fa50b1833
       return eurostatmap
         .map("ps")
         .width(mapWidth)
@@ -32,11 +40,19 @@
         .drawCoastalMargin(false)
         .psFill("#4ac499")
         .nutsYear(2016)
+<<<<<<< HEAD
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth:0, co:0 })
+        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
+        .bordersToShow(['eu','co','cc','efta'])
+        .showScalebar(true)
+        .scalebarPosition([420,560])
+=======
         .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
         .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
         .bordersToShow(['eu', 'co', 'cc', 'efta'])
         .showScalebar(true)
         .scalebarPosition([420, 560])
+>>>>>>> 1cd2a4062f75fc0f1eefe6ca918ad76fa50b1833
         .seaFillStyle("#E6FFFF")
         .cntrgFillStyle("#E6E6E6")
         .nutsrgFillStyle("#E6E6E6")
@@ -49,6 +65,15 @@
         })
     };
 
+<<<<<<< HEAD
+    let map = basemap();
+    map.statData('size').setData({DE:10,BE:5,BG:3,DK:4,SE:1,FR:9,ES:8})
+    //map.statData('size').setData({DE:10})
+    map.build();
+
+
+    
+=======
     let map = basemap1();
 
 
@@ -111,6 +136,7 @@
     };
 
 
+>>>>>>> 1cd2a4062f75fc0f1eefe6ca918ad76fa50b1833
   </script>
 </body>
 
