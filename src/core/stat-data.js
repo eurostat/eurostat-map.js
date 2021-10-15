@@ -24,13 +24,13 @@ export const statData = function (config) {
 	 * If no argument is specified, returns the entire index.
 	 * @param {*} nutsId 
 	 */
-	out.get = (nutsId) => !nutsId? _data_ : _data_ ? _data_[nutsId] : undefined;
+	out.get = (nutsId) => !nutsId ? _data_ : _data_ ? _data_[nutsId] : undefined;
 
 	/**
 	 * Return the stat value from a nuts id.
 	 * @param {*} nutsId 
 	 */
-	out.getValue = (nutsId) => { const s=out.get(nutsId); return s?s.value:undefined; };
+	out.getValue = (nutsId) => { const s = out.get(nutsId); return s ? s.value : undefined; };
 
 	/**
 	 * Set a stat value from a nuts id.
@@ -41,11 +41,11 @@ export const statData = function (config) {
 	out.set = (nutsId, stat) => {
 		_data_ = _data_ || {};
 		const s = _data_[nutsId];
-		if(s)
-			if(stat.value) { s.value = stat.value; s.status = stat.status; }
-			else s.value = isNaN(+stat)?stat:+stat;
+		if (s)
+			if (stat.value) { s.value = stat.value; s.status = stat.status; }
+			else s.value = isNaN(+stat) ? stat : +stat;
 		else
-			_data_[nutsId] = stat.value? stat : {value:isNaN(+stat)?stat:+stat};
+			_data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat };
 		return out;
 	}
 
@@ -55,39 +55,39 @@ export const statData = function (config) {
 	 * @param {*} data Something like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
 	 */
 	out.setData = (data) => {
-		Object.keys(data).forEach( (nutsId) => out.set(nutsId, data[nutsId]) );
+		Object.keys(data).forEach((nutsId) => out.set(nutsId, data[nutsId]));
 		return out;
 	}
 
 
 
 	/** Return all stat values as an array. This can be used to classify the values. */
-	out.getArray = function() {
+	out.getArray = function () {
 		if (_data_) {
-		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s));
+			return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s));
 		}
 	}
 
 	/** Return stat unique values. This can be used for categorical maps. */
-	out.getUniqueValues = function() {
-		return Object.values(_data_).map(s=>s.value).filter( (item, i, ar) => ar.indexOf(item) === i );
+	out.getUniqueValues = function () {
+		return Object.values(_data_).map(s => s.value).filter((item, i, ar) => ar.indexOf(item) === i);
 	}
 
 	/** Get min value. */
-	out.getMin = function() {
+	out.getMin = function () {
 		if (_data_) {
-		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.min(acc, v), 0);
+			return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s && s!==':')).reduce((acc, v) => Math.min(acc, v), 0);
 		}
 	}
 	/** Get max value. */
-	out.getMax = function() {
+	out.getMax = function () {
 		if (_data_) {
-		return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s)).reduce((acc, v) => Math.max(acc, v), 0);
+			return Object.values(_data_).map(s => s.value).filter(s => (s == 0 || s && s!==':')).reduce((acc, v) => Math.max(acc, v), 0);
 		}
 	}
 
 	/** Check if the stat data is ready. */
-	out.isReady = function() {
+	out.isReady = function () {
 		return _data_ != undefined;
 	}
 
@@ -130,7 +130,7 @@ export const statData = function (config) {
 	/**
 	 * Return promise for Eurobase/jsonstat data.
 	 */
-	const getEurobasePromise = function(nutsLvl, lang) {
+	const getEurobasePromise = function (nutsLvl, lang) {
 		//set precision
 		out.filters_["precision"] = out.precision_;
 		//select only required geo groups, depending on the specified nuts level
@@ -154,7 +154,7 @@ export const statData = function (config) {
 				const jsd = JSONstat(data___);
 
 				//store jsonstat metadata
-				out.metadata = {"label": jsd.label, "href": jsd.href, "source": jsd.source, "updated": jsd.updated, "extension": jsd.extension};
+				out.metadata = { "label": jsd.label, "href": jsd.href, "source": jsd.source, "updated": jsd.updated, "extension": jsd.extension };
 				out.metadata.time = jsd.Dimension("time").id[0];
 
 				//index
@@ -162,7 +162,7 @@ export const statData = function (config) {
 				//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
 
 				callback();
-		});
+			});
 	}
 
 	/**
@@ -194,7 +194,7 @@ export const statData = function (config) {
 	/**
 	 * Return promise for CSV data.
 	 */
-	const getCSVPromise = function(nutsLvl) {
+	const getCSVPromise = function (nutsLvl) {
 		return csv(out.csvURL_)
 	}
 
@@ -214,7 +214,7 @@ export const statData = function (config) {
 				out.metadata = { "href": out.csvURL_ };
 
 				callback();
-		});
+			});
 	};
 
 	/**
@@ -226,12 +226,12 @@ export const statData = function (config) {
 	*/
 	["unitText_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		}
-	);
+		);
 
 	//override attribute values with config values
-	if(config) for (let key in config) out[key+"_"] = config[key];
+	if (config) for (let key in config) out[key + "_"] = config[key];
 
 	return out;
 }

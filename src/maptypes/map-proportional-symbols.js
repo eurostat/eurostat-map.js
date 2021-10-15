@@ -99,7 +99,15 @@ export const map = function (config) {
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
 		// size
-		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
+		let sizeDomain;
+		let data = out.statData("size").getArray();
+		let min = out.statData("size").getMin();
+		let max = out.statData("size").getMax();
+		if (min || min == 0) {
+			sizeDomain = out.statData("size") ? [min, max] : [out.statData().getMin(), out.statData().getMax()];
+		} else {
+			sizeDomain = [0,0]
+		}
 		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
 
 		// colour
