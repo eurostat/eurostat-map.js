@@ -22,7 +22,6 @@ export const map = function (config) {
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 10; //for vertical bars
-	out.psMinValue_ = 0;
 	out.psFill_ = "#2d50a0"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#000";
@@ -55,14 +54,14 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
+	["psMaxSize_", "psMinSize_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
 		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
+	if (config) ["psMaxSize", "psMinSize", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
 		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
@@ -100,11 +99,19 @@ export const map = function (config) {
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
 		// size
-		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
+		let sizeDomain;
+		let data = out.statData("size").getArray();
+		let min = out.statData("size").getMin();
+		let max = out.statData("size").getMax();
+		if (min || min == 0) {
+			sizeDomain = out.statData("size") ? [min, max] : [out.statData().getMin(), out.statData().getMax()];
+		} else {
+			sizeDomain = [0,0]
+		}
 		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
 
 		// colour
-		if (out.statData("color")) {
+		if (out.statData("color").getArray()) {
 			//use suitable classification type for colouring
 			if (out.psClassifMethod_ === "quantile") {
 				//https://github.com/d3/d3-scale#quantile-scales

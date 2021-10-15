@@ -33,7 +33,7 @@ import * as mt from './core/stat-map';
 	//if(type == "XX") return mapXX.map(config);
 
 	console.log("Unexpected map type: " + type);
-	return mt.statMap(config, true);
+	return mt.statMap(config, true, type);
 };
 
 
