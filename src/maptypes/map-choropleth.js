@@ -171,7 +171,7 @@ export const map = function (config) {
 
 
 		if (out.nutsLvl_ == "mixed") {
-			// Toggle visibility - show NUTS 1,2,3 with stat values when mixing different NUTS levels
+			// Toggle visibility - only show NUTS 1,2,3 with stat values when mixing different NUTS levels
 			out.svg().selectAll("path.nutsrg")
 				.style("display", function (rg) {
 					const ecl = select(this).attr("ecl");
