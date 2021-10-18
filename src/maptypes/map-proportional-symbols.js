@@ -4,6 +4,7 @@ import { interpolateOrRd } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * Returns a proportionnal symbol map.
@@ -275,7 +276,7 @@ const tooltipTextFunPs = function (rg, map) {
 	const sv1 = v1.get(rg.properties.id);
 	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
 	else {
-		buf.push(sv1.value);
+		buf.push(spaceAsThousandSeparator(sv1.value));
 		//unit 1
 		const unit1 = v1.unitText();
 		if (unit1) buf.push(" " + unit1);
@@ -288,7 +289,7 @@ const tooltipTextFunPs = function (rg, map) {
 		const sv2 = map.statData("color").get(rg.properties.id);
 		if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
 		else {
-			buf.push(sv2.value);
+			buf.push(spaceAsThousandSeparator(sv2.value));
 			//unit 2
 			const unit2 = map.statData("color").unitText();
 			if (unit2) buf.push(" " + unit2);

@@ -3,6 +3,7 @@ import { select } from "d3-selection";
 import * as lg from '../core/legend';
 import { symbolsLibrary } from "../maptypes/map-proportional-symbols";
 import { symbol } from 'd3-shape';
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * A legend for proportional symbol map
@@ -169,7 +170,7 @@ export const legend = function (map, config) {
 			//append label
 			lgg.append("text").attr("x", labelX).attr("y", labelY)
 				.attr("alignment-baseline", "middle")
-				.text(f(val))
+				.text(spaceAsThousandSeparator(f(val)))
 				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 	}
@@ -261,7 +262,7 @@ export const legend = function (map, config) {
 				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
 					.text(d => {
-						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
+						let text = spaceAsThousandSeparator(f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1]))
 						return text;
 					})
 					.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)

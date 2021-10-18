@@ -5,6 +5,7 @@ import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
+
 /**
  * Returns a chroropleth map.
  * 

@@ -54,6 +54,15 @@
         .insets(insetsConfig)
         .insetScale("01M")
       .insetBoxPosition([mapWidth - 213, 7])
+      .legend({
+          x: 280,
+          ascending: false,
+          boxPadding: 15,
+          sizeLegend: {
+            title: "Total GDP (million EUR)",
+          },
+          legendSpacing:0
+        })
     };
 
     let map = basemap();
