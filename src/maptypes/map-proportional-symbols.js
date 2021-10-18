@@ -271,7 +271,7 @@ const tooltipTextFunPs = function (rg, map) {
 	}
 
 	//stat 1 value
-	const v1 = map.statData("size") ? map.statData("size") : map.statData();
+	const v1 = map.statData("size").getArray() ? map.statData("size") : map.statData();
 	const sv1 = v1.get(rg.properties.id);
 	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
 	else {
@@ -284,7 +284,7 @@ const tooltipTextFunPs = function (rg, map) {
 
 
 	//stat 2 value
-	if (map.statData("color")) {
+	if (map.statData("color").getArray()) {
 		const sv2 = map.statData("color").get(rg.properties.id);
 		if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
 		else {
