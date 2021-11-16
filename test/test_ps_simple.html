@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <svg id="basic"></svg>
+    <script src="../build/eurostatmap.js"></script>
+    <script>
+        // basic barebones example
+        eurostatmap.map("ps")
+            .svgId("basic")
+            .nutsLvl(1)
+            .psFill("#4ac499")
+            .stat({ eurostatDatasetCode: "demo_r_pjangrp3", filters: { age: "TOTAL", sex: "T", unit: "NR", time: 2016 }, unitText: "inhabitants" })
+            .legend({ x: 600, y: 40, title: "Population" })
+            .build();
+    </script>
+</body>
+
+</html>

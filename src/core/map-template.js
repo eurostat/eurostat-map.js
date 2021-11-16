@@ -679,6 +679,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
 
 				[rg0, rg1, rg2, rg3].forEach((r, i) => {
+					//append each nuts level to map
 					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
 						.enter().append("path")
 						.attr("d", path)
@@ -686,6 +687,35 @@ export const mapTemplate = function (config, withCenterPoints) {
 						.attr("lvl", i) //to be able to distinguish levels
 						.attr("fill", out.nutsrgFillStyle_)
 				})
+
+				// mixed centroids
+				if (withCenterPoints) {
+					const gcp = zg.append("g").attr("id", "g_ps");
+					// add centroids of every nuts level to map
+					[rg0, rg1, rg2, rg3].forEach((r, i) => {
+						//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+						gcp.append("g").attr("id", "g_nutspt").selectAll("g")
+							.data(r)
+							.enter()
+							.append("g")
+							.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+							//.attr("r", 1)
+							.attr("class", "symbol")
+							.style("fill", "gray")
+							.on("mouseover", function (rg) {
+								const sel = select(this.childNodes[0]);
+								sel.attr("fill___", sel.style("fill"));
+								sel.style("fill", out.nutsrgSelFillSty_);
+								if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+							}).on("mousemove", function () {
+								if (out._tooltip) out._tooltip.mousemove();
+							}).on("mouseout", function () {
+								const sel = select(this.childNodes[0]);
+								sel.style("fill", sel.attr("fill___"));
+								if (out._tooltip) out._tooltip.mouseout();
+							});
+					})
+				}
 
 				//add kosovo
 				if (out.geo_ == "EUR") {
@@ -814,8 +844,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}
 		}
 
-
-
 		//draw world boundaries
 		if (worldbn)
 			zg.append("g").attr("id", "g_worldbn")
@@ -854,7 +882,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//prepare group for proportional symbols, with nuts region centroids
-		if (withCenterPoints) {
+		if (withCenterPoints && out.nutsLvl_ !== "mixed") {
 			if (nutsRG) {
 				const gcp = zg.append("g").attr("id", "g_ps");
 
@@ -1003,78 +1031,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			.attr("x", out.scalebarPosition_[0])
 			.attr("y", out.scalebarPosition_[1])
 
-		//let ticks = out.scalebarTicks_;
 		let segmentHeight = out.scalebarSegmentHeight_;
-		//let gap = out.scalebarSegmentWidth_;
-
-		//add horizontal lines
-
-		//top full width
-		// sb.append('line')
-		// 	.attr('x1', 1).attr('y1', 1).attr('x2', gap * (ticks - 1)).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
-		// //bottom full width
-		// sb.append('line')
-		// 	.attr('x1', 1).attr('y1', segmentHeight).attr('x2', gap * (ticks - 1)).attr('y2', segmentHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-		// // midlines for every other segment
-		// for (let i = -1; i < ticks; i += 2) {
-		// 	if (i == 1) {
-		// 		sb.append('line')
-		// 			.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 	} else {
-		// 		let x1 = gap * (i - 1);
-		// 		if (x1 > 0) {
-		// 			sb.append('line')
-		// 				.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 		}
-		// for (let i = -1; i < ticks; i += 2) {
-		// 	if (i == 1) {
-		// 		sb.append('line')
-		// 			.attr('x1', 1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 	} else {
-		// 		let x1 = gap * (i - 1);
-		// 		if (x1 > 0) {
-		// 			sb.append('line')
-		// 				.attr('x1', x1).attr('y1', segmentHeight / 2).attr('x2', gap * i).attr('y2', segmentHeight / 2).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 		}
-
-		// 	}
-		// 	}
-		// }
-
-		//add text svg
-		// let textOffsetX = out.scalebarTextOffset_[0];
-		// let textOffsetY = out.scalebarTextOffset_[1];
-		// let sbText = out.svg().append("svg").attr("id", "scalebarText")
-		// 	.attr("x", out.scalebarPosition_[0] - 3)
-		// 	.attr("y", out.scalebarPosition_[1])
-		// 	.style('font-size', out.scalebarFontSize_ + 'px')
-		// 	.style('font-family', out.fontFamily_)
-		// 	.attr('text-anchor', 'middle')
-
-		// for each tick...
-		// for (let i = 0; i < ticks; i++) {
-		// 	//add vertical lines & text
-		// 	if (i == 0) {
-		// 		//first line
-		// 		sb.append('line')
-		// 			.attr('x1', 1).attr('y1', 1).attr('x2', 1).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 		sbText.append('text').attr('x', textOffsetX).attr('y', tickHeight + textOffsetY).text('0')
-		// 	} else if (i == ticks - 1) {
-		// 		// add 'km' to last text value
-		// 		sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-		// 			formatScalebarValue(out.pixSize_ * (gap * i) / 1000) + out.scalebarUnits_)
-		// 		//last line
-		// 		sb.append('line')
-		// 			.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 	} else {
-		// 		// all other lines
-		// 		sb.append('line')
-		// 			.attr('x1', gap * i).attr('y1', 1).attr('x2', gap * i).attr('y2', tickHeight).style('stroke', '#000').style('stroke-width', '0.8px')
-		// 		// all other texts
-		// 		sbText.append('text').attr('x', (gap * i) + textOffsetX).attr('y', tickHeight + textOffsetY).text(
-		// 			formatScalebarValue(out.pixSize_ * (gap * i) / 1000))
-		// 	}
-		// }
 
 		// Julien's nice scalebars
 		const marginLeft = 5;
@@ -1136,26 +1093,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr('text-anchor', 'middle');
 			}
 
-		//every other segment mid-line
-		for (let i = -1; i < subdivisionNb; i+=2 ) {
-			if (i == 1) {
-				sb.append('line')
-					.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
-			} else {
-				let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
-				if (x1 > 0) {
+			//every other segment mid-line
+			for (let i = -1; i < subdivisionNb; i += 2) {
+				if (i == 1) {
 					sb.append('line')
-						.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				} else {
+					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
+					if (x1 > 0) {
+						sb.append('line')
+							.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+					}
 				}
 			}
-		}
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-			.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth*subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
-
-
 
 		//last tick
 		scalebarSVG.append('line')

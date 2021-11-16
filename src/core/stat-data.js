@@ -131,12 +131,15 @@ export const statData = function (config) {
 	 * Return promise for Eurobase/jsonstat data.
 	 */
 	const getEurobasePromise = function (nutsLvl, lang) {
-		//set precision
-		out.filters_["precision"] = out.precision_;
+		//set precision //DEPRECATED 16/11/2021 https://ec.europa.eu/eurostat/online-help/public/en/NAVIGATION_WDDSTranslator_migration_en/#DECOMMISSION
+		//out.filters_["precision"] = out.precision_;
 		//select only required geo groups, depending on the specified nuts level
-		out.filters_["geoLevel"] = nutsLvl + "" === "0" ? "country" : "nuts" + nutsLvl;
+		if (!out.filters_.geo) {
+			out.filters_["geoLevel"] = nutsLvl + "" === "0" ? "country" : "nuts" + nutsLvl;
+		}
+		
 		//force filtering of euro-geo-aggregates
-		out.filters_["filterNonGeo"] = 1;
+		//out.filters_["filterNonGeo"] = 1; //DEPRECATED 16/11/2021
 
 		//retrieve stat data from Eurostat API
 		return json(getEstatDataURL(out.eurostatDatasetCode_, out.filters_, lang))

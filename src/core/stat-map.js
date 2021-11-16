@@ -3,7 +3,7 @@ import * as mt from './map-template';
 import * as sd from './stat-data';
 import * as lg from './legend';
 import { select } from 'd3';
-
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * An abstract statistical map: A map template with statistical data, without any particular styling rule.
@@ -391,7 +391,7 @@ const tootipTextFunStat = function (rg, map) {
 		return buf.join("");
 	}
 	//display value
-	buf.push(sv.value);
+	buf.push(spaceAsThousandSeparator(sv.value));
 	//unit
 	const unit = map.statData("default").unitText();
 	if (unit) buf.push(" " + unit);

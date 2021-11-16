@@ -59,9 +59,9 @@
         .nutsrgSelFillSty("cyan")
         .zoomExtent([1,2])
         //GDP per inhabitant
-        .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
+        .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018" } })
         // total GDP
-        .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
+        .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018" } })
 
         //prop symbols configuration
         .psCustomPath(euroPath) // cross, diamond, star, square, wye, circle, triangle, rectangle https://github.com/d3/d3-shape#symbols
@@ -211,8 +211,8 @@
         .svgId("map2")
         .nutsLvl(0)
         .title("Tourism August 2020")
-        .stat("size", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "NR", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK" }, unitText: "total nights spent" })
-        .stat("color", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "PCH_SM", time: "2020M08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK", }, unitText: "% change compared to previous year" })
+        .stat("size", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "NR", time: "2020-08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK" }, unitText: "total nights spent" })
+        .stat("color", { eurostatDatasetCode: "tour_occ_nim", filters: { c_resid: "TOTAL", unit: "PCH_SM", time: "2020-08", geo:"AL&geo=AT&geo=BE&geo=BG&geo=CH&geo=CY&geo=CZ&geo=DE&geo=DK&geo=EE&geo=EL&geo=ES&geo=FI&geo=FR&geo=HR&geo=HU&geo=IE&geo=IS&geo=IT&geo=LI&geo=LT&geo=LU&geo=LV&geo=ME&geo=MK&geo=MT&geo=NL&geo=NO&geo=PL&geo=PT&geo=RO&geo=RS&geo=SE&geo=SI&geo=SK&geo=TR&geo=UK", }, unitText: "% change compared to previous year" })
         .psShape("square") // cross, diamond, star, square, wye, circle, triangle, bar https://github.com/d3/d3-shape#symbols
         .psFill("#fa8dfc")
         .psStroke("black")
