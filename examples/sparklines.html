@@ -13,15 +13,15 @@
     <script>
         eurostatmap
             .map("spark")
-            .nutsLvl(3)
+            .nutsLvl(1)
             .statSpark(
                 { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR" }, unitText: "people" },
                 ["2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"], //dates
                 ["2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"], //labels
             )
             .sparkType("line")
-            .sparkLineWidth(10)
-            .sparkLineStrokeWidth(2)
+            .sparkLineWidth(25)
+            .sparkLineStrokeWidth(1)
             .sparkLineColor("#c44a4a")
             .sparkLineHeight(5)
             .sparkLineOpacity(0.9)
