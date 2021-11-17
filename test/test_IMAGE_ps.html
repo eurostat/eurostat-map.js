@@ -23,16 +23,15 @@
         .bottomText(null)
         .showSourceLink(false)
         .nutsLvl('mixed')
-        //.psClassifMethod("threshold")
-        //.psColors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
-        //.psThreshold([-10, -5, 0, 4, 5,6,7,8,999,999])
+        .psClassifMethod("threshold")
+        .psColors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
+        .psThreshold([-10, -5, 0, 4, 5,6,7,8,999,999])
         .drawGraticule(true)
         .graticuleStroke("#ccc")
         .graticuleStrokeWidth(0.5)
         .geoCenter([4980000, 3610000])
         .legend(false)
         .drawCoastalMargin(false)
-        .psFill("#4ac499")
         .nutsYear(2016)
         .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth:0, co:0 })
         .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
@@ -54,15 +53,6 @@
         .insets(insetsConfig)
         .insetScale("01M")
       .insetBoxPosition([mapWidth - 213, 7])
-      .legend({
-          x: 280,
-          ascending: false,
-          boxPadding: 15,
-          sizeLegend: {
-            title: "Total GDP (million EUR)",
-          },
-          legendSpacing:0
-        })
     };
 
     let map = basemap();
@@ -70,12 +60,12 @@
     //map.statData('size').setData({DE:10})
     map.build();
 
-setTimeout(()=>{
-  let map = basemap();
-  map.statData('size').setData(nuts3)
-    //map.statData('size').setData({DE:10})
-    map.build();
-},1500)
+// setTimeout(()=>{
+//   let map = basemap();
+//   map.statData('size').setData(nuts3)
+//     //map.statData('size').setData({DE:10})
+//     map.build();
+// },1500)
     
   </script>
 </body>

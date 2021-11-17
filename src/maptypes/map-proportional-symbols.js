@@ -35,7 +35,7 @@ export const map = function (config) {
 	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
 	out.psNoDataFillStyle_ = "lightgray"; //style for no data regions
 
-	//the threshold, when the classificatio method is 'threshold'
+	//the threshold, when the classification method is 'threshold'
 	out.psThreshold_ = [0];
 	//the classification method
 	out.psClassifMethod_ = "quantile"; // or: equinter, threshold
