@@ -1,6 +1,7 @@
 import { select } from "d3-selection";
 import { format } from "d3-format";
 import * as lg from '../core/legend';
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * A legend for choropleth maps
@@ -102,7 +103,7 @@ export const legend = function (map, config) {
 			if(i<m.clnb()-1)
 				lgg.append("text").attr("x", out.boxPadding+Math.max(out.shapeWidth, out.sepLineLength)+out.labelOffset).attr("y", y+out.shapeHeight)
 				.attr("alignment-baseline", "middle")
-				.text( f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) )
+				.text( spaceAsThousandSeparator(f( m.classifier().invertExtent(ecl)[ out.ascending?0:1 ] ) ) )
 				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 

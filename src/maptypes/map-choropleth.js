@@ -5,6 +5,7 @@ import { interpolateYlOrBr } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgch from '../legend/legend-choropleth';
 
+
 /**
  * Returns a chroropleth map.
  * 
@@ -19,7 +20,7 @@ export const map = function (config) {
 	out.clnb_ = 7;
 	//the classification method
 	out.classifMethod_ = "quantile"; // or: equinter, threshold
-	//the threshold, when the classificatio method is 'threshold'
+	//the threshold, when the classification method is 'threshold'
 	out.threshold_ = [0];
 	//colors to use for classes
 	out.colors_ = null;
@@ -119,9 +120,10 @@ export const map = function (config) {
 		if (!out.classToFillStyle())
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 
-		//apply style to nuts regions / world regions depending on class
+		//apply style and mouse events to nuts regions / world regions depending on class
 		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
-		out.svg().selectAll(selector)
+		let regions = out.svg().selectAll(selector);
+		regions
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function (rg) {
 				if (out.geo_ == "WORLD") {
@@ -141,11 +143,36 @@ export const map = function (config) {
 						return out.nutsrgFillStyle_;
 					}
 				}
+			})
+			//GISCO-2767 - mouseover region fill bug before transition ends
+			.end()
+			.then(() => {
+				regions.on("mouseover", function (rg) {
+					const sel = select(this);
+					sel.attr("fill___", sel.attr("fill"));
+					sel.attr("fill", out.nutsrgSelFillSty_);
+					if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				}).on("mousemove", function () {
+					if (out._tooltip) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this);
+					let currentFill = sel.attr("fill");
+					let newFill = sel.attr("fill___");
+					if (newFill) {
+						sel.attr("fill", sel.attr("fill___"));
+						if (out._tooltip) out._tooltip.mouseout();
+					}
+				});
+
+			}, err => {
+				// rejection
 			});
 
 
+
+
 		if (out.nutsLvl_ == "mixed") {
-			// Toggle visibility - show NUTS 1,2,3 with stat values when mixing different NUTS levels
+			// Toggle visibility - only show NUTS 1,2,3 with stat values when mixing different NUTS levels
 			out.svg().selectAll("path.nutsrg")
 				.style("display", function (rg) {
 					const ecl = select(this).attr("ecl");
@@ -153,14 +180,14 @@ export const map = function (config) {
 					// always display NUTS 0 for mixed, and filter countries to show
 					if (ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || lvl == "0") {
 						return "block";
-					 } else { 
-						 // dont show unclassified regions
-						 return "none"
-					 };
+					} else {
+						// dont show unclassified regions
+						return "none"
+					};
 				})
 
 				//toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
-				.style("stroke", function (rg) {
+				.style("stroke", function (bn) {
 					const lvl = select(this).attr("lvl");
 					const ecl = select(this).attr("ecl");
 					if (ecl && lvl !== "0") {
@@ -203,7 +230,7 @@ export const map = function (config) {
 						const sv = s.get(d.properties.id);
 						if (!sv || !sv.value) {
 							return "";
-						}else {
+						} else {
 							if (sv.value !== ':') {
 								return sv.value;
 							}

@@ -277,6 +277,28 @@ export const map = function (config) {
         let s = out.svg().selectAll("#g_ps");
         let sym = s.selectAll("g.symbol");
         sym.append("g").attr("id", rg => { nutsIds.push(rg.properties.id); return "pie_" + rg.properties.id; })
+
+        // set region hover function
+        let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+        let regions = out.svg().selectAll(selector);
+        regions.on("mouseover", function (rg) {
+            const sel = select(this);
+            sel.attr("fill___", sel.attr("fill"));
+            sel.attr("fill", out.nutsrgSelFillSty_);
+            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+        }).on("mousemove", function () {
+            if (out._tooltip) out._tooltip.mousemove();
+        }).on("mouseout", function () {
+            const sel = select(this);
+            let currentFill = sel.attr("fill");
+            let newFill = sel.attr("fill___");
+            if (newFill) {
+                sel.attr("fill", sel.attr("fill___"));
+                if (out._tooltip) out._tooltip.mouseout();
+            }
+        });
+
+
         addPieChartsToMap(nutsIds);
 
         return out;
@@ -335,8 +357,14 @@ export const map = function (config) {
         tp.html("")
         tp.selectAll("*").remove();
 
-        //write region name
-        tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+
+        if (rg.properties.id) {
+            //name and code
+            tp.append("div").html("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+        } else {
+            //region name
+            tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        }
 
         //prepare data for pie chart
         const data = []

@@ -22,7 +22,7 @@ export const map = function (config) {
     out.sparkLineCircleRadius_ = 0;
     out.sparkTooltipChart_ = {
         width: 100,
-        height: 60,
+        height: 50,
         margin: { left: 60, right: 40, top: 40, bottom: 40 },
         circleRadius: 1.5
     }
@@ -41,13 +41,13 @@ export const map = function (config) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
     */
-    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineAreaColor_"]
+    ["sparkLineColor_", "showOnlyWhenComplete_", "sparkType_", "sparkLineWidth_", "sparkLineHeight_", "sparkLineStrokeWidth_", "sparkLineOpacity_", "sparkLineCircleRadius_", "sparkLineAreaColor_","sparkTooltipChart_"]
         .forEach(function (att) {
             out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
         });
 
     //override attribute values with config values
-    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineAreaColor"].forEach(function (key) {
+    if (config) ["sparkLineColor", "showOnlyWhenComplete", "sparkType", "sparkLineWidth", "sparkLineHeight", "sparkLineStrokeWidth", "sparkLineOpacity", "sparkLineCircleRadius_", "sparkLineAreaColor","sparkTooltipChart_"].forEach(function (key) {
         if (config[key] != undefined) out[key](config[key]);
     });
 
@@ -148,6 +148,27 @@ export const map = function (config) {
         let nutsIds = [];
         let s = out.svg().selectAll("#g_ps");
         let sym = s.selectAll("g.symbol").attr("id", rg => { nutsIds.push(rg.properties.id); return "spark_" + rg.properties.id; })
+
+        // set region hover function
+        let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+		let regions = out.svg().selectAll(selector);
+        regions.on("mouseover", function (rg) {
+            const sel = select(this);
+            sel.attr("fill___", sel.attr("fill"));
+            sel.attr("fill", out.nutsrgSelFillSty_);
+            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+        }).on("mousemove", function () {
+            if (out._tooltip) out._tooltip.mousemove();
+        }).on("mouseout", function () {
+            const sel = select(this);
+            let currentFill = sel.attr("fill");
+            let newFill = sel.attr("fill___");
+            if (newFill) {
+                sel.attr("fill", sel.attr("fill___"));
+                if (out._tooltip) out._tooltip.mouseout();
+            }
+        });
+
         addSparkLinesToMap(nutsIds);
         return out;
     };
@@ -191,7 +212,7 @@ export const map = function (config) {
                 .datum(data)
                 .attr('fill', out.sparkAreaColor_)
                 .attr('stroke', out.sparkLineColor_)
-                .attr('stroke-width', out.sparkLineStrokeWidth_)
+                .attr('stroke-width', out.sparkLineStrokeWidth_ + "px")
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr("fill-opacity", .3)
                 .attr("stroke", "none")
@@ -208,14 +229,14 @@ export const map = function (config) {
             .datum(data)
             .attr("fill", "none")
             .attr("stroke", out.sparkLineColor_)
-            .attr("stroke-width", 0.5)
+            .attr("stroke-width", out.sparkLineStrokeWidth_ + "px")
             .attr("d", line()
                 .x(function (d, i) { return xScale(i) })
                 .y(function (d) { return yScale(d.value) })
             )
             .attr("transform", (d) => `translate(0,-${height / 2})`)
 
-        // Add the line
+        // Add the dots
         node.selectAll("myCircles")
             .data(data)
             .enter()
@@ -225,7 +246,7 @@ export const map = function (config) {
             .attr("cx", function (d, i) { return xScale(i) })
             .attr("cy", function (d) { return yScale(d.value) })
             .attr("r", out.sparkLineCircleRadius_)
-            .attr("transform", (d) => `translate(-${width / 2},-${height / 2})`)
+            .attr("transform", (d) => `translate(0,-${height / 2})`)
     }
 
 
@@ -294,11 +315,17 @@ export const map = function (config) {
         tp.selectAll("*").remove();
 
         //write region name
-        tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        if (rg.properties.id) {
+            //name and code
+            tp.append("div").html("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+        } else {
+            //region name
+            tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+        }
 
         //prepare data for sparkline chart
-        let height = 200
-        let width = 200
+        let height = out.sparkTooltipChart_.height;
+        let width = out.sparkTooltipChart_.width;
         let margin = out.sparkTooltipChart_.margin;
         const data = getComposition(rg.properties.id);
         let svg = tp.append("svg")
@@ -342,7 +369,7 @@ export const map = function (config) {
                 .datum(data)
                 .attr('fill', out.sparkAreaColor_)
                 .attr('stroke', out.sparkLineColor_)
-                .attr('stroke-width', out.sparkLineStrokeWidth_)
+                .attr('stroke-width', 1)
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr("fill-opacity", .3)
                 .attr("stroke", "none")
@@ -359,7 +386,7 @@ export const map = function (config) {
             .datum(data)
             .attr("fill", "none")
             .attr("stroke", out.sparkLineColor_)
-            .attr("stroke-width", out.sparkLineStrokeWidth_)
+            .attr("stroke-width", 1)
             .attr("d", line()
                 .x(function (d, i) { return xScale(d.date) })
                 .y(function (d) { return yScale(d.value) })
@@ -381,8 +408,6 @@ export const map = function (config) {
 
     return out;
 }
-
-
 
 
 //build a color legend object

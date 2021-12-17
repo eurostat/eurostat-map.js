@@ -3,14 +3,14 @@ import * as mt from './map-template';
 import * as sd from './stat-data';
 import * as lg from './legend';
 import { select } from 'd3';
-
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * An abstract statistical map: A map template with statistical data, without any particular styling rule.
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const statMap = function (config, withCenterPoints) {
+export const statMap = function (config, withCenterPoints, mapType) {
 
 	//build stat map from map template
 	const out = mt.mapTemplate(config, withCenterPoints);
@@ -20,7 +20,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	//the statistical data configuration.
 	//A map can have several stat datasets. This is a dictionnary of all stat configuration
-	out.stat_ = { "default": undefined };
+	out.stat_ = { "default": undefined};
 	out.stat = function (k, v) {
 		//no argument: getter - return the default stat
 		if (!arguments.length) return out.stat_["default"];
@@ -34,7 +34,7 @@ export const statMap = function (config, withCenterPoints) {
 	};
 
 	//the statistical data, retrieved from the config information. As a dictionnary.
-	out.statData_ = { "default": sd.statData() };
+	out.statData_ = { "default": sd.statData(), "color":sd.statData(),"size":sd.statData()};
 	out.statData = function (k, v) {
 		//no argument: getter - return the default statData
 		if (!arguments.length) return out.statData_["default"];
@@ -369,23 +369,29 @@ function rasterize(svg) {
 
 /**
  * Default function for tooltip text, for statistical maps.
- * It simply shows the name of the region and the statistical value.
+ * It simply shows the name and code of the region and the statistical value.
  * 
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
  */
 const tootipTextFunStat = function (rg, map) {
 	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 	//case when no data available
 	const sv = map.statData().get(rg.properties.id);
-	if (!sv || (sv.value != 0 && !sv.value)) {
+	if (!sv || (sv.value !== 0 && !sv.value)) {
 		buf.push(map.noDataText_);
 		return buf.join("");
 	}
 	//display value
-	buf.push(sv.value);
+	buf.push(spaceAsThousandSeparator(sv.value));
 	//unit
 	const unit = map.statData("default").unitText();
 	if (unit) buf.push(" " + unit);

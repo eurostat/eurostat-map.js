@@ -43,12 +43,12 @@ export const map = function (config) {
 	*/
 	["stripeWidth_", "stripeOrientation_", "catColors_", "catLabels_", "showOnlyWhenComplete_", "noDataFillStyle_", "pieChartRadius_", "pieChartInnerRadius_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
-		if(config[key]!=undefined) out[key](config[key]);
+	if (config) ["stripeWidth", "stripeOrientation", "catColors", "catLabels", "showOnlyWhenComplete", "noDataFillStyle", "pieChartRadius", "pieChartInnerRadius"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
 	});
 
 
@@ -62,28 +62,28 @@ export const map = function (config) {
 	 * @param {Array} labels Optional: The labels for the category codes
 	 * @param {Array} colors Optional: The colors for the category
 	 */
-	out.statComp = function(stat, dim, codes, labels, colors) {
+	out.statComp = function (stat, dim, codes, labels, colors) {
 
 		//add one dataset config for each category
 		stat.filters = stat.filters || {};
-		for(let i=0; i<codes.length; i++) {
+		for (let i = 0; i < codes.length; i++) {
 
 			//category code
 			const code = codes[i]
 			stat.filters[dim] = code
 			const sc_ = {};
-			for(let key in stat) sc_[key] = stat[key]
+			for (let key in stat) sc_[key] = stat[key]
 			sc_.filters = {};
-			for(let key in stat.filters) sc_.filters[key] = stat.filters[key]
+			for (let key in stat.filters) sc_.filters[key] = stat.filters[key]
 			out.stat(code, sc_)
 
 			//if specified, retrieve and assign color
-			if(colors) {
+			if (colors) {
 				out.catColors_ = out.catColors_ || {};
 				out.catColors_[code] = colors[i];
 			}
 			//if specified, retrieve and assign label
-			if(labels) {
+			if (labels) {
 				out.catLabels_ = out.catLabels_ || {};
 				out.catLabels_[code] = labels[i];
 			}
@@ -104,18 +104,18 @@ export const map = function (config) {
 	 * Return an object with, for each category, the share [0,1] of the category.
 	 * @param {*} id 
 	 */
-	const getComposition = function(id) {
+	const getComposition = function (id) {
 		let comp = {}, sum = 0;
 		//get stat value for each category. Compute the sum.
-		for(let i=0; i<statCodes.length; i++) {
+		for (let i = 0; i < statCodes.length; i++) {
 
 			//retrieve code and stat value
 			const sc = statCodes[i]
 			const s = out.statData(sc).get(id);
 
 			//case when some data is missing
-			if(!s || (s.value!=0 && !s.value) || isNaN(s.value)) {
-				if(out.showOnlyWhenComplete()) return undefined;
+			if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
+				if (out.showOnlyWhenComplete()) return undefined;
 				else continue;
 			}
 
@@ -124,10 +124,10 @@ export const map = function (config) {
 		}
 
 		//case when no data
-		if(sum == 0) return undefined;
+		if (sum == 0) return undefined;
 
 		//compute ratios
-		for(let i=0; i<statCodes.length; i++) comp[statCodes[i]] /= sum;
+		for (let i = 0; i < statCodes.length; i++) comp[statCodes[i]] /= sum;
 
 		return comp;
 	}
@@ -138,7 +138,7 @@ export const map = function (config) {
 	out.updateClassification = function () {
 
 		//if not provided, get list of stat codes from the map stat data
-		if(!statCodes) {
+		if (!statCodes) {
 			//get list of stat codes.
 			statCodes = Object.keys(out.statData_);
 			//remove "default", if present
@@ -154,10 +154,10 @@ export const map = function (config) {
 	out.updateStyle = function () {
 
 		//if not specified, build default color ramp
-		if(!out.catColors()) {
+		if (!out.catColors()) {
 			out.catColors({});
-			for(let i=0; i<statCodes.length; i++)
-				out.catColors()[statCodes[i]] = schemeCategory10[i%10];
+			for (let i = 0; i < statCodes.length; i++)
+				out.catColors()[statCodes[i]] = schemeCategory10[i % 10];
 		}
 
 		//if not specified, initialise category labels
@@ -179,19 +179,19 @@ export const map = function (config) {
 					.attr("id", "pattern_" + id).attr("x", "0").attr("y", "0")
 					.attr("width", out.stripeWidth()).attr("height", 1).attr("patternUnits", "userSpaceOnUse");
 				//use orientation, if specified
-				if(out.stripeOrientation()) patt.attr("patternTransform", "rotate("+out.stripeOrientation()+")")
+				if (out.stripeOrientation()) patt.attr("patternTransform", "rotate(" + out.stripeOrientation() + ")")
 
 				//background
 				patt.append("rect").attr("x", 0).attr("y", 0).attr("width", out.stripeWidth()).attr("height", 1)
-				.style("stroke", "none").style("fill", "lightgray")
+					.style("stroke", "none").style("fill", "lightgray")
 
 				//make stripes, one per category
-				let x=0;
-				for(let code in composition) {
+				let x = 0;
+				for (let code in composition) {
 
 					//get stripe size
 					let dx = composition[code]
-					if(!dx) continue;
+					if (!dx) continue;
 					dx *= out.stripeWidth();
 
 					//get stripe color
@@ -213,20 +213,40 @@ export const map = function (config) {
 				return "url(#pattern_" + id + ")"
 			})
 			.attr("nd", function (d) {
-				return ! getComposition(d.properties.id) ? "nd" : "";
+				return !getComposition(d.properties.id) ? "nd" : "";
 			})
+
+		// set region hover function
+		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+		let regions = out.svg().selectAll(selector);
+		regions.on("mouseover", function (rg) {
+			const sel = select(this);
+			sel.attr("fill___", sel.attr("fill"));
+			sel.attr("fill", out.nutsrgSelFillSty_);
+			if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+		}).on("mousemove", function () {
+			if (out._tooltip) out._tooltip.mousemove();
+		}).on("mouseout", function () {
+			const sel = select(this);
+			let currentFill = sel.attr("fill");
+			let newFill = sel.attr("fill___");
+			if (newFill) {
+				sel.attr("fill", sel.attr("fill___"));
+				if (out._tooltip) out._tooltip.mouseout();
+			}
+		});
 
 		return out;
 	};
 
 	//@override
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		return lgscomp.legend;
 	}
 
 
 	//specific tooltip text function
-	out.tooltip_.textFunction =  function (rg, map) {
+	out.tooltip_.textFunction = function (rg, map) {
 
 		//get tooltip
 		const tp = select("#tooltip_eurostat")
@@ -236,32 +256,38 @@ export const map = function (config) {
 		tp.selectAll("*").remove();
 
 		//write region name
-		tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+		if (rg.properties.id) {
+			//name and code
+			tp.append("div").html("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+		} else {
+			//region name
+			tp.append("div").html("<b>" + rg.properties.na + "</b><br>");
+		}
 
 		//prepare data for pie chart
 		const data = []
 		const comp = getComposition(rg.properties.id);
-		for(const key in comp) data.push({ code:key, value:comp[key] })
+		for (const key in comp) data.push({ code: key, value: comp[key] })
 
 		//case of regions with no data
-		if(!data || data.length == 0) {
-			tp.append("div").html( out.noDataText() );
+		if (!data || data.length == 0) {
+			tp.append("div").html(out.noDataText());
 			return;
 		};
 
 		//create svg for pie chart
 		const r = out.pieChartRadius(), ir = out.pieChartInnerRadius();
-		const svg = tp.append("svg").attr("viewBox", [-r, -r, 2*r, 2*r]).attr("width", 2*r);
+		const svg = tp.append("svg").attr("viewBox", [-r, -r, 2 * r, 2 * r]).attr("width", 2 * r);
 
 		//make pie chart. See https://observablehq.com/@d3/pie-chart
 		const pie_ = pie().sort(null).value(d => d.value)
 		svg.append("g")
-		.attr("stroke", "darkgray")
-		.selectAll("path")
-		.data( pie_(data) )
-		.join("path")
-		.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray"} )
-		.attr("d", arc().innerRadius(ir).outerRadius(r) )
+			.attr("stroke", "darkgray")
+			.selectAll("path")
+			.data(pie_(data))
+			.join("path")
+			.attr("fill", d => { return out.catColors()[d.data.code] || "lightgray" })
+			.attr("d", arc().innerRadius(ir).outerRadius(r))
 	};
 
 	return out;

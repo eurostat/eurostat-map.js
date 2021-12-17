@@ -44,12 +44,12 @@ export const map = function (config) {
 	*/
 	["clnb_", "startColor_", "color1_", "color2_", "endColor_", "classToFillStyle_", "noDataFillStyle_", "classifier1_", "classifier2_"]
 		.forEach(function (att) {
-			out[att.substring(0, att.length - 1)] = function(v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if(config) ["clnb", "startColor", "color1", "color2", "endColor", "classToFillStyle", "noDataFillStyle"].forEach(function (key) {
-		if(config[key]!=undefined) out[key](config[key]);
+	if (config) ["clnb", "startColor", "color1", "color2", "endColor", "classToFillStyle", "noDataFillStyle"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
 	});
 
 	//@override
@@ -58,8 +58,8 @@ export const map = function (config) {
 		//make single classifiers
 		//TODO make it possible to use other types of classifiers ?
 		const range = [...Array(out.clnb()).keys()];
-		out.classifier1( scaleQuantile().domain(out.statData("v1").getArray()).range(range) );
-		out.classifier2( scaleQuantile().domain(out.statData("v2").getArray()).range(range) );
+		out.classifier1(scaleQuantile().domain(out.statData("v1").getArray()).range(range));
+		out.classifier2(scaleQuantile().domain(out.statData("v2").getArray()).range(range));
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -82,13 +82,13 @@ export const map = function (config) {
 				const sv2 = out.statData("v2").get(rg.properties.id);
 				if (!sv1 || !sv2) return "nd";
 				let v = sv1.value; if (v != 0 && !v) return "nd";
-				    v = sv2.value; if (v != 0 && !v) return "nd";
+				v = sv2.value; if (v != 0 && !v) return "nd";
 				return "";
 			})
 
 		//define bivariate scale
-		if(!out.classToFillStyle()) {
-			const scale = scaleBivariate( out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor() );
+		if (!out.classToFillStyle()) {
+			const scale = scaleBivariate(out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor());
 			out.classToFillStyle(scale);
 		}
 
@@ -110,11 +110,31 @@ export const map = function (config) {
 				return out.classToFillStyle()(+ecl1, +ecl2);
 			});
 
+		// set region hover function
+		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+		let regions = out.svg().selectAll(selector);
+		regions.on("mouseover", function (rg) {
+			const sel = select(this);
+			sel.attr("fill___", sel.attr("fill"));
+			sel.attr("fill", out.nutsrgSelFillSty_);
+			if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+		}).on("mousemove", function () {
+			if (out._tooltip) out._tooltip.mousemove();
+		}).on("mouseout", function () {
+			const sel = select(this);
+			let currentFill = sel.attr("fill");
+			let newFill = sel.attr("fill___");
+			if (newFill) {
+				sel.attr("fill", sel.attr("fill___"));
+				if (out._tooltip) out._tooltip.mouseout();
+			}
+		});
+
 		return out;
 	};
 
 	//@override
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		return lgchbi.legend;
 	}
 
@@ -122,26 +142,26 @@ export const map = function (config) {
 }
 
 
-const scaleBivariate = function(clnb, startColor, color1, color2, endColor) {
+const scaleBivariate = function (clnb, startColor, color1, color2, endColor) {
 
 	//color ramps, by row
 	const cs = [];
 	//interpolate from first and last columns
 	const rampS1 = interpolateRgb(startColor, color1);
 	const ramp2E = interpolateRgb(color2, endColor);
-	for(let i=0; i<clnb; i++) {
-		const t = i/(clnb-1);
-		const colFun = interpolateRgb( rampS1(t) , ramp2E(t));
+	for (let i = 0; i < clnb; i++) {
+		const t = i / (clnb - 1);
+		const colFun = interpolateRgb(rampS1(t), ramp2E(t));
 		const row = [];
-		for(let j=0; j<clnb; j++) row.push(colFun(j/(clnb-1)));
+		for (let j = 0; j < clnb; j++) row.push(colFun(j / (clnb - 1)));
 		cs.push(row);
 	}
 	//TODO compute other matrix based on rows, and average both?
 
-	return function(ecl1, ecl2) {
+	return function (ecl1, ecl2) {
 		return cs[ecl1][ecl2];
 	}
-  }
+}
 
 
 /**
@@ -153,7 +173,13 @@ const scaleBivariate = function(clnb, startColor, color1, color2, endColor) {
 const tooltipTextFunBiv = function (rg, map) {
 	const buf = [];
 	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 
 	//stat 1 value
 	const sv1 = map.statData("v1").get(rg.properties.id);

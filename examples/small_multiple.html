@@ -23,7 +23,7 @@
         //Chain linked volumes, percentage change compared to same period in previous year
         //Seasonally and calendar adjusted data
 
-        for(let year = 2020; year>=2000; year--) {
+        for(let year = 2021; year>=2000; year--) {
         for(let q = 1; q<=4; q++) {
            eurostatmap
             .map("ch")
@@ -45,7 +45,6 @@
             .drawCoastalMargin(false)
         	.nutsbnStrokeWidth({ 0: 0.8, 1: 0, 2: 0, 3: 0, oth: 0, co: 0.6 })
             .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#777" })
-            .landStrokeWidth(0)
             .drawGraticule(false)
 
             .tooltipShowFlags("long")

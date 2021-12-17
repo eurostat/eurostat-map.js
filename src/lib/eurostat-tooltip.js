@@ -8,7 +8,7 @@ export const tooltip = function (config) {
 	config = config || {};
 	config.div = config.div || "tooltip_eurostat";
 	config.maxWidth = config.maxWidth || "200px";
-	config.fontSize = config.fontSize || "16px";
+	config.fontSize = config.fontSize || "14px";
 	config.background = config.background || "white";
 	config.padding = config.padding || "5px";
 	config.border = config.border || "0px";
@@ -30,8 +30,7 @@ export const tooltip = function (config) {
 		//tooltip.style("width",config.width);
 		tooltip.style("max-width", config.maxWidth);
 		tooltip.style("overflow", "hidden");
-
-		tooltip.style("font-size", config.fontSize + "px");
+		tooltip.style("font-size", config.fontSize);
 		tooltip.style("background", config.background);
 		tooltip.style("padding", config.padding);
 		tooltip.style("border", config.border);
@@ -39,7 +38,6 @@ export const tooltip = function (config) {
 		tooltip.style("box-shadow", config["box-shadow"]);
 		tooltip.style("position", "absolute");
 		tooltip.style("font-family", config["font-family"]);
-
 		tooltip.style("position", "absolute");
 		tooltip.style("pointer-events", "none");
 		tooltip.style("opacity", "0");
@@ -49,10 +47,14 @@ export const tooltip = function (config) {
 		if(html) tooltip.html(html);
 		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px")
 			.transition().duration(config.transitionDuration).style("opacity", 1);
+
+			//this.ensureTooltipOnScreen();
 	};
 
 	my.mousemove = function () {
 		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px");
+
+		//this.ensureTooltipOnScreen();
 	};
 
 	my.mouseout = function () {
@@ -70,6 +72,29 @@ export const tooltip = function (config) {
 		tooltip.attr(k, v);
 		return my;
 	};
+
+/**
+* @function ensureTooltipOnScreen
+* @description Prevents the tooltip from overflowing off screen
+*/
+my.ensureTooltipOnScreen = function() {
+	// TODO: parent needs to be the all-encompassing container, not the map SVG id otherwise it just uses the last SVG which will be an inset SVG.
+	let parent = document.getElementById(config.parentContainerId);
+	let bbox = parent.getBBox();
+	let parentWidth = bbox.width;
+	let parentHeight = bbox.height;
+	let node = tooltip.node();
+    //too far right
+    if (node.offsetLeft > parentWidth - node.clientWidth) {
+        node.style.left = node.offsetLeft - (node.clientWidth + config.xOffset * 2) + "px";
+
+    }
+    //too far down
+    if (node.offsetTop + node.clientHeight > parentHeight) {
+        node.style.top = node.offsetTop - (node.clientHeight + config.yOffset * 2) + "px";
+    }
+
+}
 
 	my();
 	return my;

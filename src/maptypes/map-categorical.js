@@ -34,13 +34,13 @@ export const map = function (config) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	["classToFillStyle_", "classToText_", "noDataFillStyle_", "tooltipText_", "classifier_"]
-	.forEach(function(att) {
-		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
-	});
+		.forEach(function (att) {
+			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
+		});
 
 	//override attribute values with config values
-	if(config) ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText", "classifier"].forEach(function (key) {
-		if(config[key]!=undefined) out[key](config[key]);
+	if (config) ["classToFillStyle", "classToText", "noDataFillStyle", "tooltipText", "classifier"].forEach(function (key) {
+		if (config[key] != undefined) out[key](config[key]);
 	});
 
 
@@ -55,7 +55,7 @@ export const map = function (config) {
 		const range = [...Array(domain.length).keys()];
 
 		//make classifier
-		out.classifier( scaleOrdinal().domain(domain).range(range) );
+		out.classifier(scaleOrdinal().domain(domain).range(range));
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -65,7 +65,7 @@ export const map = function (config) {
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
 				return +out.classifier()(isNaN(v) ? v : +v);
-		})
+			})
 
 		return out;
 	};
@@ -75,10 +75,10 @@ export const map = function (config) {
 	out.updateStyle = function () {
 
 		//if no color specified, use some default colors
-		if(!out.classToFillStyle()) {
+		if (!out.classToFillStyle()) {
 			const ctfs = {}
 			const dom = out.classifier().domain();
-			for(let i=0; i<dom.length; i++)
+			for (let i = 0; i < dom.length; i++)
 				ctfs[dom[i]] = schemeSet3[i % 12];
 			out.classToFillStyle(ctfs);
 		}
@@ -90,14 +90,14 @@ export const map = function (config) {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 				return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
-		});
+			});
 
 		return out;
 	};
 
 
 	//@override
-	out.getLegendConstructor = function() {
+	out.getLegendConstructor = function () {
 		return lgct.legend;
 	}
 
@@ -113,8 +113,13 @@ export const map = function (config) {
  */
 const tooltipTextFunCat = function (rg, map) {
 	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 	//get stat value
 	const sv = map.statData().get(rg.properties.id);
 	//case when no data available

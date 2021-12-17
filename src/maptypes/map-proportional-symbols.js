@@ -4,6 +4,7 @@ import { interpolateOrRd } from "d3-scale-chromatic";
 import * as smap from '../core/stat-map';
 import * as lgps from '../legend/legend-proportional-symbols';
 import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape';
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * Returns a proportionnal symbol map.
@@ -18,11 +19,10 @@ export const map = function (config) {
 	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psCustomPath_; // see http://bl.ocks.org/jessihamel/9648495
-	out.psOffset_ = {x:0,y:0}
+	out.psOffset_ = { x: 0, y: 0 }
 	out.psMaxSize_ = 30;
 	out.psMinSize_ = 1; //for circle
 	out.psBarWidth_ = 10; //for vertical bars
-	out.psMinValue_ = 0;
 	out.psFill_ = "#2d50a0"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#000";
@@ -31,11 +31,11 @@ export const map = function (config) {
 	out.psClasses_ = 5; // number of classes to use for colouring
 	out.psColors_ = null; //colours to use for threshold colouring
 	out.psColorFun_ = interpolateOrRd;
-		
+
 	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
 	out.psNoDataFillStyle_ = "lightgray"; //style for no data regions
 
-	//the threshold, when the classificatio method is 'threshold'
+	//the threshold, when the classification method is 'threshold'
 	out.psThreshold_ = [0];
 	//the classification method
 	out.psClassifMethod_ = "quantile"; // or: equinter, threshold
@@ -55,20 +55,20 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
-		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_","psClassifMethod_","psClasses_"]
+	["psMaxSize_", "psMinSize_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
+		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_", "psClassifMethod_", "psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
-	if (config) ["psMaxSize", "psMinSize", "psMinValue", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
-		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset","psClassifMethod","psClasses"].forEach(function (key) {
+	if (config) ["psMaxSize", "psMinSize", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
+		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset", "psClassifMethod", "psClasses"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
 
 	//override of some special getters/setters
-	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.psClassToFillStyle_ = getColorLegend(out.psColorFun_,out.psColors_); return out; };
+	out.psColorFun = function (v) { if (!arguments.length) return out.psColorFun_; out.psColorFun_ = v; out.psClassToFillStyle_ = getColorLegend(out.psColorFun_, out.psColors_); return out; };
 	out.psThreshold = function (v) { if (!arguments.length) return out.psThreshold_; out.psThreshold_ = v; out.psClasses(v.length + 1); return out; };
 
 	//@override
@@ -99,12 +99,18 @@ export const map = function (config) {
 		//simply return the array [0,1,2,3,...,nb-1]
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
-		// size
-		let sizeDomain = out.statData("size") ? [out.statData("size").getMin(), out.statData("size").getMax()] : [out.statData().getMin(), out.statData().getMax()];
+		// use size dataset, if not use default
+		let sizeDomain;
+		let data = out.statData("size").getArray();
+		let min = out.statData("size").getMin();
+		let max = out.statData("size").getMax();
+
+		sizeDomain = data ? [min, max] : [out.statData().getMin(), out.statData().getMax()];
+
 		out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]));
 
 		// colour
-		if (out.statData("color")) {
+		if (out.statData("color").getArray()) {
 			//use suitable classification type for colouring
 			if (out.psClassifMethod_ === "quantile") {
 				//https://github.com/d3/d3-scale#quantile-scales
@@ -119,9 +125,9 @@ export const map = function (config) {
 				if (out.makeClassifNice_) out.classifierColor().nice();
 			} else if (out.psClassifMethod_ === "threshold") {
 				//https://github.com/d3/d3-scale#threshold-scales
-					out.psClasses(out.psThreshold().length + 1);
-					const range = getA(out.psClasses_);
-					out.classifierColor(scaleThreshold().domain(out.psThreshold()).range(range));
+				out.psClasses(out.psThreshold().length + 1);
+				const range = getA(out.psClasses_);
+				out.classifierColor(scaleThreshold().domain(out.psThreshold()).range(range));
 			}
 
 		}
@@ -134,24 +140,27 @@ export const map = function (config) {
 
 		//define style per class
 		if (!out.psClassToFillStyle())
-			out.psClassToFillStyle(getColorLegend(out.psColorFun_,out.psColors_))
+			out.psClassToFillStyle(getColorLegend(out.psColorFun_, out.psColors_))
 
 		// define symbol then apply styling
 		let symb;
+		// if size dataset not defined then use default
+		let data = out.statData("size").getArray() ? out.statData("size") : out.statData();
+
 		if (out.psCustomPath_) {
 			//custom path
 			symb = out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg=>{
-				//calculate size
-				const v = out.statData("size") ? out.statData("size") : out.statData();
-				const sv = v.get(rg.properties.id);
-				let size;
-				if (!sv || !sv.value) {
-					size = 0;
-				} else {
-					size = out.classifierSize_(+sv.value);
-				}
-			return `translate(${out.psOffset_.x *size},${out.psOffset_.y*size}) scale(${size})`})
+				.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
+					//calculate size
+					const sv = data.get(rg.properties.id);
+					let size;
+					if (!sv || !sv.value) {
+						size = 0;
+					} else {
+						size = out.classifierSize_(+sv.value);
+					}
+					return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
+				})
 		} else if (out.psShape_ == "bar") {
 			// vertical bars
 			symb = out.svg().select("#g_ps").selectAll("g.symbol")
@@ -159,8 +168,7 @@ export const map = function (config) {
 				.attr("width", out.psBarWidth_)
 				//for vertical bars we scale the height attribute using the classifier
 				.attr("height", function (rg) {
-					const s = out.statData("size") ? out.statData("size") : out.statData();
-					const sv = s.get(rg.properties.id);
+					const sv = data.get(rg.properties.id);
 					if (!sv || !sv.value) {
 						return 0;
 					}
@@ -176,43 +184,42 @@ export const map = function (config) {
 		} else {
 			// d3.symbol symbols
 			// circle, cross, star, triangle, diamond, square, wye or custom
-			symb = out.svg().select("#g_ps").selectAll("g.symbol")
+			symb = out.svg().selectAll("g.symbol")
 				.append("path").attr("class", "ps").attr("d", rg => {
-				const v = out.statData("size") ? out.statData("size") : out.statData();
-				const sv = v.get(rg.properties.id);
-				let size;
-				//calculate size
-				if (!sv || !sv.value) {
-					size = 0;
-				} else {
-					size = out.classifierSize_(+sv.value);
-				}
-				//apply size to shape
-				if (out.psCustomShape_) {
-					return out.psCustomShape_.size(size * size)()
-				} else {
-					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
-					return symbol().type(symbolType).size(size * size)()
-				}
-			})
+					const sv = data.get(rg.properties.id);
+					let size;
+					//calculate size
+					if (!sv || !sv.value) {
+						size = 0;
+					} else {
+						size = out.classifierSize_(+sv.value);
+					}
+					//apply size to shape
+					if (out.psCustomShape_) {
+						return out.psCustomShape_.size(size * size)()
+					} else {
+						const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
+						return symbol().type(symbolType).size(size * size)()
+					}
+				})
 		}
 
 		//common methods
 		symb.style("fill-opacity", out.psFillOpacity())
-		.style("stroke", out.psStroke())
-		.style("stroke-width", out.psStrokeWidth())
-		.style("fill", function () {
-			// use colour classifier when applicable
-			if (out.classifierColor_) {
-				//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
-				var ecl = select(this.parentNode).attr("ecl");
-				if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
-				let color = out.psClassToFillStyle_(ecl, out.psClasses_);
-				return color;
-			} else {
-				return out.psFill();
-			}
-		})
+			.style("stroke", out.psStroke())
+			.style("stroke-width", out.psStrokeWidth())
+			.style("fill", function () {
+				// use colour classifier when applicable
+				if (out.classifierColor_) {
+					//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+					var ecl = select(this.parentNode).attr("ecl");
+					if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
+					let color = out.psClassToFillStyle_(ecl, out.psClasses_);
+					return color;
+				} else {
+					return out.psFill();
+				}
+			})
 		return out;
 	};
 
@@ -256,15 +263,20 @@ export const symbolsLibrary = {
  */
 const tooltipTextFunPs = function (rg, map) {
 	const buf = [];
-	//region name
-	buf.push("<b>" + rg.properties.na + "</b><br>");
+	if (rg.properties.id) {
+		//name and code
+		buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+	} else {
+		//region name
+		buf.push("<b>" + rg.properties.na + "</b><br>");
+	}
 
 	//stat 1 value
-	const v1 = map.statData("size") ? map.statData("size") : map.statData();
+	const v1 = map.statData("size").getArray() ? map.statData("size") : map.statData();
 	const sv1 = v1.get(rg.properties.id);
 	if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
 	else {
-		buf.push(sv1.value);
+		buf.push(spaceAsThousandSeparator(sv1.value));
 		//unit 1
 		const unit1 = v1.unitText();
 		if (unit1) buf.push(" " + unit1);
@@ -273,11 +285,11 @@ const tooltipTextFunPs = function (rg, map) {
 
 
 	//stat 2 value
-	if (map.statData("color")) {
+	if (map.statData("color").getArray()) {
 		const sv2 = map.statData("color").get(rg.properties.id);
 		if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
 		else {
-			buf.push(sv2.value);
+			buf.push(spaceAsThousandSeparator(sv2.value));
 			//unit 2
 			const unit2 = map.statData("color").unitText();
 			if (unit2) buf.push(" " + unit2);

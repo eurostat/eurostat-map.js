@@ -8,10 +8,11 @@ import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
 import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
+import { kosovoBnFeatures } from './kosovo';
 
 
 // set d3 locale
-formatDefaultLocale({  
+formatDefaultLocale({
 	"decimal": ".",
 	"thousands": " ",
 	"grouping": [3],
@@ -32,7 +33,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//map
 	out.svgId_ = "map";
 	out.svg_ = undefined;
-	out.width_ = Math.min(800,window.innerWidth);
+	out.width_ = Math.min(800, window.innerWidth);
 	out.height_ = 0;
 
 	//geographical focus
@@ -66,22 +67,39 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.frameStroke_ = "#222";
 	out.frameStrokeWidth_ = 2;
 
+	//scalebar
+	out.showScalebar_ = false;
+	out.scalebarPosition_ = [];
+	out.scalebarFontSize_ = 9; //px
+	out.scalebarUnits_ = ' km'; //label
+	out.scalebarTextOffset_ = [0, 12];
+	out.scalebarMaxWidth_ = 150; //px
+	out.scalebarHeight_ = 90; //px
+	out.scalebarStrokeWidth_ = 1; //px
+	out.scalebarSegmentHeight_ = 6;
+	out.scalebarTickHeight_ = 8;
+
+	//deprecated (ticks/ tick width now automatic)
+	// out.scalebarTicks_ = 5;
+	//out.scalebarSegmentWidth_ = 30; //px
+
+
 	//tooltip
-	//the function returning the tooltip text
+	//default config
 	out.tooltip_ = {
 		maxWidth: "200px",
-		fontSize: "16px",
+		fontSize: "14px",
 		background: "white",
 		padding: "5px",
 		border: "0px",
 		borderRadius: "5px",
 		boxShadow: "5px 5px 5px grey",
 		transitionDuration: 200,
-		xOffset: 30,
-		yOffset: 20,
-		textFunction: (rg => { return rg.properties.na; }),
+		xOffset: 0,
+		yOffset: 0,
+		textFunction: null,
 		showFlags: false
-	}; // tooltip config. See eurostat-tooltip.js for more details
+	}; //  See eurostat-tooltip.js for more details
 
 	out.tooltipText_ = (rg => { return rg.properties.na; }); //DEPRECATED use tooltip_.textFunction
 	out.tooltipShowFlags_ = false; //DEPRECATED use tooltip_.textFunction
@@ -93,13 +111,17 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	//nuts
 	out.nutsrgFillStyle_ = "white";
-	out.nutsrgSelFillSty_ = "purple";
+	out.nutsrgSelFillSty_ = "#e0bcdf";
 	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
-	out.nutsbnStrokeWidth_ = { 0: 0.5, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0.4, co: 0.5 };
-	//land
-	out.landFillStyle_ = "#f4f4f4";
-	out.landStroke_ = "#ccc";
-	out.landStrokeWidth_ = 1;
+	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+	//country borders
+	out.cntrgFillStyle_ = "#f4f4f4";
+	out.cntbnStroke_ = { eu: "black", efta: "black", cc: "black", oth: "grey", co: "#7f7f7f" };
+	out.cntbnStrokeWidth_ = { eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 };
+	//world map
+	out.worldFillStyle_ = '#E6E6E6';
+	out.worldStroke_ = 'black';
+	out.worldStrokeWidth_ = 1;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -134,7 +156,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.botTxtPadding_ = 10;
 	out.botTxtTooltipTxt_ = "The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.";
 
-	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v1/";
+	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
 
 	/**
@@ -249,8 +271,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.isGeoReady = function () {
 		if (!geoData) return false;
 		//recursive call to inset components
-		for (const geo in out.insetTemplates_)
-			if (!out.insetTemplates_[geo].isGeoReady()) return false;
+		for (const geo in out.insetTemplates_) {
+			// check for insets with same geo
+			if (Array.isArray(out.insetTemplates_[geo])) {
+				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+					// insets with same geo that do not share the same parent inset
+					if (Array.isArray(out.insetTemplates_[geo][i])) {
+						// this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+						for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+							if (!out.insetTemplates_[geo][i][c].isGeoReady()) return false;
+						}
+					} else {
+						if (!out.insetTemplates_[geo][i].isGeoReady()) return false;
+					}
+				}
+			} else {
+				if (!out.insetTemplates_[geo].isGeoReady()) return false;
+			}
+		}
 
 		return true;
 	}
@@ -313,6 +351,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				// rejection
 			})
 
 		} else {
@@ -324,6 +364,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//callback
 				callback();
+			}, err => {
+				// rejection
 			});
 		}
 
@@ -370,6 +412,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		selectAll("#" + out.svgId() + " > *").remove();
 
 		//set SVG dimensions
+		if (out.geo_.toUpperCase() == "WORLD") {
+			//if no height was specified, use 45% of the width.
+			if (!out.height()) out.height(0.55 * out.width());
+			svg.attr("width", out.width()).attr("height", out.height());
+
+			//WORLD geo only accepts proj 54030 at the moment
+			out.proj_ = 54030
+		}
 		//if no height was specified, use 85% of the width.
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
@@ -463,13 +513,13 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.buildMapTemplate = function () {
 
 		//prepare map tooltip
-		let tooltip;
 		if (out.tooltip_) {
-			// if user specifies config
-			tooltip = tp.tooltip(out.tooltip_);
+			//tooltip needs to know container dimensions to prevent overflow
+			//out.tooltip_.parentContainerId = out.svgId_; // TODO: this just gives an inset ID. we need the parent element of all maps.
+			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
-			tooltip = tp.tooltip();
+			out._tooltip = tp.tooltip();
 		}
 
 
@@ -491,10 +541,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		let projection;
 		if (out.geo_ == "WORLD") {
 			if (out.proj_ == "54030") {
+				//out.geoCenter([1, 1])
+				//let geojsonbbox = getBBOXAsGeoJSON(bbox);
 				projection = geoRobinson()
-					// .scale(148)
-					// .rotate([352, 0, 0])
-					.translate([out.width_ / 2, out.height_ / 2]);
+					// center and scale to container properly
+					.translate([out.width_ / 2, out.height_ / 2])
+					.scale((out.width_ - 20) / 2 / Math.PI);
+				//.translate([out.width_ / 2, out.height_ / 2])
+				//.fitSize([out.width_, out.height_], geojsonbbox);
 			} else {
 				console.error("unsupported projection")
 			}
@@ -506,10 +560,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 		//decode topojson to geojson
-		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn;
+		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
+			kosovo = feature(geoData, geoData.objects.NUTS_BN_20M_2021_RS_XK_border).features;
 			gra = [geoGraticule().step([30, 30])()];
 		} else {
 			gra = feature(geoData, geoData.objects.gra).features;
@@ -589,7 +644,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_cntrg").selectAll("path").data(cntrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "cntrg")
-				.style("fill", out.landFillStyle())
+				.style("fill", out.cntrgFillStyle())
 		}
 
 		//draw world map
@@ -597,19 +652,19 @@ export const mapTemplate = function (config, withCenterPoints) {
 			zg.append("g").attr("id", "g_worldrg").selectAll("path").data(worldrg)
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
-				.attr("fill", out.landFillStyle())
-				.on("mouseover", function (rg) {
-					const sel = select(this);
-					sel.attr("fill___", sel.attr("fill"));
-					sel.attr("fill", out.nutsrgSelFillSty_);
-					if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-				}).on("mousemove", function () {
-					if (tooltip) tooltip.mousemove();
-				}).on("mouseout", function () {
-					const sel = select(this);
-					sel.attr("fill", sel.attr("fill___"));
-					if (tooltip) tooltip.mouseout();
-				});
+				.attr("fill", out.worldFillStyle_)
+			// .on("mouseover", function (rg) {
+			// 	const sel = select(this);
+			// 	sel.attr("fill___", sel.attr("fill"));
+			// 	sel.attr("fill", out.nutsrgSelFillSty_);
+			// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+			// }).on("mousemove", function () {
+			// 	if (tooltip) tooltip.mousemove();
+			// }).on("mouseout", function () {
+			// 	const sel = select(this);
+			// 	sel.attr("fill", sel.attr("fill___"));
+			// 	if (tooltip) tooltip.mouseout();
+			// });
 		}
 
 		//draw NUTS regions
@@ -622,45 +677,73 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 				//for mixed NUTS, we add every NUTS region across all levels and hide level 1,2,3 by default, only showing them when they have stat data 
 				// see updateClassification and updateStyle in map-choropleth.js for hiding/showing
+
 				[rg0, rg1, rg2, rg3].forEach((r, i) => {
+					//append each nuts level to map
 					zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(r)
 						.enter().append("path")
 						.attr("d", path)
 						.attr("class", "nutsrg")
 						.attr("lvl", i) //to be able to distinguish levels
 						.attr("fill", out.nutsrgFillStyle_)
-						.on("mouseover", function (rg) {
-							const sel = select(this);
-							sel.attr("fill___", sel.attr("fill"));
-							sel.attr("fill", out.nutsrgSelFillSty_);
-							if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-						}).on("mousemove", function () {
-							if (tooltip) tooltip.mousemove();
-						}).on("mouseout", function () {
-							const sel = select(this);
-							sel.attr("fill", sel.attr("fill___"));
-							if (tooltip) tooltip.mouseout();
-						});
 				})
 
+				// mixed centroids
+				if (withCenterPoints) {
+					const gcp = zg.append("g").attr("id", "g_ps");
+					// add centroids of every nuts level to map
+					[rg0, rg1, rg2, rg3].forEach((r, i) => {
+						//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+						gcp.append("g").attr("id", "g_nutspt").selectAll("g")
+							.data(r)
+							.enter()
+							.append("g")
+							.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+							//.attr("r", 1)
+							.attr("class", "symbol")
+							.style("fill", "gray")
+							.on("mouseover", function (rg) {
+								const sel = select(this.childNodes[0]);
+								sel.attr("fill___", sel.style("fill"));
+								sel.style("fill", out.nutsrgSelFillSty_);
+								if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+							}).on("mousemove", function () {
+								if (out._tooltip) out._tooltip.mousemove();
+							}).on("mouseout", function () {
+								const sel = select(this.childNodes[0]);
+								sel.style("fill", sel.attr("fill___"));
+								if (out._tooltip) out._tooltip.mouseout();
+							});
+					})
+				}
+
+				//add kosovo
+				if (out.geo_ == "EUR") {
+					// add kosovo manually
+					let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+					if (out.bordersToShow_.includes("cc")) {
+						zg.append("g").attr("id", "g_kosovo")
+							.style("fill", "none")
+							//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
+							.selectAll("path")
+							.data(kosovoBn)
+							.enter()
+							.append("path")
+							.attr("d", path)
+							.style("stroke", "grey")
+							.style("stroke-width", 0.3);
+					}
+				}
+
+
 			} else {
+				// when nutsLvl is not 'mixed'
 				zg.append("g").attr("id", "g_nutsrg").selectAll("path").data(nutsRG)
 					.enter().append("path")
 					.attr("d", path)
 					.attr("class", "nutsrg")
 					.attr("fill", out.nutsrgFillStyle_)
-					.on("mouseover", function (rg) {
-						const sel = select(this);
-						sel.attr("fill___", sel.attr("fill"));
-						sel.attr("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
-					}).on("mouseout", function () {
-						const sel = select(this);
-						sel.attr("fill", sel.attr("fill___"));
-						if (tooltip) tooltip.mouseout();
-					});
+
 			}
 		}
 
@@ -680,8 +763,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 				.attr("d", path)
 				.attr("class", function (bn) { return (bn.properties.co === "T") ? "bn_co" : "cntbn" })
-				.style("stroke", function (bn) { return (bn.properties.co === "T") ? out.landStroke() : "none" })
-				.style("stroke-width", function (bn) { return (bn.properties.co === "T") ? out.landStrokeWidth() : 0 });
+				.style("stroke", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStroke_.co;
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStroke_.eu;
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStroke_.efta;
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStroke_.cc;
+				})
+				.style("stroke-width", function (bn) {
+					//coastal boundaries
+					if (bn.properties.co === "T") return out.cntbnStrokeWidth_.co + 'px';
+					//eu borders
+					if (bn.properties.eu === "T") return out.cntbnStrokeWidth_.eu + 'px';
+					//efta borders
+					if (bn.properties.efta === "T") return out.cntbnStrokeWidth_.efta + 'px';
+					//cc borders
+					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
+				});
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -692,10 +793,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
-					// if (bn.properties.id == 4054) {
-					// debug
-					// 	console.log(bn)
-					// }
+					if (bn.properties.id > 100000) {
+						console.log(bn)
+					}
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -724,6 +824,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
 					return out.nutsbnStrokeWidth_[bn.lvl] || 0.2;
 				});
+
+
+			if (out.geo_ == "EUR") {
+				// add kosovo manually
+				let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features;
+				if (out.bordersToShow_.includes("cc")) {
+					zg.append("g").attr("id", "g_kosovo")
+						.style("fill", "none")
+						//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
+						.selectAll("path")
+						.data(kosovoBn)
+						.enter()
+						.append("path")
+						.attr("d", path)
+						.style("stroke", "grey")
+						.style("stroke-width", 0.3);
+				}
+			}
 		}
 
 		//draw world boundaries
@@ -734,20 +852,37 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path").data(worldbn)
 				.enter().append("path")
 				.attr("d", path)
-				.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
+				//.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
 				//.attr("id", (bn) => bn.properties.CNTR_BN_ID)
 				.style("stroke", function (bn) {
-					if (bn.properties.COAS_FLAG === "F") return "grey";
+					if (bn.properties.POL_STAT > 0) {
+						//disputed
+						return '#b2b2b2'
+					} else if (bn.properties.COAS_FLAG == "F") {
+						return out.worldStroke_;
+					};
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG === "F") return out.landStrokeWidth();
+					if (bn.properties.COAS_FLAG == "F") return out.worldStrokeWidth_;
 					// 0 and 4 are normal boundaries, anything else is disputed
-					if (bn.properties.POL_STAT !== 0 && bn.properties.POL_STAT !== 4) return 0.1;
+					// if (bn.properties.POL_STAT > 0) return out.cntbnStrokeWidth() + 'px';
 				});
 
+		if (kosovo) {
+			//add kosovo to world map
+			zg.append("g").attr("id", "g_worldbn")
+				.style("fill", "none")
+				.selectAll("path").data(kosovo)
+				.enter().append("path")
+				.attr("d", path)
+				.style("stroke", '#4f4f4f')
+				.style("stroke-width", function (bn) {
+					return 0.3 + 'px';
+				});
+		}
 
 		//prepare group for proportional symbols, with nuts region centroids
-		if (withCenterPoints) {
+		if (withCenterPoints && out.nutsLvl_ !== "mixed") {
 			if (nutsRG) {
 				const gcp = zg.append("g").attr("id", "g_ps");
 
@@ -761,13 +896,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr("class", "symbol")
 					.style("fill", "gray")
 					.on("mouseover", function (rg) {
-						select(this).style("fill", out.nutsrgSelFillSty_);
-						if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+						const sel = select(this.childNodes[0]);
+						sel.attr("fill___", sel.style("fill"));
+						sel.style("fill", out.nutsrgSelFillSty_);
+						if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
 					}).on("mousemove", function () {
-						if (tooltip) tooltip.mousemove();
+						if (out._tooltip) out._tooltip.mousemove();
 					}).on("mouseout", function () {
-						select(this).style("fill", out.psFill_);
-						if (tooltip) tooltip.mouseout();
+						const sel = select(this.childNodes[0]);
+						sel.style("fill", sel.attr("fill___"));
+						if (out._tooltip) out._tooltip.mouseout();
 					});
 			}
 		}
@@ -820,16 +958,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.botTxtFontSize_ + "px")
 				.style("fill", out.botTxtFill_)
 				.on("mouseover", function () {
-					tooltip.mw___ = tooltip.style("max-width");
+					out._tooltip.mw___ = out._tooltip.style("max-width");
 					// tooltip.f___ = tooltip.style("font");
-					tooltip.style("max-width", "400px");
-					tooltip.style("font-size", out.botTxtFontSize_);
-					if (out.botTxtTooltipTxt_) tooltip.mouseover(out.botTxtTooltipTxt_);
+					out._tooltip.style("max-width", "400px");
+					out._tooltip.style("font-size", out.botTxtFontSize_);
+					if (out.botTxtTooltipTxt_) out._tooltip.mouseover(out.botTxtTooltipTxt_);
 				}).on("mousemove", function () {
-					if (out.botTxtTooltipTxt_) tooltip.mousemove();
+					if (out.botTxtTooltipTxt_) out._tooltip.mousemove();
 				}).on("mouseout", function () {
-					if (out.botTxtTooltipTxt_) tooltip.mouseout();
-					tooltip.style("max-width", tooltip.mw___);
+					if (out.botTxtTooltipTxt_) out._tooltip.mouseout();
+					out._tooltip.style("max-width", out._tooltip.mw___);
 					// tooltip.style("font", tooltip.f___);
 				});
 
@@ -871,9 +1009,153 @@ export const mapTemplate = function (config, withCenterPoints) {
 			}
 		}
 
+		//add scalebar
+		if (out.showScalebar_) {
+			if (out.scalebarPosition_.length !== 2) {
+				out.scalebarPosition_[0] = 15;
+				out.scalebarPosition_[1] = out.height_ - 50;
+			}
+			addScalebarToMap()
+		}
+
+
 		return out;
 	};
 
+	/**
+ * @function addScalebarToMap 
+ * @description appends an SVG scalebar to the map. Uses pixSize to calculate units in km
+*/
+	function addScalebarToMap() {
+		let sb = out.svg().append("svg").attr("id", "scalebar")
+			.attr("x", out.scalebarPosition_[0])
+			.attr("y", out.scalebarPosition_[1])
+
+		let segmentHeight = out.scalebarSegmentHeight_;
+
+		// Julien's nice scalebars
+		const marginLeft = 5;
+		const maxLengthPix = out.scalebarMaxWidth_;
+		const textOffsetX = out.scalebarTextOffset_[0];
+		const textOffsetY = out.scalebarTextOffset_[1];
+		const pixelSizeM = out.pixSize_;
+		const maxLengthM = maxLengthPix * pixelSizeM;
+		const niceLengthM = niceScaleBarLength(maxLengthM)
+		const niceLengthPixel = niceLengthM[0] / pixelSizeM;
+		const scaleBarStartDigit = niceLengthM[1];
+		const subdivisionNbs = {
+			1: 4, 2: 2, 5: 5
+		}
+
+		const scalebarSVG = out.svg().append("svg").attr("id", "scalebar")
+			.attr("x", out.scalebarPosition_[0])
+			.attr("y", out.scalebarPosition_[1])
+			.attr("width", maxLengthPix + 20)
+			.attr("height", out.scalebarHeight_)
+
+		// top line full width
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', 1).style('stroke', '#000').style('stroke-width', '0.8px')
+		//bottom line full width
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', out.scalebarSegmentHeight_).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarSegmentHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
+
+
+		//first tick
+		scalebarSVG.append('line')
+			.attr('x1', marginLeft).attr('y1', 1).attr('x2', marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+		scalebarSVG.append("text").attr("x", marginLeft + textOffsetX).attr("y", out.scalebarTickHeight_ + textOffsetY).text("0")
+			.style('font-size', out.scalebarFontSize_ + 'px')
+			.style('font-family', out.fontFamily_)
+			.attr('text-anchor', 'middle');
+
+		//middle ticks
+		const subdivisionNb = subdivisionNbs[scaleBarStartDigit];
+		const divisionWidth = niceLengthPixel / subdivisionNb;
+		const divisionMinWidth = 15;
+		if (divisionWidth >= divisionMinWidth) {
+			for (let i = 1; i < subdivisionNb; i++) {
+				scalebarSVG
+					.append("line")
+					.attr("x1", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+					.attr("y1", 1)
+					.attr("x2", marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
+					.attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', '0.8px')
+					.style("stroke", "black")
+					.style("stroke-width", out.scalebarStrokeWidth_);
+				scalebarSVG
+					.append("text")
+					.attr("x", marginLeft + textOffsetX + i * divisionWidth)
+					.attr("y", out.scalebarTickHeight_ + textOffsetY)
+					.text(getScalebarLabel((niceLengthM[0] / subdivisionNb) * i))
+					.style('font-size', out.scalebarFontSize_ + 'px')
+					.style('font-family', out.fontFamily_)
+					.attr('text-anchor', 'middle');
+			}
+
+			//every other segment mid-line
+			for (let i = -1; i < subdivisionNb; i += 2) {
+				if (i == 1) {
+					sb.append('line')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				} else {
+					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
+					if (x1 > 0) {
+						sb.append('line')
+							.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+					}
+				}
+			}
+		} else {
+			// single full-length horizontal mid-line
+			sb.append('line')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+		}
+
+		//last tick
+		scalebarSVG.append('line')
+			.attr('x1', niceLengthPixel + marginLeft).attr('y1', 1).attr('x2', niceLengthPixel + marginLeft).attr('y2', out.scalebarTickHeight_).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+		scalebarSVG
+			.append("text")
+			.attr("x", niceLengthPixel + marginLeft + textOffsetX)
+			.attr("y", out.scalebarTickHeight_ + textOffsetY)
+			.text(getScalebarLabel(niceLengthM[0]) + out.scalebarUnits_)
+			.style("text-anchor", "middle")
+			.style('font-size', out.scalebarFontSize_ + 'px')
+			.style('font-family', out.fontFamily_);
+
+	}
+
+	function niceScaleBarLength(scaleBarLength) {
+		//compute the 'nice' power of ten
+		const pow10 = Math.pow(
+			10,
+			Math.floor(Math.log(scaleBarLength) / Math.log(10))
+		);
+
+		//check if 5 times this value fits
+		if (5 * pow10 <= scaleBarLength) return [5 * pow10, 5];
+
+		//check if 2 times this value fits
+		if (2 * pow10 <= scaleBarLength) return [2 * pow10, 2];
+
+		//returns the power of ten
+		return [pow10, 1];
+	}
+
+	function getScalebarLabel(valueM) {
+		if (valueM < 0.01) return valueM * 1000 + "mm";
+		if (valueM < 1) return valueM * 100 + "cm";
+		if (valueM < 1000) return valueM * 1 + "m";
+		return valueM / 1000;
+	}
+
+	//format scalebar value
+	function formatScalebarValue(x) {
+		return Math.trunc(x);
+		//round to nearest 5
+		//return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
+	}
 
 	/**
 	 * @function addLabelsToMap 
@@ -1103,7 +1385,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 		//copy template attributes
-		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "landFillStyle_", "landStroke_", "landStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
+		["nutsLvl_", "nutsYear_", "nutsrgFillStyle_", "nutsrgSelFillSty_", "nutsbnStroke_", "nutsbnStrokeWidth_", "cntrgFillStyle_", "cntbnStroke_", "cntbnStrokeWidth_", "seaFillStyle_", "drawCoastalMargin_", "coastalMarginColor_", "coastalMarginWidth_", "coastalMarginStdDev_", "graticuleStroke_", "graticuleStrokeWidth_", "labelling_",
 			"labelFill_", "labelValuesFontSize_", "labelOpacity_", "labelStroke_", "labelStrokeWidth_", "labelShadowWidth_", "labelShadow_", "labelShadowColor_", "labelsToShow_", "fontFamily_", "lg_"]
 			.forEach(function (att) { mt[att] = out[att]; });
 

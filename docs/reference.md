@@ -10,7 +10,7 @@
 [Choropleth map](#choropleth-map) - [Proportional symbol map](#proportional-symbol-map) - [Proportional pie chart map](#proportional-pie-chart-map) - [Categorical map](#categorical-map) - [Bivariate choropleth map](#bivariate-choropleth-map) - [Stripe composition map](#stripe-composition-map) - [Sparkline map](#sparkline-map)
 
 **Map elements and methods**<br>
-[Title](#map-title) - [Frame](#map-frame) - [Legend](#map-legend) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
+[Title](#map-title-&-subtitle) - [Frame](#map-frame) - [Legend](#map-legend) - [Scalebar](#scalebar) - [Tooltip](#tooltip) - [Styling](#styling) - [Insets](#insets) - [Bottom text & link to source data](#bottom-text-&-link-to-source-data) - [Export](#export) - [Miscellaneous](#miscellaneous) - [Build & update](#build-and-update)
 
 Anything unclear or missing? Feel free to [ask](https://github.com/eurostat/eurostat.js/issues/new) !
 
@@ -216,9 +216,9 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 
 ```javascript
     //GDP per inhabitant (colour of symbol)
-    .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018", filterNonGeo: "1" } })
+    .stat("color", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "EUR/inhabitant", filters: { unit: "EUR_HAB", time: "2018" } })
     // Total GDP (size of symbol)
-    .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018", filterNonGeo: "1" } })
+    .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018" } })
 ```
 
 | Method | Type | Default value | Description |
@@ -230,7 +230,6 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | *map*.**psMaxSize**([*value*]) | number | *30* | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it. |
 | *map*.**psMinSize**([*value*]) | number | *0.8* | The minimum size / scale of the symbol. |
 | *map*.**psBarWidth**([*value*]) | number | *5* | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar" |
-| *map*.**psMinValue**([*value*]) | number | *0* | The minimum size / scale of the symbol. |
 | *map*.**psFill**([*value*]) | String | *"#B45F04"* | The fill color or pattern of the symbol, for when a colour scheme is not defined. |
 | *map*.**psFillOpacity**([*value*]) | number | *0.7* | The opacity of the symbol, from 0 to 1. |
 | *map*.**psStroke**([*value*]) | String | *"#fff"* | The stroke color of the symbol. |
@@ -560,6 +559,7 @@ Example:
 	.sparkLineOpacity(0.9)
         .build()
 ```
+
 | Method | Type | Default | Description |
 | -------- | ------ | ---------- | ----------- |
 | *map*.**sparkType**([*value*]) | string | "area" | Type of chart to use. Can be 'line' or 'area' |
@@ -572,7 +572,8 @@ Example:
 | *map*.**sparkChartCircleRadius**([*value*]) | number | 0.5 | Radius of the circles at each record |
 | *map*.**sparkTooltipChart**([*value*]) | object | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip |
 
-## Map title
+
+## Map title & subtitle
 
 Specify the map title, its style and position.
 
@@ -583,6 +584,12 @@ Specify the map title, its style and position.
 | *map*.**titleFill**([*value*]) | String | "black" | The title text color. |
 | *map*.**titlePosition**([*value*]) | Array ([x,y]) | auto | The title position. If not specified, a position is automatically computed, on the top left corner. |
 | *map*.**titleFontWeight**([*value*]) | String | "bold" | The title font weight. |
+| *map*.**subtitle**([*value*]) | String | "" | The subtitle text. |
+| *map*.**subtitleFontSize**([*value*]) | int | 30 | The subtitle font size. |
+| *map*.**subtitleFontWeight**([*value*]) | String | "bold" | The subtitle text weight. |
+| *map*.**subtitleFill**([*value*]) | String | "black" | The subtitle text color. |
+| *map*.**subtitlePosition**([*value*]) | Array ([x,y]) | auto | The subtitle position. If not specified, a position is automatically computed, on the top left corner. |
+
 
 
 ## Map font
@@ -632,6 +639,19 @@ map = eurostatmap.map(...)
 | **titleFontSize** | int | *15* | The legend title font size. |
 | **titleFontWeight** | String | *"normal"* | The legend title font weight. |
 
+## Scalebar  
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**showScalebar**([*value*]) | Boolean | *false* | Adds a scalebar to the map |
+| *map*.**scaleBarPosition**([*value*]) | array | *calculated (bottom left)* | The X/Y position of the scalebar. |
+| *map*.**scalebarFontSize**([*value*]) | int | *8* | The font size in pixels of the scalebar text. |
+| *map*.**scalebarTicks**([*value*]) | int | *5* | The number of ticks in the scalebar. |
+| *map*.**scalebarTickHeight**([*value*]) | int | *13* | The height of each tick in pixels. |
+| *map*.**scalebarSegmentWidth**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarSegmenHeight**([*value*]) | int | *30* | The width in pixels of each segment in the scalebar. |
+| *map*.**scalebarTextOffset**([*value*]) | array | *[4,8]* | The offset in pixels for the scalebar text ([x,y]). |
+| *map*.**scalebarUnits**([*value*]) | string | *' km'* | The suffix text for the last scalebar label | 
 
 
 ## Tooltip
@@ -686,10 +706,10 @@ Specify specific map styles.
 | *map*.**nutsrgFillStyle**([*value*]) | String | *"#eee"* | The fill style of the NUTS regions, used for proportional symbol maps only. |
 | *map*.**nutsrgSelFillSty**([*value*]) | String | *"#purple"* | The fill style of the selected NUTS regions. |
 | *map*.**nutsbnStroke**([*value*]) | Object | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*) |
-| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
-| *map*.**landFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the land area. |
-| *map*.**landStroke**([*value*]) | Color | *"#ccc"* | The stroke style of the land area. |
-| *map*.**landStrokeWidth**([*value*]) | Number | *1* | The stroke width of the land area. |
+| *map*.**nutsbnStrokeWidth**([*value*]) | Object | *{0:0, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}* | The stroke width of the NUTS boundaries, depending on the NUTS level, if it is a border with another country (*'oth'*) and if it is coastal (*'co'*). |
+| *map*.**cntrgFillStyle**([*value*]) | Color | *"#f5f5f5"* | The fill style of the country areas. |
+| *map*.**cntbnStroke**([*value*]) | Color | *{0:"#777", 1:"#777", 2:"#777", 3:"#777", oth:"#444", co:"#1f78b4"}* | The stroke style of the country boundaries. |
+| *map*.**cntbnStrokeWidth**([*value*]) | Number | *{0:1, 1:0.2, 2:0.2, 3:0.2, oth:1, co:1}*  | The stroke width of the country boundaries. |
 | *map*.**seaFillStyle**([*value*]) | String | *"white"* | The fill style of the sea areas. |
 | *map*.**drawCoastalMargin**([*value*]) | boolean | *true* | Set to true to show a coastal blurry margin. False otherwise. |
 | *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
@@ -764,6 +784,9 @@ Specify the text to be shown at the bottom of the map.
 | *map*.**botTxtPadding**([*value*]) | number | *10* | The padding, in pixel. |
 | *map* .**botTxtTooltipTxt**([*value*]) | String | The default disclaimer message. | Set a text to be shown in a tooltip when passing over the bottom text. Set to *null* if no tooltip has to be shown. |
 | *map* .**showSourceLink**([*value*]) | Boolean | true | Shows a link to the source dataset in the bottom right corner. (uses eurostatdatabasecode specified when using the stat() function). |
+
+
+
 
 
 
