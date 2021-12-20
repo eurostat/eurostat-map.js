@@ -178,15 +178,14 @@ export const map = function (config) {
 			// circle, cross, star, triangle, diamond, square, wye or custom
 			symb = out.svg().select("#g_ps").selectAll("g.symbol")
 				.append("path").attr("class", "ps").attr("d", rg => {
+					
 				const v = out.statData("size") ? out.statData("size") : out.statData();
+				if (!v) return;
 				const sv = v.get(rg.properties.id);
-				let size;
 				//calculate size
-				if (!sv || !sv.value) {
-					size = 0;
-				} else {
-					size = out.classifierSize_(+sv.value);
-				}
+				if (sv != 0 && !sv) return;
+				let size = out.classifierSize_(+sv.value) || 0;
+				
 				//apply size to shape
 				if (out.psCustomShape_) {
 					return out.psCustomShape_.size(size * size)()

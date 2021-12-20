@@ -267,6 +267,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 */
 	let allNUTSGeoData = undefined;
 
+
+	/**
+	 * NUTS2JSON centroids 
+	 */
+	let centroidsData = undefined;
+
 	/** */
 	out.isGeoReady = function () {
 		if (!geoData) return false;
@@ -310,7 +316,22 @@ export const mapTemplate = function (config, withCenterPoints) {
 				buf.push("/"); buf.push(lvl);
 				buf.push(".json");
 				promises.push(json(buf.join("")));
-			})
+			});
+
+			//centroids nutspt_0.json
+			if (withCenterPoints) {
+				[0, 1, 2, 3].forEach((lvl) => {
+					const buf = [];
+					buf.push(out.nuts2jsonBaseURL_);
+					buf.push(out.nutsYear_);
+					if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+					buf.push("/"); buf.push(out.proj_);
+					buf.push("/nutspt_"); buf.push(lvl);
+					buf.push(".json");
+					promises.push(json(buf.join("")));
+				});
+			}
+
 			return promises;
 
 			// world maps
@@ -318,6 +339,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			return json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json');
 		} else {
 			//NUTS maps for eurobase data
+			let promises = [];
 			const buf = [];
 			buf.push(out.nuts2jsonBaseURL_);
 			buf.push(out.nutsYear_);
@@ -326,7 +348,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 			buf.push("/"); buf.push(out.scale_);
 			buf.push("/"); buf.push(out.nutsLvl_);
 			buf.push(".json");
-			return json(buf.join(""));
+			promises.push(json(buf.join("")));
+
+			if (withCenterPoints) {
+				const buf = [];
+				buf.push(out.nuts2jsonBaseURL_);
+				buf.push(out.nutsYear_);
+				if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+				buf.push("/"); buf.push(out.proj_);
+				buf.push("/nutspt_"); buf.push(out.nutsLvl_);
+				buf.push(".json");
+				promises.push(json(buf.join("")));
+			}
+
+			return promises
 		}
 	}
 
@@ -338,6 +373,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//erase previous data
 		geoData = null;
 		allNUTSGeoData = null;
+		centroidsData = null;
 
 		//get geo data from Nuts2json API
 		if (out.nutsLvl_ == "mixed" && out.geo_ !== "WORLD") {
@@ -346,6 +382,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			Promise.all(promises).then((geo___) => {
 				allNUTSGeoData = geo___;
 				geoData = geo___[0];
+				if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6]];
 				//build map template
 				out.buildMapTemplate();
 
@@ -356,8 +393,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 			})
 
 		} else {
-			out.getGeoDataPromise().then(function (geo___) {
-				geoData = geo___;
+			let promises = out.getGeoDataPromise();
+			Promise.all(promises).then((geo___) => {
+				geoData = geo___[0];
+				if (withCenterPoints) centroidsData = geo___[1];
 
 				//build map template
 				out.buildMapTemplate();
@@ -854,31 +893,36 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
-			if (nutsRG) {
-				const gcp = zg.append("g").attr("id", "g_ps");
-
-				//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
-				gcp.selectAll("g")
-					.data(nutsRG)
-					.enter()
-					.append("g")
-					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-					//.attr("r", 1)
-					.attr("class", "symbol")
-					.style("fill", "gray")
-					.on("mouseover", function (rg) {
-						const sel = select(this.childNodes[0]);
-						sel.attr("fill___", sel.style("fill"));
-						sel.style("fill", out.nutsrgSelFillSty_);
-						if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-					}).on("mousemove", function () {
-						if (out._tooltip) out._tooltip.mousemove();
-					}).on("mouseout", function () {
-						const sel = select(this.childNodes[0]);
-						sel.style("fill", sel.attr("fill___"));
-						if (out._tooltip) out._tooltip.mouseout();
-					});
+			let centroidFeatures;
+			if (out.nutsLvl_ == "mixed") {
+				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features];
+			} else {
+				centroidFeatures = centroidsData.features;
 			}
+			const gcp = zg.append("g").attr("id", "g_ps");
+
+			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+			gcp.selectAll("g")
+				.data(centroidFeatures)
+				.enter()
+				.append("g")
+				.attr("transform", function (d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
+				//.attr("r", 1)
+				.attr("class", "symbol")
+				.style("fill", "gray")
+				.on("mouseover", function (rg) {
+					const sel = select(this.childNodes[0]);
+					sel.attr("fill___", sel.style("fill"));
+					sel.style("fill", out.nutsrgSelFillSty_);
+					if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				}).on("mousemove", function () {
+					if (out._tooltip) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this.childNodes[0]);
+					sel.style("fill", sel.attr("fill___"));
+					if (out._tooltip) out._tooltip.mouseout();
+				});
+
 		}
 
 		// add geographical labels to map
@@ -994,9 +1038,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	};
 
 	/**
- * @function addScalebarToMap 
- * @description appends an SVG scalebar to the map. Uses pixSize to calculate units in km
-*/
+	* @function addScalebarToMap 
+	* @description appends an SVG scalebar to the map. Uses pixSize to calculate units in km
+	*/
 	function addScalebarToMap() {
 		let sb = out.svg().append("svg").attr("id", "scalebar")
 			.attr("x", out.scalebarPosition_[0])
@@ -1135,23 +1179,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 					.attr('text-anchor', 'middle');
 			}
 
-		//every other segment mid-line
-		for (let i = -1; i < subdivisionNb; i+=2 ) {
-			if (i == 1) {
-				sb.append('line')
-					.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
-			} else {
-				let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
-				if (x1 > 0) {
+			//every other segment mid-line
+			for (let i = -1; i < subdivisionNb; i += 2) {
+				if (i == 1) {
 					sb.append('line')
-						.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				} else {
+					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
+					if (x1 > 0) {
+						sb.append('line')
+							.attr('x1', x1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', '0.8px')
+					}
 				}
 			}
-		}
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-			.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth*subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ +'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
 
 
