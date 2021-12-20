@@ -55,3 +55,14 @@ export const csvToIndex = function (csvData, geoCol, valueCol) {
 	return ind;
 };
 
+/**
+ * @description returns number with space as separator
+ * @function spaceAsThousandSeparator
+ * @param {number} number
+ */
+export const spaceAsThousandSeparator = function (number) {
+	return number
+	.toLocaleString("en")
+	.replace(/,/gi, " ")
+}
+

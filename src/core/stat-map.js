@@ -3,14 +3,14 @@ import * as mt from './map-template';
 import * as sd from './stat-data';
 import * as lg from './legend';
 import { select } from 'd3';
-
+import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * An abstract statistical map: A map template with statistical data, without any particular styling rule.
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const statMap = function (config, withCenterPoints) {
+export const statMap = function (config, withCenterPoints, mapType) {
 
 	//build stat map from map template
 	const out = mt.mapTemplate(config, withCenterPoints);
@@ -20,7 +20,7 @@ export const statMap = function (config, withCenterPoints) {
 
 	//the statistical data configuration.
 	//A map can have several stat datasets. This is a dictionnary of all stat configuration
-	out.stat_ = { "default": undefined };
+	out.stat_ = { "default": undefined};
 	out.stat = function (k, v) {
 		//no argument: getter - return the default stat
 		if (!arguments.length) return out.stat_["default"];
@@ -34,7 +34,7 @@ export const statMap = function (config, withCenterPoints) {
 	};
 
 	//the statistical data, retrieved from the config information. As a dictionnary.
-	out.statData_ = { "default": sd.statData() };
+	out.statData_ = { "default": sd.statData(), "color":sd.statData(),"size":sd.statData()};
 	out.statData = function (k, v) {
 		//no argument: getter - return the default statData
 		if (!arguments.length) return out.statData_["default"];
@@ -391,7 +391,7 @@ const tootipTextFunStat = function (rg, map) {
 		return buf.join("");
 	}
 	//display value
-	buf.push(sv.value);
+	buf.push(spaceAsThousandSeparator(sv.value));
 	//unit
 	const unit = map.statData("default").unitText();
 	if (unit) buf.push(" " + unit);
