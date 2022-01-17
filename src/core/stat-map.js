@@ -51,7 +51,7 @@ export const statMap = function (config, withCenterPoints, mapType) {
 	//langage (currently used only for eurostat data API)
 	out.lg_ = "en";
 	//transition time for rendering
-	out.transitionDuration_ = 800;
+	out.transitionDuration_ = 500;
 	//specific tooltip text function
 	out.tooltip_.textFunction = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
