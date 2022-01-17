@@ -186,22 +186,22 @@ export const map = function (config) {
 			// circle, cross, star, triangle, diamond, square, wye or custom
 			symb = out.svg().selectAll("g.symbol")
 				.append("path").attr("class", "ps").attr("d", rg => {
-					const sv = data.get(rg.properties.id);
-					let size;
-					//calculate size
-					if (!sv || !sv.value) {
-						size = 0;
-					} else {
-						size = out.classifierSize_(+sv.value);
-					}
-					//apply size to shape
-					if (out.psCustomShape_) {
-						return out.psCustomShape_.size(size * size)()
-					} else {
-						const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
-						return symbol().type(symbolType).size(size * size)()
-					}
-				})
+					
+				const v = out.statData("size") ? out.statData("size") : out.statData();
+				if (!v) return;
+				const sv = v.get(rg.properties.id);
+				//calculate size
+				if (sv != 0 && !sv) return;
+				let size = out.classifierSize_(+sv.value) || 0;
+				
+				//apply size to shape
+				if (out.psCustomShape_) {
+					return out.psCustomShape_.size(size * size)()
+				} else {
+					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
+					return symbol().type(symbolType).size(size * size)()
+				}
+			})
 		}
 
 		//common methods

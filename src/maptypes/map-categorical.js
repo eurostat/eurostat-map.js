@@ -84,12 +84,37 @@ export const map = function (config) {
 		}
 
 		//apply style to nuts regions depending on class
-		out.svg().selectAll("path.nutsrg")
+		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
+		let regions = out.svg().selectAll(selector);
+		regions
 			.transition().duration(out.transitionDuration())
 			.attr("fill", function () {
 				const ecl = select(this).attr("ecl");
 				if (!ecl || ecl === "nd") return out.noDataFillStyle_ || "gray";
 				return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || "gray";
+			})
+			// apply mouseover event
+			.end()
+			.then(() => {
+				regions.on("mouseover", function (rg) {
+					const sel = select(this);
+					sel.attr("fill___", sel.attr("fill"));
+					sel.attr("fill", out.nutsrgSelFillSty_);
+					if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				}).on("mousemove", function () {
+					if (out._tooltip) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this);
+					let currentFill = sel.attr("fill");
+					let newFill = sel.attr("fill___");
+					if (newFill) {
+						sel.attr("fill", sel.attr("fill___"));
+						if (out._tooltip) out._tooltip.mouseout();
+					}
+				});
+
+			}, err => {
+				// rejection
 			});
 
 		return out;
