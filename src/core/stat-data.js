@@ -13,6 +13,7 @@ export const statData = function (config) {
 	//build stat data object
 	const out = {};
 
+	out.__data = undefined; //for debugging
 	/**
 	 * The statistical values, indexed by NUTS id.
 	 * Each stat value is an object {value,status}.
@@ -55,6 +56,8 @@ export const statData = function (config) {
 	 * @param {*} data Something like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
 	 */
 	out.setData = (data) => {
+		out.__data = data; // for debugging
+		_data_ = {}; // overwrite existing data
 		Object.keys(data).forEach((nutsId) => out.set(nutsId, data[nutsId]));
 		return out;
 	}

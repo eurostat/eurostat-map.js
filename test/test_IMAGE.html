@@ -11,6 +11,7 @@
   <script src="../build/eurostatmap.js"></script>
   <script src="./data/nuts3.js"></script>
   <script src="./configs/insetConfig.js"></script>
+  <script src="./data/mixed.js"></script>
   <script>
     let mapWidth = 638;
     let mapHeight = 608;
@@ -23,11 +24,9 @@
         .height(mapHeight)
         .bottomText(null)
         .showSourceLink(false)
-        //.nutsLvl("mixed")
-        .nutsLvl(0)
+        .nutsLvl("mixed")
+        //.nutsLvl(0)
         .classifMethod("threshold")
-        .colors(['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'])
-        .threshold([-10, -5, 0, 4, 5,6,7,8,999,999])
         .drawGraticule(true)
         .graticuleStroke("#ccc")
         .graticuleStrokeWidth(0.5)
@@ -44,23 +43,105 @@
           3: "#000",
           co: "grey",
         })
-        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth:0, co:0 })
+        .noDataFillStyle('darkgrey')
+        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
         .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
-        .bordersToShow(['eu','co','cc','efta'])
+        .bordersToShow(['eu', 'co', 'cc', 'efta'])
         .insets(insetsConfig)
-        .zoomExtent([1,10])
+        //.zoomExtent([1,10])
         .showScalebar(true)
-        .scalebarPosition([420,560])
+        .scalebarPosition([420, 560])
+        .nutsrgSelFillSty('#003E8C')
 
-      // adjust regions to show
+        .labelling(true)
+        .labelsToShow(["seas", "values", "cc"])
+        .labelValuesFontSize(10)
+        .labelFill({ seas: "#012a7c", cc: "black" })
+        .labelShadow(true)
+
+        // adjust regions to show
         //.bordersToShow(["eu", "co","cc"])
         .nutsYear(2016)
         //.countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'RS']);
+        .colors(['#feedde', '#fdd0a2', '#fdae6b', '#fd8d3c', '#e6550d', '#a63603', '#999'],
+      )
+        .threshold([0, 5, 99999])
     };
 
+    let exampleData1 = {
+      'AT': 0, 'BE': 0, 'BG': 0, 'CY': 0, 'CZ': 0, 'DE': 0, 'DK': 0, 'EE': 0, 'EL': 0, 'ES': 0, 'FI': 0, 'FR': 0, 'HR': 0, 'HU': 0, 'IE': 0, 'IS': 0, 'IT': 0, 'LI': 0, 'LT': 0, 'LU': 0, 'LV': 0, 'MT': 0, 'NL': 0, 'PL': 0, 'PT': 0, 'RO': 0, 'SE': 0, 'SI': 0, 'SK': 0, 'UK': 0, 'RS': 0, 'CH': 0, 'NO': 0, 'ME': 0, 'MK': 0, 'AL': 0, 'TR': 0
+    };
+    let exampleData2 = { ES: 0 };
     let map = basemap();
-    map.statData().setData({ES:0.00, DE:'0.00', XK: 2});
+    map.statData().setData(mixedNUTS);
     map.build();
+
+    // update data
+    setTimeout(() => {
+      map.statData().setData(nuts3);
+      map.updateStatValues();
+      map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
+      map.threshold([2, 4, 6, 8, 10, 9999])
+
+      //map.updateClassification();
+      map.updateStyle();
+    }, 2000);
+
+    setTimeout(() => {
+      //map.statData().setData({ ZZ: 0 });
+      //map.updateStatValues();
+      map.colors(['#edf8e9', '#c7e9c0', '#a1d99b', '#74c476', '#31a354', '#006d2c', '#999'],)
+      map.threshold([1, 2, 3, 4, 5, 9999])
+
+      //map.updateClassification();
+      map.updateStyle();
+    }, 4000)
+
+
+    // dynamic labelling
+    setTimeout(() => {
+      map.labelling(true)
+        .labelsToShow(["seas", "values", "cc"])
+        .labelValuesFontSize(10)
+        .labelFill({ seas: "#012a7c", cc: "black" })
+        .labelShadow(true)
+      map.updateLabels();
+    }, 4000)
+
+    setTimeout(() => {
+      map.labelling(true)
+        .labelsToShow(["seas", "countries"])
+        .labelValuesFontSize(12)
+        .labelFill({ seas: "#012a7c", countries: "red" })
+        .labelShadow(false)
+      map.updateLabels();
+    }, 8000)
+
+    setTimeout(() => {
+      map.labelling(false)
+      map.updateLabels();
+    }, 12000)
+
+    // setTimeout(() => {
+    //   map.statData().setData(mixedNUTS);
+    //   map.updateStatValues();
+    //   map.colors(['#f7f7f7', '#d9d9d9', '#bdbdbd', '#969696', '#636363', '#252525', '#999'],)
+    //   map.threshold([1, 2, 3, 4, 5, 9999])
+
+    //   //map.updateClassification();
+    //   map.updateStyle();
+    // }, 7000)
+
+    // setTimeout(() => {
+    //   map.statData().setData({ ZZ: 1 });
+    //   map.updateStatValues();
+    //   map.colors(['#f2f0f7', '#dadaeb', '#bcbddc', '#9e9ac8', '#756bb1', '#54278f', '#999'],
+    //   )
+    //   map.threshold([1, 2, 3, 4, 5, 9999])
+
+    //   //map.updateClassification();
+    //   map.updateStyle();
+    // }, 9000);
 
     // setTimeout(()=>{
     //   map.nutsLvl("mixed")
@@ -87,7 +168,7 @@
 
     //loopBetweenNUTS();
 
-    
+
   </script>
 </body>
 
