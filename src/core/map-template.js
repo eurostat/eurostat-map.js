@@ -388,7 +388,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			Promise.all(promises).then((geo___) => {
 				allNUTSGeoData = geo___;
 				geoData = geo___[0];
-				if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6]];
+				if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6], geo___[7]];
 				//build map template
 				out.buildMapTemplate();
 
@@ -699,34 +699,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 						.attr("fill", out.nutsrgFillStyle_)
 				})
 
-				// mixed centroids
-				if (withCenterPoints) {
-					const gcp = zg.append("g").attr("id", "g_ps");
-					// add centroids of every nuts level to map
-					[rg0, rg1, rg2, rg3].forEach((r, i) => {
-						//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
-						gcp.append("g").attr("id", "g_nutspt").selectAll("g")
-							.data(r)
-							.enter()
-							.append("g")
-							.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-							//.attr("r", 1)
-							.attr("class", "symbol")
-							.style("fill", "gray")
-							.on("mouseover", function (rg) {
-								const sel = select(this.childNodes[0]);
-								sel.attr("fill___", sel.style("fill"));
-								sel.style("fill", out.nutsrgSelFillSty_);
-								if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-							}).on("mousemove", function () {
-								if (out._tooltip) out._tooltip.mousemove();
-							}).on("mouseout", function () {
-								const sel = select(this.childNodes[0]);
-								sel.style("fill", sel.attr("fill___"));
-								if (out._tooltip) out._tooltip.mouseout();
-							});
-					})
-				}
+
 
 				//add kosovo
 				if (out.geo_ == "EUR") {
@@ -803,9 +776,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.selectAll("path")
 				.data(nutsbn).enter()
 				.filter(function (bn) {
-					if (bn.properties.id > 100000) {
-						console.log(bn)
-					}
 					if (out.bordersToShow_.includes("eu") && bn.properties.eu == "T") return bn;
 					if (out.bordersToShow_.includes("efta") && bn.properties.efta == "T") return bn;
 					if (out.bordersToShow_.includes("cc") && bn.properties.cc == "T") return bn;
@@ -895,7 +865,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (withCenterPoints) {
 			let centroidFeatures;
 			if (out.nutsLvl_ == "mixed") {
-				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features];
+				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
 			} else {
 				centroidFeatures = centroidsData.features;
 			}

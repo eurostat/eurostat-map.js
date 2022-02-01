@@ -1,31 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
 
-  <body>
-     <svg id="basic"></svg>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
 
-    <script src="../build/eurostatmap.js"></script>
+<body>
+  <svg id="basic"></svg>
 
-    <script>
-      // basic barebones example
-      let map = eurostatmap.map("ps")
-      .svgId("basic")
-      .nutsLvl('mixed')
-      .psFill("#4ac499")
-      .legend({ x:600, y: 40, title: "Population" })
-     
-      map.statData('size').setData({
-              ES:2, 
-              DE:'1', 
-              FR:0,
-              XK: 2,
-        });
-  
-        map.build()
-    </script>
-  </body>
+  <script src="../build/eurostatmap.js"></script>
+  <script src="./data/nuts3.js"></script>
+  <script>
+    let mapWidth = 638;
+    let mapHeight = 608;
+
+    basemap = function () {
+      return eurostatmap
+        .map("ps")
+        .pixSize(7400)
+        .width(mapWidth)
+        .height(mapHeight)
+        .nutsLvl("mixed")
+        .psFill("#4ac499")
+        .psShape('square')
+        .psFillOpacity(0.8)
+        .psMaxSize(100)
+        .psMinSize(5)
+    };
+
+    let map = basemap();
+
+    map.statData('size').setData({ zz: 0 });
+    map.updateClassification();
+    map.updateStyle();
+    map.build();
+
+    // update data, classification
+    setTimeout(() => {
+      map.statData('size').setData({ES:0, DE:10, FR:5});
+      map.updateStatValues();
+    }, 2000);
+
+    setTimeout(() => {
+      map.statData('size').setData({ES:10, DE:10, FR:5});
+      map.updateStatValues();
+    }, 4000);
+
+    setTimeout(() => {
+      map.statData('size').setData({ES:20, DE:10, FR:5});
+      map.updateStatValues();
+    }, 6000);
+
+    setTimeout(() => {
+      map.statData('size').setData({ES:30, DE:10, FR:5});
+      map.updateStatValues();
+    }, 8000);
+
+    setTimeout(() => {
+      map.statData('size').setData({ES:40, DE:10, FR:5});
+      map.updateStatValues();
+    }, 10000);
+
+    // setTimeout(() => {
+    //    map.statData('size').setData({ "HU": 10, "NO": 20, "FI": 30 });
+    //   map.psFill("yellow")
+    //   map.updateStatValues();
+    //   // map.updateClassification();
+    //   // map.updateStyle();
+    // }, 8000)
+
+
+  </script>
+</body>
+
 </html>
