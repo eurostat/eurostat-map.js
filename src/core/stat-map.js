@@ -55,7 +55,7 @@ export const statMap = function (config, withCenterPoints) {
 	//specific tooltip text function
 	out.tooltip_.textFunction = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function () { };
+	out.filtersDefinitionFun_ = undefined;
 	//a callback function to execute after the map build is complete.
 	out.callback_ = undefined;
 
@@ -93,7 +93,7 @@ export const statMap = function (config, withCenterPoints) {
 		out.buildMapTemplateBase();
 
 		//add additional filters for fill patterns for example
-		out.filtersDefinitionFun_(out.svg(), out.clnb_);
+		if (out.filtersDefinitionFun_) {out.filtersDefinitionFun_(out.svg(), out.clnb_);}
 
 		//legend element
 		if (out.legend()) {

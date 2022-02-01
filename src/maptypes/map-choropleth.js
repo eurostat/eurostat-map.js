@@ -48,7 +48,20 @@ export const map = function (config) {
 		});
 
 	//override of some special getters/setters
-	out.colorFun = function (v) { if (!arguments.length) return out.colorFun_; out.colorFun_ = v; out.classToFillStyle_ = getColorLegend(out.colorFun_, out.colors_); return out; };
+	out.colorFun = function (v) { 
+		if (!arguments.length) {
+			return out.colorFun_;
+		}
+		 out.colorFun_ = v;  
+		 // update class style function
+		 if (out.filtersDefinitionFun_) {
+			// if dot density
+			out.classToFillStyle(getFillPatternLegend())
+		} else {
+			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
+		}
+		 return out; 
+	};
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
 
 	//override attribute values with config values
@@ -125,7 +138,13 @@ export const map = function (config) {
 	out.updateStyle = function () {
 
 		// define function that returns a class' colour
-		out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
+		if (out.filtersDefinitionFun_) {
+			// if dot density
+			out.classToFillStyle(getFillPatternLegend())
+		} else {
+			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
+		}
+		
 
 		// set colour of regions
 		if (out.svg()) {
@@ -276,4 +295,13 @@ export const getColorLegend = function (colorFun, colorArray) {
 		return function (ecl, clnb) { return colorArray[ecl]; }
 	}
 	return function (ecl, clnb) { return colorFun(ecl / (clnb - 1)); }
+}
+
+/**
+ * Build a fill pattern legend object { nd:"white", 0:"url(#pattern_0)", 1:"url(#pattern_1)", ... }
+ */
+ export const getFillPatternLegend = function () {
+	return function (ecl) { 
+		return "url(#pattern_" + ecl + ")"; 
+	}
 }

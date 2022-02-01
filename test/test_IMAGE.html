@@ -76,15 +76,16 @@
     map.statData().setData(mixedNUTS);
     map.build();
 
-    // update data
+    // update data, classification and labels
     setTimeout(() => {
       map.statData().setData(nuts3);
       map.updateStatValues();
+
       map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
       map.threshold([2, 4, 6, 8, 10, 9999])
-
       //map.updateClassification();
       map.updateStyle();
+
     }, 2000);
 
     setTimeout(() => {
@@ -101,12 +102,12 @@
     // dynamic labelling
     setTimeout(() => {
       map.labelling(true)
-        .labelsToShow(["seas", "values", "cc"])
+        .labelsToShow(["seas", "cc"])
         .labelValuesFontSize(10)
         .labelFill({ seas: "#012a7c", cc: "black" })
         .labelShadow(true)
       map.updateLabels();
-    }, 4000)
+    }, 2000)
 
     setTimeout(() => {
       map.labelling(true)
@@ -115,12 +116,12 @@
         .labelFill({ seas: "#012a7c", countries: "red" })
         .labelShadow(false)
       map.updateLabels();
-    }, 8000)
+    }, 4000)
 
     setTimeout(() => {
       map.labelling(false)
       map.updateLabels();
-    }, 12000)
+    }, 8000)
 
     // setTimeout(() => {
     //   map.statData().setData(mixedNUTS);
