@@ -10,7 +10,7 @@ import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
  * 
  * @param {*} withCenterPoints Set to true (or 1) to add regions center points to the map template, to be used for proportional symbols maps for example.
  */
-export const statMap = function (config, withCenterPoints, mapType) {
+export const statMap = function (config, withCenterPoints) {
 
 	//build stat map from map template
 	const out = mt.mapTemplate(config, withCenterPoints);
@@ -51,11 +51,11 @@ export const statMap = function (config, withCenterPoints, mapType) {
 	//langage (currently used only for eurostat data API)
 	out.lg_ = "en";
 	//transition time for rendering
-	out.transitionDuration_ = 800;
+	out.transitionDuration_ = 500;
 	//specific tooltip text function
 	out.tooltip_.textFunction = tootipTextFunStat;
 	//for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
-	out.filtersDefinitionFun_ = function () { };
+	out.filtersDefinitionFun_ = undefined;
 	//a callback function to execute after the map build is complete.
 	out.callback_ = undefined;
 
@@ -93,7 +93,7 @@ export const statMap = function (config, withCenterPoints, mapType) {
 		out.buildMapTemplateBase();
 
 		//add additional filters for fill patterns for example
-		out.filtersDefinitionFun_(out.svg(), out.clnb_);
+		if (out.filtersDefinitionFun_) {out.filtersDefinitionFun_(out.svg(), out.clnb_);}
 
 		//legend element
 		if (out.legend()) {
@@ -173,15 +173,15 @@ export const statMap = function (config, withCenterPoints, mapType) {
 				out.stat(statKey, { eurostatDatasetCode: "demo_r_d3dens", unitText: "inhab./km²" });
 
 			//build stat data object from stat configuration and store it
-			const stdt = sd.statData(out.stat(statKey));
-			out.statData(statKey, stdt);
+			const statData = sd.statData(out.stat(statKey));
+			out.statData(statKey, statData);
 
 			//launch query
 			let nl = out.nutsLvl_;
 			if (out.nutsLvl_ == 'mixed') {
 				nl = 0;
 			}
-			stdt.retrieveFromRemote(nl, out.lg(), () => {
+			statData.retrieveFromRemote(nl, out.lg(), () => {
 
 				//if geodata has not been loaded, wait again
 				if (!out.isGeoReady()) return;

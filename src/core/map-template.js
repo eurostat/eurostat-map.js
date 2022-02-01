@@ -10,14 +10,18 @@ import * as tp from '../lib/eurostat-tooltip';
 import { defaultLabels } from './labels';
 import { kosovoBnFeatures } from './kosovo';
 
-
-// set d3 locale
+// set default d3 locale
 formatDefaultLocale({
 	"decimal": ".",
 	"thousands": " ",
 	"grouping": [3],
 	"currency": ["", "€"]
-})
+});
+
+//geometries
+let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
+// geoPath function
+let path;
 
 /**
  * The map template: only the geometrical part.
@@ -79,10 +83,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.scalebarSegmentHeight_ = 6;
 	out.scalebarTickHeight_ = 8;
 
-	//deprecated (ticks/ tick width now automatic)
-	// out.scalebarTicks_ = 5;
-	//out.scalebarSegmentWidth_ = 30; //px
-
 
 	//tooltip
 	//default config
@@ -137,10 +137,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.labelling_ = false;
 	out.labelsConfig_ = defaultLabels; // allow user to override map labels | see ./labels.js for example config
 	out.labelsToShow_ = ["countries", "seas"]; //accepted: "countries", "cc","seas", "values"
-	out.labelFill_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
-	out.labelStroke_ = { "seas": "#003399", "countries": "#383838", "cc": "black", "values": "black" };
+	out.labelFill_ = { "seas": "#003399", "countries": "black", "cc": "black", "values": "black" };
+	out.labelStroke_ = { "seas": "#003399", "countries": "black", "cc": "black", "values": "black" };
 	out.labelStrokeWidth_ = { "seas": 0.5, "countries": 0.5, "cc": 0.5, "values": 0.5 };
-	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc": 0.7, "values": 0.9 };
+	out.labelOpacity_ = { "seas": 1, "countries": 0.8, "cc": 0.8, "values": 0.9 };
 	out.labelValuesFontSize_ = 10; //when labelsToShow includes "values", this is their font size
 	out.labelShadow_ = false;
 	out.labelShadowWidth_ = { "seas": 3, "countries": 3, "cc": 3, "values": 1 };
@@ -267,6 +267,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 */
 	let allNUTSGeoData = undefined;
 
+
+	/**
+	 * NUTS2JSON centroids 
+	 */
+	let centroidsData = undefined;
+
 	/** */
 	out.isGeoReady = function () {
 		if (!geoData) return false;
@@ -297,7 +303,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	 * Return promise for Nuts2JSON topojson data.
 	 */
 	out.getGeoDataPromise = function () {
+
 		// for mixing all NUTS levels (i.e IMAGE)
+
 		if (out.nutsLvl_ == "mixed" && out.geo_ !== "WORLD") {
 			const promises = [];
 			[0, 1, 2, 3].forEach((lvl) => {
@@ -310,14 +318,34 @@ export const mapTemplate = function (config, withCenterPoints) {
 				buf.push("/"); buf.push(lvl);
 				buf.push(".json");
 				promises.push(json(buf.join("")));
-			})
+			});
+
+			//centroids nutspt_0.json
+
+			if (withCenterPoints) {
+				[0, 1, 2, 3].forEach((lvl) => {
+					const buf = [];
+					buf.push(out.nuts2jsonBaseURL_);
+					buf.push(out.nutsYear_);
+					if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+					buf.push("/"); buf.push(out.proj_);
+					buf.push("/nutspt_"); buf.push(lvl);
+					buf.push(".json");
+					promises.push(json(buf.join("")));
+				});
+			}
 			return promises;
 
 			// world maps
+
 		} else if (out.geo_ == "WORLD") {
 			return json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json');
+
 		} else {
-			//NUTS maps for eurobase data
+
+			// NUTS maps for eurobase data with a specific NUTS level
+
+			let promises = [];
 			const buf = [];
 			buf.push(out.nuts2jsonBaseURL_);
 			buf.push(out.nutsYear_);
@@ -326,18 +354,32 @@ export const mapTemplate = function (config, withCenterPoints) {
 			buf.push("/"); buf.push(out.scale_);
 			buf.push("/"); buf.push(out.nutsLvl_);
 			buf.push(".json");
-			return json(buf.join(""));
+			promises.push(json(buf.join("")));
+
+			if (withCenterPoints) {
+				const buf = [];
+				buf.push(out.nuts2jsonBaseURL_);
+				buf.push(out.nutsYear_);
+				if (out.geo_ != "EUR") buf.push("/" + this.geo_);
+				buf.push("/"); buf.push(out.proj_);
+				buf.push("/nutspt_"); buf.push(out.nutsLvl_);
+				buf.push(".json");
+				promises.push(json(buf.join("")));
+			}
+
+			return promises
 		}
 	}
 
 	/**
-	 * ?
+	 * Requests geographic data and builds the map template
 	 */
 	out.updateGeoMT = function (callback) {
 
 		//erase previous data
 		geoData = null;
 		allNUTSGeoData = null;
+		centroidsData = null;
 
 		//get geo data from Nuts2json API
 		if (out.nutsLvl_ == "mixed" && out.geo_ !== "WORLD") {
@@ -346,6 +388,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			Promise.all(promises).then((geo___) => {
 				allNUTSGeoData = geo___;
 				geoData = geo___[0];
+				if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6]];
 				//build map template
 				out.buildMapTemplate();
 
@@ -356,8 +399,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 			})
 
 		} else {
-			out.getGeoDataPromise().then(function (geo___) {
-				geoData = geo___;
+			let promises = out.getGeoDataPromise();
+			Promise.all(promises).then((geo___) => {
+				geoData = geo___[0];
+				if (withCenterPoints) centroidsData = geo___[1];
 
 				//build map template
 				out.buildMapTemplate();
@@ -396,7 +441,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 
 	/**
-	 * Build a map object.
+	 * Build a map object, including container, frame, map svg, insets and d3 zoom 
 	 */
 	out.buildMapTemplateBase = function () {
 
@@ -417,28 +462,20 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (!out.height()) out.height(0.55 * out.width());
 			svg.attr("width", out.width()).attr("height", out.height());
 
-			//WORLD geo only accepts proj 54030 at the moment
+			//WORLD geo only accepts proj 54030 (robinson) at the moment
 			out.proj_ = 54030
 		}
 		//if no height was specified, use 85% of the width.
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
 
-		// each map tempalte needs a mask to avoid overflow. See GISCO-2707
-		// <defs>
-		// 	<mask id="theMask" >
-		// 		<rect x="17.1" y="26.9" width="214.8" height="121.3" fill="white" />
-		// 	</mask>
-		// </defs>
+		// each map tempalte needs a clipPath to avoid overflow. See GISCO-2707
 		svg.append('defs')
 			.append("clipPath")
 			.attr("id", out.svgId_ + "_clipP")
 			.append("path")
 			.attr("d", convertRectangles(0, 0, out.width_, out.height_))
-		// .attr("x", 0)
-		// .attr("y", 0)
-		// .attr("width", out.width_)
-		// .attr("height", out.height_)
+
 
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
@@ -538,29 +575,24 @@ export const mapTemplate = function (config, withCenterPoints) {
 		const bbox = [out.geoCenter_[0] - 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] - 0.5 * out.pixSize_ * out.height_, out.geoCenter_[0] + 0.5 * out.pixSize_ * out.width_, out.geoCenter_[1] + 0.5 * out.pixSize_ * out.height_];
 
 		//WORLD geo uses 4326 geometries and reprojects to 54030 using d3
-		let projection;
 		if (out.geo_ == "WORLD") {
 			if (out.proj_ == "54030") {
-				//out.geoCenter([1, 1])
-				//let geojsonbbox = getBBOXAsGeoJSON(bbox);
-				projection = geoRobinson()
+				out._projection = geoRobinson()
 					// center and scale to container properly
 					.translate([out.width_ / 2, out.height_ / 2])
 					.scale((out.width_ - 20) / 2 / Math.PI);
-				//.translate([out.width_ / 2, out.height_ / 2])
-				//.fitSize([out.width_, out.height_], geojsonbbox);
 			} else {
 				console.error("unsupported projection")
 			}
 		} else {
-			projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
+			out._projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox));
 		}
 
-		const path = geoPath().projection(projection);
+		path = geoPath().projection(out._projection);
 
 
 		//decode topojson to geojson
-		let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
+
 		if (out.geo_ == "WORLD") {
 			worldrg = feature(geoData, geoData.objects.CNTR_RG_20M_2020_4326).features;
 			worldbn = feature(geoData, geoData.objects.CNTR_BN_20M_2020_4326).features;
@@ -573,14 +605,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 			cntrg = feature(geoData, geoData.objects.cntrg).features;
 			cntbn = feature(geoData, geoData.objects.cntbn).features;
 		}
-
-
-		/*/RS
-		if (cntrg && (out.nutsYear() + "" === "2016" || out.nutsYear() + "" === "2021"))
-			for (let i = 0; i < cntrg.length; i++) {
-				const c = cntrg[i];
-				if (c.properties.id == "RS") c.properties.na = "Kosovo (UNSCR 1244/1999 & ICJ)";
-			}*/
 
 		//prepare drawing group
 		const zg = out.svg().select("#zoomgroup" + out.svgId_);
@@ -626,7 +650,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.attr("stroke", out.graticuleStroke())
 				.attr("stroke-width", out.graticuleStrokeWidth())
 				.attr("fill", out.seaFillStyle_)
-			//.attr("href", "#sphere");
 		}
 
 		if (gra && out.drawGraticule_) {
@@ -653,18 +676,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.enter().append("path").attr("d", path)
 				.attr("class", "worldrg")
 				.attr("fill", out.worldFillStyle_)
-			// .on("mouseover", function (rg) {
-			// 	const sel = select(this);
-			// 	sel.attr("fill___", sel.attr("fill"));
-			// 	sel.attr("fill", out.nutsrgSelFillSty_);
-			// 	if (tooltip) tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-			// }).on("mousemove", function () {
-			// 	if (tooltip) tooltip.mousemove();
-			// }).on("mouseout", function () {
-			// 	const sel = select(this);
-			// 	sel.attr("fill", sel.attr("fill___"));
-			// 	if (tooltip) tooltip.mouseout();
-			// });
 		}
 
 		//draw NUTS regions
@@ -734,7 +745,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 							.style("stroke-width", 0.3);
 					}
 				}
-
 
 			} else {
 				// when nutsLvl is not 'mixed'
@@ -882,37 +892,42 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//prepare group for proportional symbols, with nuts region centroids
-		if (withCenterPoints && out.nutsLvl_ !== "mixed") {
-			if (nutsRG) {
-				const gcp = zg.append("g").attr("id", "g_ps");
-
-				//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
-				gcp.selectAll("g")
-					.data(nutsRG)
-					.enter()
-					.append("g")
-					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-					//.attr("r", 1)
-					.attr("class", "symbol")
-					.style("fill", "gray")
-					.on("mouseover", function (rg) {
-						const sel = select(this.childNodes[0]);
-						sel.attr("fill___", sel.style("fill"));
-						sel.style("fill", out.nutsrgSelFillSty_);
-						if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-					}).on("mousemove", function () {
-						if (out._tooltip) out._tooltip.mousemove();
-					}).on("mouseout", function () {
-						const sel = select(this.childNodes[0]);
-						sel.style("fill", sel.attr("fill___"));
-						if (out._tooltip) out._tooltip.mouseout();
-					});
+		if (withCenterPoints) {
+			let centroidFeatures;
+			if (out.nutsLvl_ == "mixed") {
+				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features];
+			} else {
+				centroidFeatures = centroidsData.features;
 			}
+			const gcp = zg.append("g").attr("id", "g_ps");
+
+			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+			gcp.selectAll("g")
+				.data(centroidFeatures)
+				.enter()
+				.append("g")
+				.attr("transform", function (d) { return "translate(" + out._projection(d.geometry.coordinates) + ")"; })
+				//.attr("r", 1)
+				.attr("class", "symbol")
+				.style("fill", "gray")
+				.on("mouseover", function (rg) {
+					const sel = select(this.childNodes[0]);
+					sel.attr("fill___", sel.style("fill"));
+					sel.style("fill", out.nutsrgSelFillSty_);
+					if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+				}).on("mousemove", function () {
+					if (out._tooltip) out._tooltip.mousemove();
+				}).on("mouseout", function () {
+					const sel = select(this.childNodes[0]);
+					sel.style("fill", sel.attr("fill___"));
+					if (out._tooltip) out._tooltip.mouseout();
+				});
+
 		}
 
 		// add geographical labels to map
 		if (out.labelling_) {
-			addLabelsToMap(out, zg, projection, nutsRG, path)
+			addLabelsToMap(out, zg)
 		}
 
 		//title
@@ -1022,10 +1037,224 @@ export const mapTemplate = function (config, withCenterPoints) {
 		return out;
 	};
 
+
+	out.updateLabels = function () {
+		//clear previous labels
+		let prevLabels = out.svg_.selectAll("g.labels-container > *");
+		if (prevLabels) prevLabels.remove();
+		
+		if (out.labelling_) {
+			let zg = out.svg_.select("#zoomgroup" + out.svgId_);
+			addLabelsToMap(out, zg);
+
+			if (out.labelsToShow_.includes("values")) {
+				out.updateValuesLabels();
+			}
+		}
+	}
+
+
 	/**
- * @function addScalebarToMap 
- * @description appends an SVG scalebar to the map. Uses pixSize to calculate units in km
-*/
+	 * @function addLabelsToMap 
+	 * @description appends text labels to the map. Labels can be countries, country codes, ocean names or statistical values
+	*/
+	function addLabelsToMap(out, zg) {
+		let labels = out.labelsConfig_;
+		let language = out.lg_;
+		let labelsArray = [];
+		let labelsG = zg.append("g").attr("class", "labels-container");
+
+		//define which labels to use (cc, countries, seas, values)
+		if (out.labelsToShow_.includes("countries") || out.labelsToShow_.includes("seas")) {
+			if (labels[out.geo_ + "_" + out.proj_][language]) {
+				labelsArray = labels[out.geo_ + "_" + out.proj_][language];
+			} else {
+				//if geo doesnt have labels in the chosen language, fall back to english
+				//this helps save space by not including labels in other languages that are spelt the same in english
+				labelsArray = labels[out.geo_ + "_" + out.proj_].en;
+			}
+		}
+		//add country codes to labels array
+		if (out.labelsToShow_.includes("cc")) {
+			labelsArray = labelsArray.concat(labels[out.geo_ + "_" + out.proj_].cc);
+		}
+
+		//for statistical values we need to add centroids, then add values later
+		if (out.labelsToShow_.includes("values")) {
+			if (nutsRG) {
+				//values label shadows parent <g>
+				const gsls = labelsG.append("g").attr("class", "g_stat_label_shadows")
+					.style("font-size", out.labelValuesFontSize_ + "px")
+					.attr("text-anchor", "middle")
+					.style("opacity", d => out.labelOpacity_["values"])
+					.style("fill", d => out.labelShadowColor_["values"])
+					.attr("stroke", d => out.labelShadowColor_["values"])
+					.attr("stroke-width", d => out.labelStrokeWidth_["values"] + out.labelShadowWidth_["values"])
+					.style("font-family", out.fontFamily_);
+
+				// values labels parent <g>
+				const gsl = labelsG.append("g").attr("class", "g_stat_labels")
+					.style("font-size", out.labelValuesFontSize_ + "px")
+					.attr("text-anchor", "middle")
+					.style("opacity", d => out.labelOpacity_["values"])
+					.style("fill", d => out.labelFill_["values"])
+					.attr("stroke", d => out.labelStroke_["values"])
+					.attr("stroke-width", d => out.labelStrokeWidth_["values"])
+					.style("font-family", out.fontFamily_);
+
+				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
+				let labelRegions;
+				if (out.nutsLvl_ == "mixed") {
+					const rg0 = nutsRG;
+					const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
+					const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
+					const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
+					labelRegions = rg0.concat(rg1, rg2, rg3);
+				} else {
+					labelRegions = nutsRG;
+				}
+
+				gsl.selectAll("g")
+					.data(labelRegions)
+					.enter()
+					.append("g")
+					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+					.attr("class", "stat-label")
+
+				//SHADOWS
+				if (out.labelShadow_) {
+					gsls.selectAll("g")
+						.data(labelRegions)
+						.enter()
+						.append("g")
+						.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
+						.attr("class", "stat-label-shadow")
+				}
+			}
+		}
+
+		// rest of label types (FROM LABELS.JS)
+		if (labelsArray) {
+			let data = labelsArray.filter((d) => {
+				if (d.class == "countries") {
+					if (out.labelsToShow_.includes("countries")) {
+						return d;
+					}
+				}
+				if (d.class == "seas") {
+					if (out.labelsToShow_.includes("seas")) {
+						return d;
+					}
+				}
+				if (d.class == "cc") {
+					if (out.labelsToShow_.includes("cc")) {
+						return d;
+					}
+				}
+			})
+
+			//common styles between all label shadows
+			const shadowg = labelsG.append("g").attr("class", "g_labelShadows")
+				.style("pointer-events", "none")
+				.style("font-family", out.fontFamily_)
+				.attr("text-anchor", "middle");
+
+			//common styles between all labels
+			const labelg = labelsG.append("g").attr("class", "g_geolabels")
+				.style("pointer-events", "none")
+				.style("font-family", out.fontFamily_)
+				.attr("text-anchor", "middle")
+
+			//SHADOWS
+			if (out.labelShadow_) {
+				let shadows = shadowg.selectAll("text")
+					.data(data)
+					.enter()
+					.append("text")
+					.attr("class", (d) => { return "labelShadow_" + d.class })
+					.attr("x", function (d) {
+						if (d.rotate) {
+							return 0; //for rotated text, x and y positions must be specified in the transform property
+						}
+						return out._projection([d.x, d.y])[0];
+					})
+					.attr("y", function (d) {
+						if (d.rotate) {
+							return 0; //for rotated text, x and y positions must be specified in the transform property
+						}
+						return out._projection([d.x, d.y])[1];
+					})
+					.attr("dy", -7) // set y position of bottom of text
+					.style("opacity", d => out.labelOpacity_[d.class])
+					.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
+					.style("fill", d => out.labelShadowColor_[d.class])
+					.attr("stroke", d => out.labelShadowColor_[d.class])
+					.attr("stroke-width", d => out.labelStrokeWidth_[d.class] + out.labelShadowWidth_[d.class])
+					.style("font-size", (d) => d.size + "px")
+					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
+					.attr("transform", (d) => {
+						if (d.rotate) {
+							let pos = out._projection([d.x, d.y])
+							let x = pos[0];
+							let y = pos[1];
+							return `translate(${x},${y}) rotate(${d.rotate})`
+						} else {
+							return "rotate(0)"
+						}
+					})
+					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
+					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
+					.text(function (d) { return d.text; }); // define the text to display
+			}
+
+			//LABELS
+			let labels = labelg.selectAll("text")
+				.data(data)
+				.enter()
+				.append("text")
+				.attr("class", (d) => { return "geolabel_" + d.class })
+				//position label
+				.attr("x", function (d) {
+					if (d.rotate) {
+						return 0; //for rotated text, x and y positions must be specified in the transform property
+					}
+					return out._projection([d.x, d.y])[0];
+				})
+				.attr("y", function (d) {
+					if (d.rotate) {
+						return 0; //for rotated text, x and y positions must be specified in the transform property
+					}
+					return out._projection([d.x, d.y])[1];
+				})
+				.attr("dy", -7) // set y position of bottom of text
+				.style("opacity", d => out.labelOpacity_[d.class])
+				.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
+				.style("fill", d => out.labelFill_[d.class])
+				.attr("stroke", d => out.labelStroke_[d.class])
+				.attr("stroke-width", d => out.labelStrokeWidth_[d.class])
+				//set label size
+				.style("font-size", (d) => d.size + "px")
+				//transform labels which have a "rotate" property in the labels config. For rotated labels, their X,Y must also be set in the transform.
+				// note: dont apply to country code labels
+				.attr("transform", (d) => {
+					if (d.rotate) {
+						let pos = out._projection([d.x, d.y])
+						let x = pos[0];
+						let y = pos[1];
+						return `translate(${x},${y}) rotate(${d.rotate})`
+					} else {
+						return "rotate(0)"
+					}
+				})
+				.text(function (d) { return d.text; }); // define the text to display
+		}
+	}
+
+
+	/**
+	* @function addScalebarToMap 
+	* @description appends an SVG scalebar to the map. Uses pixSize to calculate units in km
+	*/
 	function addScalebarToMap() {
 		let sb = out.svg().append("svg").attr("id", "scalebar")
 			.attr("x", out.scalebarPosition_[0])
@@ -1155,202 +1384,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 		return Math.trunc(x);
 		//round to nearest 5
 		//return (x % 5) >= 2.5 ? Math.trunc(x / 5) * 5 + 5 : Math.trunc(x / 5) * 5;
-	}
-
-	/**
-	 * @function addLabelsToMap 
-	 * @description appends text labels to the map. Labels can be countries, country codes, ocean names or statistical values
-	*/
-	function addLabelsToMap(out, zg, projection, nutsRG, path) {
-		let labels = out.labelsConfig_;
-		let language = out.lg_;
-		let labelsArray = [];
-		let labelsG = zg.append("g").attr("class", "labels-container");
-
-		//define which labels to use (cc, countries, seas, values)
-		if (out.labelsToShow_.includes("countries") || out.labelsToShow_.includes("seas")) {
-			if (labels[out.geo_ + "_" + out.proj_][language]) {
-				labelsArray = labels[out.geo_ + "_" + out.proj_][language];
-			} else {
-				//if geo doesnt have labels in the chosen language, fall back to english
-				//this helps save space by not including labels in other languages that are spelt the same in english
-				labelsArray = labels[out.geo_ + "_" + out.proj_].en;
-			}
-		}
-		//add country codes to labels array
-		if (out.labelsToShow_.includes("cc")) {
-			labelsArray = labelsArray.concat(labels[out.geo_ + "_" + out.proj_].cc);
-		}
-
-		//for statistical values we need to add centroids, then add values later
-		if (out.labelsToShow_.includes("values")) {
-			if (nutsRG) {
-				//values label shadows parent <g>
-				const gsls = labelsG.append("g").attr("class", "g_stat_label_shadows")
-					.style("font-size", out.labelValuesFontSize_ + "px")
-					.attr("text-anchor", "middle")
-					.style("opacity", d => out.labelOpacity_["values"])
-					.style("fill", d => out.labelShadowColor_["values"])
-					.attr("stroke", d => out.labelShadowColor_["values"])
-					.attr("stroke-width", d => out.labelStrokeWidth_["values"] + out.labelShadowWidth_["values"])
-					.style("font-family", out.fontFamily_);
-
-				// values labels parent <g>
-				const gsl = labelsG.append("g").attr("class", "g_stat_labels")
-					.style("font-size", out.labelValuesFontSize_ + "px")
-					.attr("text-anchor", "middle")
-					.style("opacity", d => out.labelOpacity_["values"])
-					.style("fill", d => out.labelFill_["values"])
-					.attr("stroke", d => out.labelStroke_["values"])
-					.attr("stroke-width", d => out.labelStrokeWidth_["values"])
-					.style("font-family", out.fontFamily_);
-
-				//allow for stat label positioning by adding a g element here, then adding the values in the mapType updateStyle() function
-				let labelRegions;
-				if (out.nutsLvl_ == "mixed") {
-					const rg0 = nutsRG;
-					const rg1 = feature(allNUTSGeoData[1], allNUTSGeoData[1].objects.nutsrg).features;
-					const rg2 = feature(allNUTSGeoData[2], allNUTSGeoData[2].objects.nutsrg).features;
-					const rg3 = feature(allNUTSGeoData[3], allNUTSGeoData[3].objects.nutsrg).features;
-					labelRegions = rg0.concat(rg1, rg2, rg3);
-				} else {
-					labelRegions = nutsRG
-				}
-
-				gsl.selectAll("g")
-					.data(labelRegions)
-					.enter()
-					.append("g")
-					.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-					.attr("class", "stat-label")
-
-				//SHADOWS
-				if (out.labelShadow_) {
-					gsls.selectAll("g")
-						.data(labelRegions)
-						.enter()
-						.append("g")
-						.attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"; })
-						.attr("class", "stat-label-shadow")
-				}
-			}
-		}
-
-		// rest of label types (FROM LABELS.JS)
-		if (labelsArray) {
-			let data = labelsArray.filter((d) => {
-				if (d.class == "countries") {
-					if (out.labelsToShow_.includes("countries")) {
-						return d;
-					}
-				}
-				if (d.class == "seas") {
-					if (out.labelsToShow_.includes("seas")) {
-						return d;
-					}
-				}
-				if (d.class == "cc") {
-					if (out.labelsToShow_.includes("cc")) {
-						return d;
-					}
-				}
-			})
-
-			//common styles between all label shadows
-			const shadowg = labelsG.append("g").attr("class", "g_labelShadows")
-				.style("pointer-events", "none")
-				.style("font-family", out.fontFamily_)
-				.attr("text-anchor", "middle");
-
-			//common styles between all labels
-			const labelg = labelsG.append("g").attr("class", "g_geolabels")
-				.style("pointer-events", "none")
-				.style("font-family", out.fontFamily_)
-				.attr("text-anchor", "middle")
-
-			//SHADOWS
-			if (out.labelShadow_) {
-				let shadows = shadowg.selectAll("text")
-					.data(data)
-					.enter()
-					.append("text")
-					.attr("class", (d) => { return "labelShadow_" + d.class })
-					.attr("x", function (d) {
-						if (d.rotate) {
-							return 0; //for rotated text, x and y positions must be specified in the transform property
-						}
-						return projection([d.x, d.y])[0];
-					})
-					.attr("y", function (d) {
-						if (d.rotate) {
-							return 0; //for rotated text, x and y positions must be specified in the transform property
-						}
-						return projection([d.x, d.y])[1];
-					})
-					.attr("dy", -7) // set y position of bottom of text
-					.style("opacity", d => out.labelOpacity_[d.class])
-					.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
-					.style("fill", d => out.labelShadowColor_[d.class])
-					.attr("stroke", d => out.labelShadowColor_[d.class])
-					.attr("stroke-width", d => out.labelStrokeWidth_[d.class] + out.labelShadowWidth_[d.class])
-					.style("font-size", (d) => d.size + "px")
-					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
-					.attr("transform", (d) => {
-						if (d.rotate) {
-							let pos = projection([d.x, d.y])
-							let x = pos[0];
-							let y = pos[1];
-							return `translate(${x},${y}) rotate(${d.rotate})`
-						} else {
-							return "rotate(0)"
-						}
-					})
-					//.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
-					.style("font-style", d => d.class == "seas" ? "italic" : "normal")
-					.text(function (d) { return d.text; }); // define the text to display
-			}
-
-			//LABELS
-			let labels = labelg.selectAll("text")
-				.data(data)
-				.enter()
-				.append("text")
-				.attr("class", (d) => { return "geolabel_" + d.class })
-				//position label
-				.attr("x", function (d) {
-					if (d.rotate) {
-						return 0; //for rotated text, x and y positions must be specified in the transform property
-					}
-					return projection([d.x, d.y])[0];
-				})
-				.attr("y", function (d) {
-					if (d.rotate) {
-						return 0; //for rotated text, x and y positions must be specified in the transform property
-					}
-					return projection([d.x, d.y])[1];
-				})
-				.attr("dy", -7) // set y position of bottom of text
-				.style("opacity", d => out.labelOpacity_[d.class])
-				.style("letter-spacing", d => d.letterSpacing ? d.letterSpacing : 0)
-				.style("fill", d => out.labelFill_[d.class])
-				.attr("stroke", d => out.labelStroke_[d.class])
-				.attr("stroke-width", d => out.labelStrokeWidth_[d.class])
-				//set label size
-				.style("font-size", (d) => d.size + "px")
-				//transform labels which have a "rotate" property in the labels config. For rotated labels, their X,Y must also be set in the transform.
-				// note: dont apply to country code labels
-				.attr("transform", (d) => {
-					if (d.rotate) {
-						let pos = projection([d.x, d.y])
-						let x = pos[0];
-						let y = pos[1];
-						return `translate(${x},${y}) rotate(${d.rotate})`
-					} else {
-						return "rotate(0)"
-					}
-				})
-				.text(function (d) { return d.text; }); // define the text to display
-		}
 	}
 
 

@@ -42,12 +42,7 @@ import * as mt from './core/stat-map';
 // fill pattern style
 
 
-/**
- * Build a fill pattern legend object { nd:"white", 0:"url(#pattern_0)", 1:"url(#pattern_1)", ... }
- */
-export const getFillPatternLegend = function () {
-	return function (ecl) { return "url(#pattern_" + ecl + ")"; }
-}
+
 
 
 /**
