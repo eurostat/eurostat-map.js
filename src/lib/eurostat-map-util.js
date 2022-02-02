@@ -56,7 +56,7 @@ export const csvToIndex = function (csvData, geoCol, valueCol) {
 };
 
 /**
- * @description returns number with space as separator
+ * @description returns string with space as thousand separator
  * @function spaceAsThousandSeparator
  * @param {number} number
  */

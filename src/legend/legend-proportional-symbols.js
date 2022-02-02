@@ -4,6 +4,15 @@ import * as lg from '../core/legend';
 import { symbolsLibrary } from "../maptypes/map-proportional-symbols";
 import { symbol } from 'd3-shape';
 import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
+import { formatDefaultLocale } from "d3-format";
+
+//set legend labels locale
+formatDefaultLocale({
+	"decimal": ".",
+	"thousands": " ",
+	"grouping": [3],
+	"currency": ["", "€"]
+})
 
 /**
  * A legend for proportional symbol map
@@ -25,7 +34,7 @@ export const legend = function (map, config) {
 		titlePadding: 10,//padding between title and legend body
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
-		shapeOffset:{x:0, y:0},
+		shapeOffset: { x: 0, y: 0 },
 		shapeFill: "white",
 		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
@@ -100,7 +109,7 @@ export const legend = function (map, config) {
 	 */
 	function buildSizeLegend(m, lgg, config) {
 		//define format for labels
-		const f = config.labelFormat || format("." + config.labelDecNb + "f");
+		let f = config.labelFormat || spaceAsThousandSeparator;
 		//draw title
 		if (config.title) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
@@ -145,7 +154,7 @@ export const legend = function (map, config) {
 				.attr("transform", `translate(${x},${y})`)
 				.style("fill", d => {
 					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-						return m.classifierColor_ ? config.shapeFill : m.psFill_
+					return m.classifierColor_ ? config.shapeFill : m.psFill_
 				})
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
@@ -170,7 +179,7 @@ export const legend = function (map, config) {
 			//append label
 			lgg.append("text").attr("x", labelX).attr("y", labelY)
 				.attr("alignment-baseline", "middle")
-				.text(spaceAsThousandSeparator(f(val)))
+				.text(f(val))
 				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 	}
@@ -185,7 +194,7 @@ export const legend = function (map, config) {
  */
 	function buildColorLegend(m, lgg, config) {
 		//define format for labels
-		const f = config.labelFormat || format("." + config.labelDecNb + "f");
+		let f = config.labelFormat || spaceAsThousandSeparator;
 		const svgMap = m.svg();
 
 		//title
@@ -204,7 +213,7 @@ export const legend = function (map, config) {
 		for (let i = 0; i < clnb; i++) {
 
 			//the vertical position of the legend element
-			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize  + (config.titlePadding * 2) : 0) + i * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
+			let y = (out._sizeLegendHeight + out.boxPadding + (config.title ? out.titleFontSize + (config.titlePadding * 2) : 0) + i * (config.shapeHeight + config.shapePadding)) + out.legendSpacing + config.shapePadding;
 
 			//the class number, depending on order
 			const ecl = out.ascending ? i : clnb - i - 1;
@@ -257,12 +266,12 @@ export const legend = function (map, config) {
 			}
 
 			//label
-			let labelY = y + (out.labelFontSize*1.2);
+			let labelY = y + (out.labelFontSize * 1.2);
 			if (i < clnb - 1) {
 				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
 					.text(d => {
-						let text = spaceAsThousandSeparator(f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1]))
+						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
 						return text;
 					})
 					.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
