@@ -60,9 +60,11 @@ export const getFillPatternDefinitionFun = function (opts) {
 	opts.bckColor = opts.bckColor || "white";
 	opts.symbColor = opts.symbColor || "black";
 	return function (svg, clnb) {
+		//clear previous
+		svg.selectAll(".estatmapPattern").remove();
 		for (let i = 0; i < clnb; i++) {
 			const si = smin + (smax - smin) * i / (clnb - 1);
-			const patt = svg.append("pattern").attr("id", "pattern_" + i).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
+			const patt = svg.append("pattern").attr('class','estatmapPattern').attr("id", "pattern_" + i).attr("x", "0").attr("y", "0").attr("width", ps).attr("height", ps).attr("patternUnits", "userSpaceOnUse");
 			patt.append("rect").attr("x", 0).attr("y", 0).attr("width", ps).attr("height", ps).style("stroke", "none").style("fill", opts.bckColor)
 			if (opts.shape == "square")
 				patt.append("rect").attr("x", 0).attr("y", 0).attr("width", si).attr("height", si).style("stroke", "none").style("fill", opts.symbColor)
