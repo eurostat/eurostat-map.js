@@ -339,7 +339,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			// world maps
 
 		} else if (out.geo_ == "WORLD") {
-			return json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json');
+			return [json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json')];
 
 		} else {
 
@@ -396,6 +396,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				callback();
 			}, err => {
 				// rejection
+				console.error(err)
 			})
 
 		} else {
@@ -411,6 +412,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				callback();
 			}, err => {
 				// rejection
+				console.error(err)
 			});
 		}
 
