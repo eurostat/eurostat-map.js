@@ -30,7 +30,7 @@ test('choropleth with fill pattern', async () => {
             .classifMethod("threshold").threshold([35, 50, 80, 100, 140, 180, 300, 500, 1300])
 
             .filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({ patternSize: 5, shape: "circle", bckColor: "white", symbColor: "black" }))
-            .classToFillStyle(eurostatmap.getFillPatternLegend())
+
             .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#777" })
             .nutsbnStrokeWidth({ 0: 1, 1: 0.2, 2: 0.2, 3: 0.2, oth: 1, co: 1 })
             .nutsrgSelFillSty("darkblue")

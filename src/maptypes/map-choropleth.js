@@ -63,7 +63,8 @@ export const map = function (config) {
 		 return out; 
 	};
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
-
+	out.filtersDefinitionFun = function(v) {if (!arguments.length) return out.filtersDefinitionFun_; out.filtersDefinitionFun_ = v; if (out.svg()) out.filtersDefinitionFun_(out.svg(), out.clnb_); return out; };
+	
 	//override attribute values with config values
 	if (config) ["clnb", "classifMethod", "threshold", "makeClassifNice", "colorFun", "classToFillStyle", "noDataFillStyle", "colors_"].forEach(function (key) {
 		if (config[key] != undefined) out[key](config[key]);
@@ -133,13 +134,13 @@ export const map = function (config) {
 		return out;
 	};
 
-
 	//@override
 	out.updateStyle = function () {
 
 		// define function that returns a class' colour
 		if (out.filtersDefinitionFun_) {
 			// if dot density
+			//set fill style
 			out.classToFillStyle(getFillPatternLegend())
 		} else {
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))

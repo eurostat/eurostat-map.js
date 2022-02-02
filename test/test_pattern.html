@@ -18,7 +18,7 @@
             .titleFill("#444")
             .scale("60M")
             .classifMethod("threshold").threshold([35, 50, 80, 100, 140, 180, 300, 500, 1300])
-            
+
             .filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({ patternSize: 5, shape: "circle", bckColor: "white", symbColor: "black" }))
 
             .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "#777" })
@@ -40,10 +40,24 @@
                 x: 700,
                 noData: false,
             }).nutsLvl("mixed")
-            
 
-            map.statData().setData({ES:2,FR:3,DE:4,HU:5})
-            map.build();
+
+        map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5 })
+        map.build();
+
+
+
+        // update data, classification
+        setTimeout(() => {
+            map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000 })
+            map.filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+                patternSize: 5,
+                shape: 'square',
+                bckColor: 'black',
+                symbColor: 'white',
+            }))
+            map.updateStatValues();
+        }, 2000);
     </script>
 </body>
 

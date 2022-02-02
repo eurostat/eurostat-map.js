@@ -21,7 +21,7 @@ export const map = function (config) {
 	out.psCustomPath_; // see http://bl.ocks.org/jessihamel/9648495
 	out.psOffset_ = { x: 0, y: 0 }
 	out.psMaxSize_ = 30;
-	out.psMinSize_ = 1; //for circle
+	out.psMinSize_ = 5; //for circle
 	out.psBarWidth_ = 10; //for vertical bars
 	out.psFill_ = "#2d50a0"; //same fill for all symbols
 	out.psFillOpacity_ = 0.7;
@@ -77,18 +77,20 @@ export const map = function (config) {
 		//define classifiers for sizing and colouring (out.classifierSize_ & out.classifierColor_)
 		defineClassifiers();
 
-		if (out.classifierColor_) {
-			//assign color class to each symbol, based on their value
-			// at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
-			out.svg().selectAll(".symbol")
-				.attr("ecl", function (rg) {
-					const sv = out.statData("color").get(rg.properties.id);
-					if (!sv) return "nd";
-					const v = sv.value;
-					if (v != 0 && !v) return "nd";
-					let c = +out.classifierColor()(+v);
-					return c
-				})
+		if (out.svg()) {
+			if (out.classifierColor_) {
+				//assign color class to each symbol, based on their value
+				// at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
+				out.svg().selectAll(".symbol")
+					.attr("ecl", function (rg) {
+						const sv = out.statData("color").get(rg.properties.id);
+						if (!sv) return "nd";
+						const v = sv.value;
+						if (v != 0 && !v) return "nd";
+						let c = +out.classifierColor()(+v);
+						return c
+					})
+			}
 		}
 
 		return out;
@@ -142,84 +144,112 @@ export const map = function (config) {
 		if (!out.psClassToFillStyle())
 			out.psClassToFillStyle(getColorLegend(out.psColorFun_, out.psColors_))
 
-		// define symbol then apply styling
+		// symbol selection
 		let symb;
 		// if size dataset not defined then use default
 		let data = out.statData("size").getArray() ? out.statData("size") : out.statData();
 
-		if (out.psCustomPath_) {
-			//custom path
-			symb = out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
-					//calculate size
-					const sv = data.get(rg.properties.id);
-					let size;
-					if (!sv || !sv.value) {
-						size = 0;
-					} else {
-						size = out.classifierSize_(+sv.value);
-					}
-					return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
-				})
-		} else if (out.psShape_ == "bar") {
-			// vertical bars
-			symb = out.svg().select("#g_ps").selectAll("g.symbol")
-				.append("rect")
-				.attr("width", out.psBarWidth_)
-				//for vertical bars we scale the height attribute using the classifier
-				.attr("height", function (rg) {
-					const sv = data.get(rg.properties.id);
-					if (!sv || !sv.value) {
-						return 0;
-					}
-					let v = out.classifierSize_(+sv.value);
-					return v;
-				})
-				.attr('transform', function () {
-					let bRect = this.getBoundingClientRect();
-					return `translate(${-this.getAttribute('width') / 2}` +
-						`, -${this.getAttribute('height')})`;
-				})
-				.transition().duration(out.transitionDuration())
-		} else {
-			// d3.symbol symbols
-			// circle, cross, star, triangle, diamond, square, wye or custom
-			symb = out.svg().selectAll("g.symbol")
-				.append("path").attr("class", "ps").attr("d", rg => {
-					
-				const v = out.statData("size") ? out.statData("size") : out.statData();
-				if (!v) return;
-				const sv = v.get(rg.properties.id);
-				//calculate size
-				if (sv != 0 && !sv) return;
-				let size = out.classifierSize_(+sv.value) || 0;
-				
-				//apply size to shape
-				if (out.psCustomShape_) {
-					return out.psCustomShape_.size(size * size)()
-				} else {
-					const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
-					return symbol().type(symbolType).size(size * size)()
-				}
-			})
-		}
+		if (out.svg()) {
+			//clear previous symbols
+			let prevSymbols = out.svg_.selectAll("g.symbol > *");
+			prevSymbols.remove();
 
-		//common methods
-		symb.style("fill-opacity", out.psFillOpacity())
-			.style("stroke", out.psStroke())
-			.style("stroke-width", out.psStrokeWidth())
-			.style("fill", function () {
-				// use colour classifier when applicable
-				if (out.classifierColor_) {
-					//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
-					var ecl = select(this.parentNode).attr("ecl");
-					if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
-					let color = out.psClassToFillStyle_(ecl, out.psClasses_);
-					return color;
-				} else {
-					return out.psFill();
-				}
-			})
+			//set paths of symbols
+
+			//custom symbol
+			if (out.psCustomPath_) {
+				symb = out.svg().select("#g_ps").selectAll("g.symbol")
+					.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
+						//calculate size
+						const sv = data.get(rg.properties.id);
+						let size;
+						if (!sv || !sv.value) {
+							size = 0;
+						} else {
+							size = out.classifierSize_(+sv.value);
+						}
+						return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
+					})
+
+				// bars
+
+			} else if (out.psShape_ == "bar") {
+				// vertical bars
+				symb = out.svg().select("#g_ps").selectAll("g.symbol")
+					.append("rect")
+					.attr("width", out.psBarWidth_)
+					//for vertical bars we scale the height attribute using the classifier
+					.attr("height", function (rg) {
+						const sv = data.get(rg.properties.id);
+						if (!sv || !sv.value) {
+							return 0;
+						}
+						let v = out.classifierSize_(+sv.value);
+						return v;
+					})
+					.attr('transform', function () {
+						let bRect = this.getBoundingClientRect();
+						return `translate(${-this.getAttribute('width') / 2}` +
+							`, -${this.getAttribute('height')})`;
+					})
+					.transition().duration(out.transitionDuration())
+			} else {
+
+				// d3.symbol symbols
+				// circle, cross, star, triangle, diamond, square, wye or custom
+
+				symb = out.svg().selectAll("g.symbol")
+					.append("path").attr("class", "ps").attr("d", rg => {
+
+						const v = out.statData("size") ? out.statData("size") : out.statData();
+						if (!v) return;
+						const sv = v.get(rg.properties.id);
+						//calculate size
+						if (sv != 0 && !sv) return;
+						let size = out.classifierSize_(+sv.value) || 0;
+
+						//apply size to shape
+						if (out.psCustomShape_) {
+							return out.psCustomShape_.size(size * size)()
+						} else {
+							const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary["circle"];
+							return symbol().type(symbolType).size(size * size)()
+						}
+					})
+			}
+
+			// set style of symbols
+
+			if (out.nutsLvl_ == "mixed") {
+				// Toggle visibility - only show regions with stat values when mixing different NUTS levels
+				out.svg().selectAll("g.symbol")
+					.style("display", function (rg) {
+						const sv = data.get(rg.properties.id);
+						if (!sv || !sv.value) {
+							return "none"
+						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+							return "block";
+						}
+					})
+			}
+
+			symb.style("fill-opacity", out.psFillOpacity())
+				.style("stroke", out.psStroke())
+				.style("stroke-width", out.psStrokeWidth())
+				.style("fill", function () {
+					// use colour classifier when applicable
+					if (out.classifierColor_) {
+						//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+						const ecl = select(this.parentNode).attr("ecl");
+						if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
+						let color = out.psClassToFillStyle_(ecl, out.psClasses_);
+						return color;
+					} else {
+						return out.psFill();
+					}
+				})
+
+		}
 		return out;
 	};
 
