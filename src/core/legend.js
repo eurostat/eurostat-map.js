@@ -40,7 +40,7 @@ export const legend = function (map) {
 		//set SVG element and add main drawing group
 		out.svg = select("#" + out.svgId);
 		// clear previous
-		out.svg_.selectAll("#g_" + out.svgId).remove();
+		out.svg.selectAll("#g_" + out.svgId).remove();
 		// append new legend "g"
 		out.lgg = out.svg.append("g").attr("id", "g_" + out.svgId);
 	}

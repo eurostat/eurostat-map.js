@@ -7,7 +7,11 @@
 </head>
 
 <body>
-  <svg id="basic"></svg>
+  <svg style="width: 100%; height:1000px;">
+    <svg id="map" x="2px" y="2px"></svg>
+    <svg id="eurostatmap-legend" x="0px" y="620px"></svg>
+  </svg>
+
 
   <script src="../build/eurostatmap.js"></script>
   <script src="./data/nuts3.js"></script>
@@ -27,6 +31,20 @@
         .psFillOpacity(0.8)
         .psMaxSize(100)
         .psMinSize(5)
+        .legend({
+          svgId: "eurostatmap-legend",
+          ascending: false,
+          boxPadding: 5,
+          sizeLegend: {
+            title: "legeend",
+            cellNb: 3,
+            // shapePadding: 90,
+            // titlePadding: -60,
+            // shapeOffset: { x: 0, y: -30 },
+            // labelOffset: 70,
+          },
+          legendSpacing: 0
+        })
     };
 
     let map = basemap();
@@ -38,27 +56,31 @@
 
     // update data, classification
     setTimeout(() => {
-      map.statData('size').setData({ES:0, DE:10, FR:5});
+      map.statData('size').setData({ ES: 0, DE: 10, FR: 5 });
       map.updateStatValues();
     }, 2000);
 
     setTimeout(() => {
-      map.statData('size').setData({ES:10, DE:10, FR:5});
+      map.statData('size').setData({ ES: 10, DE: 10, FR: 5 });
+      map.psMaxSize(80)
       map.updateStatValues();
     }, 4000);
 
     setTimeout(() => {
-      map.statData('size').setData({ES:20, DE:10, FR:5});
+      map.statData('size').setData({ ES: 20, DE: 10, FR: 5 });
+      map.psMaxSize(30)
       map.updateStatValues();
     }, 6000);
 
     setTimeout(() => {
-      map.statData('size').setData({ES:30, DE:10, FR:5});
+      map.statData('size').setData({ ES: 30, DE: 10, FR: 5 });
+      map.psMaxSize(50)
       map.updateStatValues();
     }, 8000);
 
     setTimeout(() => {
-      map.statData('size').setData({ES:40, DE:10, FR:5});
+      map.statData('size').setData({ ES: 40, DE: 10, FR: 5 });
+      map.psMaxSize(100)
       map.updateStatValues();
     }, 10000);
 
