@@ -1314,7 +1314,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-				.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
 
 		//last tick
