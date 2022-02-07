@@ -176,6 +176,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetZoomExtent_ = null; //zoom disabled as default
 	out.insetScale_ = "03M";
 
+	// clear any existing geometries
+	let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo = undefined;
+
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
@@ -733,7 +736,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw country boundaries
-		if (cntbn)
+		if (cntbn) {
 			zg.append("g").attr("id", "g_cntbn")
 				.style("fill", "none")
 				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
@@ -768,6 +771,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//cc borders
 					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
 				});
+			}
 
 		//draw NUTS boundaries
 		if (nutsbn) {
