@@ -57,23 +57,23 @@ export const legend = function (map) {
 
 
 	/** Draw legend background box */
-	out.makeBackgroundBox = function(){
+	out.makeBackgroundBox = function () {
 		out.lgg.append("rect")
 			.attr("id", "legendBR")
 			.attr("rx", out.boxCornerRad)
 			.attr("ry", out.boxCornerRad)
 			.style("fill", out.boxFill)
 			.style("opacity", out.boxOpacity);
-	}	
+	}
 
 	/** Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements */
-	out.setBoxDimension = function() {
+	out.setBoxDimension = function () {
 		//get legend elements bounding box
-		const bb = out.lgg.node().getBBox({stroke:true});
+		const bb = out.lgg.node().getBBox({ stroke: true });
 		//apply to legend box dimensions
 		const p = out.boxPadding;
 		out.svg.select("#legendBR")
-			.attr("x",bb.x-p).attr("y",bb.y-p).attr("width", bb.width+2*p).attr("height", bb.height+2*p)
+			.attr("x", bb.x - p).attr("y", bb.y - p).attr("width", bb.width + 2 * p).attr("height", bb.height + 2 * p)
 	}
 
 	return out;
