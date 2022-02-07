@@ -1302,7 +1302,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			for (let i = -1; i < subdivisionNb; i += 2) {
 				if (i == 1) {
 					sb.append('line')
-						.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 				} else {
 					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
 					if (x1 > 0) {
