@@ -15,7 +15,9 @@
         let map = eurostatmap.map("ps")
             .svgId("basic")
             .nutsLvl(0)
-            .geo("WORLD")
+            //.geo("WORLD")
+            .countriesToShow(["DE"])
+            .nutsLvl("mixed")
             .legend({
                 svgId: "legend",
                 

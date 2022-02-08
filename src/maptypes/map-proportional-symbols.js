@@ -220,18 +220,18 @@ export const map = function (config) {
 
 			// set style of symbols
 
-			if (out.nutsLvl_ == "mixed") {
+			 if (out.nutsLvl_ == "mixed") {
 				// Toggle visibility - only show regions with stat values when mixing different NUTS levels
 				out.svg().selectAll("g.symbol")
 					.style("display", function (rg) {
 						const sv = data.get(rg.properties.id);
-						if (!sv || !sv.value) {
+						if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "none"
 						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "block";
 						}
 					})
-			}
+			 }
 
 			symb.style("fill-opacity", out.psFillOpacity())
 				.style("stroke", out.psStroke())

@@ -771,7 +771,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//cc borders
 					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
 				});
-			}
+		}
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -870,27 +870,29 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
 			let centroidFeatures;
-			if (out.nutsLvl_ == "mixed") {
-				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
-			} else {
+
+			if (!centroidsData) {
 				// if centroids data is absent (e.g. for world maps) then calculate manually
-				if (!centroidsData) {
-					if (out.geo_ == "WORLD") {
-						centroidFeatures = [];
-						worldrg.forEach((feature)=>{
-							let newFeature = {...feature};
-							newFeature.geometry = {
-								"coordinates": geoCentroid(feature),
-								"type":"Point"
-							}
-							centroidFeatures.push(newFeature);
-						})
-					}
+				if (out.geo_ == "WORLD") {
+					centroidFeatures = [];
+					worldrg.forEach((feature) => {
+						let newFeature = { ...feature };
+						newFeature.geometry = {
+							"coordinates": geoCentroid(feature),
+							"type": "Point"
+						}
+						centroidFeatures.push(newFeature);
+					})
+				}
+			} else {
+				if (out.nutsLvl_ == "mixed") {
+					centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
 				} else {
 					centroidFeatures = centroidsData.features;
 				}
-				
 			}
+
+
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
@@ -1034,7 +1036,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//clear previous labels
 		let prevLabels = out.svg_.selectAll("g.labels-container > *");
 		if (prevLabels) prevLabels.remove();
-		
+
 		if (out.labelling_) {
 			let zg = out.svg_.select("#zoomgroup" + out.svgId_);
 			addLabelsToMap(out, zg);
@@ -1318,7 +1320,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			for (let i = -1; i < subdivisionNb; i += 2) {
 				if (i == 1) {
 					sb.append('line')
-						.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 				} else {
 					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
 					if (x1 > 0) {
@@ -1330,7 +1332,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-				.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
 
 		//last tick
