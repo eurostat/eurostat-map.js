@@ -36,7 +36,7 @@ export const legend = function (map, config) {
 		shapePadding: 10, //the y distance between consecutive legend shape elements
 		shapeOffset: { x: 0, y: 0 },
 		shapeFill: "white",
-		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
+		labelOffset: { x: 25, y:0}, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined
 	}
@@ -48,7 +48,7 @@ export const legend = function (map, config) {
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
-		labelOffset: 25, //distance (x) between label text and its corresponding shape element
+		labelOffset: { x: 25, y:0}, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined, // user-defined d3 format function	
 		noData: true, //show no data
@@ -184,8 +184,8 @@ export const legend = function (map, config) {
 			}
 
 			//label position
-			let labelX = x + config.labelOffset;
-			let labelY = y;
+			let labelX = x + config.labelOffset.x;
+			let labelY = y + config.labelOffset.y;
 			if (out.map.psShape_ == "bar") {
 				labelY = labelY + (size / 2)
 			}
@@ -280,9 +280,9 @@ export const legend = function (map, config) {
 			}
 
 			//label
-			let labelY = y + (out.labelFontSize * 1.2);
+			let labelY = y + config.labelOffset.y + (out.labelFontSize * 1.2);
 			if (i < clnb - 1) {
-				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
+				lgg.append("text").attr("x", x + config.labelOffset.x).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
 					.text(d => {
 						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
@@ -335,7 +335,7 @@ export const legend = function (map, config) {
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
+			lgg.append("text").attr("x", x + config.labelOffset.x).attr("y", y + out.boxPadding)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
 				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
