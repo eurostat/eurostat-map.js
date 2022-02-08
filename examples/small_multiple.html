@@ -35,7 +35,7 @@
             .width(250)
 
             .nutsLvl(0)
-            .stat( { eurostatDatasetCode: "namq_10_gdp", filters: { freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"Q"+q }, unitText: "%" } )
+            .stat( { eurostatDatasetCode: "namq_10_gdp", filters: { freq:"Q",unit:"CLV_PCH_SM",s_adj:"SCA",na_item:"B1GQ", time: year+"-Q"+q }, unitText: "%" } )
 
             .colorFun(d3.interpolateRdYlBu)
             .classifMethod("threshold")
