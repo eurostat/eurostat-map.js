@@ -239,7 +239,7 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | *map*.**psClassifMethod**([*value*]) | String | *"quantile"* | The classification method. Possible values are *"quantile"*, *"equinter"* for equal intervals, and *"threshold"* for user defined threshold (see threshold method). |
 | *map*.**psThreshold**([*value*]) | Array | *[0]* | If *psClassifMethod = "threshold"*, the breaks of the classification. |
 | *map*.**psColours**([*value*]) | Array | null | The colours to be using data-driven colour. The number of colours specified in the array should match the number of classes (specified using psClasses()) |
-| *map*.**psNoDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
+| *map*.**noDataFillStyle**([*value*]) | String | *"lightgray"* | The fill style to be used for regions where no data is available. |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
 As proportional symbol maps allow for two visual variables (size and colour), a legend configuration object can be specified for each variable (sizeLegend and colorLegend).

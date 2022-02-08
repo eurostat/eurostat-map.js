@@ -2,7 +2,7 @@ import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
 import { select, event, selectAll } from "d3-selection";
 import { formatDefaultLocale } from "d3-format";
-import { geoIdentity, geoPath, geoGraticule, geoGraticule10 } from "d3-geo";
+import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from "d3-geo";
 import { geoRobinson } from "d3-geo-projection";
 import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
@@ -175,6 +175,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//out.insetZoomExtent_ = [1, 3];
 	out.insetZoomExtent_ = null; //zoom disabled as default
 	out.insetScale_ = "03M";
+
+	// clear any existing geometries
+	let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo = undefined;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -733,7 +736,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw country boundaries
-		if (cntbn)
+		if (cntbn) {
 			zg.append("g").attr("id", "g_cntbn")
 				.style("fill", "none")
 				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
@@ -768,6 +771,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//cc borders
 					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
 				});
+			}
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -869,7 +873,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (out.nutsLvl_ == "mixed") {
 				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
 			} else {
-				centroidFeatures = centroidsData.features;
+				// if centroids data is absent (e.g. for world maps) then calculate manually
+				if (!centroidsData) {
+					if (out.geo_ == "WORLD") {
+						centroidFeatures = [];
+						worldrg.forEach((feature)=>{
+							let newFeature = {...feature};
+							newFeature.geometry = {
+								"coordinates": geoCentroid(feature),
+								"type":"Point"
+							}
+							centroidFeatures.push(newFeature);
+						})
+					}
+				} else {
+					centroidFeatures = centroidsData.features;
+				}
+				
 			}
 			const gcp = zg.append("g").attr("id", "g_ps");
 
@@ -1298,7 +1318,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			for (let i = -1; i < subdivisionNb; i += 2) {
 				if (i == 1) {
 					sb.append('line')
-						.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 				} else {
 					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
 					if (x1 > 0) {
@@ -1310,7 +1330,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-				.attr('x1', marginLeft + out.scalebarStrokeWidth_).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
 
 		//last tick

@@ -78,6 +78,20 @@ export const legend = function (map, config) {
 		const m = out.map;
 		const lgg = out.lgg;
 
+		// update legend parameters if necessary
+		if (m.legend_) for (let key in m.legend_) {
+			if (key == "colorLegend" || key == "sizeLegend") {
+				for (let p in out[key]) {
+					//override each property in size and color legend m.legend_
+					if (m.legend_[key][p]) {
+						out[key][p] = m.legend_[key][p]
+					}
+				}
+			} else {
+				out[key] = m.legend_[key];
+			}
+		}
+
 		//remove previous content
 		lgg.selectAll("*").remove();
 
@@ -288,7 +302,7 @@ export const legend = function (map, config) {
 			//append symbol & style
 			lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
-				.attr("fill", m.psNoDataFillStyle())
+				.attr("fill", m.noDataFillStyle())
 				.style("fill-opacity", m.psFillOpacity())
 				.style("stroke", m.psStroke())
 				.attr("stroke-width", 1)
@@ -304,7 +318,7 @@ export const legend = function (map, config) {
 					//for ps, the symbols are the children of each g_ps element
 					parents.each(function (d, i) {
 						let ps = select(this.childNodes[0]);
-						ps.style("fill", m.psNoDataFillStyle());
+						ps.style("fill", m.noDataFillStyle());
 
 					});
 					select(this).style("fill", m.nutsrgSelFillSty());
@@ -317,7 +331,7 @@ export const legend = function (map, config) {
 						let ps = select(this.childNodes[0]);
 						ps.style("fill", cellFill);
 					});
-					select(this).style("fill", m.psNoDataFillStyle());
+					select(this).style("fill", m.noDataFillStyle());
 				});
 
 			//'no data' label

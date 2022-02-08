@@ -33,7 +33,7 @@ export const map = function (config) {
 	out.psColorFun_ = interpolateOrRd;
 
 	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
-	out.psNoDataFillStyle_ = "lightgray"; //style for no data regions
+	out.noDataFillStyle_ = "lightgray"; //style for no data regions
 
 	//the threshold, when the classification method is 'threshold'
 	out.psThreshold_ = [0];
@@ -56,14 +56,14 @@ export const map = function (config) {
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
 	["psMaxSize_", "psMinSize_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
-		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "psNoDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_", "psClassifMethod_", "psClasses_"]
+		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "noDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_", "psClassifMethod_", "psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 		});
 
 	//override attribute values with config values
 	if (config) ["psMaxSize", "psMinSize", "psFill", "psFillOpacity", "psStroke", "psStrokeWidth", "classifierSize", "classifierColor",
-		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "psNoDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset", "psClassifMethod", "psClasses"].forEach(function (key) {
+		"psShape", "psCustomShape", "psBarWidth", "psClassToFillStyle", "psColorFun", "noDataFillStyle", "psThreshold", "psColors", "psCustomPath", "psOffset", "psClassifMethod", "psClasses"].forEach(function (key) {
 			if (config[key] != undefined) out[key](config[key]);
 		});
 
@@ -241,7 +241,7 @@ export const map = function (config) {
 					if (out.classifierColor_) {
 						//for ps, ecl attribute belongs to the parent g.symbol node created in map-template
 						const ecl = select(this.parentNode).attr("ecl");
-						if (!ecl || ecl === "nd") return out.psNoDataFillStyle() || "gray";
+						if (!ecl || ecl === "nd") return out.noDataFillStyle() || "gray";
 						let color = out.psClassToFillStyle_(ecl, out.psClasses_);
 						return color;
 					} else {
