@@ -2,7 +2,7 @@ import { json } from "d3-fetch";
 import { zoom } from "d3-zoom";
 import { select, event, selectAll } from "d3-selection";
 import { formatDefaultLocale } from "d3-format";
-import { geoIdentity, geoPath, geoGraticule, geoGraticule10 } from "d3-geo";
+import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from "d3-geo";
 import { geoRobinson } from "d3-geo-projection";
 import { feature } from "topojson-client";
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util';
@@ -873,7 +873,23 @@ export const mapTemplate = function (config, withCenterPoints) {
 			if (out.nutsLvl_ == "mixed") {
 				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
 			} else {
-				centroidFeatures = centroidsData.features;
+				// if centroids data is absent (e.g. for world maps) then calculate manually
+				if (!centroidsData) {
+					if (out.geo_ == "WORLD") {
+						centroidFeatures = [];
+						worldrg.forEach((feature)=>{
+							let newFeature = {...feature};
+							newFeature.geometry = {
+								"coordinates": geoCentroid(feature),
+								"type":"Point"
+							}
+							centroidFeatures.push(newFeature);
+						})
+					}
+				} else {
+					centroidFeatures = centroidsData.features;
+				}
+				
 			}
 			const gcp = zg.append("g").attr("id", "g_ps");
 

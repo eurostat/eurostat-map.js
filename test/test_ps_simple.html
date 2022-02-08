@@ -14,7 +14,8 @@
         // basic barebones example
         let map = eurostatmap.map("ps")
             .svgId("basic")
-            .nutsLvl('mixed')
+            .nutsLvl(0)
+            .geo("WORLD")
             .legend({
                 svgId: "legend",
                 
@@ -29,10 +30,10 @@
             .psMaxSize(30)
             .psMinSize(2)
             .psClassifMethod("threshold")
-            .psThreshold([10000, 20000, 30200, 40000, 50000])
+            .psThreshold([100, 200, 302, 400, 500])
             .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
-        map.statData('size').setData({ ES: 1110, DE: 1000, FR: 500 })
+        map.statData('size').setData({ ES: 1110, DE: 1000, FR: 500, US:100, DZ:100,CN:100,IN:100,AU:200,BR:200,AR:300,CN:100 })
         map.build();
 
         setTimeout(() => {
@@ -42,7 +43,7 @@
                 .psMaxSize(50)
                 .psMinSize(20)
                 .psClassifMethod("threshold")
-                .psThreshold([10000, 20000, 30200, 40000, 50000])
+                .psThreshold([1000, 2000, 3020, 4000, 5000])
                 .legend({
                     svgId: "legend",
                     sizeLegend: {
