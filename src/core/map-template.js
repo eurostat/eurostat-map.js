@@ -59,6 +59,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
 	out.titleFontWeight_ = "bold";
+	out.titleStroke_ = "none";
+	out.titleStrokeWidth_ = "none";
 
 	//map subtitle
 	out.subtitle_ = "";
@@ -66,6 +68,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitleFill_ = "grey";
 	out.subtitlePosition_ = undefined;
 	out.subtitleFontWeight_ = "bold";
+	out.subtitleStroke_ = "none";
+	out.subtitleStrokeWidth_= "none";
 
 	//map frame
 	out.frameStroke_ = "#222";
@@ -935,9 +939,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize() + "px")
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
-
-				//.style("stroke-width", 3)
-				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke", out.titleStroke())
+				.style("stroke-width", out.titleStrokeWidth())
 				.style("stroke-linejoin", "round")
 				.style("paint-order", "stroke")
 		}
@@ -952,6 +955,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.subtitleFontSize() + "px")
 				.style("font-weight", out.subtitleFontWeight())
 				.style("fill", out.subtitleFill())
+				.style("stroke", out.subtitleStroke())
+				.style("stroke-width", out.subtitleStrokeWidth())
 
 				//.style("stroke-width", 3)
 				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)

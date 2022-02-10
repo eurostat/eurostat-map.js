@@ -136,6 +136,16 @@ const insetsConfig = [
         width: w,
         height: h,
         title: 'Liechtenstein',
+        titleFill: 'white',
+        titleStroke: 'white',
+        titleStrokeWidth: '2px',
+        titleFontSize: 8.78,
+        titleFontWeight:'normal',
+        subtitle:'Liechtenstein',
+        subtitlePosition: [2, 11],
+        subtitleFill:'black',
+        subtitleFontWeight:'normal',
+        subtitleFontSize:8.78,
         geoCenter: [4285060, 2674000],
         scale: '01M',
         scalebarPosition: [1, 65]
@@ -158,10 +168,10 @@ insetsConfig.forEach(c => {
     c.labelling = false;
     c.frameStroke = 'grey';
     c.frameStrokeWidth = 1;
-    c.titleFontSize = 8.78;
+    if (!c.titleFontSize) c.titleFontSize = 8.78;
     c.fontFamily = 'Arial';
-    c.titlePosition = [2, 11];
-    c.titleFontWeight = 100;
+    if (!c.titlePosition) c.titlePosition = [2, 11];
+    if (!c.titleFontWeight) c.titleFontWeight = 100;
 
     c.showScalebar = true;
     c.scalebarTickHeight = 6;
