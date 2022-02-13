@@ -908,6 +908,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//.attr("r", 1)
 				.attr("class", "symbol")
 				.style("fill", "gray")
+				.attr("id",(d)=> 'ps'+d.properties.id)
 				.on("mouseover", function (rg) {
 					const sel = select(this.childNodes[0]);
 					sel.attr("fill___", sel.style("fill"));

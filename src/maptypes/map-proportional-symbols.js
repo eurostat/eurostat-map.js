@@ -218,10 +218,12 @@ export const map = function (config) {
 					})
 			}
 
+			
+
 			// set style of symbols
 
 			 if (out.nutsLvl_ == "mixed") {
-				// Toggle visibility - only show regions with stat values when mixing different NUTS levels
+				// Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
 				out.svg().selectAll("g.symbol")
 					.style("display", function (rg) {
 						const sv = data.get(rg.properties.id);
@@ -231,6 +233,40 @@ export const map = function (config) {
 							return "block";
 						}
 					})
+
+				// nuts border visibility - only show regions with stat values when mixing different NUTS levels
+				out.svg().selectAll("path.nutsrg")
+				.style("display", function (rg) {
+					const sv = data.get(rg.properties.id);
+					if (!sv || !sv.value || sv.value==":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						return "none"
+					} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						return "block";
+					}
+				})
+
+				// nuts border stroke
+				.style("stroke", function (bn) {
+					const lvl = select(this).attr("lvl");
+					const sv = data.get(bn.properties.id);
+					if (!sv || !sv.value || sv.value==":" || !out.countriesToShow_.includes(bn.properties.id[0] + bn.properties.id[1])) {
+						return;
+					} else if (out.countriesToShow_.includes(bn.properties.id[0] + bn.properties.id[1])) {
+						if (lvl !== "0") {
+							return out.nutsbnStroke_[parseInt(lvl)] || "#777";
+						}
+					}
+
+
+				})
+				// nuts border stroke width
+				.style("stroke-width", function (rg) {
+					const lvl = select(this).attr("lvl");
+					const ecl = select(this).attr("ecl");
+					if (ecl && lvl !== "0") {
+						return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2;
+					}
+				});
 			 }
 
 			symb.style("fill-opacity", out.psFillOpacity())
