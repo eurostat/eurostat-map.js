@@ -31,7 +31,7 @@ export const legend = function (map, config) {
 	//size legend config (legend illustrating the values of different symbol sizes)
 	out.sizeLegend = {
 		title: null,
-		titlePadding: 0,//padding between title and legend body
+		titlePadding: 5,//padding between title and legend body
 		values: undefined, //manually define raw data values
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
