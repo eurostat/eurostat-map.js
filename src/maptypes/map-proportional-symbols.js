@@ -7,7 +7,7 @@ import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSqu
 import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
- * Returns a proportionnal symbol map.
+ * Returns a proportional symbol map.
  * 
  * @param {*} config 
  */
@@ -16,22 +16,27 @@ export const map = function (config) {
 	//create map object to return, using the template
 	const out = smap.statMap(config, true);
 
+	//shape
 	out.psShape_ = "circle"; // accepted values: circle, bar, square, star, diamond, wye, cross
 	out.psCustomShape_; // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
 	out.psCustomPath_; // see http://bl.ocks.org/jessihamel/9648495
 	out.psOffset_ = { x: 0, y: 0 }
-	out.psMaxSize_ = 30;
-	out.psMinSize_ = 5; //for circle
+
+	//size
+	out.psMaxSize_ = 30; // max symbol size
+	out.psMinSize_ = 5; // min symbol size
 	out.psBarWidth_ = 10; //for vertical bars
-	out.psFill_ = "#2d50a0"; //same fill for all symbols
+	out.psMaxValue_ = undefined; // allow the user to manually define the domain of the sizing scale. E.g. if the user wants to use the same scale across different maps.
+	out.psMinValue_ = undefined;
+
+	//colour
+	out.psFill_ = "#2d50a0"; //same fill for all symbols when no visual variable (setData()) for 'color' is specified
 	out.psFillOpacity_ = 0.7;
 	out.psStroke_ = "#000";
 	out.psStrokeWidth_ = 0.3;
-	//colour
 	out.psClasses_ = 5; // number of classes to use for colouring
 	out.psColors_ = null; //colours to use for threshold colouring
 	out.psColorFun_ = interpolateOrRd;
-
 	out.psClassToFillStyle_ = undefined; //a function returning the color from the class i
 	out.noDataFillStyle_ = "lightgray"; //style for no data regions
 
@@ -55,7 +60,7 @@ export const map = function (config) {
 	 *  - To get the attribute value, call the method without argument.
 	 *  - To set the attribute value, call the same method with the new value as single argument.
 	*/
-	["psMaxSize_", "psMinSize_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
+	["psMaxSize_", "psMinSize_","psMaxValue_", "psMinValue_", "psFill_", "psFillOpacity_", "psStroke_", "psStrokeWidth_", "classifierSize_", "classifierColor_",
 		"psShape_", "psCustomShape_", "psBarWidth_", "psClassToFillStyle_", "psColorFun_", "noDataFillStyle_", "psThreshold_", "psColors_", "psCustomPath_", "psOffset_", "psClassifMethod_", "psClasses_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
@@ -101,11 +106,11 @@ export const map = function (config) {
 		//simply return the array [0,1,2,3,...,nb-1]
 		const getA = function (nb) { return [...Array(nb).keys()]; }
 
-		// use size dataset, if not use default
+		// use size dataset
 		let sizeDomain;
 		let data = out.statData("size").getArray();
-		let min = out.statData("size").getMin();
-		let max = out.statData("size").getMax();
+		let min = out.psMinValue_ ? out.psMinValue_ : out.statData("size").getMin();
+		let max = out.psMaxValue_ ? out.psMaxValue_ : out.statData("size").getMax();
 
 		sizeDomain = data ? [min, max] : [out.statData().getMin(), out.statData().getMax()];
 

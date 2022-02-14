@@ -31,7 +31,8 @@ export const legend = function (map, config) {
 	//size legend config (legend illustrating the values of different symbol sizes)
 	out.sizeLegend = {
 		title: null,
-		titlePadding: 10,//padding between title and legend body
+		titlePadding: 0,//padding between title and legend body
+		values: undefined, //manually define raw data values
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
 		shapeOffset: { x: 0, y: 0 },
@@ -134,14 +135,19 @@ export const legend = function (map, config) {
 
 		let shape = getShape();
 		let domain = m.classifierSize_.domain();
-		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol)
+		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol by default)
 		out._sizeLegendHeight = 0; //sum of shape sizes: used for positioning legend elements and color legend
+
+		// if user defines values for legend manually
+		if (config.values) {config.cellNb = config.values.length }
 
 		//draw legend elements for classes: symbol + label
 		for (let i = 1; i < config.cellNb + 1; i++) {
-			//calculate shape size using cellNb
-			const ecl = out.ascending ? config.cellNb - i + 1 : i;
-			let val = maxVal / ecl;
+			//define class number
+			const c = out.ascending ? config.cellNb - i + 1 : i;
+			//define raw value
+			let val = config.values ? config.values[c-1] : maxVal / c;
+			//calculate shape size 
 			let size = m.classifierSize_(val);
 
 			//set shape size and define 'd'
@@ -154,12 +160,12 @@ export const legend = function (map, config) {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
 				x = out.boxPadding + 10;
 				//we also dont need the y offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight);
+				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight);
 			} else {
 				// x and y for all other symbols
 				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
 				x = out.boxPadding + out._xOffset; //set X offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
+				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
 			}
 			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
 

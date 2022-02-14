@@ -27,7 +27,8 @@
 
                 sizeLegend: {
                     shapePadding: 10,
-                    titlePadding: 10,
+                    titlePadding: -10,
+                    values: [10, 5, 1],
                     shapeOffset: { x: 0, y: 10 },
                     labelOffset: { x: 30, y: 0 },
                     title: "first",
@@ -35,9 +36,11 @@
             })
             .psMaxSize(30)
             .psMinSize(2)
+            //.psMaxValue(100)
+            //.psMinValue(-20)
             .psClassifMethod("threshold")
-            .psThreshold([100, 200, 302, 400, 500])
-            .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
+            //.psThreshold([100, 200, 302, 400, 500])
+            //.psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
         map.statData('size').setData(mixedNUTS)
         map.build();

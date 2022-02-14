@@ -260,7 +260,8 @@ The following parameters are properties of the sizeLegend object:
 | -------- | ------ | ---------- | ----------- |
 | **title** | String | *null* | Title of the size legend |
 | **titlePadding** | Number | *10* | Padding between the legend title and legend body |
-| **cellNb** | Number | *4* | Number of elements in the legend |
+| **values** | Number | *undefined* | Manually set the raw data values to be used in the legend |
+| **cellNb** | Number | *4* | Number of symbols to be shown in the legend (when values are not set manually) |
 | **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
 | **shapeOffset** | Object | *{x:0, y:0}* | The offset applied to the shape elements in the legend. Applicable for use with psCustomPath() |
 | **shapeFill** | String | *white* | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used.  |
