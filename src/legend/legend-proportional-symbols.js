@@ -31,6 +31,7 @@ export const legend = function (map, config) {
 	//size legend config (legend illustrating the values of different symbol sizes)
 	out.sizeLegend = {
 		title: null,
+		titleFontSize: 12,
 		titlePadding: 5,//padding between title and legend body
 		values: undefined, //manually define raw data values
 		cellNb: 4, //number of elements in the legend
@@ -45,6 +46,7 @@ export const legend = function (map, config) {
 	// color legend config (legend illustrating the data-driven colour classes)
 	out.colorLegend = {
 		title: null,
+		titleFontSize: 12,
 		titlePadding: 10, //padding between title and legend body
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
