@@ -265,7 +265,7 @@ export const map = function (config) {
 
 				})
 				// nuts border stroke width
-				.style("stroke-width", function (rg) {
+				.style("stroke-width", function (bn) {
 					const lvl = select(this).attr("lvl");
 					const sv = data.get(bn.properties.id);
 					if (!sv || !sv.value || sv.value==":" || !out.countriesToShow_.includes(bn.properties.id[0] + bn.properties.id[1])) {
