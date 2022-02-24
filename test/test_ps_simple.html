@@ -10,56 +10,77 @@
     <svg id="basic"></svg>
     <svg id="legend"></svg>
     <script src="../build/eurostatmap.js"></script>
+    <script src="./data/mixed.js"></script>
     <script>
-        // basic barebones example
-        let map = eurostatmap.map("ps")
-            .svgId("basic")
-            .nutsLvl(0)
-            .geo("WORLD")
-            .legend({
-                svgId: "legend",
-                
-                sizeLegend: {
-                    shapePadding: 10,
-                    titlePadding: 10,
-                    shapeOffset: { x: 0, y: 10 },
-                    labelOffset: 10,
-                    title: "first",
-                }
-            })
-            .psMaxSize(30)
-            .psMinSize(2)
-            .psClassifMethod("threshold")
-            .psThreshold([100, 200, 302, 400, 500])
-            .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
+        let nutsbnStrokeWidth = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 };
+        let cntbnStrokeWidth = { eu: 1, efta: 1, cc: 1, oth: 0, co: 0.5 };
+        let nutsbnStroke = {
+            0: '#000',
+            1: '#000',
+            2: '#000',
+            3: '#000',
+            co: '#000'
+        };
+            // basic barebones example
+            let map = eurostatmap.map("ps")
+                .svgId("basic")
+                //.nutsLvl(0)
+                .geo("WORLD")
+                //.countriesToShow(["DE"])
 
-        map.statData('size').setData({ ES: 1110, DE: 1000, FR: 500, US:100, DZ:100,CN:100,IN:100,AU:200,BR:200,AR:300,CN:100 })
-        map.build();
-
-        setTimeout(() => {
-            // update map, should update classification, style and legend
-            map.psShape('square')
-                .psFillOpacity(0.8)
-                .psMaxSize(50)
-                .psMinSize(20)
-                .psClassifMethod("threshold")
-                .psThreshold([1000, 2000, 3020, 4000, 5000])
+                .worldCoastStroke('#000')
+                .worldCoastStrokeWidth(0.1)
+                .seaFillStyle("#E6FFFF")
+                .cntrgFillStyle("#E6E6E6")
+                .nutsrgFillStyle("#ffffff")
+                .nutsLvl("mixed")
                 .legend({
                     svgId: "legend",
+
                     sizeLegend: {
-                        shapePadding: 90,
-                        titlePadding: -60,
-                        shapeOffset: { x: 0, y: -30 },
-                        labelOffset: 70,
-                        title: "second",
+                        shapePadding: 10,
+                        titlePadding: -10,
+                        values: [10, 5, 1],
+                        shapeOffset: { x: 0, y: 10 },
+                        labelOffset: { x: 30, y: 0 },
+                        title: "first",
                     }
                 })
-                .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"])
+                .psMaxSize(30)
+                .psMinSize(2)
+                //.psMaxValue(100)
+                //.psMinValue(-20)
+                .psClassifMethod("threshold")
+        //.psThreshold([100, 200, 302, 400, 500])
+        //.psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
-            map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000 })
-            map.updateStatValues();
+        map.statData('size').setData(mixedNUTS)
+        map.build();
 
-        }, 3000)
+        // setTimeout(() => {
+        //     // update map, should update classification, style and legend
+        //     map.psShape('square')
+        //         .psFillOpacity(0.8)
+        //         .psMaxSize(50)
+        //         .psMinSize(20)
+        //         .psClassifMethod("threshold")
+        //         .psThreshold([1000, 2000, 3020, 4000, 5000])
+        //         .legend({
+        //             svgId: "legend",
+        //             sizeLegend: {
+        //                 shapePadding: 90,
+        //                 titlePadding: -60,
+        //                 shapeOffset: { x: 0, y: -30 },
+        //                 labelOffset: 70,
+        //                 title: "second",
+        //             }
+        //         })
+        //         .psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"])
+
+        //     map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000 })
+        //     map.updateStatValues();
+
+        // }, 3000)
     </script>
 </body>
 

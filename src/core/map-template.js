@@ -18,8 +18,6 @@ formatDefaultLocale({
 	"currency": ["", "€"]
 });
 
-//geometries
-let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
 // geoPath function
 let path;
 
@@ -59,6 +57,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.titleFill_ = "black";
 	out.titlePosition_ = undefined;
 	out.titleFontWeight_ = "bold";
+	out.titleStroke_ = "none";
+	out.titleStrokeWidth_ = "none";
 
 	//map subtitle
 	out.subtitle_ = "";
@@ -66,6 +66,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitleFill_ = "grey";
 	out.subtitlePosition_ = undefined;
 	out.subtitleFontWeight_ = "bold";
+	out.subtitleStroke_ = "none";
+	out.subtitleStrokeWidth_= "none";
 
 	//map frame
 	out.frameStroke_ = "#222";
@@ -122,6 +124,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.worldFillStyle_ = '#E6E6E6';
 	out.worldStroke_ = 'black';
 	out.worldStrokeWidth_ = 1;
+	out.worldCoastStroke_ = 'none';
+	out.worldCoastStrokeWidth_ = 0.3;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -705,7 +709,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 
 
-
 				//add kosovo
 				if (out.geo_ == "EUR") {
 					// add kosovo manually
@@ -771,7 +774,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 					//cc borders
 					if (bn.properties.cc === "T") return out.cntbnStrokeWidth_.cc + 'px';
 				});
-			}
+		}
 
 		//draw NUTS boundaries
 		if (nutsbn) {
@@ -846,12 +849,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 						return '#b2b2b2'
 					} else if (bn.properties.COAS_FLAG == "F") {
 						return out.worldStroke_;
-					};
+					} else if (bn.properties.COAS_FLAG == "T") {
+						return out.worldCoastStroke_;
+					}
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG == "F") return out.worldStrokeWidth_;
-					// 0 and 4 are normal boundaries, anything else is disputed
-					// if (bn.properties.POL_STAT > 0) return out.cntbnStrokeWidth() + 'px';
+					if (bn.properties.COAS_FLAG == "F") {
+						return out.worldStrokeWidth_;
+					} else if (bn.properties.COAS_FLAG == "T") {
+						return out.worldCoastStrokeWidth_;
+					}
 				});
 
 		if (kosovo) {
@@ -870,27 +877,29 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//prepare group for proportional symbols, with nuts region centroids
 		if (withCenterPoints) {
 			let centroidFeatures;
-			if (out.nutsLvl_ == "mixed") {
-				centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
-			} else {
+
+			if (!centroidsData) {
 				// if centroids data is absent (e.g. for world maps) then calculate manually
-				if (!centroidsData) {
-					if (out.geo_ == "WORLD") {
-						centroidFeatures = [];
-						worldrg.forEach((feature)=>{
-							let newFeature = {...feature};
-							newFeature.geometry = {
-								"coordinates": geoCentroid(feature),
-								"type":"Point"
-							}
-							centroidFeatures.push(newFeature);
-						})
-					}
+				if (out.geo_ == "WORLD") {
+					centroidFeatures = [];
+					worldrg.forEach((feature) => {
+						let newFeature = { ...feature };
+						newFeature.geometry = {
+							"coordinates": geoCentroid(feature),
+							"type": "Point"
+						}
+						centroidFeatures.push(newFeature);
+					})
+				}
+			} else {
+				if (out.nutsLvl_ == "mixed") {
+					centroidFeatures = [...centroidsData[0].features, ...centroidsData[1].features, ...centroidsData[2].features, ...centroidsData[3].features];
 				} else {
 					centroidFeatures = centroidsData.features;
 				}
-				
 			}
+
+
 			const gcp = zg.append("g").attr("id", "g_ps");
 
 			//allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
@@ -902,6 +911,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//.attr("r", 1)
 				.attr("class", "symbol")
 				.style("fill", "gray")
+				.attr("id",(d)=> 'ps'+d.properties.id)
 				.on("mouseover", function (rg) {
 					const sel = select(this.childNodes[0]);
 					sel.attr("fill___", sel.style("fill"));
@@ -933,9 +943,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.titleFontSize() + "px")
 				.style("font-weight", out.titleFontWeight())
 				.style("fill", out.titleFill())
-
-				//.style("stroke-width", 3)
-				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
+				.style("stroke", out.titleStroke())
+				.style("stroke-width", out.titleStrokeWidth())
 				.style("stroke-linejoin", "round")
 				.style("paint-order", "stroke")
 		}
@@ -950,6 +959,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("font-size", out.subtitleFontSize() + "px")
 				.style("font-weight", out.subtitleFontWeight())
 				.style("fill", out.subtitleFill())
+				.style("stroke", out.subtitleStroke())
+				.style("stroke-width", out.subtitleStrokeWidth())
 
 				//.style("stroke-width", 3)
 				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
@@ -1034,7 +1045,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//clear previous labels
 		let prevLabels = out.svg_.selectAll("g.labels-container > *");
 		if (prevLabels) prevLabels.remove();
-		
+
 		if (out.labelling_) {
 			let zg = out.svg_.select("#zoomgroup" + out.svgId_);
 			addLabelsToMap(out, zg);
@@ -1318,7 +1329,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			for (let i = -1; i < subdivisionNb; i += 2) {
 				if (i == 1) {
 					sb.append('line')
-						.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+						.attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 				} else {
 					let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + ((i - 1) * divisionWidth);
 					if (x1 > 0) {
@@ -1330,7 +1341,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		} else {
 			// single full-length horizontal mid-line
 			sb.append('line')
-				.attr('x1', marginLeft + out.scalebarStrokeWidth_ -1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
+				.attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1).attr('y1', out.scalebarSegmentHeight_ / 2).attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + (divisionWidth * subdivisionNb)).attr('y2', out.scalebarSegmentHeight_ / 2).style('stroke', '#000').style('stroke-width', out.scalebarStrokeWidth_ + 'px')
 		}
 
 		//last tick

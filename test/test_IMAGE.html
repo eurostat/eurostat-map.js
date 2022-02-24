@@ -119,25 +119,25 @@
     }, 4000)
 
     //switch to world map
-    setTimeout(() => {
-      const map = eurostatmap
-      .map("ch")
-      .geo("WORLD")
-      .width(900.68)
-      .height(491.34)
-      .nutsLvl(0)
-      .title("World map")
-      .drawGraticule(true)
-      .graticuleStrokeWidth(0.4)
-      .seaFillStyle("#E6FFFF")
-      .cntrgFillStyle("#E6E6E6")
-      .classifMethod("threshold")
-      .threshold([10, 20, 30, 40, 50, 60, 70])
-      .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
+    // setTimeout(() => {
+    //   const map = eurostatmap
+    //   .map("ch")
+    //   .geo("WORLD")
+    //   .width(900.68)
+    //   .height(491.34)
+    //   .nutsLvl(0)
+    //   .title("World map")
+    //   .drawGraticule(true)
+    //   .graticuleStrokeWidth(0.4)
+    //   .seaFillStyle("#E6FFFF")
+    //   .cntrgFillStyle("#E6E6E6")
+    //   .classifMethod("threshold")
+    //   .threshold([10, 20, 30, 40, 50, 60, 70])
+    //   .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
 
-    map.statData().setData({US:1,UK:2,CA:3,CH:4});
-    map.build();
-    }, 8000)
+    // map.statData().setData({US:1,UK:2,CA:3,CH:4});
+    // map.build();
+    // }, 8000)
 
     // setTimeout(() => {
     //   map.statData().setData(mixedNUTS);

@@ -31,12 +31,14 @@ export const legend = function (map, config) {
 	//size legend config (legend illustrating the values of different symbol sizes)
 	out.sizeLegend = {
 		title: null,
-		titlePadding: 10,//padding between title and legend body
+		titleFontSize: 12,
+		titlePadding: 5,//padding between title and legend body
+		values: undefined, //manually define raw data values
 		cellNb: 4, //number of elements in the legend
 		shapePadding: 10, //the y distance between consecutive legend shape elements
 		shapeOffset: { x: 0, y: 0 },
 		shapeFill: "white",
-		labelOffset: 25, //the distance between the legend box elements to the corresponding text label
+		labelOffset: { x: 25, y:0}, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined
 	}
@@ -44,11 +46,12 @@ export const legend = function (map, config) {
 	// color legend config (legend illustrating the data-driven colour classes)
 	out.colorLegend = {
 		title: null,
+		titleFontSize: 12,
 		titlePadding: 10, //padding between title and legend body
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
-		labelOffset: 25, //distance (x) between label text and its corresponding shape element
+		labelOffset: { x: 25, y:0}, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
 		labelFormat: undefined, // user-defined d3 format function	
 		noData: true, //show no data
@@ -134,14 +137,19 @@ export const legend = function (map, config) {
 
 		let shape = getShape();
 		let domain = m.classifierSize_.domain();
-		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol)
+		let maxVal = domain[1]; //maximum value of dataset (used for first or last symbol by default)
 		out._sizeLegendHeight = 0; //sum of shape sizes: used for positioning legend elements and color legend
+
+		// if user defines values for legend manually
+		if (config.values) {config.cellNb = config.values.length }
 
 		//draw legend elements for classes: symbol + label
 		for (let i = 1; i < config.cellNb + 1; i++) {
-			//calculate shape size using cellNb
-			const ecl = out.ascending ? config.cellNb - i + 1 : i;
-			let val = maxVal / ecl;
+			//define class number
+			const c = out.ascending ? config.cellNb - i + 1 : i;
+			//define raw value
+			let val = config.values ? config.values[c-1] : maxVal / c;
+			//calculate shape size 
 			let size = m.classifierSize_(val);
 
 			//set shape size and define 'd'
@@ -154,12 +162,12 @@ export const legend = function (map, config) {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
 				x = out.boxPadding + 10;
 				//we also dont need the y offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight);
+				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight);
 			} else {
 				// x and y for all other symbols
 				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
 				x = out.boxPadding + out._xOffset; //set X offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
+				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
 			}
 			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
 
@@ -184,8 +192,8 @@ export const legend = function (map, config) {
 			}
 
 			//label position
-			let labelX = x + config.labelOffset;
-			let labelY = y;
+			let labelX = x + config.labelOffset.x;
+			let labelY = y + config.labelOffset.y;
 			if (out.map.psShape_ == "bar") {
 				labelY = labelY + (size / 2)
 			}
@@ -280,9 +288,9 @@ export const legend = function (map, config) {
 			}
 
 			//label
-			let labelY = y + (out.labelFontSize * 1.2);
+			let labelY = y + config.labelOffset.y + (out.labelFontSize * 1.2);
 			if (i < clnb - 1) {
-				lgg.append("text").attr("x", x + config.labelOffset).attr("y", labelY)
+				lgg.append("text").attr("x", x + config.labelOffset.x).attr("y", labelY)
 					.attr("alignment-baseline", "middle")
 					.text(d => {
 						let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
@@ -335,7 +343,7 @@ export const legend = function (map, config) {
 				});
 
 			//'no data' label
-			lgg.append("text").attr("x", x + config.labelOffset).attr("y", y + out.boxPadding)
+			lgg.append("text").attr("x", x + config.labelOffset.x).attr("y", y + out.boxPadding)
 				.attr("alignment-baseline", "middle")
 				.text(config.noDataText)
 				.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
