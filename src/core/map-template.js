@@ -18,8 +18,6 @@ formatDefaultLocale({
 	"currency": ["", "€"]
 });
 
-//geometries
-let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo;
 // geoPath function
 let path;
 
@@ -126,6 +124,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.worldFillStyle_ = '#E6E6E6';
 	out.worldStroke_ = 'black';
 	out.worldStrokeWidth_ = 1;
+	out.worldCoastStroke_ = 'none';
+	out.worldCoastStrokeWidth_ = 0.3;
 	//sea
 	out.seaFillStyle_ = "white";
 	out.drawCoastalMargin_ = true;
@@ -709,7 +709,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				})
 
 
-
 				//add kosovo
 				if (out.geo_ == "EUR") {
 					// add kosovo manually
@@ -850,12 +849,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 						return '#b2b2b2'
 					} else if (bn.properties.COAS_FLAG == "F") {
 						return out.worldStroke_;
-					};
+					} else if (bn.properties.COAS_FLAG == "T") {
+						return out.worldCoastStroke_;
+					}
 				})
 				.style("stroke-width", function (bn) {
-					if (bn.properties.COAS_FLAG == "F") return out.worldStrokeWidth_;
-					// 0 and 4 are normal boundaries, anything else is disputed
-					// if (bn.properties.POL_STAT > 0) return out.cntbnStrokeWidth() + 'px';
+					if (bn.properties.COAS_FLAG == "F") {
+						return out.worldStrokeWidth_;
+					} else if (bn.properties.COAS_FLAG == "T") {
+						return out.worldCoastStrokeWidth_;
+					}
 				});
 
 		if (kosovo) {

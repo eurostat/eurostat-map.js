@@ -1,5 +1,10 @@
 const mixedNUTS = {
     UK: 1,
+    US:1,
+    CA:2,
+    CN:3,
+    UA:4,
+    MX:4,
     UKL: 0.5,
     UKL1: ':',
     UKE2: 0.1,

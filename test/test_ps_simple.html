@@ -12,25 +12,24 @@
     <script src="../build/eurostatmap.js"></script>
     <script src="./data/mixed.js"></script>
     <script>
-        let nutsbnStrokeWidth = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+        let nutsbnStrokeWidth = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 };
         let cntbnStrokeWidth = { eu: 1, efta: 1, cc: 1, oth: 0, co: 0.5 };
         let nutsbnStroke = {
             0: '#000',
             1: '#000',
             2: '#000',
             3: '#000',
-            co: '#7f7f7f'
+            co: '#000'
         };
             // basic barebones example
             let map = eurostatmap.map("ps")
                 .svgId("basic")
                 //.nutsLvl(0)
-                //.geo("WORLD")
+                .geo("WORLD")
                 //.countriesToShow(["DE"])
 
-                .nutsbnStrokeWidth(nutsbnStrokeWidth)
-                .cntbnStrokeWidth(cntbnStrokeWidth)
-                .nutsbnStroke(nutsbnStroke)
+                .worldCoastStroke('#000')
+                .worldCoastStrokeWidth(0.1)
                 .seaFillStyle("#E6FFFF")
                 .cntrgFillStyle("#E6E6E6")
                 .nutsrgFillStyle("#ffffff")
