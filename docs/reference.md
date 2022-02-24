@@ -56,6 +56,18 @@ Specify the NUTS geometries and the geographical extent of the map.
 | *map*.**pixSize**([*value*]) | number | *auto* | The zoom level of the map view. This is expressed as the size of a pixel in geographical unit (or the map resolution). If not specified, a value is computed automatically to show the map extent. |
 | *map*.**zoomExtent**([*value*]) | Array | *undefined* | The zoom extent. The first value within [0,1] defines the maximum zoom out factor - the second value within [1,infinity] defines the maximum zoom in factor. Set to *[1,1]* to forbid zooming and allow panning. Set to *null* to forbid both. |
 
+## World maps
+
+It is also possible to build thematic world maps using eurostat-map. Simply pass "WORLD" to the map.geo() method. See [this example](https://github.com/eurostat/eurostat-map.js/blob/master/examples/world.html) for how to configure a world map.
+
+| Method | Type | Default value | Description |
+| -------- | ------ | ---------- | ----------- |
+| *map*.**worldFillStyle**([*value*]) | string | *'#E6E6E6'* | The default fill colour for territories on a world map |
+| *map*.**worldStroke**([*value*]) | string | *'black'* | The default stroke colour of the borders for states on a world map.  |
+| *map*.**worldStrokeWidth**([*value*]) | number | *1* | The default stroke width of the borders of states on a world map.  |
+| *map*.**worldCoastStroke**([*value*]) | string | *'none'* | The default stroke colour of the coastal borders of states on a world map.  |
+| *map*.**worldCoastStrokeWidth**([*value*]) | number | *0.3* | The default stroke width of the coastal borders of states on a world map.  |
+
 ## Statistical data
 
 The map statistical data can be accessed with the *map*.**statData**() method, which returns an object with the following methods:
