@@ -261,15 +261,17 @@ export const map = function (config) {
 							return out.nutsbnStroke_[parseInt(lvl)] || "#777";
 						}
 					}
-
-
 				})
 				// nuts border stroke width
-				.style("stroke-width", function (rg) {
+				.style("stroke-width", function (bn) {
 					const lvl = select(this).attr("lvl");
-					const ecl = select(this).attr("ecl");
-					if (ecl && lvl !== "0") {
-						return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2;
+					const sv = data.get(bn.properties.id);
+					if (!sv || !sv.value || sv.value==":" || !out.countriesToShow_.includes(bn.properties.id[0] + bn.properties.id[1])) {
+						return;
+					} else if (out.countriesToShow_.includes(bn.properties.id[0] + bn.properties.id[1])) {
+						if (lvl !== "0") {
+							return out.nutsbnStrokeWidth_[parseInt(lvl)] || "#777";
+						}
 					}
 				});
 			 }

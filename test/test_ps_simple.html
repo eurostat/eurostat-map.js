@@ -12,35 +12,48 @@
     <script src="../build/eurostatmap.js"></script>
     <script src="./data/mixed.js"></script>
     <script>
-        // basic barebones example
-        let map = eurostatmap.map("ps")
-            .svgId("basic")
-            .nutsLvl(0)
-            //.geo("WORLD")
-            //.countriesToShow(["DE"])
-            .seaFillStyle("#E6FFFF")
-            .cntrgFillStyle("#E6E6E6")
-            .nutsrgFillStyle("#ffffff")
-            .nutsLvl("mixed")
-            .legend({
-                svgId: "legend",
+        let nutsbnStrokeWidth = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+        let cntbnStrokeWidth = { eu: 1, efta: 1, cc: 1, oth: 0, co: 0.5 };
+        let nutsbnStroke = {
+            0: '#000',
+            1: '#000',
+            2: '#000',
+            3: '#000',
+            co: '#7f7f7f'
+        };
+            // basic barebones example
+            let map = eurostatmap.map("ps")
+                .svgId("basic")
+                //.nutsLvl(0)
+                //.geo("WORLD")
+                //.countriesToShow(["DE"])
 
-                sizeLegend: {
-                    shapePadding: 10,
-                    titlePadding: -10,
-                    values: [10, 5, 1],
-                    shapeOffset: { x: 0, y: 10 },
-                    labelOffset: { x: 30, y: 0 },
-                    title: "first",
-                }
-            })
-            .psMaxSize(30)
-            .psMinSize(2)
-            //.psMaxValue(100)
-            //.psMinValue(-20)
-            .psClassifMethod("threshold")
-            //.psThreshold([100, 200, 302, 400, 500])
-            //.psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
+                .nutsbnStrokeWidth(nutsbnStrokeWidth)
+                .cntbnStrokeWidth(cntbnStrokeWidth)
+                .nutsbnStroke(nutsbnStroke)
+                .seaFillStyle("#E6FFFF")
+                .cntrgFillStyle("#E6E6E6")
+                .nutsrgFillStyle("#ffffff")
+                .nutsLvl("mixed")
+                .legend({
+                    svgId: "legend",
+
+                    sizeLegend: {
+                        shapePadding: 10,
+                        titlePadding: -10,
+                        values: [10, 5, 1],
+                        shapeOffset: { x: 0, y: 10 },
+                        labelOffset: { x: 30, y: 0 },
+                        title: "first",
+                    }
+                })
+                .psMaxSize(30)
+                .psMinSize(2)
+                //.psMaxValue(100)
+                //.psMinValue(-20)
+                .psClassifMethod("threshold")
+        //.psThreshold([100, 200, 302, 400, 500])
+        //.psColors(["#2d50a0", "#6487c3", "#aab9e1", "#f0cd91", "#e6a532", "#d76e2d"].reverse())
 
         map.statData('size').setData(mixedNUTS)
         map.build();
