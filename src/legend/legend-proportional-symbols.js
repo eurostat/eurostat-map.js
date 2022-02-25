@@ -369,7 +369,7 @@ export const legend = function (map, config) {
 				context.lineTo(0, 0);
 				context.closePath();
 			}
-			shape = d3.symbol().type({ draw: drawRectangle })
+			shape = symbol().type({ draw: drawRectangle })
 		} else {
 			let symbolType = symbolsLibrary[out.map.psShape_] || symbolsLibrary["circle"];
 			shape = symbol().type(symbolType);
