@@ -162,7 +162,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 	out.nuts2jsonBaseURL_ = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
-
 	/**
 	 * Insets.
 	 * The map template has a recursive structure.
@@ -181,7 +180,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetScale_ = "03M";
 
 	// clear any existing geometries
-	let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo = undefined;
+	let nutsRG, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo, path = undefined;
 
 	/**
 	 * Definition of getters/setters for all previously defined attributes.
@@ -260,6 +259,34 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (arguments.length == 1 && arguments[0] === "default") out.insets_ = "default";
 		else if (arguments.length == 1 && Array.isArray(arguments[0])) out.insets_ = arguments[0];
 		else out.insets_ = arguments;
+		return out;
+	}
+
+	// dynamic draw graticule
+	out.drawGraticule = function (v) {
+		if (!arguments.length) return out.drawGraticule_;
+
+		out.drawGraticule_ = v;
+
+		//update graticule
+		let graticule = select('#g_gra');
+		let zg = out.svg_ ? out.svg_.select("#zoomgroup" + out.svgId_) : null;
+		if (graticule._groups[0][0] && v == false) {
+			//remove graticule
+			graticule.remove();
+		} else if (!graticule._groups[0][0] && gra && path && zg && v==true) {
+			// add graticule
+			zg.append("g").attr("id", "g_gra")
+			.style("fill", "none")
+			.style("stroke", out.graticuleStroke())
+			.style("stroke-width", out.graticuleStrokeWidth())
+			.selectAll("path").data(gra)
+			.enter().append("path").attr("d", path).attr("class", "gra")
+			// move graticule to back (in front of sea)
+			select('#g_gra').each(function() {
+				this.parentNode.insertBefore(this, this.parentNode.childNodes[1]);
+			  });
+		}
 		return out;
 	}
 
