@@ -144,9 +144,15 @@ export const legend = function (map, config) {
 		if (config.values) { config.cellNb = config.values.length }
 
 		//draw legend elements for classes: symbol + label
-		let prevSymb; //previous item in legend
-		let initialTranslateY; //y translate of initial legend item
-		let nodeHeights=0; // total node heights in px for custom
+
+		// for custom paths
+			let prevSymb; //previous item in legend
+			let prevScale; //previous item scale
+			let initialTranslateY; //y translate of initial legend item
+			let nodeHeights=0; // total node heights in px for custom
+			
+		
+
 		for (let i = 1; i < config.cellNb + 1; i++) {
 			//define class number
 			const c = out.ascending ? config.cellNb - i + 1 : i;
@@ -175,14 +181,18 @@ export const legend = function (map, config) {
 				if (!prevSymb) {
 					y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight); 
 					initialTranslateY= y;
+					prevScale = size;
 					out._sizeLegendHeight = out._sizeLegendHeight + y;
 				}
+
 				//following items
 				if (prevSymb) {
-					let prevNode = prevSymb.node().getBBox();
-					nodeHeights = nodeHeights + prevNode.height
+					let prevNode = prevSymb.node();
+					let bbox = prevNode.getBBox();
+					nodeHeights = nodeHeights + (bbox.height*prevScale);
 					y = initialTranslateY + nodeHeights + (config.shapePadding*(i-1));
-					out._sizeLegendHeight = out._sizeLegendHeight + prevNode.height + config.shapePadding;
+					out._sizeLegendHeight = out._sizeLegendHeight + bbox.height + config.shapePadding;
+					prevScale = size;
 				}
 				
 			} else {
