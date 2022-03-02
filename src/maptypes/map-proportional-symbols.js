@@ -164,16 +164,16 @@ export const map = function (config) {
 			//custom symbol
 			if (out.psCustomPath_) {
 				symb = out.svg().select("#g_ps").selectAll("g.symbol")
-					.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
+					.append("path").filter((rg)=>{
+						const sv = data.get(rg.properties.id);
+						if (sv) return rg;
+					}).attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
 						//calculate size
 						const sv = data.get(rg.properties.id);
-						let size;
-						if (!sv || !sv.value) {
-							size = 0;
-						} else {
-							size = out.classifierSize_(+sv.value);
+						let size = out.classifierSize_(+sv.value);
+						if (size) {
+							return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
 						}
-						return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
 					})
 
 				// bars
