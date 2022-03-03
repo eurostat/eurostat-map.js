@@ -67,7 +67,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitlePosition_ = undefined;
 	out.subtitleFontWeight_ = "bold";
 	out.subtitleStroke_ = "none";
-	out.subtitleStrokeWidth_= "none";
+	out.subtitleStrokeWidth_ = "none";
 
 	//map frame
 	out.frameStroke_ = "#222";
@@ -271,21 +271,28 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//update graticule
 		let graticule = select('#g_gra');
 		let zg = out.svg_ ? out.svg_.select("#zoomgroup" + out.svgId_) : null;
+
+		// if existing and argument is false
 		if (graticule._groups[0][0] && v == false) {
 			//remove graticule
 			graticule.remove();
-		} else if (!graticule._groups[0][0] && gra && path && zg && v==true) {
-			// add graticule
+
+		// if map already created and argument is true
+		} else if (gra && path && zg && v == true) {
+			//remove existing graticule
+			graticule.remove();
+			// add new graticule
 			zg.append("g").attr("id", "g_gra")
-			.style("fill", "none")
-			.style("stroke", out.graticuleStroke())
-			.style("stroke-width", out.graticuleStrokeWidth())
-			.selectAll("path").data(gra)
-			.enter().append("path").attr("d", path).attr("class", "gra")
-			// move graticule to back (in front of sea)
-			select('#g_gra').each(function() {
-				this.parentNode.insertBefore(this, this.parentNode.childNodes[1]);
-			  });
+				.style("fill", "none")
+				.style("stroke", out.graticuleStroke())
+				.style("stroke-width", out.graticuleStrokeWidth())
+				.selectAll("path").data(gra)
+				.enter().append("path").attr("d", path).attr("class", "gra")
+
+			select('#g_gra').each(function () {
+				// move graticule to back (in front of sea)
+				out.geo_ == "WORLD" ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3]) : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
+			});
 		}
 		return out;
 	}
@@ -938,7 +945,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				//.attr("r", 1)
 				.attr("class", "symbol")
 				.style("fill", "gray")
-				.attr("id",(d)=> 'ps'+d.properties.id)
+				.attr("id", (d) => 'ps' + d.properties.id)
 				.on("mouseover", function (rg) {
 					const sel = select(this.childNodes[0]);
 					sel.attr("fill___", sel.style("fill"));

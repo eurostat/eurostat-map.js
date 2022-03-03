@@ -13,6 +13,7 @@
         const map = eurostatmap
             .map("ch")
             .title("Population in Europe")
+            //.geo("WORLD")
             .scale("60M")
             .nutsLvl(2)
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
@@ -37,12 +38,12 @@
 
 
             setTimeout(()=>{
-                map.drawGraticule(false);
-            },4000)
+                map.graticuleStroke('red').drawGraticule(false);
+            },2000)
 
             setTimeout(()=>{
-                map.drawGraticule(true);
-            },8000)
+                map.graticuleStroke('blue').drawGraticule(true);
+            },4000)
     </script>
 </body>
 
