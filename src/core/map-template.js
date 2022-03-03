@@ -319,6 +319,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//update existing
 		let margin = select('#g_coast_margin');
+		let filter = select('#coastal_blur');
 		let zg = out.svg_ ? out.svg_.select("#zoomgroup" + out.svgId_) : null;
 		if (margin._groups[0][0] && v == false) {
 			// remove existing
@@ -326,6 +327,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 		} else if (v == true && path && zg) {
 			//remove existing graticule
 			margin.remove();
+			filter.remove();
+			//add filter
+			out.svg_.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
+			.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 			//draw new coastal margin
 			const cg = zg.append("g").attr("id", "g_coast_margin")
 				.style("fill", "none")

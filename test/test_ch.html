@@ -14,7 +14,7 @@
             .map("ch")
             .title("Population in Europe")
             //.geo("WORLD")
-            .drawCoastalMargin(true)
+            .drawCoastalMargin(false)
             .seaFillStyle('lightgrey')
             .scale("60M")
             .nutsLvl(2)
@@ -41,7 +41,7 @@
 
 
             setTimeout(()=>{
-                map.drawCoastalMargin(false)
+                map.drawCoastalMargin(true)
                 // map.graticuleStroke('red').drawGraticule(false);
                 // map.seaFillStyle("yellow")
             },2000)
