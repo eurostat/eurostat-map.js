@@ -14,6 +14,8 @@
             .map("ch")
             .title("Population in Europe")
             //.geo("WORLD")
+            .drawCoastalMargin(true)
+            .seaFillStyle('lightgrey')
             .scale("60M")
             .nutsLvl(2)
             .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
@@ -21,10 +23,11 @@
             .legend({ labelDecNb:0, x:15, y:160, })
             //.labelling(true)
             .drawGraticule(true)
+            .graticuleStroke('black')
             .labelsToShow(["seas","values"])
 
             if (window.innerWidth > 800) {
-                map.insets("default")
+                //map.insets("default")
             } else {
                 // settings for smaller devices
                 map.legend({ labelDecNb:0, x: window.innerWidth - 80, y:5, })
@@ -38,11 +41,13 @@
 
 
             setTimeout(()=>{
-                map.graticuleStroke('red').drawGraticule(false);
+                map.drawCoastalMargin(false)
+                // map.graticuleStroke('red').drawGraticule(false);
+                // map.seaFillStyle("yellow")
             },2000)
 
             setTimeout(()=>{
-                map.graticuleStroke('blue').drawGraticule(true);
+                map.drawCoastalMargin(true)
             },4000)
     </script>
 </body>

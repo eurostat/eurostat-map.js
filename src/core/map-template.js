@@ -265,7 +265,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 	// dynamic draw graticule
 	out.drawGraticule = function (v) {
 		if (!arguments.length) return out.drawGraticule_;
-
 		out.drawGraticule_ = v;
 
 		//update graticule
@@ -277,7 +276,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//remove graticule
 			graticule.remove();
 
-		// if map already created and argument is true
+			// if map already created and argument is true
 		} else if (gra && path && zg && v == true) {
 			//remove existing graticule
 			graticule.remove();
@@ -291,6 +290,68 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 			select('#g_gra').each(function () {
 				// move graticule to back (in front of sea)
+				out.geo_ == "WORLD" ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3]) : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
+			});
+		}
+		return out;
+	}
+
+	// sea color override
+	out.seaFillStyle = function (v) {
+		if (!arguments.length) return out.seaFillStyle_;
+		out.seaFillStyle_ = v;
+
+		//update existing sea
+		if (out.geo_ == "WORLD") {
+			let sea = select('#sphere');
+			if (sea) sea.style("fill", out.seaFillStyle_);
+		} else {
+			let sea = select('#sea');
+			if (sea) sea.style("fill", out.seaFillStyle_);
+		}
+		return out;
+	}
+
+	//coastal margin override
+	out.drawCoastalMargin = function (v) {
+		if (!arguments.length) return out.drawCoastalMargin_;
+		out.drawCoastalMargin_ = v;
+
+		//update existing
+		let margin = select('#g_coast_margin');
+		let zg = out.svg_ ? out.svg_.select("#zoomgroup" + out.svgId_) : null;
+		if (margin._groups[0][0] && v == false) {
+			// remove existing
+			margin.remove();
+		} else if (v == true && path && zg) {
+			//remove existing graticule
+			margin.remove();
+			//draw new coastal margin
+			const cg = zg.append("g").attr("id", "g_coast_margin")
+				.style("fill", "none")
+				.style("stroke-width", out.coastalMarginWidth_)
+				.style("stroke", out.coastalMarginColor_)
+				.style("filter", "url(#coastal_blur)")
+				.style("stroke-linejoin", "round")
+				.style("stroke-linecap", "round");
+			//countries bn
+			if (cntbn)
+				cg.append("g").attr("id", "g_coast_margin_cnt")
+					.selectAll("path").data(cntbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.append("path").attr("d", path);
+			//nuts bn
+			if (nutsbn)
+				cg.append("g").attr("id", "g_coast_margin_nuts")
+					.selectAll("path").data(nutsbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.append("path").attr("d", path);
+			//world bn
+			if (worldbn)
+				cg.append("g").attr("id", "g_coast_margin_nuts")
+					.selectAll("path").data(worldbn).enter().filter(function (bn) { return bn.properties.COAS_FLAG === "T"; })
+					.append("path").attr("d", path);
+
+			// move margin to back (in front of sea)
+			select('#g_coast_margin').each(function () {
 				out.geo_ == "WORLD" ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3]) : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
 			});
 		}
@@ -476,8 +537,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				out.insetTemplates_[geo].updateGeoMT(callback);
 			}
 		}
-
-
 		return out;
 	}
 
@@ -512,13 +571,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (!out.height()) out.height(0.85 * out.width());
 		svg.attr("width", out.width()).attr("height", out.height());
 
-		// each map tempalte needs a clipPath to avoid overflow. See GISCO-2707
+		// each map template needs a clipPath to avoid overflow. See GISCO-2707
 		svg.append('defs')
 			.append("clipPath")
 			.attr("id", out.svgId_ + "_clipP")
 			.append("path")
 			.attr("d", convertRectangles(0, 0, out.width_, out.height_))
-
 
 		if (out.drawCoastalMargin_)
 			//define filter for coastal margin
@@ -583,9 +641,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		return out;
 	};
-
-
-
 
 	/** 
 	 * Buid an empty map template, based on the geometries only.
@@ -656,7 +711,18 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//draw background rectangle
 		zg.append("rect").attr("id", "sea").attr("x", -5 * out.width_).attr("y", -5 * out.height_)
 			.attr("width", 11 * out.width_).attr("height", 11 * out.height_)
-			.style("fill", () => out.geo_ == "WORLD" ? "white" : out.seaFillStyle_); //for world templates sea colour is only for the sphere
+			.style("fill", () => out.geo_ == "WORLD" ? "white" : out.seaFillStyle_); //for world templates sea colour is applied to the sphere
+
+		//sphere for world map
+		if (out.geo_ == "WORLD") {
+			zg.append("path")
+				.datum({ type: "Sphere" })
+				.attr("id", "sphere")
+				.attr("d", path)
+				.attr("stroke", out.graticuleStroke())
+				.attr("stroke-width", out.graticuleStrokeWidth())
+				.attr("fill", out.seaFillStyle_)
+		}
 
 		if (out.drawCoastalMargin_) {
 			//draw coastal margin
@@ -680,20 +746,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 			//world bn
 			if (worldbn)
 				cg.append("g").attr("id", "g_coast_margin_nuts")
-					.selectAll("path").data(worldbn).enter().filter(function (bn) { return bn.properties.co === "T"; })
+					.selectAll("path").data(worldbn).enter().filter(function (bn) { return bn.properties.COAS_FLAG === "T"; })
 					.append("path").attr("d", path);
 		}
 
-		//sphere for world map
-		if (out.geo_ == "WORLD") {
-			zg.append("path")
-				.datum({ type: "Sphere" })
-				.attr("id", "sphere")
-				.attr("d", path)
-				.attr("stroke", out.graticuleStroke())
-				.attr("stroke-width", out.graticuleStrokeWidth())
-				.attr("fill", out.seaFillStyle_)
-		}
+
 
 		if (gra && out.drawGraticule_) {
 			//draw graticule
@@ -995,9 +1052,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				.style("fill", out.subtitleFill())
 				.style("stroke", out.subtitleStroke())
 				.style("stroke-width", out.subtitleStrokeWidth())
-
-				//.style("stroke-width", 3)
-				//.style("stroke", "lightgray"/*out.seaFillStyle()*/)
 				.style("stroke-linejoin", "round")
 				.style("paint-order", "stroke")
 		}

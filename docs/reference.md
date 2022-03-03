@@ -728,7 +728,7 @@ Specify specific map styles.
 | *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
 | *map*.**coastalMarginWidth**([*value*]) | number | *5* | The width of the coastal blurry margin. |
 | *map*.**coastalMarginStdDev**([*value*]) | number | *2* | The standard deviation of the coastal blurry margin. |
-| *map*.**drawGraticule**([*value*]) | boolean | *false* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
+| *map*.**drawGraticule**([*value*]) | boolean | *false* | Set to true to show the graticule (meridian and parallel lines). False otherwise. Calls to this method after the map is built will update the graticule. |
 | *map*.**graticuleStroke**([*value*]) | String | *"lightgray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 
