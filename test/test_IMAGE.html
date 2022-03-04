@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <svg id="map"></svg>
+  <svg id="mappy"></svg>
   <script src="../build/eurostatmap.js"></script>
   <script src="./data/nuts3.js"></script>
   <script src="./configs/insetConfig.js"></script>
@@ -19,6 +19,8 @@
     basemap = function () {
       return eurostatmap
         .map("ch")
+        .svgId("mappy")
+        .containerId('mappy')
         .pixSize(7400)
         .width(mapWidth)
         .height(mapHeight)

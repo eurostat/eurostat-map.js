@@ -6,6 +6,7 @@ import { select, event } from "d3-selection";
  */
 export const tooltip = function (config) {
 	config = config || {};
+	config.containerId = config.containerId || 'map';
 	config.div = config.div || "tooltip_eurostat";
 	config.maxWidth = config.maxWidth || "200px";
 	config.fontSize = config.fontSize || "14px";
@@ -48,13 +49,13 @@ export const tooltip = function (config) {
 		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px")
 			.transition().duration(config.transitionDuration).style("opacity", 1);
 
-			//this.ensureTooltipOnScreen();
+			this.ensureTooltipOnScreen();
 	};
 
 	my.mousemove = function () {
 		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px");
 
-		//this.ensureTooltipOnScreen();
+		this.ensureTooltipOnScreen();
 	};
 
 	my.mouseout = function () {
@@ -79,10 +80,10 @@ export const tooltip = function (config) {
 */
 my.ensureTooltipOnScreen = function() {
 	// TODO: parent needs to be the all-encompassing container, not the map SVG id otherwise it just uses the last SVG which will be an inset SVG.
-	let parent = document.getElementById(config.parentContainerId);
+	let parent = document.getElementById(config.containerId);
 	let bbox = parent.getBBox();
-	let parentWidth = bbox.width;
-	let parentHeight = bbox.height;
+	let parentWidth = parent.clientWidth;
+	let parentHeight = parent.clientHeight;
 	let node = tooltip.node();
     //too far right
     if (node.offsetLeft > parentWidth - node.clientWidth) {

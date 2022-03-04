@@ -498,7 +498,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 				if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6], geo___[7]];
 				//build map template
 				out.buildMapTemplate();
-
 				//callback
 				callback();
 			}, err => {
@@ -511,10 +510,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 			Promise.all(promises).then((geo___) => {
 				geoData = geo___[0];
 				if (withCenterPoints) centroidsData = geo___[1];
-
 				//build map template
 				out.buildMapTemplate();
-
 				//callback
 				callback();
 			}, err => {
@@ -559,6 +556,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 		if (svg.size() == 0)
 			svg = select("body").append("svg").attr("id", out.svgId())
 		out.svg(svg);
+
+		//set container for cases where container contains various maps
+		if (!out.containerId_) out.containerId_ = out.svgId_;
 
 		//clear SVG (to avoid building multiple svgs on top of each other during multiple build() calls)
 		selectAll("#" + out.svgId() + " > *").remove();
@@ -655,7 +655,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//prepare map tooltip
 		if (out.tooltip_) {
 			//tooltip needs to know container dimensions to prevent overflow
-			//out.tooltip_.parentContainerId = out.svgId_; // TODO: this just gives an inset ID. we need the parent element of all maps.
+			if (!out.tooltip_.containerId_) { out.tooltip_.containerId_ = out.containerId_}; // we need the parent element of all map elements.
 			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
