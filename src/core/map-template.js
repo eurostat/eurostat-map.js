@@ -37,6 +37,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.svg_ = undefined;
 	out.width_ = Math.min(800, window.innerWidth);
 	out.height_ = 0;
+	out.containerId_ = undefined;
 
 	//geographical focus
 	out.nutsLvl_ = 3; // 0,1,2,3, or 'mixed'
@@ -330,7 +331,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			filter.remove();
 			//add filter
 			out.svg_.append("filter").attr("id", "coastal_blur").attr("x", "-200%").attr("y", "-200%").attr("width", "400%")
-			.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
+				.attr("height", "400%").append("feGaussianBlur").attr("in", "SourceGraphic").attr("stdDeviation", out.coastalMarginStdDev_);
 			//draw new coastal margin
 			const cg = zg.append("g").attr("id", "g_coast_margin")
 				.style("fill", "none")
@@ -559,6 +560,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//set container for cases where container contains various maps
 		if (!out.containerId_) out.containerId_ = out.svgId_;
+		//tooltip needs to know container to prevent overflow
+		if (!out.tooltip_.containerId) { out.tooltip_.containerId = out.containerId_ };
 
 		//clear SVG (to avoid building multiple svgs on top of each other during multiple build() calls)
 		selectAll("#" + out.svgId() + " > *").remove();
@@ -654,8 +657,6 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//prepare map tooltip
 		if (out.tooltip_) {
-			//tooltip needs to know container dimensions to prevent overflow
-			if (!out.tooltip_.containerId) { out.tooltip_.containerId = out.containerId_}; // we need the parent element of all map elements.
 			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default

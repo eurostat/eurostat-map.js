@@ -7,7 +7,10 @@
 </head>
 
 <body>
-  <svg id="mappy"></svg>
+  <div style="margin-left:68%">
+    <svg id="mappy"></svg>
+  </div>
+  
   <script src="../build/eurostatmap.js"></script>
   <script src="./data/nuts3.js"></script>
   <script src="./configs/insetConfig.js"></script>
@@ -71,34 +74,34 @@
     };
 
     let exampleData1 = {
-      'AT': 0, 'BE': 0, 'BG': 0, 'CY': 0, 'CZ': 0, 'DE': 0, 'DK': 0, 'EE': 0, 'EL': 0, 'ES': 0, 'FI': 0, 'FR': 0, 'HR': 0, 'HU': 0, 'IE': 0, 'IS': 0, 'IT': 0, 'LI': 0, 'LT': 0, 'LU': 0, 'LV': 0, 'MT': 0, 'NL': 0, 'PL': 0, 'PT': 0, 'RO': 0, 'SE': 0, 'SI': 0, 'SK': 0, 'UK': 0, 'RS': 0, 'CH': 0, 'NO': 0, 'ME': 0, 'MK': 0, 'AL': 0, 'TR': 0
+      'FRY':10,'TRB':10,'AT': 10, 'BE': 10, 'BG': 10, 'CY': 10, 'CZ': 10, 'DE': 10, 'DK': 10, 'EE': 10, 'EL': 10, 'ES': 10, 'FI': 10, 'FR': 10, 'HR': 10, 'HU': 10, 'IE': 10, 'IS': 10, 'IT': 10, 'LI': 10, 'LT': 10, 'LU': 10, 'LV': 10, 'MT': 10, 'NL': 10, 'PL': 10, 'PT': 10, 'RO': 10, 'SE': 10, 'SI': 10, 'SK': 10, 'UK': 10, 'RS': 10, 'CH': 10, 'NO': 10, 'ME': 10, 'MK': 10, 'AL': 10, 'TR': 10
     };
-    let exampleData2 = { ES: 0 };
+    let exampleData2 = { ES: 10 };
     let map = basemap();
-    map.statData().setData(mixedNUTS);
+    map.statData().setData(exampleData1);
     map.build();
 
     // update data, classification and labels
-    setTimeout(() => {
-      map.statData().setData(nuts3);
-      map.updateStatValues();
+    // setTimeout(() => {
+    //   map.statData().setData(nuts3);
+    //   map.updateStatValues();
 
-      map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
-      map.threshold([2, 4, 6, 8, 10, 9999])
-      //map.updateClassification();
-      map.updateStyle();
+    //   map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
+    //   map.threshold([2, 4, 6, 8, 10, 9999])
+    //   //map.updateClassification();
+    //   map.updateStyle();
 
-    }, 2000);
+    // }, 2000);
 
-    setTimeout(() => {
-      //map.statData().setData({ ZZ: 0 });
-      //map.updateStatValues();
-      map.colors(['#edf8e9', '#c7e9c0', '#a1d99b', '#74c476', '#31a354', '#006d2c', '#999'],)
-      map.threshold([1, 2, 3, 4, 5, 9999])
+    // setTimeout(() => {
+    //   //map.statData().setData({ ZZ: 0 });
+    //   //map.updateStatValues();
+    //   map.colors(['#edf8e9', '#c7e9c0', '#a1d99b', '#74c476', '#31a354', '#006d2c', '#999'],)
+    //   map.threshold([1, 2, 3, 4, 5, 9999])
 
-      //map.updateClassification();
-      map.updateStyle();
-    }, 4000)
+    //   //map.updateClassification();
+    //   map.updateStyle();
+    // }, 4000)
 
 
     // dynamic labelling
