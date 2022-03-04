@@ -655,7 +655,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		//prepare map tooltip
 		if (out.tooltip_) {
 			//tooltip needs to know container dimensions to prevent overflow
-			if (!out.tooltip_.containerId_) { out.tooltip_.containerId_ = out.containerId_}; // we need the parent element of all map elements.
+			if (!out.tooltip_.containerId) { out.tooltip_.containerId = out.containerId_}; // we need the parent element of all map elements.
 			out._tooltip = tp.tooltip(out.tooltip_);
 		} else {
 			//no config specified, use default
