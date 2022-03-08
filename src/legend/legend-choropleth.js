@@ -50,6 +50,11 @@ export const legend = function (map, config) {
 		const svgMap = m.svg();
 		const lgg = out.lgg;
 
+		// update legend parameters if necessary
+		if (m.legend_) for (let key in m.legend_) {
+				out[key] = m.legend_[key];
+		}
+
 		//remove previous content
 		lgg.selectAll("*").remove();
 

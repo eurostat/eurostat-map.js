@@ -37,14 +37,6 @@ import * as mt from './core/stat-map';
 };
 
 
-
-
-// fill pattern style
-
-
-
-
-
 /**
  * Return a function which builds fill patterns style.
  * The returned function has for arguments the SVG element where to use the fill pattern, and the number of classes.

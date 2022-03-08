@@ -102,7 +102,6 @@ export const tooltip = function (config) {
 				let left2 = eventX - (node.clientWidth + config.xOffset);
 				node.style.left = left2 + "px";
 			}
-			console.log(eventX, node.clientWidth, config.xOffset)
 			// node.style.top = node.offsetTop + config.yOffset + "px";
 		} 
 
