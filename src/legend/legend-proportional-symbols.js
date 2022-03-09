@@ -40,7 +40,7 @@ export const legend = function (map, config) {
 		shapeFill: "white",
 		labelOffset: { x: 25, y: 0 }, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined
+		labelFormatter: undefined
 	}
 
 	// color legend config (legend illustrating the data-driven colour classes)
@@ -53,7 +53,7 @@ export const legend = function (map, config) {
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
 		labelOffset: { x: 25, y: 0 }, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined, // user-defined d3 format function	
+		labelFormatter: undefined, // user-defined d3 format function	
 		noData: true, //show no data
 		noDataText: "No data", //no data text label
 		sepLineLength: 17,// //the separation line length
@@ -126,7 +126,7 @@ export const legend = function (map, config) {
 	 */
 	function buildSizeLegend(m, lgg, config) {
 		//define format for labels
-		let f = config.labelFormat || spaceAsThousandSeparator;
+		let f = config.labelFormatter || spaceAsThousandSeparator;
 		//draw title
 		if (config.title) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
@@ -250,7 +250,7 @@ export const legend = function (map, config) {
  */
 	function buildColorLegend(m, lgg, config) {
 		//define format for labels
-		let f = config.labelFormat || spaceAsThousandSeparator;
+		let f = config.labelFormatter || spaceAsThousandSeparator;
 		const svgMap = m.svg();
 
 		//title

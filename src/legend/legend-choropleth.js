@@ -1,7 +1,6 @@
 import { select } from "d3-selection";
 import { format } from "d3-format";
 import * as lg from '../core/legend';
-import { spaceAsThousandSeparator } from "../lib/eurostat-map-util";
 
 /**
  * A legend for choropleth maps
@@ -34,6 +33,8 @@ export const legend = function (map, config) {
 	out.labelDecNb = 2;
 	//the distance between the legend box elements to the corresponding text label
 	out.labelOffset = 3;
+	//labelFormatter function
+	out.labelFormatter = null;
 
 	//show no data
 	out.noData = true;
@@ -71,7 +72,7 @@ export const legend = function (map, config) {
 		lgg.style("font-family", m.fontFamily_);
 
 		//define format for labels
-		const f = format("." + out.labelDecNb + "f");
+		const f = out.labelFormatter ? out.labelFormatter : format("." + out.labelDecNb + "f");
 
 		//draw legend elements for classes: rectangle + label
 		for (let i = 0; i < m.clnb(); i++) {
@@ -107,7 +108,7 @@ export const legend = function (map, config) {
 			if (i < m.clnb() - 1)
 				lgg.append("text").attr("x", out.boxPadding + Math.max(out.shapeWidth, out.sepLineLength) + out.labelOffset).attr("y", y + out.shapeHeight)
 					.attr("alignment-baseline", "middle")
-					.text(spaceAsThousandSeparator(f(m.classifier().invertExtent(ecl)[out.ascending ? 0 : 1])))
+					.text(f(m.classifier().invertExtent(ecl)[out.ascending ? 0 : 1]))
 					.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 		}
 

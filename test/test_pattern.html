@@ -11,11 +11,11 @@
     <div>
         <svg id="map"></svg>
     </div>
-   
+
     <div>
         <svg id="legend" style="overflow:inherit;"></svg>
     </div>
-    
+
     <script src="../build/eurostatmap.js"></script>
     <script>
         let map = eurostatmap.map("ch")
@@ -37,23 +37,24 @@
             .tooltipShowFlags(false)
             .threshold([1, 3, 6, 7, 8, 9])
             .legend({
-                svgId:'legend',
+                svgId: 'legend',
                 title: "FIRST",
                 labelDecNb: 0,
                 shapeHeight: 15,
                 shapeWidth: 25,
                 noData: false,
+                labelFormatter: (val) => val.toLocaleString("en").replace(/,/gi, " ")
             }).nutsLvl("mixed")
 
 
-        map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })
+        map.statData().setData({ ES: 2000, FR: 3000, DE: 4000, HU: 5000, SE: 12000, UK: 4000, IT: 2000, RO: 7000, PL: 8000, HR: 9000, SK: 10000 })
         map.build();
 
 
 
         // update data, classification
         setTimeout(() => {
-            map.threshold([1, 9]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+            map.threshold([1000, 9000]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
                 patternSize: 5,
                 shape: 'square',
                 bckColor: 'white',
@@ -65,11 +66,11 @@
             })
 
             //map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })
-            
+
         }, 2000);
 
         setTimeout(() => {
-            map.threshold([1, 3, 6, 7, 8, 9,10,11,12,13]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+            map.threshold([1000, 3000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
                 patternSize: 5,
                 shape: 'square',
                 bckColor: 'LIGHTBLUE',
@@ -85,7 +86,7 @@
         }, 4000);
 
         setTimeout(() => {
-            map.threshold([1, 3, 6,99]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+            map.threshold([1000, 3000, 6000, 99000]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
                 patternSize: 5,
                 shape: 'square',
                 bckColor: 'teal',
