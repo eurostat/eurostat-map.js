@@ -8,7 +8,14 @@
 </head>
 
 <body>
-    <svg id="map"></svg>
+    <div>
+        <svg id="map"></svg>
+    </div>
+   
+    <div>
+        <svg id="legend" style="overflow:inherit;"></svg>
+    </div>
+    
     <script src="../build/eurostatmap.js"></script>
     <script>
         let map = eurostatmap.map("ch")
@@ -28,48 +35,70 @@
             .coastalMarginWidth(5)
             .graticuleStroke("#888")
             .tooltipShowFlags(false)
-            .threshold([1, 2, 3])
+            .threshold([1, 3, 6, 7, 8, 9])
             .legend({
-                title: "Density - inhab./km²",
+                svgId:'legend',
+                title: "FIRST",
                 labelDecNb: 0,
-                shapeHeight:10,
-                shapeWidth:100,
-                x: 700,
+                shapeHeight: 15,
+                shapeWidth: 25,
                 noData: false,
             }).nutsLvl("mixed")
 
 
-        map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5 })
+        map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })
         map.build();
 
 
 
         // update data, classification
         setTimeout(() => {
-            // map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000 })
-            // map.filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
-            //     patternSize: 5,
-            //     shape: 'square',
-            //     bckColor: 'black',
-            //     symbColor: 'white',
-            // }))
-            
-            map.threshold([1,3,6,7,8,9]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
-            patternSize: 5,
-            shape: 'square',
-            bckColor: 'white',
-            symbColor: 'red',
-        }));
+            map.threshold([1, 9]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+                patternSize: 5,
+                shape: 'square',
+                bckColor: 'white',
+                symbColor: 'red',
+            }));
+            map.updateClassification().updateStyle()
             map.legend({
-                title: "title2",
-                labelDecNb: 0,
-                shapeHeight: 15,
-                shapeWidth: 20,
-                x: 700,
-                noData: false,
+                title: "SECOND",
             })
-            //map.updateStatValues();
+
+            //map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })
+            
         }, 2000);
+
+        setTimeout(() => {
+            map.threshold([1, 3, 6, 7, 8, 9,10,11,12,13]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+                patternSize: 5,
+                shape: 'square',
+                bckColor: 'LIGHTBLUE',
+                symbColor: 'red',
+            }));
+            map.updateClassification().updateStyle()
+            map.legend({
+                title: "THIRD",
+            })
+
+            //map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })
+            //map.updateStatValues();
+        }, 4000);
+
+        setTimeout(() => {
+            map.threshold([1, 3, 6,99]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+                patternSize: 5,
+                shape: 'square',
+                bckColor: 'teal',
+                symbColor: 'red',
+            }));
+            map.updateClassification().updateStyle()
+            map.legend({
+                title: "THIRD",
+            })
+
+            //map.statData().setData({ ES: 4, DE: 5, FR: 3, UK: 2, SE:1 })
+            //map.updateStatValues();
+        }, 6000);
     </script>
 </body>
 

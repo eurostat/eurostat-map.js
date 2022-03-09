@@ -53,8 +53,6 @@ export const legend = function (map, config) {
 		if (m.legend_) for (let key in m.legend_) {
 			out[key] = m.legend_[key];
 		}
-		//update legend, if any
-		if (out.legendObj_) out.legendObj_.update();
 
 		//remove previous content
 		lgg.selectAll("*").remove();
