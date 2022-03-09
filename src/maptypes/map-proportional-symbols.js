@@ -229,8 +229,6 @@ export const map = function (config) {
 					})
 			}
 
-
-
 			// set style of symbols
 			let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
 			let regions = out.svg().selectAll(selector);

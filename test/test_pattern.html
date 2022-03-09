@@ -54,7 +54,7 @@
             //     symbColor: 'white',
             // }))
             
-            map.threshold([1,3,6,9,12,15]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
+            map.threshold([1,3,6,7,8,9]).filtersDefinitionFun(eurostatmap.getFillPatternDefinitionFun({
             patternSize: 5,
             shape: 'square',
             bckColor: 'white',
@@ -63,12 +63,12 @@
             map.legend({
                 title: "title2",
                 labelDecNb: 0,
-                shapeHeight: 5,
+                shapeHeight: 15,
                 shapeWidth: 20,
                 x: 700,
                 noData: false,
             })
-            map.updateStatValues();
+            //map.updateStatValues();
         }, 2000);
     </script>
 </body>
