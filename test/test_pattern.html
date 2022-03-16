@@ -43,7 +43,10 @@
                 shapeHeight: 15,
                 shapeWidth: 25,
                 noData: false,
-                labelFormatter: (val) => val.toLocaleString("en").replace(/,/gi, " ")
+                labelFormatter: function (val) {
+                    let o = val.toLocaleString("en").replace(/,/gi, " ");
+                    return o;
+                }
             }).nutsLvl("mixed")
 
 
@@ -63,6 +66,7 @@
             map.updateClassification().updateStyle()
             map.legend({
                 title: "SECOND",
+                labelFormatter: (val)=> val.toLocaleString("en").replace(/,/gi, " ,")
             })
 
             //map.statData().setData({ ES: 2, FR: 3, DE: 4, HU: 5, SE:12, UK:4, IT:2,RO:7,PL:8,HR:9,SK:10 })

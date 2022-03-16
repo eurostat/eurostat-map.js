@@ -1,6 +1,6 @@
 import { json } from "d3-fetch";
-import { zoom } from "d3-zoom";
-import { select, event, selectAll } from "d3-selection";
+import { zoom, zoomTransform } from "d3-zoom";
+import { select, event, selectAll, mouse } from "d3-selection";
 import { formatDefaultLocale } from "d3-format";
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from "d3-geo";
 import { geoRobinson } from "d3-geo-projection";
@@ -634,9 +634,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 
 		//make drawing group zoomable
 		if (out.zoomExtent()) {
-			svg.call(zoom()
+			let xoo = zoom()
 				.scaleExtent(out.zoomExtent())
 				.on('zoom', function () {
+
 					const k = event.transform.k;
 					const cs = ["gra", "bn_0", /*"bn_1", "bn_2", "bn_3",*/ "bn_co", "cntbn", "symbol"];
 					for (let i = 0; i < cs.length; i++)
@@ -644,8 +645,26 @@ export const mapTemplate = function (config, withCenterPoints) {
 							return (1 / k) + "px";
 						});
 					zg.attr("transform", event.transform);
-				}));
+
+				}).on('end', function() {
+					let transform = zoomTransform(svg.node()); // get the current zoom
+					let m = mouse(this);
+					let xy = transform.invert([out.width_/2,out.height_/2]);
+					let longlat = out._projection.invert(xy);
+					console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
+					console.log('pixSize:', parseInt(out.pixSize_ / transform.k))
+				})
+				svg.call(xoo);
 		}
+
+		// get projected coordinates on click
+		// zg.on('click', function(e) {
+		// 	let transform = zoomTransform(svg.node()); // get the current zoom
+		// 	let xy = transform.invert(mouse(this));
+		// 	let longlat = out._projection.invert(xy);
+		// 	console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
+		// 	console.log('pixSize:', out.pixSize_ / transform.k)
+		// })
 
 		return out;
 	};
