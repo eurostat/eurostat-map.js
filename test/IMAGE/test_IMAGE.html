@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <div style="margin-left:68%">
+  <div style="margin-left:1%">
     <svg id="mappy"></svg>
   </div>
   
@@ -49,8 +49,8 @@
           co: "grey",
         })
         .noDataFillStyle('darkgrey')
-        .nutsbnStrokeWidth({ 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
-        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 })
+        .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
+        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
         .bordersToShow(['eu', 'co', 'cc', 'efta'])
         .insets(insetsConfig)
         //.zoomExtent([1,10])
@@ -58,7 +58,7 @@
         .scalebarPosition([420, 560])
         .nutsrgSelFillSty('#003E8C')
 
-        .labelling(true)
+        //.labelling(true)
         .labelsToShow(["seas", "values", "cc"])
         .labelValuesFontSize(10)
         .labelFill({ seas: "#012a7c", cc: "black" })
@@ -105,23 +105,23 @@
 
 
     // dynamic labelling
-    setTimeout(() => {
-      map.labelling(true)
-        .labelsToShow(["seas", "cc"])
-        .labelValuesFontSize(10)
-        .labelFill({ seas: "#012a7c", cc: "black" })
-        .labelShadow(true)
-      map.updateLabels();
-    }, 2000)
+    // setTimeout(() => {
+    //   map.labelling(true)
+    //     .labelsToShow(["seas", "cc"])
+    //     .labelValuesFontSize(10)
+    //     .labelFill({ seas: "#012a7c", cc: "black" })
+    //     .labelShadow(true)
+    //   map.updateLabels();
+    // }, 2000)
 
-    setTimeout(() => {
-      map.labelling(true)
-        .labelsToShow(["seas", "countries"])
-        .labelValuesFontSize(12)
-        .labelFill({ seas: "#012a7c", countries: "red" })
-        .labelShadow(false)
-      map.updateLabels();
-    }, 4000)
+    // setTimeout(() => {
+    //   map.labelling(true)
+    //     .labelsToShow(["seas", "countries"])
+    //     .labelValuesFontSize(12)
+    //     .labelFill({ seas: "#012a7c", countries: "red" })
+    //     .labelShadow(false)
+    //   map.updateLabels();
+    // }, 4000)
 
     //switch to world map
     // setTimeout(() => {
@@ -154,16 +154,11 @@
     //   map.updateStyle();
     // }, 7000)
 
-    // setTimeout(() => {
-    //   map.statData().setData({ ZZ: 1 });
-    //   map.updateStatValues();
-    //   map.colors(['#f2f0f7', '#dadaeb', '#bcbddc', '#9e9ac8', '#756bb1', '#54278f', '#999'],
-    //   )
-    //   map.threshold([1, 2, 3, 4, 5, 9999])
+    setTimeout(() => {
+      map.seaFillStyle('white')
+      //.drawCoastalMargin(true).coastalMarginWidth(2).coastalMarginColor('red')
 
-    //   //map.updateClassification();
-    //   map.updateStyle();
-    // }, 9000);
+    }, 5000);
 
     // setTimeout(()=>{
     //   map.nutsLvl("mixed")

@@ -167,7 +167,7 @@ export const statData = function (config) {
 				_data_ = jsonstatToIndex(jsd);
 				//TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
 
-				callback();
+				if (callback) callback();
 			});
 	}
 
@@ -219,7 +219,7 @@ export const statData = function (config) {
 				//store some metadata
 				out.metadata = { "href": out.csvURL_ };
 
-				callback();
+				if (callback) callback();
 			});
 	};
 
