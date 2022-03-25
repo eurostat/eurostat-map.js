@@ -117,7 +117,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//country borders
 	out.cntrgFillStyle_ = "#f4f4f4";
 	out.cntbnStroke_ = { eu: "black", efta: "black", cc: "black", oth: "grey", co: "#7f7f7f" };
-	out.cntbnStrokeWidth_ = { eu: 1, efta: 1, cc: 1, oth: 0.2, co: 0.2 };
+	out.cntbnStrokeWidth_ = { eu: 1, efta: 1, cc: 1, oth: 0.5, co: 0.2 };
 	//world map
 	out.worldFillStyle_ = '#E6E6E6';
 	out.worldStroke_ = 'black';
@@ -177,13 +177,10 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.insetZoomExtent_ = null; //zoom disabled as default
 	out.insetScale_ = "03M";
 
-	// clear any existing geometries
-	let nutsrg, nutsbn, cntrg, cntbn, gra, worldrg, worldbn, kosovo, path = undefined;
-
 	//store the geometries of the map for future updates (e.g. coastal margin requires geometries)
 	out._geom = {
-		mixed: {
-			rg0: undefined,
+		mixed: { // for 'mixed' nuts level
+			rg0: undefined, // nuts 0 regions 
 			rg1: undefined,
 			rg2: undefined,
 			rg3: undefined
@@ -303,7 +300,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 			graticule.remove();
 
 			// if map already created and argument is true
-		} else if (gra && out._geom.path && zg && v == true) {
+		} else if (out._geom.gra && out._geom.path && zg && v == true) {
 			//remove existing graticule
 			graticule.remove();
 			// add new graticule
@@ -1031,7 +1028,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw country boundaries
-		if (cntbn) {
+		if (out._geom.cntbn) {
 			zg.append("g").attr("id", "g_cntbn")
 				.style("fill", "none")
 				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
@@ -1130,11 +1127,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 		}
 
 		//draw world boundaries
-		if (worldbn)
+		if (out._geom.worldbn)
 			zg.append("g").attr("id", "g_worldbn")
 				.style("fill", "none")
 				//.style("stroke-linecap", "round").style("stroke-linejoin", "round")
-				.selectAll("path").data(worldbn)
+				.selectAll("path").data(out._geom.worldbn)
 				.enter().append("path")
 				.attr("d", out._geom.path)
 				//.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
@@ -1157,11 +1154,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 					}
 				});
 
-		if (kosovo) {
+		if (out._geom.kosovo) {
 			//add kosovo to world map
 			zg.append("g").attr("id", "g_worldbn")
 				.style("fill", "none")
-				.selectAll("path").data(kosovo)
+				.selectAll("path").data(out._geom.kosovo)
 				.enter().append("path")
 				.attr("d", out._geom.path)
 				.style("stroke", '#4f4f4f')
@@ -1178,7 +1175,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 				// if centroids data is absent (e.g. for world maps) then calculate manually
 				if (out.geo_ == "WORLD") {
 					centroidFeatures = [];
-					worldrg.forEach((feature) => {
+					out._geom.worldrg.forEach((feature) => {
 						let newFeature = { ...feature };
 						newFeature.geometry = {
 							"coordinates": geoCentroid(feature),
