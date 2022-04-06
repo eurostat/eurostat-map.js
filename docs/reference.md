@@ -203,6 +203,7 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 | **labelFontSize** | int | *13* | The label font size. |
 | **labelDecNb** | String | *" - "* | The number of decimal for the legend labels. |
 | **labelOffset** | int | *3* | The distance between the legend box elements to the corresponding text label. |
+| **labelFormatter** | Function | *d3.format("." + labelDecNb + "f")* | A function used to format the values of the legend labels. |
 | **noData** | boolean | *true* | Show 'no data' style. |
 | **noDataText** | Text | *"No data"* | 'No data' text label. |
 
@@ -279,7 +280,7 @@ The following parameters are properties of the sizeLegend object:
 | **shapeFill** | String | *white* | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used.  |
 | **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
 | **labelDecNb** | Number | *0* | The number of decimals for each label.  |
-| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+| **labelFormatter** | Function | *d3.format("." + labelDecNb + "f")* | A function used to format the values of the legend labels. |
 
 **colorLegend**
 
@@ -295,7 +296,7 @@ The following parameters are properties of the colorLegend object:
 | **shapePadding** | Number | *10* | The padding between consecutive legend shape elements |
 | **labelOffset** | Number | *25* | The distance between the legend box elements to the corresponding text label.  |
 | **labelDecNb** | Number | *0* | The number of decimals for each label.  |
-| **labelFormat** | Function | *d3.format("." + labelDecNb + "f")* | The d3.format function used to format the labels. |
+| **labelFormatter** | Function | *d3.format("." + labelDecNb + "f")* | A function used to format the values of the legend labels. |
 | **noData** | Boolean | *true* | Show a legend element that represents "no data" values. |
 | **noDataText** | String | *No data* | No data element label text. |
 | **sepLineLength** | Number | *17* | The length of the separation line between classes. |
@@ -728,7 +729,7 @@ Specify specific map styles.
 | *map*.**coastalMarginColor**([*value*]) | String | *"#c2daed"* | The color of the coastal blurry margin. |
 | *map*.**coastalMarginWidth**([*value*]) | number | *5* | The width of the coastal blurry margin. |
 | *map*.**coastalMarginStdDev**([*value*]) | number | *2* | The standard deviation of the coastal blurry margin. |
-| *map*.**drawGraticule**([*value*]) | boolean | *false* | Set to true to show the graticule (meridian and parallel lines). False otherwise. |
+| *map*.**drawGraticule**([*value*]) | boolean | *false* | Set to true to show the graticule (meridian and parallel lines). False otherwise. Calls to this method after the map is built will update the graticule. |
 | *map*.**graticuleStroke**([*value*]) | String | *"lightgray"* | The stroke style of the graticule. |
 | *map*.**graticuleStrokeWidth**([*value*]) | number | *1* | The stroke width of the graticule. |
 

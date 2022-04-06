@@ -38,9 +38,9 @@ export const legend = function (map, config) {
 		shapePadding: 10, //the y distance between consecutive legend shape elements
 		shapeOffset: { x: 0, y: 0 },
 		shapeFill: "white",
-		labelOffset: { x: 25, y:0}, //the distance between the legend box elements to the corresponding text label
+		labelOffset: { x: 25, y: 0 }, //the distance between the legend box elements to the corresponding text label
 		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined
+		labelFormatter: undefined
 	}
 
 	// color legend config (legend illustrating the data-driven colour classes)
@@ -51,9 +51,9 @@ export const legend = function (map, config) {
 		shapeWidth: 13, //the width of the legend box elements
 		shapeHeight: 15, //the height of the legend box elements
 		shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
-		labelOffset: { x: 25, y:0}, //distance (x) between label text and its corresponding shape element
+		labelOffset: { x: 25, y: 0 }, //distance (x) between label text and its corresponding shape element
 		labelDecNb: 0, //the number of decimal for the legend labels
-		labelFormat: undefined, // user-defined d3 format function	
+		labelFormatter: undefined, // user-defined d3 format function	
 		noData: true, //show no data
 		noDataText: "No data", //no data text label
 		sepLineLength: 17,// //the separation line length
@@ -126,7 +126,7 @@ export const legend = function (map, config) {
 	 */
 	function buildSizeLegend(m, lgg, config) {
 		//define format for labels
-		let f = config.labelFormat || spaceAsThousandSeparator;
+		let f = config.labelFormatter || spaceAsThousandSeparator;
 		//draw title
 		if (config.title) {
 			lgg.append("text").attr("x", out.boxPadding).attr("y", out.boxPadding + out.titleFontSize)
@@ -141,38 +141,71 @@ export const legend = function (map, config) {
 		out._sizeLegendHeight = 0; //sum of shape sizes: used for positioning legend elements and color legend
 
 		// if user defines values for legend manually
-		if (config.values) {config.cellNb = config.values.length }
+		if (config.values) { config.cellNb = config.values.length }
 
 		//draw legend elements for classes: symbol + label
+
+		// for custom paths
+			let prevSymb; //previous item in legend
+			let prevScale; //previous item scale
+			let initialTranslateY; //y translate of initial legend item
+			let nodeHeights=0; // total node heights in px for custom
+			
+		
+
 		for (let i = 1; i < config.cellNb + 1; i++) {
 			//define class number
 			const c = out.ascending ? config.cellNb - i + 1 : i;
 			//define raw value
-			let val = config.values ? config.values[c-1] : maxVal / c;
+			let val = config.values ? config.values[c - 1] : maxVal / c;
 			//calculate shape size 
 			let size = m.classifierSize_(val);
 
 			//set shape size and define 'd'
 			let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(size * size)();
 
-			//define position of the legend element
+			//define position of the legend symbol
 			let x;
 			let y;
+
 			if (out.map.psShape_ == "bar") {
 				// for vertical bars we dont use a dynamic X offset because all bars have the same width
 				x = out.boxPadding + 10;
 				//we also dont need the y offset
 				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight);
+				out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
+			} else if (out.map.psShape_ == "custom") {
+				out._xOffset = m.classifierSize_(maxVal); //save value (to use in color legend as well)
+				x = out.boxPadding + out._xOffset; //set X offset
+				//first item
+				if (!prevSymb) {
+					y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight); 
+					initialTranslateY= y;
+					prevScale = size;
+					out._sizeLegendHeight = out._sizeLegendHeight + y;
+				}
+
+				//following items
+				if (prevSymb) {
+					let prevNode = prevSymb.node();
+					let bbox = prevNode.getBBox();
+					nodeHeights = nodeHeights + (bbox.height*prevScale);
+					y = initialTranslateY + nodeHeights + (config.shapePadding*(i-1));
+					out._sizeLegendHeight = out._sizeLegendHeight + bbox.height + config.shapePadding;
+					prevScale = size;
+				}
+				
 			} else {
 				// x and y for all other symbols
-				out._xOffset = (m.classifierSize_(maxVal) / 1.5); //save value (to use in color legend as well)
+				out._xOffset = (m.classifierSize_(maxVal)/ 1.5); //save value (to use in color legend as well)
 				x = out.boxPadding + out._xOffset; //set X offset
-				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight) + size / 2 + config.shapePadding;
+				y = (out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight) + size/2 + config.shapePadding;
+				out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
 			}
-			out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding;
+			
 
 			//append symbol & style
-			let symb = lgg.append("g")
+			prevSymb = lgg.append("g")
 				.attr("transform", `translate(${x},${y})`)
 				.style("fill", d => {
 					// if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
@@ -184,18 +217,19 @@ export const legend = function (map, config) {
 				.attr("stroke", "black").attr("stroke-width", 0.5)
 				.append("path")
 				.attr('d', d)
-				.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y})`)
+				.attr('transform', ()=> {
+					if (out.map.psCustomPath_) return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
+					else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
+				})
 
-			//scale the custom path using the transform attribute
-			if (out.map.psCustomPath_) {
-				symb.attr('transform', `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`)
-			}
 
 			//label position
 			let labelX = x + config.labelOffset.x;
 			let labelY = y + config.labelOffset.y;
 			if (out.map.psShape_ == "bar") {
-				labelY = labelY + (size / 2)
+				labelY = labelY + (size / 2);
+			} else if (out.map.psShape_ == "custom") {
+				labelY = labelY + (size *10);
 			}
 
 			//append label
@@ -216,7 +250,7 @@ export const legend = function (map, config) {
  */
 	function buildColorLegend(m, lgg, config) {
 		//define format for labels
-		let f = config.labelFormat || spaceAsThousandSeparator;
+		let f = config.labelFormatter || spaceAsThousandSeparator;
 		const svgMap = m.svg();
 
 		//title
@@ -369,7 +403,7 @@ export const legend = function (map, config) {
 				context.lineTo(0, 0);
 				context.closePath();
 			}
-			shape = d3.symbol().type({ draw: drawRectangle })
+			shape = symbol().type({ draw: drawRectangle })
 		} else {
 			let symbolType = symbolsLibrary[out.map.psShape_] || symbolsLibrary["circle"];
 			shape = symbol().type(symbolType);

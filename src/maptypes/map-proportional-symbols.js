@@ -164,16 +164,16 @@ export const map = function (config) {
 			//custom symbol
 			if (out.psCustomPath_) {
 				symb = out.svg().select("#g_ps").selectAll("g.symbol")
-					.append("path").attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
+					.append("path").filter((rg)=>{
+						const sv = data.get(rg.properties.id);
+						if (sv && sv.value !==':') return rg;
+					}).attr("class", "ps").attr("d", out.psCustomPath_).attr('transform', rg => {
 						//calculate size
 						const sv = data.get(rg.properties.id);
-						let size;
-						if (!sv || !sv.value) {
-							size = 0;
-						} else {
-							size = out.classifierSize_(+sv.value);
-						}
-						return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
+						let size = out.classifierSize_(+sv.value);
+						if (size) {
+							return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
+						} 
 					})
 
 				// bars
@@ -181,7 +181,10 @@ export const map = function (config) {
 			} else if (out.psShape_ == "bar") {
 				// vertical bars
 				symb = out.svg().select("#g_ps").selectAll("g.symbol")
-					.append("rect")
+					.append("rect").filter((rg)=>{
+						const sv = data.get(rg.properties.id);
+						if (sv && sv.value !==':') return rg;
+					})
 					.attr("width", out.psBarWidth_)
 					//for vertical bars we scale the height attribute using the classifier
 					.attr("height", function (rg) {
@@ -204,7 +207,10 @@ export const map = function (config) {
 				// circle, cross, star, triangle, diamond, square, wye or custom
 
 				symb = out.svg().selectAll("g.symbol")
-					.append("path").attr("class", "ps").attr("d", rg => {
+					.append("path").filter((rg)=>{
+						const sv = data.get(rg.properties.id);
+						if (sv && sv.value !==':') return rg;
+					}).attr("class", "ps").attr("d", rg => {
 
 						const v = out.statData("size") ? out.statData("size") : out.statData();
 						if (!v) return;
@@ -223,12 +229,7 @@ export const map = function (config) {
 					})
 			}
 
-
-
 			// set style of symbols
-
-
-
 			let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
 			let regions = out.svg().selectAll(selector);
 
@@ -239,7 +240,7 @@ export const map = function (config) {
 					out.svg().selectAll("g.symbol")
 						.style("display", function (rg) {
 							const sv = data.get(rg.properties.id);
-							if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+							if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || sv.value == ':') {
 								return "none"
 							} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 								return "block";
@@ -248,7 +249,7 @@ export const map = function (config) {
 					// toggle display of mixed NUTS levels
 					regions.style("display", function (rg) {
 						const sv = data.get(rg.properties.id);
-						if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "none"
 						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "block";
@@ -259,7 +260,7 @@ export const map = function (config) {
 					regions.style("stroke", function (rg) {
 						const lvl = select(this).attr("lvl");
 						const sv = data.get(rg.properties.id);
-						if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						if (!sv || !sv.value  || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return;
 						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							if (lvl !== "0") {
@@ -271,7 +272,7 @@ export const map = function (config) {
 						.style("stroke-width", function (rg) {
 							const lvl = select(this).attr("lvl");
 							const sv = data.get(rg.properties.id);
-							if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+							if (!sv || !sv.value  || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 								return;
 							} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 								if (lvl !== "0") {
@@ -284,7 +285,7 @@ export const map = function (config) {
 				// world countries fill
 				regions.attr("fill", function (rg) {
 					const sv = data.get(rg.properties.id);
-					if (!sv || !sv.value || sv.value == ":") {
+					if (!sv || !sv.value ) {
 						return out.worldFillStyle_;
 					} else {
 						return out.nutsrgFillStyle_;

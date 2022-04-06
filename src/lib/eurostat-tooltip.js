@@ -6,6 +6,7 @@ import { select, event } from "d3-selection";
  */
 export const tooltip = function (config) {
 	config = config || {};
+	config.containerId = config.containerId || 'map';
 	config.div = config.div || "tooltip_eurostat";
 	config.maxWidth = config.maxWidth || "200px";
 	config.fontSize = config.fontSize || "14px";
@@ -16,7 +17,7 @@ export const tooltip = function (config) {
 	config["box-shadow"] = config["box-shadow"] || "5px 5px 5px grey";
 	config["font-family"] = config["font-family"] || "Helvetica, Arial, sans-serif";
 
-	config.transitionDuration = config.transitionDuration || 200;
+	config.transitionDuration = config.transitionDuration || 0;
 	config.xOffset = config.xOffset || 30;
 	config.yOffset = config.yOffset || 20;
 
@@ -38,27 +39,26 @@ export const tooltip = function (config) {
 		tooltip.style("box-shadow", config["box-shadow"]);
 		tooltip.style("position", "absolute");
 		tooltip.style("font-family", config["font-family"]);
-		tooltip.style("position", "absolute");
 		tooltip.style("pointer-events", "none");
 		tooltip.style("opacity", "0");
 	}
 
 	my.mouseover = function (html) {
-		if(html) tooltip.html(html);
-		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px")
-			.transition().duration(config.transitionDuration).style("opacity", 1);
+		if (html) tooltip.html(html);
+		let x = event.pageX;
+		let y = event.pageY;
+		my.ensureTooltipOnScreen(x, y);
 
-			//this.ensureTooltipOnScreen();
 	};
 
 	my.mousemove = function () {
-		tooltip.style("left", (event.pageX + config.xOffset) + "px").style("top", (event.pageY - config.yOffset) + "px");
-
-		//this.ensureTooltipOnScreen();
+		let x = event.pageX;
+		let y = event.pageY;
+		this.ensureTooltipOnScreen(x, y);
 	};
 
 	my.mouseout = function () {
-		tooltip.transition().duration(config.transitionDuration).style("opacity", 0);
+		tooltip.style("opacity", 0);
 	};
 
 	my.style = function (k, v) {
@@ -73,28 +73,45 @@ export const tooltip = function (config) {
 		return my;
 	};
 
-/**
-* @function ensureTooltipOnScreen
-* @description Prevents the tooltip from overflowing off screen
-*/
-my.ensureTooltipOnScreen = function() {
-	// TODO: parent needs to be the all-encompassing container, not the map SVG id otherwise it just uses the last SVG which will be an inset SVG.
-	let parent = document.getElementById(config.parentContainerId);
-	let bbox = parent.getBBox();
-	let parentWidth = bbox.width;
-	let parentHeight = bbox.height;
-	let node = tooltip.node();
-    //too far right
-    if (node.offsetLeft > parentWidth - node.clientWidth) {
-        node.style.left = node.offsetLeft - (node.clientWidth + config.xOffset * 2) + "px";
+	/**
+	* @function ensureTooltipOnScreen
+	* @description Prevents the tooltip from overflowing off screen
+	*/
+	my.ensureTooltipOnScreen = function (eventX, eventY) {
 
-    }
-    //too far down
-    if (node.offsetTop + node.clientHeight > parentHeight) {
-        node.style.top = node.offsetTop - (node.clientHeight + config.yOffset * 2) + "px";
-    }
+		tooltip.style("opacity", 1);
+		let node = tooltip.node();
 
-}
+		node.style.left = eventX + config.xOffset + "px";
+		node.style.top = eventY - config.yOffset + "px";
+
+		let parent = document.getElementById(config.containerId);
+		let rect = parent.getBoundingClientRect(); // get the bounding rectangle
+		let parentWidth = rect.width;
+		let parentHeight = rect.height;
+		
+
+		//too far right
+		//taking into account off screen space but shouldnt be
+		if (node.offsetLeft > (rect.left + parentWidth) - node.clientWidth) {
+			let left = eventX - node.clientWidth - config.xOffset ;
+			node.style.left = left + "px";
+			// check if mouse covers tooltip
+			if (node.offsetLeft + node.clientWidth > eventX) {
+				//move tooltip left so it doesnt cover mouse
+				let left2 = eventX - (node.clientWidth + config.xOffset);
+				node.style.left = left2 + "px";
+			}
+			// node.style.top = node.offsetTop + config.yOffset + "px";
+		} 
+
+		//too far down
+		if (node.offsetTop + node.clientHeight > (rect.top + parentHeight)) {
+			node.style.top = node.offsetTop - node.clientHeight + "px";
+		} 
+
+		
+	}
 
 	my();
 	return my;

@@ -13,8 +13,8 @@
   </svg>
 
 
-  <script src="../build/eurostatmap.js"></script>
-  <script src="./data/nuts3.js"></script>
+  <script src="../../build/eurostatmap.js"></script>
+  <script src="../data/nuts3.js"></script>
   <script>
     let mapWidth = 638;
     let mapHeight = 608;
@@ -56,7 +56,7 @@
 
     // update data, classification
     setTimeout(() => {
-      map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000 })
+      map.statData('size').setData({ ES: 0, DE: 10000, FR: 5000, PL:':' })
         map.psShape('square')
         .psFillOpacity(0.8)
         .psMaxSize(30)
@@ -65,29 +65,29 @@
       map.updateStatValues();
     }, 2000);
 
-    setTimeout(() => {
-      map.statData('size').setData({ ES: 10000, DE: 10000, FR: 5000 });
-      map.psMaxSize(80)
-      map.updateStatValues();
-    }, 4000);
+    // setTimeout(() => {
+    //   map.statData('size').setData({ ES: 10000, DE: 10000, FR: 5000 });
+    //   map.psMaxSize(80)
+    //   map.updateStatValues();
+    // }, 4000);
 
-    setTimeout(() => {
-      map.statData('size').setData({ ES: 20000, DE: 100000, FR: 50000 });
-      map.psMaxSize(30)
-      map.updateStatValues();
-    }, 6000);
+    // setTimeout(() => {
+    //   map.statData('size').setData({ ES: 20000, DE: 100000, FR: 50000 });
+    //   map.psMaxSize(30)
+    //   map.updateStatValues();
+    // }, 6000);
 
-    setTimeout(() => {
-      map.statData('size').setData({ ES: 30000, DE: 10000, FR: 5000 });
-      map.psMaxSize(50)
-      map.updateStatValues();
-    }, 8000);
+    // setTimeout(() => {
+    //   map.statData('size').setData({ ES: 30000, DE: 10000, FR: 5000 });
+    //   map.psMaxSize(50)
+    //   map.updateStatValues();
+    // }, 8000);
 
-    setTimeout(() => {
-      map.statData('size').setData({ ES: 40000, DE: 10000, FR: 50000});
-      map.psMaxSize(100)
-      map.updateStatValues();
-    }, 10000);
+    // setTimeout(() => {
+    //   map.statData('size').setData({ ES: 40000, DE: 10000, FR: 50000});
+    //   map.psMaxSize(100)
+    //   map.updateStatValues();
+    // }, 10000);
 
     // setTimeout(() => {
     //    map.statData('size').setData({ "HU": 10, "NO": 20, "FI": 30 });

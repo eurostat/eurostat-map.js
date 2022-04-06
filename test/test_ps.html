@@ -98,7 +98,7 @@
           sizeLegend: {
             title: "Total GDP (million EUR)",
             cellNb: 3,
-            labelFormat: d3.format(",.2r"),
+            labelFormatter: d3.format(",.2r"),
             shapePadding: 90,
             titlePadding: -60,
             shapeOffset:{x:0, y:-30},
@@ -106,7 +106,7 @@
           },
           colorLegend: {
             title: "GDP per inhabitant (EUR)",
-            labelFormat: d3.format(",.2r"),
+            labelFormatter: d3.format(",.2r"),
           },
           legendSpacing:0
         })
@@ -149,7 +149,7 @@
           sizeLegend: {
             title: "Total organic arable land (HA)",
             cellNb: 3,
-            labelFormat: d3.format(",.2r"),
+            labelFormatter: d3.format(",.2r"),
             ascending: false,
             labelOffset: { x: 50, y:0},
             shapePadding: -1
@@ -190,7 +190,7 @@
           sizeLegend: {
             title: "Total organic arable land (HA)",
             cellNb: 3,
-            labelFormat: d3.format(",.2r"),
+            labelFormatter: d3.format(",.2r"),
             shapePadding: 65,
             titlePadding: -40,
             shapeOffset:{x:0, y:-30},
@@ -235,7 +235,7 @@
             title: "Total nights spent",
             titlePadding: -5,
             cellNb: 3,
-            labelFormat: d3.format(".2s"),
+            labelFormatter: d3.format(".2s"),
             labelOffset: { x: -10, y:0},
           },
           colorLegend: {
@@ -269,7 +269,7 @@
           sizeLegend: {
             title: "Total population",
             cellNb: 3,
-            labelFormat: d3.format(",.2r"),
+            labelFormatter: d3.format(",.2r"),
           },
           colorLegend: {
             title: "Inhabitants per km²"
@@ -293,7 +293,6 @@
       //     title: "Population",
       //     cellNb: 3,
       //     shapePadding: 10,
-      //     labelFormat: format,
 
       //   })
       //   .build();
@@ -315,7 +314,6 @@
       //     cellNb: 3,
       //     shapePadding: 10,
       //     labelOffset: 30,
-      //     //labelFormat: d3.format(",.2r"),
       //     x: 330,
       //   })
       //   .build();

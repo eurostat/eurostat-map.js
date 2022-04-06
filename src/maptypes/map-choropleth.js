@@ -97,7 +97,6 @@ export const map = function (config) {
 			out.classifier(scaleThreshold().domain(out.threshold()).range(range));
 		}
 
-
 		let selector = out.geo_ == "WORLD" ? "path.worldrg" : "path.nutsrg";
 
 		// assign class (ecl attribute) to regions, based on their value
