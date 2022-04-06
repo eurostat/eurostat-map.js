@@ -361,6 +361,43 @@ export const mapTemplate = function (config, withCenterPoints) {
 		return out;
 	}
 
+	// cntrg land color override
+	out.cntrgFillStyle = function (v) {
+		if (!arguments.length) return out.cntrgFillStyle_;
+		out.cntrgFillStyle_ = v;
+
+		//update existing land
+		let cntrg = selectAll('.cntrg');
+		if (cntrg) cntrg.style("fill", out.cntrgFillStyle_);
+
+		//update insets
+		for (const geo in out.insetTemplates_) {
+			if (Array.isArray(out.insetTemplates_[geo])) {
+				// check for insets within insets
+				for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+					//check for insets within insets within insets
+					if (Array.isArray(out.insetTemplates_[geo][i])) {
+						for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
+							let inset = out.insetTemplates_[geo][i][n];
+							//set
+							inset.cntrgFillStyle_ = out.cntrgFillStyle_;
+						}
+					} else {
+						let inset = out.insetTemplates_[geo][i];
+						//set
+						inset.cntrgFillStyle_ = out.cntrgFillStyle_;
+					}
+				}
+			} else {
+				let inset = out.insetTemplates_[geo];
+				//set
+				inset.cntrgFillStyle_ = out.cntrgFillStyle_;
+			}
+		}
+
+		return out;
+	}
+
 	//coastal margin override
 	out.drawCoastalMargin = function (v) {
 		if (!arguments.length) return out.drawCoastalMargin_;
