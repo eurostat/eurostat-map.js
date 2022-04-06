@@ -249,7 +249,7 @@ export const map = function (config) {
 					// toggle display of mixed NUTS levels
 					regions.style("display", function (rg) {
 						const sv = data.get(rg.properties.id);
-						if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "none"
 						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return "block";
@@ -260,7 +260,7 @@ export const map = function (config) {
 					regions.style("stroke", function (rg) {
 						const lvl = select(this).attr("lvl");
 						const sv = data.get(rg.properties.id);
-						if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+						if (!sv || !sv.value  || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							return;
 						} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 							if (lvl !== "0") {
@@ -272,7 +272,7 @@ export const map = function (config) {
 						.style("stroke-width", function (rg) {
 							const lvl = select(this).attr("lvl");
 							const sv = data.get(rg.properties.id);
-							if (!sv || !sv.value || sv.value == ":" || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+							if (!sv || !sv.value  || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 								return;
 							} else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
 								if (lvl !== "0") {
@@ -285,7 +285,7 @@ export const map = function (config) {
 				// world countries fill
 				regions.attr("fill", function (rg) {
 					const sv = data.get(rg.properties.id);
-					if (!sv || !sv.value || sv.value == ":") {
+					if (!sv || !sv.value ) {
 						return out.worldFillStyle_;
 					} else {
 						return out.nutsrgFillStyle_;
