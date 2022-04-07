@@ -367,8 +367,14 @@ export const mapTemplate = function (config, withCenterPoints) {
 		out.cntrgFillStyle_ = v;
 
 		//update existing land
-		let cntrg = selectAll('.cntrg');
-		if (cntrg) cntrg.style("fill", out.cntrgFillStyle_);
+		if (out.geo_ == "WORLD") {
+			let cntrg = selectAll('.worldrg');
+			if (cntrg) cntrg.style("fill", out.cntrgFillStyle_);
+		} else {
+			let cntrg = selectAll('.cntrg');
+			if (cntrg) cntrg.style("fill", out.cntrgFillStyle_);
+		}
+
 
 		//update insets
 		for (const geo in out.insetTemplates_) {
