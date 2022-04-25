@@ -67,9 +67,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitleStroke_ = "none";
 	out.subtitleStrokeWidth_ = "none";
 
-	//map frame
-	out.frameStroke_ = "#222";
-	out.frameStrokeWidth_ = 2;
+	//map frame (none by default)
+	out.frameStroke_ = "none";
+	out.frameStrokeWidth_ = 0;
 
 	//scalebar
 	out.showScalebar_ = false;
@@ -112,8 +112,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	//nuts
 	out.nutsrgFillStyle_ = "white";
 	out.nutsrgSelFillSty_ = "#e0bcdf";
-	out.nutsbnStroke_ = { 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "grey", co: "black" };
-	out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 };
+	out.nutsbnStroke_ = { 0: "black", 1: "black", 2: "black", 3: "black", oth: "grey", co: "black" };
+	out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.3 };
 	//country borders
 	out.cntrgFillStyle_ = "#f4f4f4";
 	out.cntbnStroke_ = { eu: "black", efta: "black", cc: "black", oth: "grey", co: "#7f7f7f" };
