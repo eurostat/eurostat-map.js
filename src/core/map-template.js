@@ -68,8 +68,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 	out.subtitleStrokeWidth_ = "none";
 
 	//map frame (none by default)
-	out.frameStroke_ = "none";
-	out.frameStrokeWidth_ = 0;
+	out.frameStroke_ = "grey";
+	out.frameStrokeWidth_ = 0.5;
 
 	//scalebar
 	out.showScalebar_ = false;
