@@ -48,23 +48,23 @@ export const map = function (config) {
 		});
 
 	//override of some special getters/setters
-	out.colorFun = function (v) { 
+	out.colorFun = function (v) {
 		if (!arguments.length) {
 			return out.colorFun_;
 		}
-		 out.colorFun_ = v;  
-		 // update class style function
-		 if (out.filtersDefinitionFun_) {
+		out.colorFun_ = v;
+		// update class style function
+		if (out.filtersDefinitionFun_) {
 			// if dot density
 			out.classToFillStyle(getFillPatternLegend())
 		} else {
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 		}
-		 return out; 
+		return out;
 	};
 	out.threshold = function (v) { if (!arguments.length) return out.threshold_; out.threshold_ = v; out.clnb(v.length + 1); return out; };
-	out.filtersDefinitionFun = function(v) {if (!arguments.length) return out.filtersDefinitionFun_; out.filtersDefinitionFun_ = v; if (out.svg()) out.filtersDefinitionFun_(out.svg(), out.clnb_); return out; };
-	
+	out.filtersDefinitionFun = function (v) { if (!arguments.length) return out.filtersDefinitionFun_; out.filtersDefinitionFun_ = v; if (out.svg()) out.filtersDefinitionFun_(out.svg(), out.clnb_); return out; };
+
 	//override attribute values with config values
 	if (config) ["clnb", "classifMethod", "threshold", "makeClassifNice", "colorFun", "classToFillStyle", "noDataFillStyle", "colors_"].forEach(function (key) {
 		if (config[key] != undefined) out[key](config[key]);
@@ -144,7 +144,7 @@ export const map = function (config) {
 		} else {
 			out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
 		}
-		
+
 
 		// set colour of regions
 		if (out.svg()) {
@@ -248,13 +248,15 @@ export const map = function (config) {
 
 		out.svg().selectAll("g.stat-label").append("text")
 			.text(function (d) {
-				const s = out.statData();
-				const sv = s.get(d.properties.id);
-				if (!sv || !sv.value) {
-					return "";
-				} else {
-					if (sv.value !== ':') {
-						return sv.value;
+				if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1])) {
+					const s = out.statData();
+					const sv = s.get(d.properties.id);
+					if (!sv || !sv.value) {
+						return "";
+					} else {
+						if (sv.value !== ':') {
+							return sv.value;
+						}
 					}
 				}
 			});
@@ -263,13 +265,15 @@ export const map = function (config) {
 		if (out.labelShadow_) {
 			out.svg().selectAll("g.stat-label-shadow").append("text")
 				.text(function (d) {
-					const s = out.statData();
-					const sv = s.get(d.properties.id);
-					if (!sv || !sv.value) {
-						return "";
-					} else {
-						if (sv.value !== ':') {
-							return sv.value;
+					if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1])) {
+						const s = out.statData();
+						const sv = s.get(d.properties.id);
+						if (!sv || !sv.value) {
+							return "";
+						} else {
+							if (sv.value !== ':') {
+								return sv.value;
+							}
 						}
 					}
 				});
@@ -300,8 +304,8 @@ export const getColorLegend = function (colorFun, colorArray) {
 /**
  * Build a fill pattern legend object { nd:"white", 0:"url(#pattern_0)", 1:"url(#pattern_1)", ... }
  */
- export const getFillPatternLegend = function () {
-	return function (ecl) { 
-		return "url(#pattern_" + ecl + ")"; 
+export const getFillPatternLegend = function () {
+	return function (ecl) {
+		return "url(#pattern_" + ecl + ")";
 	}
 }
