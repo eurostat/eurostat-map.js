@@ -16,8 +16,8 @@ Reusable library to quickly create and customise web maps based on [NUTS regions
 <a href="https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/bivar.png"  alt="bivariate choropleth" width="400"/></a>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/categorical.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/cat.png"  alt="categorical" width="400"/></a>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/dot.png"  alt="dot density" width="400"/></a>
-<a href="https://eurostat.github.io/eurostat-map.js/examples/world.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/world.png"  alt="dot density" width="400"/></a>
-<a href="https://eurostat.github.io/eurostat-map.js/examples/sparklines.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/sparkline.png"  alt="dot density" width="400"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/world.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/world.png"  alt="dot density" width="400" height="70px"/></a>
+<a href="https://eurostat.github.io/eurostat-map.js/examples/sparklines.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/sparkline.png"  alt="dot density" width="400" height="70px"/></a>
 </div>
 
 ## Examples
