@@ -39,7 +39,41 @@
                 return "gray";
             })
             .tooltip({
-                textFunction: (rg, map) => { return "aaa" }
+                textFunction: function (rg, map) {
+                    const buf = [];
+                    //region name
+                    if (rg.properties.id) {
+                        //name and code
+                        buf.push("<b>" + rg.properties.na + "</b> (" + rg.properties.id + ") <br>");
+                    } else {
+                        //region name
+                        buf.push("<b>" + rg.properties.na + "</b><br>");
+                    }
+
+                    //URT value
+                    const sv2 = map.statData("v2").get(rg.properties.id);
+                    if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_);
+                    else {
+                        buf.push(
+                            sv2.value == 1 ? "Predominantly urban region" : sv2.value == 2 ? "Intermediate region" : "Predominantly rural region"
+                        );
+                    }
+
+                    buf.push("<br>");
+
+                    //stat value
+                    const sv1 = map.statData("v1").get(rg.properties.id);
+                    if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_);
+                    else {
+                        buf.push(sv1.value);
+                        //unit 1
+                        const unit1 = map.statData("v1").unitText();
+                        if (unit1) buf.push(" " + unit1);
+                    }
+
+
+                    return buf.join("");
+                }
             })
             //.legend({ boxFill: "none", squareSize: 80, label1: "Unemployment", label2: "Population", x: 10, y: 140, })
             .showSourceLink(false)
