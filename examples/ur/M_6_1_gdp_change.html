@@ -9,7 +9,7 @@
 <body style="font-family: Helvetica, Arial, sans-serif;">
     <svg id="map"></svg>
 
-    <script src="https://unpkg.com/eurostat-map"></script>
+    <script src="../../build/eurostatmap.js"></script>
     <script>
 
         const url = "https://raw.githubusercontent.com/eurostat/gridviz/master/examples/ur/6_1_gdp_change.csv";
@@ -19,11 +19,11 @@
             .map("chbi")
             //.title("")
             .scale("60M")
-            .nutsLvl(2)
+            .nutsLvl(3)
             .nutsYear(2021)
-            //.stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc" })
+            .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc" })
             //.stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
-            .stat("v1", { eurostatDatasetCode: "demo_r_d3dens", unitText: "inh./km²" })
+            //.stat("v1", { eurostatDatasetCode: "demo_r_d3dens", unitText: "inh./km²" })
             .stat("v2", { eurostatDatasetCode: "lfst_r_lfu3rt", filters: { age: "Y20-64", sex: "T", unit: "PC", time: 2017 }, unitText: "%" })
             .clnb(4)
             /*.classToFillStyle((i, j) => {
@@ -37,6 +37,7 @@
             .zoomExtent([1, 2])
 
         map.build();
+
     </script>
 
 </body>
