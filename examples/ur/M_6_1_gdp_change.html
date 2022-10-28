@@ -21,7 +21,7 @@
             .scale("60M")
             .nutsLvl(3)
             .nutsYear(2021)
-            .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc" })
+            .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc", unitText: " %" })
             .stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
             .clnb(3)
             .classifier1((v) => v >= 5.0 ? 2 : v >= -5 ? 1 : 0)
@@ -37,6 +37,9 @@
                 if (i == 1 && j == 2) return "#5fb441";
                 if (i == 2 && j == 2) return "#468631";
                 return "gray";
+            })
+            .tooltip({
+                textFunction: (rg, map) => { return "aaa" }
             })
             //.legend({ boxFill: "none", squareSize: 80, label1: "Unemployment", label2: "Population", x: 10, y: 140, })
             .showSourceLink(false)
