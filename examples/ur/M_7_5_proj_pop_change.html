@@ -18,7 +18,7 @@
             href="https://ec.europa.eu/eurostat/databrowser/bookmark/f3c52a3f-a082-4ea5-888a-f3bc4b968374?lang=en">urt_gind3</a>)
     </p>
 
-    <svg id="map"></svg>
+    <svg id="map75"></svg>
 
     <script src="../../build/eurostatmap.js"></script>
     <script>
@@ -27,6 +27,7 @@
 
         const map = eurostatmap
             .map("chbi")
+            .svgId("map75")
             .scale("60M")
             .nutsLvl(3)
             .nutsYear(2021)
