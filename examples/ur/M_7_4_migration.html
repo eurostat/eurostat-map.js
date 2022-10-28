@@ -31,7 +31,7 @@ const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/e
             .scale("60M")
             .nutsLvl(3)
             .nutsYear(2021)
-            .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc", unitText: " %" })
+            .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc", unitText: " ‰" })
             .stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
             .clnb(3)
             .classifier1((v) => v >= 6.0 ? 2 : v >= 0 ? 1 : 0)
