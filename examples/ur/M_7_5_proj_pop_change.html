@@ -34,7 +34,7 @@ const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/e
             .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc", unitText: " %" })
             .stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
             .clnb(3)
-            .classifier1((v) => v >= 5.0 ? 2 : v >= -5 ? 1 : 0)
+            .classifier1((v) => v >= 0 ? 2 : v >= -10 ? 1 : 0)
             .classifier2((v) => v - 1)
             .classToFillStyle((i, j) => {
                 if (i == 0 && j == 0) return "#71a8df";
