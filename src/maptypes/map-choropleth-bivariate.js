@@ -35,7 +35,7 @@ export const map = function (config) {
 	out.tooltip_.textFunction = tooltipTextFunBiv;
 
 
-    /**
+	/**
 	 * Definition of getters/setters for all previously defined attributes.
 	 * Each method follow the same pattern:
 	 *  - There is a single method as getter/setter of each attribute. The name of this method is the attribute name, without the trailing "_" character.
@@ -55,11 +55,12 @@ export const map = function (config) {
 	//@override
 	out.updateClassification = function () {
 
-		//make single classifiers
-		//TODO make it possible to use other types of classifiers ?
+		//set classifiers
 		const range = [...Array(out.clnb()).keys()];
-		out.classifier1(scaleQuantile().domain(out.statData("v1").getArray()).range(range));
-		out.classifier2(scaleQuantile().domain(out.statData("v2").getArray()).range(range));
+		if (!out.classifier1_)
+			out.classifier1(scaleQuantile().domain(out.statData("v1").getArray()).range(range));
+		if (!out.classifier2_)
+			out.classifier2(scaleQuantile().domain(out.statData("v2").getArray()).range(range));
 
 		//assign class to nuts regions, based on their value
 		out.svg().selectAll("path.nutsrg")
@@ -68,14 +69,14 @@ export const map = function (config) {
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
-				return +out.classifier1()(+v);
+				return +out.classifier1_(+v);
 			})
 			.attr("ecl2", function (rg) {
 				const sv = out.statData("v2").get(rg.properties.id);
 				if (!sv) return "nd";
 				const v = sv.value;
 				if (v != 0 && !v) return "nd";
-				return +out.classifier2()(+v);
+				return +out.classifier2_(+v);
 			})
 			.attr("nd", function (rg) {
 				const sv1 = out.statData("v1").get(rg.properties.id);
