@@ -26,10 +26,10 @@
             .clnb(3)
             .classifier1((v) => v >= 5.0 ? 2 : v >= -5 ? 1 : 0)
             .classifier2((v) => v-1)
-            /*.classToFillStyle((i, j) => {
+            .classToFillStyle((i, j) => {
                 console.log(i,j)
                 return "red";
-            })*/
+            })
             //.legend({ boxFill: "none", squareSize: 80, label1: "Unemployment", label2: "Population", x: 10, y: 140, })
             .showSourceLink(false)
             //.seaFillStyle("#d3dee8")
