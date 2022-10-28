@@ -22,7 +22,7 @@
     <script src="../../build/eurostatmap.js"></script>
     <script>
 
-const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/ur/7_3.csv";
+        const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/ur/7_3.csv";
         //NUTS,perc,urt,class
 
         const map = eurostatmap
@@ -84,14 +84,13 @@ const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/e
                     return buf.join("");
                 }
             })
-            //.legend({ boxFill: "none", squareSize: 80, label1: "Unemployment", label2: "Population", x: 10, y: 140, })
+            .legend({ boxFill: "none", squareSize: 90, label2: "Urban-rural", label1: "Natural change", x: 05, y: 130, })
+            .nutsrgSelFillSty("yellow")
             .showSourceLink(false)
             .cntbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "none", co: "none" })
             .nutsbnStroke({ 0: "#666", 1: "#777", 2: "#777", 3: "#999", oth: "none", co: "#1f78b4" })
             .coastalMarginColor("lightgray")
-        //.seaFillStyle("#d3dee8")
-        //.drawCoastalMargin(false)
-        .zoomExtent([1, 3])
+            .zoomExtent([1, 3])
 
         map.build();
 
