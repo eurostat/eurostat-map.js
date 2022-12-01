@@ -13,10 +13,12 @@
     <script>
 
         const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/ur/7_3.csv";
+        const n2jURL = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
         const map = eurostatmap
             .map("chbi")
             .svgId("map73")
+            .nuts2jsonBaseURL(n2jURL)
             .scale("60M")
             .nutsLvl(3)
             .nutsYear(2021)
