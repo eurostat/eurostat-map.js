@@ -26,17 +26,17 @@
             .stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
             .clnb(3)
             .classifier1((v) => v >= 5.0 ? 2 : v >= -5 ? 1 : 0)
-            .classifier2((v) => v - 1)
+            .classifier2((v) => 3 - v)
             .classToFillStyle((i, j) => {
-                if (i == 0 && j == 0) return "#71a8df";
-                if (i == 1 && j == 0) return "#286eb4";
-                if (i == 2 && j == 0) return "#1e5388";
+                if (i == 0 && j == 2) return "#71a8df";
+                if (i == 1 && j == 2) return "#286eb4";
+                if (i == 2 && j == 2) return "#1e5388";
                 if (i == 0 && j == 1) return "#fddba2";
                 if (i == 1 && j == 1) return "#faa519";
                 if (i == 2 && j == 1) return "#c87e04";
-                if (i == 0 && j == 2) return "#9dd58a";
-                if (i == 1 && j == 2) return "#5fb441";
-                if (i == 2 && j == 2) return "#468631";
+                if (i == 0 && j == 0) return "#9dd58a";
+                if (i == 1 && j == 0) return "#5fb441";
+                if (i == 2 && j == 0) return "#468631";
                 return "gray";
             })
             .tooltip({
