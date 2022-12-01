@@ -7,17 +7,17 @@
 </head>
 
 <body style="font-family: sans-serif;">
-    <svg id="map61"></svg>
+    <svg id="map75"></svg>
 
     <script src="../../build/eurostatmap.js"></script>
     <script>
 
-        const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/ur/6_1.csv";
+        const url = "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/ur/proj_pop_change.csv";
         const n2jURL = "https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/";
 
         const map = eurostatmap
             .map("chbi")
-            .svgId("map61")
+            .svgId("map75")
             .nuts2jsonBaseURL(n2jURL)
             .scale("60M")
             .nutsLvl(3)
@@ -25,7 +25,7 @@
             .stat("v1", { csvURL: url, geoCol: "NUTS", valueCol: "perc", unitText: " %" })
             .stat("v2", { csvURL: url, geoCol: "NUTS", valueCol: "urt" })
             .clnb(3)
-            .classifier1((v) => v >= 5.0 ? 2 : v >= -5 ? 1 : 0)
+            .classifier1((v) => v >= 0 ? 2 : v >= -10 ? 1 : 0)
             .classifier2((v) => v - 1)
             .classToFillStyle((i, j) => {
                 if (i == 0 && j == 0) return "#71a8df";
@@ -76,7 +76,7 @@
                     return buf.join("");
                 }
             })
-            .legend({ boxFill: "none", squareSize: 90, label2: "Urban-rural", label1: "GDP change", x: 05, y: 130, })
+            .legend({ boxFill: "none", squareSize: 90, label2: "Urban-rural", label1: "Projected pop. change", x: 05, y: 130, })
             .nutsrgSelFillSty("yellow")
             .showSourceLink(false)
             .cntbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "none", co: "none" })
