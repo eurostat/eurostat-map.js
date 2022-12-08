@@ -508,8 +508,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.nutsrgFillStyle_ = v;
 
     //update existing default nutsrg color
-    let nutsrg = selectAll(".nutsrg");
-    if (nutsrg) nutsrg.style("fill", out.nutsrgFillStyle_);
+    out.updateStyle();
 
     //update insets
     for (const geo in out.insetTemplates_) {
