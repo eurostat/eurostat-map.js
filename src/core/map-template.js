@@ -207,7 +207,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 		out[att.substring(0, att.length - 1)] = function (v) { if (!arguments.length) return out[att]; out[att] = v; return out; };
 
 	//special ones which affect also the insets
-	["tooltip_"]
+	["tooltip_","nuts2jsonBaseURL_"]
 		.forEach(function (att) {
 			out[att.substring(0, att.length - 1)] = function (v) {
 				if (!arguments.length) return out[att];
