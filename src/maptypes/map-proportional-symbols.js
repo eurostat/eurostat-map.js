@@ -307,7 +307,6 @@ export const map = function (config) {
 
             if (out.geo_ !== 'WORLD') {
                 if (out.nutsLvl_ == 'mixed') {
-
                     // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
                     out.svg()
                         .selectAll('g.symbol')
@@ -365,14 +364,12 @@ export const map = function (config) {
 
                 // nuts regions fill colour only for those with data
                 regions.attr('fill', function (rg) {
-					const sv = data.get(rg.properties.id)
+                    const sv = data.get(rg.properties.id)
                     if (sv) {
-						return out.nutsrgFillStyle_;
-					}
+                        return out.nutsrgFillStyle_
+                    }
                 })
-
             } else {
-
                 // world countries fill
                 regions.attr('fill', function (rg) {
                     const sv = data.get(rg.properties.id)
