@@ -7,7 +7,8 @@
 </head>
 
 <body style="font-family: sans-serif;">
-    <svg id="map61"></svg>
+    <svg id="map61"></svg><br>
+    <svg id="legend61" height="500"></svg>
 
     <script src="../../build/eurostatmap.js"></script>
     <script>
@@ -76,7 +77,16 @@
                     return buf.join("");
                 }
             })
-            .legend({ boxFill: "none", squareSize: 90, label2: "Urban – rural", label1: "GDP change", x: 05, y: 130, })
+            .legend({
+                svgId: "legend61",
+                boxFill: "none",
+                label2: "Urban – Int. – Rural",
+                label1: "GDP change",
+                breaks1: ["-5%","5%"],
+                x: 05, y: 130,
+                squareSize: 120,
+                labelFontSize:14,
+            })
             .nutsrgSelFillSty("yellow")
             .showSourceLink(false)
             .cntbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "none", co: "none" })
