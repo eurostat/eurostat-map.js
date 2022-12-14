@@ -94,17 +94,21 @@ export const legend = function (map, config) {
 			}
 
 		//breaks 1
-		if (out.breaks1) {
-			for (let i = 0; i < out.breaks1.length; i++) {
-				square.append("text").attr("x", sz*(i+1)).attr("y", out.squareSize + out.labelFontSize)
+		if (out.breaks1)
+			for (let i = 0; i < out.breaks1.length; i++)
+				square.append("text").attr("x", sz * (i + 1)).attr("y", out.squareSize + out.labelFontSize)
 					.text(out.breaks1[i])
 					.attr("text-anchor", "middle")
 					.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
-			}
-		}
+
+		//breaks 2
+		if (out.breaks2)
+			for (let i = 0; i < out.breaks2.length; i++)
+				console.log("legend.breaks2 not yet implemented")
+					//TODO similar to break 1 and label 2
 
 		//labels 1
-		square.append("text").attr("x", 0).attr("y", out.squareSize + out.labelFontSize + (out.breaks1? out.labelFontSize +2: 0))
+		square.append("text").attr("x", 0).attr("y", out.squareSize + out.labelFontSize + (out.breaks1 ? out.labelFontSize + 2 : 0))
 			.text(out.label1)
 			.style("font-size", out.labelFontSize + "px").style("font-family", m.fontFamily_).style("fill", out.fontFill)
 
