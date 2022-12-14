@@ -76,7 +76,15 @@
                     return buf.join("");
                 }
             })
-            .legend({ boxFill: "none", squareSize: 90, label2: "Urban – rural", label1: "Net migration", x: 05, y: 130, })
+            .legend({
+                boxFill: "none",
+                label2: "Urban – Int. – Rural",
+                label1: "Net migration",
+                breaks1: ["0‰","6‰"],
+                x: 05, y: 120,
+                squareSize: 100,
+                labelFontSize:12,
+            })
             .nutsrgSelFillSty("yellow")
             .showSourceLink(false)
             .cntbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "none", co: "none" })
