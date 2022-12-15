@@ -367,6 +367,8 @@ export const map = function (config) {
                     const sv = data.get(rg.properties.id)
                     if (sv) {
                         return out.nutsrgFillStyle_
+                    } else {
+                        return out.cntrgFillStyle_
                     }
                 })
             } else {
