@@ -72,80 +72,150 @@ export const map = function (config) {
         if (!out.classifier2_) out.classifier2(scaleQuantile().domain(out.statData('v2').getArray()).range(range))
 
         //assign class to nuts regions, based on their value
-        out.svg()
-            .selectAll('path.nutsrg')
-            .attr('ecl1', function (rg) {
-                const sv = out.statData('v1').get(rg.properties.id)
-                if (!sv) return 'nd'
-                const v = sv.value
-                if (v != 0 && !v) return 'nd'
-                return +out.classifier1_(+v)
-            })
-            .attr('ecl2', function (rg) {
-                const sv = out.statData('v2').get(rg.properties.id)
-                if (!sv) return 'nd'
-                const v = sv.value
-                if (v != 0 && !v) return 'nd'
-                return +out.classifier2_(+v)
-            })
-            .attr('nd', function (rg) {
-                const sv1 = out.statData('v1').get(rg.properties.id)
-                const sv2 = out.statData('v2').get(rg.properties.id)
-                if (!sv1 || !sv2) return 'nd'
-                let v = sv1.value
-                if (v != 0 && !v) return 'nd'
-                v = sv2.value
-                if (v != 0 && !v) return 'nd'
-                return ''
-            })
+        if (out.svg()) {
+            out.svg()
+                .selectAll('path.nutsrg')
+                .attr('ecl1', function (rg) {
+                    const sv = out.statData('v1').get(rg.properties.id)
+                    if (!sv) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    const v = sv.value
+                    if (v == ':') return 'nd'
+                    return +out.classifier1_(+v)
+                })
+                .attr('ecl2', function (rg) {
+                    const sv = out.statData('v2').get(rg.properties.id)
+                    if (!sv) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    const v = sv.value
+                    if (v == ':') return 'nd'
+                    return +out.classifier2_(+v)
+                })
+                .attr('nd', function (rg) {
+                    const sv1 = out.statData('v1').get(rg.properties.id)
+                    const sv2 = out.statData('v2').get(rg.properties.id)
+                    if (!sv1 || !sv2) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    let v = sv1.value
+                    if (v == ':') return 'nd'
+                    v = sv2.value
+                    if (v == ':') return 'nd'
+                    return ''
+                })
 
-        //define bivariate scale
-        if (!out.classToFillStyle()) {
-            const scale = scaleBivariate(out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor())
-            out.classToFillStyle(scale)
+            //define bivariate scale
+            if (!out.classToFillStyle()) {
+                const scale = scaleBivariate(out.clnb(), out.startColor(), out.color1(), out.color2(), out.endColor())
+                out.classToFillStyle(scale)
+            }
+
+            //when mixing NUTS, level 0 is separated from the rest (using class nutsrg0)
+            if (out.nutsLvl_ == 'mixed') {
+                out.svg()
+                    .selectAll('path.nutsrg0')
+                    .attr('ecl1', function (rg) {
+                        const sv1 = out.statData().get(rg.properties.id)
+                        if (!sv1) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                        const v = sv1.value
+                        if (v != 0 && !v) return
+                        if (v == ':') return 'nd'
+                        return +out.classifier()(+v)
+                    })
+                    .attr('ecl2', function (rg) {
+                        const sv2 = out.statData().get(rg.properties.id)
+                        if (!sv2) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                        const v = sv2.value
+                        if (v != 0 && !v) return
+                        if (v == ':') return 'nd'
+                        return +out.classifier()(+v)
+                    })
+            }
         }
-
         return out
     }
 
     //@override
     out.updateStyle = function () {
         //apply style to nuts regions depending on classes
-        out.svg()
-            .selectAll('path.nutsrg')
-            .transition()
-            .duration(out.transitionDuration())
-            .attr('fill', function () {
-                const ecl1 = select(this).attr('ecl1')
-                if (!ecl1 || ecl1 === 'nd') return out.noDataFillStyle() || 'gray'
-                const ecl2 = select(this).attr('ecl2')
-                if (!ecl2 || ecl2 === 'nd') return out.noDataFillStyle() || 'gray'
-                return out.classToFillStyle()(+ecl1, +ecl2)
-            })
+        if (out.svg()) {
+            out.svg()
+                .selectAll('path.nutsrg')
+                .transition()
+                .duration(out.transitionDuration())
+                .attr('fill', function (rg) {
+                    // only apply data-driven colour to included countries for NUTS templates
+                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                        const ecl1 = select(this).attr('ecl1')
+                        if (!ecl1) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                        if (ecl1 === 'nd') return out.noDataFillStyle() || 'gray'
+                        const ecl2 = select(this).attr('ecl2')
+                        if (!ecl2) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                        if (ecl2 === 'nd') return out.noDataFillStyle() || 'gray'
+                        return out.classToFillStyle()(+ecl1, +ecl2)
+                    } else {
+                        return out.nutsrgFillStyle_
+                    }
+                })
 
-        // set region hover function
-        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
-        let regions = out.svg().selectAll(selector)
-        regions
-            .on('mouseover', function (rg) {
-                const sel = select(this)
-                sel.attr('fill___', sel.attr('fill'))
-                sel.attr('fill', out.nutsrgSelFillSty_)
-                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-            })
-            .on('mousemove', function () {
-                if (out._tooltip) out._tooltip.mousemove()
-            })
-            .on('mouseout', function () {
-                const sel = select(this)
-                let currentFill = sel.attr('fill')
-                let newFill = sel.attr('fill___')
-                if (newFill) {
-                    sel.attr('fill', sel.attr('fill___'))
-                    if (out._tooltip) out._tooltip.mouseout()
-                }
-            })
+            // set region hover function
+            let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            let regions = out.svg().selectAll(selector)
+            regions
+                .on('mouseover', function (rg) {
+                    const sel = select(this)
+                    sel.attr('fill___', sel.attr('fill'))
+                    sel.attr('fill', out.nutsrgSelFillSty_)
+                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                })
+                .on('mousemove', function () {
+                    if (out._tooltip) out._tooltip.mousemove()
+                })
+                .on('mouseout', function () {
+                    const sel = select(this)
+                    let currentFill = sel.attr('fill')
+                    let newFill = sel.attr('fill___')
+                    if (newFill) {
+                        sel.attr('fill', sel.attr('fill___'))
+                        if (out._tooltip) out._tooltip.mouseout()
+                    }
+                })
 
+            if (out.nutsLvl_ == 'mixed') {
+                // Toggle visibility - only show NUTS 1,2,3 with stat values when mixing different NUTS levels
+                out.svg()
+                    .selectAll('path.nutsrg')
+                    .style('display', function (rg) {
+                        const ecl1 = select(this).attr('ecl1')
+                        const ecl2 = select(this).attr('ecl2')
+                        const lvl = select(this).attr('lvl')
+                        // always display NUTS 0 for mixed, and filter countries to show
+                        if (
+                            (ecl1 && ecl2 && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) ||
+                            lvl == '0'
+                        ) {
+                            return 'block'
+                        } else {
+                            // dont show unclassified regions
+                            return 'none'
+                        }
+                    })
+
+                    //toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
+                    .style('stroke', function (bn) {
+                        const lvl = select(this).attr('lvl')
+                        const ecl1 = select(this).attr('ecl1')
+                        const ecl2 = select(this).attr('ecl2')
+                        if (ecl1 && ecl2 && lvl !== '0') {
+                            return out.nutsbnStroke_[parseInt(lvl)] || '#777'
+                        }
+                    })
+                    .style('stroke-width', function (rg) {
+                        const lvl = select(this).attr('lvl')
+                        const ecl1 = select(this).attr('ecl1')
+                        const ecl2 = select(this).attr('ecl2')
+                        if (ecl1 && ecl2 && lvl !== '0') {
+                            return out.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2
+                        }
+                    })
+            }
+        }
         return out
     }
 

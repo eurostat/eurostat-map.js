@@ -35,7 +35,7 @@ export const statMap = function (config, withCenterPoints) {
     }
 
     //the statistical data, retrieved from the config information. As a dictionnary.
-    out.statData_ = { default: sd.statData(), color: sd.statData(), size: sd.statData() }
+    out.statData_ = { default: sd.statData(), color: sd.statData(), size: sd.statData(), v1: sd.statData(), v2: sd.statData() }
     out.statData = function (k, v) {
         //no argument: getter - return the default statData
         if (!arguments.length) return out.statData_['default']
