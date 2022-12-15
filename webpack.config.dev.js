@@ -13,9 +13,6 @@ module.exports = {
     libraryTarget: "umd",
     path: path.resolve(__dirname, "build")
   },
-  node: {
-    fs: "empty"
-  },
   plugins: [new LiveReloadPlugin()],
   watch: true,
   devtool: "inline-source-map"
