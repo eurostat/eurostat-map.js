@@ -6,18 +6,26 @@
  *
  */
 
-
 //colors
 //official colors for Eurostat logo and statistical domains
 export const color = {
-	logo: { gray: "#787878", blue: "#004494", yellow: "#FFF100" },
-	theme: { genreg: "#466eb4", ecofin: "#af4b91", popsoc: "#e6a532", indtradserv: "#00a0e1", agrifish: "#7daf4b", trade: "#b93c46", transp: "#961e2d", envener: "#41afaa", scitech: "#d7642d" }
+    logo: { gray: '#787878', blue: '#004494', yellow: '#FFF100' },
+    theme: {
+        genreg: '#466eb4',
+        ecofin: '#af4b91',
+        popsoc: '#e6a532',
+        indtradserv: '#00a0e1',
+        agrifish: '#7daf4b',
+        trade: '#b93c46',
+        transp: '#961e2d',
+        envener: '#41afaa',
+        scitech: '#d7642d',
+    },
 }
-
 
 //REST API
 
-export const getEstatRestDataURLBase = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/";
+export const getEstatRestDataURLBase = 'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/'
 
 /**
  * Build URL to fetch data from eurobase REST API.
@@ -28,86 +36,182 @@ export const getEstatRestDataURLBase = "https://ec.europa.eu/eurostat/api/dissem
  * @param {number=} version
  */
 export const getEstatDataURL = function (datasetCode, filters, lang, format) {
-	lang = lang || "en";
-	format = format || "json";
-	var url = [];
-	url.push(getEstatRestDataURLBase, datasetCode, "?", "format=",format,"&lang=",lang);
-	if (filters)
-		for (var param in filters) {
-			var o = filters[param];
-			if (Array.isArray(o))
-				for (var i = 0; i < o.length; i++)
-					url.push("&", param, "=", o[i]);
-			else url.push("&", param, "=", o);
-		}
-	return url.join("");
-};
-
+    lang = lang || 'en'
+    format = format || 'json'
+    var url = []
+    url.push(getEstatRestDataURLBase, datasetCode, '?', 'format=', format, '&lang=', lang)
+    if (filters)
+        for (var param in filters) {
+            var o = filters[param]
+            if (Array.isArray(o)) for (var i = 0; i < o.length; i++) url.push('&', param, '=', o[i])
+            else url.push('&', param, '=', o)
+        }
+    return url.join('')
+}
 
 //flags
-export const flags = { b: "break in time series", c: "confidential", d: "definition differs, see metadata", e: "estimated", f: "forecast", n: "not significant", p: "provisional", r: "revised", s: "Eurostat estimate", u: "low reliability", z: "not applicable" }
-
-
+export const flags = {
+    b: 'break in time series',
+    c: 'confidential',
+    d: 'definition differs, see metadata',
+    e: 'estimated',
+    f: 'forecast',
+    n: 'not significant',
+    p: 'provisional',
+    r: 'revised',
+    s: 'Eurostat estimate',
+    u: 'low reliability',
+    z: 'not applicable',
+}
 
 //geo
 
 //Official country order to be used in Eurostat dissemination
-export const geoOrderedList = ["EU", "EU27_2019", "EU28", "EU27", "EU15", "EA", "EA19", "EA18", "NMS12", "EA17", "EA12", "BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE", "UK", "IS", "LI", "NO", "CH", "ME", "MK", "AL", "RS", "TR", "US", "JP", "MX"];
+export const geoOrderedList = [
+    'EU',
+    'EU27_2019',
+    'EU28',
+    'EU27',
+    'EU15',
+    'EA',
+    'EA19',
+    'EA18',
+    'NMS12',
+    'EA17',
+    'EA12',
+    'BE',
+    'BG',
+    'CZ',
+    'DK',
+    'DE',
+    'EE',
+    'IE',
+    'EL',
+    'ES',
+    'FR',
+    'HR',
+    'IT',
+    'CY',
+    'LV',
+    'LT',
+    'LU',
+    'HU',
+    'MT',
+    'NL',
+    'AT',
+    'PL',
+    'PT',
+    'RO',
+    'SI',
+    'SK',
+    'FI',
+    'SE',
+    'UK',
+    'IS',
+    'LI',
+    'NO',
+    'CH',
+    'ME',
+    'MK',
+    'AL',
+    'RS',
+    'TR',
+    'US',
+    'JP',
+    'MX',
+]
 //comparison function to use to sort countries based on official order
-export const geoComparisonEstatPublications = function (g1, g2) { return geoOrderedList.indexOf(g1) - geoOrderedList.indexOf(g2); };
+export const geoComparisonEstatPublications = function (g1, g2) {
+    return geoOrderedList.indexOf(g1) - geoOrderedList.indexOf(g2)
+}
 
 //check if a country code is a geographic aggregate
 export const isGeoAggregate = function (geo) {
-	return geo.indexOf("EA") > -1 || geo.indexOf("EU") > -1 || geo.indexOf("NMS") > -1;
-};
+    return geo.indexOf('EA') > -1 || geo.indexOf('EU') > -1 || geo.indexOf('NMS') > -1
+}
 
 //comparison function to be used to sort country lists based on names.
 export const geoComparison = function (geoToNameFun) {
-	geoToNameFun = geoToNameFun || function (a) { return a; };
-	return function (g1, g2) {
-		if (isGeoAggregate(g1) && !isGeoAggregate(g2)) return 1;
-		if (!isGeoAggregate(g1) && isGeoAggregate(g2)) return -1;
-		var g1_ = geoToNameFun(g1);
-		var g2_ = geoToNameFun(g2);
-		return g1_.localeCompare(g2_);
-	}
-};
+    geoToNameFun =
+        geoToNameFun ||
+        function (a) {
+            return a
+        }
+    return function (g1, g2) {
+        if (isGeoAggregate(g1) && !isGeoAggregate(g2)) return 1
+        if (!isGeoAggregate(g1) && isGeoAggregate(g2)) return -1
+        var g1_ = geoToNameFun(g1)
+        var g2_ = geoToNameFun(g2)
+        return g1_.localeCompare(g2_)
+    }
+}
 
 //conversion from country codes 3 to 2
-export const countryCodes3To2 = { AUT: "AT", BEL: "BE", CHE: "CH", CYP: "CY", CZE: "CZ", DEU: "DE", EST: "EE", GRC: "EL", HRV: "HR", FRA: "FR", HUN: "HU", IRL: "IE", ISL: "IS", LTU: "LT", LUX: "LU", LVA: "LV", MKD: "MK", MLT: "MT", NLD: "NL", NOR: "NO", SVN: "SI", BGR: "BG", DNK: "DK", ESP: "ES", POL: "PL", ITA: "IT", PRT: "PT", ROU: "RO", ROM: "RO", SVK: "SK", FIN: "FI", SWE: "SE", GBR: "UK", TUR: "TR", MNE: "ME", SRB: "RS", USA: "US" };
+export const countryCodes3To2 = {
+    AUT: 'AT',
+    BEL: 'BE',
+    CHE: 'CH',
+    CYP: 'CY',
+    CZE: 'CZ',
+    DEU: 'DE',
+    EST: 'EE',
+    GRC: 'EL',
+    HRV: 'HR',
+    FRA: 'FR',
+    HUN: 'HU',
+    IRL: 'IE',
+    ISL: 'IS',
+    LTU: 'LT',
+    LUX: 'LU',
+    LVA: 'LV',
+    MKD: 'MK',
+    MLT: 'MT',
+    NLD: 'NL',
+    NOR: 'NO',
+    SVN: 'SI',
+    BGR: 'BG',
+    DNK: 'DK',
+    ESP: 'ES',
+    POL: 'PL',
+    ITA: 'IT',
+    PRT: 'PT',
+    ROU: 'RO',
+    ROM: 'RO',
+    SVK: 'SK',
+    FIN: 'FI',
+    SWE: 'SE',
+    GBR: 'UK',
+    TUR: 'TR',
+    MNE: 'ME',
+    SRB: 'RS',
+    USA: 'US',
+}
 
 //override country names, to shorter ones
 export const overrideCountryNames = function (dict, lg) {
-	lg = lg || "en";
-	if (dict.EA) dict.EA = { en: "Euro area", fr: "Zone euro", de: "Euroraum" }[lg];
-	if (dict.EU) dict.EU = { en: "European Union", fr: "Union européenne", de: "Europäische Union" }[lg];
-	if (dict.EEA) dict.EEA = { en: "European Economic Area", fr: "Espace économique européen", de: "Europäischer Wirtschaftsraum" }[lg];
-	if (dict.DE) dict.DE = { en: "Germany", fr: "Allemagne", de: "Deutschland" }[lg];
-	if (dict.MK) dict.MK = { en: "Macedonia (FYRM)", fr: "Macédoine", de: "Mazedonien" }[lg];//"Macedonia (FYRM)";
-};
-
-
+    lg = lg || 'en'
+    if (dict.EA) dict.EA = { en: 'Euro area', fr: 'Zone euro', de: 'Euroraum' }[lg]
+    if (dict.EU) dict.EU = { en: 'European Union', fr: 'Union européenne', de: 'Europäische Union' }[lg]
+    if (dict.EEA)
+        dict.EEA = { en: 'European Economic Area', fr: 'Espace économique européen', de: 'Europäischer Wirtschaftsraum' }[lg]
+    if (dict.DE) dict.DE = { en: 'Germany', fr: 'Allemagne', de: 'Deutschland' }[lg]
+    if (dict.MK) dict.MK = { en: 'Macedonia (FYRM)', fr: 'Macédoine', de: 'Mazedonien' }[lg] //"Macedonia (FYRM)";
+}
 
 export const getMonthTXT = function (monthInt) {
-	return monthInt <= 9 ? "0" + monthInt : "" + monthInt;
-};
-
+    return monthInt <= 9 ? '0' + monthInt : '' + monthInt
+}
 
 /**
  * @param {string} name
  * @returns {string}
  */
 export const getURLParameterByName = function (name) {
-	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-		results = regex.exec(location.search);
-	return !results ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
-};
-
-
-
-
-
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+        results = regex.exec(location.search)
+    return !results ? null : decodeURIComponent(results[1].replace(/\+/g, ' '))
+}
 
 /**
  * @template T
@@ -116,13 +220,13 @@ export const getURLParameterByName = function (name) {
  * @returns {Object.<string, T>}
  */
 export const index = function (arr, indexAtt) {
-	var out = {};
-	for (var i = 0, nb = arr.length; i < nb; i++) {
-		var obj = arr[i];
-		out[obj[indexAtt]] = obj;
-	}
-	return out;
-};
+    var out = {}
+    for (var i = 0, nb = arr.length; i < nb; i++) {
+        var obj = arr[i]
+        out[obj[indexAtt]] = obj
+    }
+    return out
+}
 
 /**
  * @template T
@@ -131,17 +235,15 @@ export const index = function (arr, indexAtt) {
  * @returns {Object.<string, Array.<T>>}
  */
 export const indexMultiple = function (js, indexColumn) {
-	var out = {};
-	for (var i = 0, nb = js.length; i < nb; i++) {
-		var obj = js[i];
-		var list = out[obj[indexColumn]];
-		if (!list)
-			out[obj[indexColumn]] = [obj];
-		else
-			list.push(obj);
-	}
-	return out;
-};
+    var out = {}
+    for (var i = 0, nb = js.length; i < nb; i++) {
+        var obj = js[i]
+        var list = out[obj[indexColumn]]
+        if (!list) out[obj[indexColumn]] = [obj]
+        else list.push(obj)
+    }
+    return out
+}
 
 /**
  * [{id:"fsdf",val:"tralala"},{id:"154",val:"foo"}] to {fsdf:"tralala",154:"foo"}
@@ -151,13 +253,13 @@ export const indexMultiple = function (js, indexColumn) {
  * @returns {Object}
  */
 export const index1 = function (array, id, val) {
-	var out = {};
-	for (var i = 0, nb = array.length; i < nb; i++) {
-		var o = array[i];
-		out[o[id]] = o[val];
-	}
-	return out;
-};
+    var out = {}
+    for (var i = 0, nb = array.length; i < nb; i++) {
+        var o = array[i]
+        out[o[id]] = o[val]
+    }
+    return out
+}
 
 /**
  * {"1":"FULL","2":"EMPTY","3":"AVAILABLE","4":"NA"}
@@ -167,60 +269,59 @@ export const index1 = function (array, id, val) {
  * @returns {Array.<{id:string,label:string}>}
  */
 export const index1ToIdLabel = function (index) {
-	var out = [];
-	var keys = Object.keys(index);
-	for (var i = 0, nb = keys.length; i < nb; i++) {
-		var id = keys[i];
-		out.push({ id: id, label: index[id] });
-	}
-	return out;
-};
+    var out = []
+    var keys = Object.keys(index)
+    for (var i = 0, nb = keys.length; i < nb; i++) {
+        var id = keys[i]
+        out.push({ id: id, label: index[id] })
+    }
+    return out
+}
 
 //{key1="value1",key1="value1"} to {value1="key1",value2="key2"}
 export const swap = function (obj) {
-	var out = {};
-	for (var prop in obj)
-		if (obj.hasOwnProperty(prop))
-			out[obj[prop]] = prop;
-	return out;
-};
+    var out = {}
+    for (var prop in obj) if (obj.hasOwnProperty(prop)) out[obj[prop]] = prop
+    return out
+}
 
 //"a,b,c,d" to ["a","b","c","d"]
 export const split = function (val) {
-	return val.split(/,\s*/);
-};
+    return val.split(/,\s*/)
+}
 
 //"a,b,c,d" to "d"
 export const extractLast = function (term) {
-	return split(term).pop();
-};
+    return split(term).pop()
+}
 
 /**
  * @param{object} obj
  * @return {object}
  */
 export const objectKeysToLowerCase = function (obj) {
-	var key, keys = Object.keys(obj);
-	var n = keys.length;
-	var newobj = {};
-	while (n--) {
-		key = keys[n];
-		newobj[key.toLowerCase()] = obj[key];
-	}
-	return newobj;
-};
+    var key,
+        keys = Object.keys(obj)
+    var n = keys.length
+    var newobj = {}
+    while (n--) {
+        key = keys[n]
+        newobj[key.toLowerCase()] = obj[key]
+    }
+    return newobj
+}
 
 /**
  * @param {Array.<string>} array
  * @return {Array.<string>}
  */
 export const arrayKeysToLowerCase = function (array) {
-	var out = [];
-	for (var i = 0, nb = array.length; i < nb; i++) {
-		out.push(objectKeysToLowerCase(array[i]));
-	}
-	return out;
-};
+    var out = []
+    for (var i = 0, nb = array.length; i < nb; i++) {
+        out.push(objectKeysToLowerCase(array[i]))
+    }
+    return out
+}
 
 /**
  * @param{string} str
@@ -253,8 +354,8 @@ export const arrayKeysToLowerCase = function (array) {
  * @return{string}
  */
 export const escapeRegExp = function (string) {
-	return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-};
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1')
+}
 
 /**
  * @param {string} string
@@ -263,8 +364,8 @@ export const escapeRegExp = function (string) {
  * @return {string}
  */
 export const replaceAll = function (string, find, replace) {
-	return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-};
+    return string.replace(new RegExp(escapeRegExp(find), 'g'), replace)
+}
 
 /**
  * @param {Array} x
@@ -272,203 +373,203 @@ export const replaceAll = function (string, find, replace) {
  * @return {Array}
  */
 export const unionArrays = function (x, y) {
-	var obj = {}, i, nb;
-	for (i = 0, nb = x.length; i < nb; i++) {
-		var xi = x[i];
-		obj[xi] = xi;
-	}
-	for (i = 0, nb = y.length; i < nb; i++) {
-		var yi = y[i];
-		obj[yi] = yi;
-	}
-	var res = [];
-	for (var k in obj)
-		if (obj.hasOwnProperty(k)) res.push(obj[k]);
-	return res;
-};
+    var obj = {},
+        i,
+        nb
+    for (i = 0, nb = x.length; i < nb; i++) {
+        var xi = x[i]
+        obj[xi] = xi
+    }
+    for (i = 0, nb = y.length; i < nb; i++) {
+        var yi = y[i]
+        obj[yi] = yi
+    }
+    var res = []
+    for (var k in obj) if (obj.hasOwnProperty(k)) res.push(obj[k])
+    return res
+}
 
 //{1:"fff",df:15} to ["fff",15]
 export const objValuesToArrays = function (obj) {
-	return Object.keys(obj).map(function (k) { return obj[k]; });
-};
+    return Object.keys(obj).map(function (k) {
+        return obj[k]
+    })
+}
 
 /**
  * @param{number} num
  * @return {string}
  */
 export const numberWithSpaces = function (num) {
-	var str = num.toString().split('.');
-	if (str[0].length >= 5)
-		str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, "$1 ");
-	if (str[1] && str[1].length >= 5)
-		str[1] = str[1].replace(/(\d{3})/g, "$1 ");
-	return str.join('.');
-};
-
-
+    var str = num.toString().split('.')
+    if (str[0].length >= 5) str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1 ')
+    if (str[1] && str[1].length >= 5) str[1] = str[1].replace(/(\d{3})/g, '$1 ')
+    return str.join('.')
+}
 
 export function preventDefault(e) {
-	e = e || window.event;
-	if (e.preventDefault) e.preventDefault();
-	e.returnValue = false;
+    e = e || window.event
+    if (e.preventDefault) e.preventDefault()
+    e.returnValue = false
 }
 
 export const disableScrolling = function () {
-	if (window.addEventListener)
-		window.addEventListener('DOMMouseScroll', preventDefault, false);
-	window.onmousewheel = document.onmousewheel = preventDefault;
-};
+    if (window.addEventListener) window.addEventListener('DOMMouseScroll', preventDefault, false)
+    window.onmousewheel = document.onmousewheel = preventDefault
+}
 
 export const enableScrolling = function () {
-	if (window.removeEventListener)
-		window.removeEventListener('DOMMouseScroll', preventDefault, false);
-	window.onmousewheel = document.onmousewheel = null;
-};
-
-
-
-
+    if (window.removeEventListener) window.removeEventListener('DOMMouseScroll', preventDefault, false)
+    window.onmousewheel = document.onmousewheel = null
+}
 
 //From https://code.google.com/p/stringencoders/source/browse/trunk/javascript/base64.js
 export const encodeBase64 = function (s) {
-	if (arguments.length !== 1) {
-		throw new SyntaxError("Not enough arguments");
-	}
+    if (arguments.length !== 1) {
+        throw new SyntaxError('Not enough arguments')
+    }
 
-	var getbyte = function (s, i) {
-		var x = s.charCodeAt(i);
-		if (x > 255) {
-			console.log("Error");
-			return null;
-		}
-		return x;
-	};
+    var getbyte = function (s, i) {
+        var x = s.charCodeAt(i)
+        if (x > 255) {
+            console.log('Error')
+            return null
+        }
+        return x
+    }
 
-	var padchar = '=';
-	var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    var padchar = '='
+    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
-	var i, b10;
-	var x = [];
+    var i, b10
+    var x = []
 
-	// convert to string
-	s = '' + s;
+    // convert to string
+    s = '' + s
 
-	var imax = s.length - s.length % 3;
+    var imax = s.length - (s.length % 3)
 
-	if (s.length === 0) {
-		return s;
-	}
-	for (i = 0; i < imax; i += 3) {
-		b10 = (getbyte(s, i) << 16) | (getbyte(s, i + 1) << 8) | getbyte(s, i + 2);
-		x.push(alpha.charAt(b10 >> 18));
-		x.push(alpha.charAt((b10 >> 12) & 0x3F));
-		x.push(alpha.charAt((b10 >> 6) & 0x3f));
-		x.push(alpha.charAt(b10 & 0x3f));
-	}
-	switch (s.length - imax) {
-		case 1:
-			b10 = getbyte(s, i) << 16;
-			x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3F) +
-				padchar + padchar);
-			break;
-		case 2:
-			b10 = (getbyte(s, i) << 16) | (getbyte(s, i + 1) << 8);
-			x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3F) +
-				alpha.charAt((b10 >> 6) & 0x3f) + padchar);
-			break;
-	}
-	return x.join('');
-};
+    if (s.length === 0) {
+        return s
+    }
+    for (i = 0; i < imax; i += 3) {
+        b10 = (getbyte(s, i) << 16) | (getbyte(s, i + 1) << 8) | getbyte(s, i + 2)
+        x.push(alpha.charAt(b10 >> 18))
+        x.push(alpha.charAt((b10 >> 12) & 0x3f))
+        x.push(alpha.charAt((b10 >> 6) & 0x3f))
+        x.push(alpha.charAt(b10 & 0x3f))
+    }
+    switch (s.length - imax) {
+        case 1:
+            b10 = getbyte(s, i) << 16
+            x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3f) + padchar + padchar)
+            break
+        case 2:
+            b10 = (getbyte(s, i) << 16) | (getbyte(s, i + 1) << 8)
+            x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3f) + alpha.charAt((b10 >> 6) & 0x3f) + padchar)
+            break
+    }
+    return x.join('')
+}
 
 export const getPropName = function (obj) {
-	for (var name in obj) { return name; }
-};
-
+    for (var name in obj) {
+        return name
+    }
+}
 
 /**
  * Returns max size
  * @return {object}
  */
 export const getMaxSize = function () {
-	var w = window,
-		e = document.documentElement,
-		g = document.getElementsByTagName("body")[0];
-	return {
-		width: w.innerWidth || e.clientWidth || g.clientWidth,
-		height: w.innerHeight || e.clientHeight || g.clientHeight
-	};
-};
+    var w = window,
+        e = document.documentElement,
+        g = document.getElementsByTagName('body')[0]
+    return {
+        width: w.innerWidth || e.clientWidth || g.clientWidth,
+        height: w.innerHeight || e.clientHeight || g.clientHeight,
+    }
+}
 
 //transform 1 into 1st, 2 into 2nd, 3 into 3rd, etc...
 export const getNumbered = function (number, lg) {
-	lg = lg || "en";
-	switch (lg) {
-		case "fr":
-			switch (number) {
-				case 1: return "1er";
-				default: return number + "ème";
-			}
-		default:
-			switch (number) {
-				case 1: return "1st";
-				case 2: return "2nd";
-				case 3: return "3rd";
-				default: return number + "th";
-			}
-	}
-};
-
+    lg = lg || 'en'
+    switch (lg) {
+        case 'fr':
+            switch (number) {
+                case 1:
+                    return '1er'
+                default:
+                    return number + 'ème'
+            }
+        default:
+            switch (number) {
+                case 1:
+                    return '1st'
+                case 2:
+                    return '2nd'
+                case 3:
+                    return '3rd'
+                default:
+                    return number + 'th'
+            }
+    }
+}
 
 /**
  * Returns browser language
  * @return {string}
  */
 export const getLang = function () {
-	return navigator.language || navigator.languages[0] || navigator.browserLanguage;
-};
+    return navigator.language || navigator.languages[0] || navigator.browserLanguage
+}
 
 /**
  * Returns 2 chars language code
  * @return {string}
  */
 export const getLang2Chars = function () {
-	var lg = getURLParameterByName("lang") || getLang() || "en";
-	return lg.substring(0, 2);
-};
-
+    var lg = getURLParameterByName('lang') || getLang() || 'en'
+    return lg.substring(0, 2)
+}
 
 /**
  * @param mls
  * @return{Array.<Array.<number>>|null}
  */
 export const getEnvelope = function (mls) {
-	if (!mls) return null;
-	//to be extended - supports only multiline strings
-	var latMin = 99999, lonMin = 99999, latMax = -99999, lonMax = -99999;
-	for (var i = 0; i < mls.coordinates.length; i++) {
-		var cs = mls.coordinates[i];
-		for (var j = 0; j < cs.length; j++) {
-			var c = cs[j];
-			if (c[0] > lonMax) lonMax = c[0];
-			if (c[0] < lonMin) lonMin = c[0];
-			if (c[1] > latMax) latMax = c[1];
-			if (c[1] < latMin) latMin = c[1];
-		}
-	}
-	if (latMin == 99999 || lonMin == 99999 || latMax == -99999 || lonMax == -99999) return null;
-	return [[latMin, lonMin], [latMax, lonMax]];
-};
-
-
+    if (!mls) return null
+    //to be extended - supports only multiline strings
+    var latMin = 99999,
+        lonMin = 99999,
+        latMax = -99999,
+        lonMax = -99999
+    for (var i = 0; i < mls.coordinates.length; i++) {
+        var cs = mls.coordinates[i]
+        for (var j = 0; j < cs.length; j++) {
+            var c = cs[j]
+            if (c[0] > lonMax) lonMax = c[0]
+            if (c[0] < lonMin) lonMin = c[0]
+            if (c[1] > latMax) latMax = c[1]
+            if (c[1] < latMin) latMin = c[1]
+        }
+    }
+    if (latMin == 99999 || lonMin == 99999 || latMax == -99999 || lonMax == -99999) return null
+    return [
+        [latMin, lonMin],
+        [latMax, lonMax],
+    ]
+}
 
 export const serializeXmlNode = function (xmlNode) {
-	if (typeof window.XMLSerializer != "undefined") {
-		return (new window.XMLSerializer()).serializeToString(xmlNode);
-	} else if (typeof xmlNode.xml != "undefined") {
-		return xmlNode.xml;
-	}
-	return "";
-};
+    if (typeof window.XMLSerializer != 'undefined') {
+        return new window.XMLSerializer().serializeToString(xmlNode)
+    } else if (typeof xmlNode.xml != 'undefined') {
+        return xmlNode.xml
+    }
+    return ''
+}
 
 /**
  * @param{number} cX
@@ -478,14 +579,12 @@ export const serializeXmlNode = function (xmlNode) {
  * @return {{x:number, y:number}}
  */
 export const polarToCartesian = function (cX, cY, radius, aDeg) {
-	var aRad = aDeg * Math.PI / 180.0;
-	return {
-		x: cX + radius * Math.cos(aRad),
-		y: cY + radius * Math.sin(aRad)
-	};
-};
-
-
+    var aRad = (aDeg * Math.PI) / 180.0
+    return {
+        x: cX + radius * Math.cos(aRad),
+        y: cY + radius * Math.sin(aRad),
+    }
+}
 
 /**
  * build random colors index based on unique values.
@@ -495,17 +594,15 @@ export const polarToCartesian = function (cX, cY, radius, aDeg) {
  * @return{Object.<string,string>}
  */
 export const getRandomColorsLegend = function (index, forceValues) {
-	forceValues = forceValues || {};
-	var values = Object.keys(index);
-	var colI = {};
-	for (var i = 0; i < values.length; i++) {
-		var val = values[i];
-		var col = forceValues[val];
-		if (col)
-			colI[val] = col;
-		else
-			colI[val] = colorbrewer.Set1[9][i % 9];
-		//colI[val] = colorbrewer.Set3[12][i%12];
-	}
-	return colI;
-};
+    forceValues = forceValues || {}
+    var values = Object.keys(index)
+    var colI = {}
+    for (var i = 0; i < values.length; i++) {
+        var val = values[i]
+        var col = forceValues[val]
+        if (col) colI[val] = col
+        else colI[val] = colorbrewer.Set1[9][i % 9]
+        //colI[val] = colorbrewer.Set3[12][i%12];
+    }
+    return colI
+}

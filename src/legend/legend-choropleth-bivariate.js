@@ -1,10 +1,10 @@
-import { select } from "d3-selection";
-import * as lg from '../core/legend';
+import { select } from 'd3-selection'
+import * as lg from '../core/legend'
 
 /**
  * A legend for choropleth-bivariate maps
- * 
- * @param {*} map 
+ *
+ * @param {*} map
  */
 export const legend = function (map, config) {
 
