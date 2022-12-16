@@ -150,15 +150,8 @@ export const mapTemplate = function (config, withCenterPoints) {
     //nuts
     out.nutsrgFillStyle_ = 'white'
     out.nutsrgSelFillSty_ = '#e0bcdf'
-    out.nutsbnStroke_ = {
-        0: 'black',
-        1: 'black',
-        2: 'black',
-        3: 'black',
-        oth: 'grey',
-        co: 'black',
-    }
-    out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.3, 2: 0.3, 3: 0.3, oth: 0, co: 0 }
+    out.nutsbnStroke_ = { 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: 'black' }
+    out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
     //country borders
     out.cntrgFillStyle_ = '#f4f4f4'
     out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
