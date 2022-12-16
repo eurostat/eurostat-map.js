@@ -77,26 +77,26 @@ export const map = function (config) {
                 .selectAll('path.nutsrg')
                 .attr('ecl1', function (rg) {
                     const sv = out.statData('v1').get(rg.properties.id)
-                    if (!sv) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    if (!sv) return 'nd'
                     const v = sv.value
-                    if (v == ':') return 'nd'
+                    if (v != 0 && !v) return 'nd'
                     return +out.classifier1_(+v)
                 })
                 .attr('ecl2', function (rg) {
                     const sv = out.statData('v2').get(rg.properties.id)
-                    if (!sv) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    if (!sv) return 'nd'
                     const v = sv.value
-                    if (v == ':') return 'nd'
+                    if (v != 0 && !v) return 'nd'
                     return +out.classifier2_(+v)
                 })
                 .attr('nd', function (rg) {
                     const sv1 = out.statData('v1').get(rg.properties.id)
                     const sv2 = out.statData('v2').get(rg.properties.id)
-                    if (!sv1 || !sv2) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                    if (!sv1 || !sv2) return 'nd'
                     let v = sv1.value
-                    if (v == ':') return 'nd'
+                    if (v != 0 && !v) return 'nd'
                     v = sv2.value
-                    if (v == ':') return 'nd'
+                    if (v != 0 && !v) return 'nd'
                     return ''
                 })
 
@@ -111,20 +111,18 @@ export const map = function (config) {
                 out.svg()
                     .selectAll('path.nutsrg0')
                     .attr('ecl1', function (rg) {
-                        const sv1 = out.statData().get(rg.properties.id)
-                        if (!sv1) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
-                        const v = sv1.value
-                        if (v != 0 && !v) return
-                        if (v == ':') return 'nd'
-                        return +out.classifier()(+v)
+                        const sv = out.statData('v2').get(rg.properties.id)
+                        if (!sv) return 'nd'
+                        const v = sv.value
+                        if (v != 0 && !v) return 'nd'
+                        return +out.classifier1_(+v)
                     })
                     .attr('ecl2', function (rg) {
-                        const sv2 = out.statData().get(rg.properties.id)
-                        if (!sv2) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
-                        const v = sv2.value
-                        if (v != 0 && !v) return
-                        if (v == ':') return 'nd'
-                        return +out.classifier()(+v)
+                        const sv = out.statData('v2').get(rg.properties.id)
+                        if (!sv) return 'nd'
+                        const v = sv.value
+                        if (v != 0 && !v) return 'nd'
+                        return +out.classifier2_(+v)
                     })
             }
         }
