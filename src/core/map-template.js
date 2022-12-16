@@ -158,16 +158,10 @@ export const mapTemplate = function (config, withCenterPoints) {
         oth: 'grey',
         co: 'black',
     }
-    out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
+    out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.3, 2: 0.3, 3: 0.3, oth: 0, co: 0 }
     //country borders
     out.cntrgFillStyle_ = '#f4f4f4'
-    out.cntbnStroke_ = {
-        eu: 'black',
-        efta: 'black',
-        cc: 'black',
-        oth: 'grey',
-        co: '#7f7f7f',
-    }
+    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
     out.cntbnStrokeWidth_ = { eu: 0.8, efta: 0.8, cc: 0.8, oth: 0.8, co: 0.5 }
     //world map
     out.worldFillStyle_ = '#E6E6E6'
