@@ -1521,6 +1521,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             out.svg()
                 .append('text')
                 .attr('id', 'title' + out.geo_)
+                .attr('class', 'eurostat-map-title')
                 .attr('x', out.titlePosition()[0])
                 .attr('y', out.titlePosition()[1])
                 .text(out.title())
@@ -1541,6 +1542,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             out.svg()
                 .append('text')
                 .attr('id', 'subtitle' + out.geo_)
+                .attr('class', 'eurostat-map-subtitle')
                 .attr('x', out.subtitlePosition()[0])
                 .attr('y', out.subtitlePosition()[1])
                 .text(out.subtitle())
@@ -1918,6 +1920,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         // top line full width
         scalebarSVG
             .append('line')
+            .attr('class', 'eurostat-map-scalebar-line')
             .attr('x1', marginLeft)
             .attr('y1', 1)
             .attr('x2', niceLengthPixel + marginLeft)
@@ -1927,6 +1930,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         //bottom line full width
         scalebarSVG
             .append('line')
+            .attr('class', 'eurostat-map-scalebar-line')
             .attr('x1', marginLeft)
             .attr('y1', out.scalebarSegmentHeight_)
             .attr('x2', niceLengthPixel + marginLeft)
@@ -1937,6 +1941,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         //first tick
         scalebarSVG
             .append('line')
+            .attr('class', 'eurostat-map-scalebar-line')
             .attr('x1', marginLeft)
             .attr('y1', 1)
             .attr('x2', marginLeft)
@@ -1945,6 +1950,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             .style('stroke-width', out.scalebarStrokeWidth_ + 'px')
         scalebarSVG
             .append('text')
+            .attr('class', 'eurostat-map-scalebar-label')
             .attr('x', marginLeft + textOffsetX)
             .attr('y', out.scalebarTickHeight_ + textOffsetY)
             .text('0')
@@ -1960,6 +1966,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             for (let i = 1; i < subdivisionNb; i++) {
                 scalebarSVG
                     .append('line')
+                    .attr('class', 'eurostat-map-scalebar-line')
                     .attr('x1', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
                     .attr('y1', 1)
                     .attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
@@ -1970,6 +1977,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .style('stroke-width', out.scalebarStrokeWidth_)
                 scalebarSVG
                     .append('text')
+                    .attr('class', 'eurostat-map-scalebar-label')
                     .attr('x', marginLeft + textOffsetX + i * divisionWidth)
                     .attr('y', out.scalebarTickHeight_ + textOffsetY)
                     .text(getScalebarLabel((niceLengthM[0] / subdivisionNb) * i))
@@ -1982,6 +1990,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             for (let i = -1; i < subdivisionNb; i += 2) {
                 if (i == 1) {
                     sb.append('line')
+                        .attr('class', 'eurostat-map-scalebar-line')
                         .attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1)
                         .attr('y1', out.scalebarSegmentHeight_ / 2)
                         .attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
@@ -1992,6 +2001,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     let x1 = marginLeft + out.scalebarStrokeWidth_ / 2 + (i - 1) * divisionWidth
                     if (x1 > 0) {
                         sb.append('line')
+                            .attr('class', 'eurostat-map-scalebar-line')
                             .attr('x1', x1)
                             .attr('y1', out.scalebarSegmentHeight_ / 2)
                             .attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + i * divisionWidth)
@@ -2004,6 +2014,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         } else {
             // single full-length horizontal mid-line
             sb.append('line')
+                .attr('class', 'eurostat-map-scalebar-line')
                 .attr('x1', marginLeft + out.scalebarStrokeWidth_ - 1)
                 .attr('y1', out.scalebarSegmentHeight_ / 2)
                 .attr('x2', marginLeft + out.scalebarStrokeWidth_ / 2 + divisionWidth * subdivisionNb)
@@ -2015,6 +2026,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         //last tick
         scalebarSVG
             .append('line')
+            .attr('class', 'eurostat-map-scalebar-line')
             .attr('x1', niceLengthPixel + marginLeft)
             .attr('y1', 1)
             .attr('x2', niceLengthPixel + marginLeft)
@@ -2023,6 +2035,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             .style('stroke-width', out.scalebarStrokeWidth_ + 'px')
         scalebarSVG
             .append('text')
+            .attr('class', 'eurostat-map-scalebar-label')
             .attr('x', niceLengthPixel + marginLeft + textOffsetX)
             .attr('y', out.scalebarTickHeight_ + textOffsetY)
             .text(getScalebarLabel(niceLengthM[0]) + out.scalebarUnits_)

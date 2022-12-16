@@ -51,6 +51,7 @@ export const legend = function (map, config) {
         //draw title
         if (out.title)
             lgg.append('text')
+                .attr('class', 'eurostat-map-legend-title')
                 .attr('x', xc)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(out.title)
