@@ -76,6 +76,7 @@ export const map = function (config) {
             out.svg()
                 .selectAll('path.nutsrg')
                 .attr('ecl1', function (rg) {
+                    if (!out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) return
                     const sv = out.statData('v1').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
@@ -83,6 +84,7 @@ export const map = function (config) {
                     return +out.classifier1_(+v)
                 })
                 .attr('ecl2', function (rg) {
+                    if (!out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) return
                     const sv = out.statData('v2').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
@@ -90,6 +92,7 @@ export const map = function (config) {
                     return +out.classifier2_(+v)
                 })
                 .attr('nd', function (rg) {
+                    if (!out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) return
                     const sv1 = out.statData('v1').get(rg.properties.id)
                     const sv2 = out.statData('v2').get(rg.properties.id)
                     if (!sv1 || !sv2) return 'nd'
