@@ -172,7 +172,8 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
                 .on('mouseover', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[nd='nd']")
+                    const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                    const sel = nRg.selectAll("[nd='nd']")
                     sel.style('fill', m.nutsrgSelFillSty())
                     sel.attr('fill___', function (d) {
                         select(this).attr('fill')
@@ -180,7 +181,8 @@ export const legend = function (map, config) {
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })
                 .on('mouseout', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[nd='nd']")
+                    const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                    const sel = nRg.selectAll("[nd='nd']")
                     sel.style('fill', function (d) {
                         select(this).attr('fill___')
                     })
