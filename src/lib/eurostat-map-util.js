@@ -47,7 +47,11 @@ export const csvToIndex = function (csvData, geoCol, valueCol) {
     for (let i = 0; i < csvData.length; i++) {
         const d = csvData[i]
         const v = d[valueCol]
-        ind[d[geoCol]] = { value: isNaN(+v) ? v : +v, status: '' }
+        if (!v) {
+            ind[d[geoCol]] = { value: ':', status: '' }
+        } else {
+            ind[d[geoCol]] = { value: isNaN(+v) ? v : +v, status: '' }
+        }
     }
     return ind
 }

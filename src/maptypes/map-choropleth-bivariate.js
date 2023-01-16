@@ -80,7 +80,7 @@ export const map = function (config) {
                     const sv = out.statData('v1').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
-                    if (v != 0 && !v) return 'nd'
+                    if (v != 0 && !v || v == ':') return 'nd'
                     return +out.classifier1_(+v)
                 })
                 .attr('ecl2', function (rg) {
@@ -88,7 +88,7 @@ export const map = function (config) {
                     const sv = out.statData('v2').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
-                    if (v != 0 && !v) return 'nd'
+                    if (v != 0 && !v || v == ':') return 'nd'
                     return +out.classifier2_(+v)
                 })
                 .attr('nd', function (rg) {
@@ -97,9 +97,9 @@ export const map = function (config) {
                     const sv2 = out.statData('v2').get(rg.properties.id)
                     if (!sv1 || !sv2) return 'nd'
                     let v = sv1.value
-                    if (v != 0 && !v) return 'nd'
+                    if (v != 0 && !v || v == ':') return 'nd'
                     v = sv2.value
-                    if (v != 0 && !v) return 'nd'
+                    if (v != 0 && !v || v == ':') return 'nd'
                     return ''
                 })
 
@@ -117,14 +117,14 @@ export const map = function (config) {
                         const sv = out.statData('v2').get(rg.properties.id)
                         if (!sv) return 'nd'
                         const v = sv.value
-                        if (v != 0 && !v) return 'nd'
+                        if (v != 0 && !v || v == ':') return 'nd'
                         return +out.classifier1_(+v)
                     })
                     .attr('ecl2', function (rg) {
                         const sv = out.statData('v2').get(rg.properties.id)
                         if (!sv) return 'nd'
                         const v = sv.value
-                        if (v != 0 && !v) return 'nd'
+                        if (v != 0 && !v || v == ':') return 'nd'
                         return +out.classifier2_(+v)
                     })
             }

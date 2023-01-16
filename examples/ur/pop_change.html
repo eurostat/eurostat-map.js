@@ -49,7 +49,7 @@
                 'AL',
                 'MK',
                 'TR',
-                'RS'
+                'RS',
             ]
 
             const map = eurostatmap
@@ -64,8 +64,20 @@
                 .stat('v1', { csvURL: url, geoCol: 'NUTS', valueCol: 'perc', unitText: ' %' })
                 .stat('v2', { csvURL: url, geoCol: 'NUTS', valueCol: 'urt' })
                 .clnb(3)
-                .classifier1((v) => (v >= 0.3 ? 2 : v >= -0.3 ? 1 : 0))
-                .classifier2((v) => 3 - v)
+                .classifier1((v) => {
+                    if (v || v == 0) {
+                        return v >= 0.3 ? 2 : v >= -0.3 ? 1 : 0
+                    } else {
+                        return ':'
+                    }
+                })
+                .classifier2((v) => {
+                    if (v || v == 0) {
+                        return 3 - v
+                    } else {
+                        return ':'
+                    }
+                })
                 .classToFillStyle((i, j) => {
                     if (i == 0 && j == 2) return '#71a8df'
                     if (i == 1 && j == 2) return '#286eb4'
@@ -76,7 +88,7 @@
                     if (i == 0 && j == 0) return '#9dd58a'
                     if (i == 1 && j == 0) return '#5fb441'
                     if (i == 2 && j == 0) return '#468631'
-                    return 'gray'
+                    return 'grey'
                 })
                 .tooltip({
                     textFunction: function (rg, map) {
@@ -93,8 +105,9 @@
                         //URT value
                         if (countriesToShow.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sv2 = map.statData('v2').get(rg.properties.id)
-                            if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
-                            else {
+                            if (!sv2 || (sv2.value != 0 && !sv2.value) || sv2.value == ':') {
+                                buf.push(map.noDataText_)
+                            } else {
                                 buf.push(
                                     sv2.value == 1
                                         ? 'Predominantly urban region'
@@ -108,7 +121,8 @@
 
                             //stat value
                             const sv1 = map.statData('v1').get(rg.properties.id)
-                            if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
+
+                            if (!sv1 || (sv1.value != 0 && !sv1.value) || sv1.value == ':') buf.push(map.noDataText_)
                             else {
                                 buf.push(sv1.value)
                                 //unit 1
@@ -133,7 +147,7 @@
                 .nutsrgSelFillSty('yellow')
                 .nutsrgFillStyle('#eae8e8')
                 .cntrgFillStyle('#eae8e8')
-                .noDataFillStyle('#a0a0a0')
+                .noDataFillStyle('grey')
                 .showSourceLink(false)
                 .cntbnStroke({ 0: '#777', 1: '#777', 2: '#777', 3: '#777', oth: 'none', co: '#bababa' })
                 .nutsbnStroke({ 0: '#666', 1: '#777', 2: '#777', 3: '#999', oth: 'none', co: '#bababa' })
