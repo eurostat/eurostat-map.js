@@ -64,20 +64,8 @@
                 .stat('v1', { csvURL: url, geoCol: 'NUTS', valueCol: 'perc', unitText: ' %' })
                 .stat('v2', { csvURL: url, geoCol: 'NUTS', valueCol: 'urt' })
                 .clnb(3)
-                .classifier1((v) => {
-                    if (v || v == 0) {
-                        return v >= 0.3 ? 2 : v >= -0.3 ? 1 : 0
-                    } else {
-                        return ':'
-                    }
-                })
-                .classifier2((v) => {
-                    if (v || v == 0) {
-                        return 3 - v
-                    } else {
-                        return ':'
-                    }
-                })
+                .classifier1((v) => (v >= 0.3 ? 2 : v >= -0.3 ? 1 : 0))
+                .classifier2((v) => 3 - v)
                 .classToFillStyle((i, j) => {
                     if (i == 0 && j == 2) return '#71a8df'
                     if (i == 1 && j == 2) return '#286eb4'

@@ -49,7 +49,7 @@
                 'AL',
                 'MK',
                 'TR',
-                'RS'
+                'RS',
             ]
             const map = eurostatmap
                 .map('chbi')
@@ -92,7 +92,7 @@
                         //URT value
                         if (countriesToShow.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sv2 = map.statData('v2').get(rg.properties.id)
-                            if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
+                            if (!sv2 || (sv2.value != 0 && !sv2.value) || sv2.value == ':') buf.push(map.noDataText_)
                             else {
                                 buf.push(
                                     sv2.value == 1
@@ -107,7 +107,7 @@
 
                             //stat value
                             const sv1 = map.statData('v1').get(rg.properties.id)
-                            if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
+                            if (!sv1 || (sv1.value != 0 && !sv1.value) || sv1.value == ':') buf.push(map.noDataText_)
                             else {
                                 buf.push(sv1.value)
                                 //unit 1

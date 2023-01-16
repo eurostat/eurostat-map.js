@@ -210,7 +210,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.botTxtFill_ = 'black'
     out.botTxtPadding_ = 10
     out.botTxtTooltipTxt_ =
-        'The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence. Palestine*: This designation shall not be construed as recognition of a State of Palestine and is without prejudice to the individual positions of the Member States on this issue.'
+        'The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence.'
 
     out.nuts2jsonBaseURL_ = 'https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/'
 
