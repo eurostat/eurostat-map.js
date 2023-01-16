@@ -180,6 +180,8 @@ export const map = function (config) {
             .attr('fill', function (d) {
                 const id = d.properties.id
 
+                if (!out.countriesToShow_.includes(id[0] + id[1])) return out.nutsrgFillStyle_;
+
                 //compute composition
                 const composition = getComposition(id)
 

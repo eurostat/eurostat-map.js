@@ -483,7 +483,9 @@ export const mapTemplate = function (config, withCenterPoints) {
         out.nutsrgFillStyle_ = v
 
         //update existing default nutsrg color
-        out.updateStyle()
+        if (out.svg_) {
+            out.updateStyle()
+        }
 
         //update insets
         for (const geo in out.insetTemplates_) {
