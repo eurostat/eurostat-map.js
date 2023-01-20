@@ -103,10 +103,7 @@ export const map = function (config) {
 
     //@override
     out.updateClassification = function () {
-        // apply to main map
-        applyClassificationToMap(out)
-
-        // apply classification to all insets
+        // apply classification to all insets that are outside of the main map's SVG
         if (out.insetTemplates_) {
             for (const geo in out.insetTemplates_) {
                 if (Array.isArray(out.insetTemplates_[geo])) {
@@ -115,18 +112,23 @@ export const map = function (config) {
                         if (Array.isArray(out.insetTemplates_[geo][i])) {
                             // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
                             for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                                applyClassificationToMap(out.insetTemplates_[geo][i][c])
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
                             }
                         } else {
-                            applyClassificationToMap(out.insetTemplates_[geo][i])
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
+                                applyClassificationToMap(out.insetTemplates_[geo][i])
                         }
                     }
                 } else {
                     // unique inset geo_
-                    applyClassificationToMap(out.insetTemplates_[geo])
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
                 }
             }
         }
+
+        // apply to main map
+        applyClassificationToMap(out)
 
         return out
     }
@@ -197,9 +199,6 @@ export const map = function (config) {
 
     //@override
     out.updateStyle = function () {
-        // apply to main map
-        applyStyleToMap(out)
-
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
@@ -210,18 +209,22 @@ export const map = function (config) {
                         if (Array.isArray(out.insetTemplates_[geo][i])) {
                             // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
                             for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                                applyStyleToMap(out.insetTemplates_[geo][i][c])
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyStyleToMap(out.insetTemplates_[geo][i][c])
                             }
                         } else {
-                            applyStyleToMap(out.insetTemplates_[geo][i])
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo][i])
                         }
                     }
                 } else {
                     // unique inset geo_
-                    applyStyleToMap(out.insetTemplates_[geo])
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo])
                 }
             }
         }
+
+        // apply to main map
+        applyStyleToMap(out)
 
         return out
     }
