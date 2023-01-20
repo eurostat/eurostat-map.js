@@ -1002,10 +1002,9 @@ export const mapTemplate = function (config, withCenterPoints) {
             // GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
             if (out.insetTemplates_[config.geo]) {
                 //if inset already exists in map with same geo, then push both to an array
-                out.insetTemplates_[config.geo] = [
-                    out.insetTemplates_[config.geo],
-                    buildInset(config, out).buildMapTemplateBase(),
-                ]
+                let inset = buildInset(config, out)
+                inset.buildMapTemplateBase()
+                out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo], inset]
             } else {
                 out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase()
             }

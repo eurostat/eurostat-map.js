@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+    <body>
+        <div style="margin-left: 1%">
+            <svg id="container" width="800" height="800">
+                <svg id="mappy"></svg>
+                <!-- insets -->
+                <svg id="inset0" width="80" height="80" y="650" x="0"></svg>
+                <svg id="inset1" y="650" x="80"></svg>
+                <svg id="inset2" y="667" x="80"></svg>
+                <svg id="inset3" y="650" x="160"></svg>
+                <svg id="inset4" y="650" x="350"></svg>
+                <svg id="inset5" y="650" x="440"></svg>
+                <svg id="inset6" y="650" x="530"></svg>
+                <svg id="inset7" y="650" x="620"></svg>
+                <svg id="inset8" y="650" x="710"></svg>
+                <svg id="inset9" y="650" x="800"></svg>
+                <svg id="inset10" y="650" x="890"></svg>
+                <svg id="inset11" y="650" x="980"></svg>
+                <svg id="inset12" y="650" x="1070"></svg>
+                <svg id="inset13" y="650" x="1160"></svg>
+            </svg>
+        </div>
+
+        <script src="../../build/eurostatmap.js"></script>
+        <script src="../data/nuts3.js"></script>
+        <script src="../configs/insetConfig_ext.js"></script>
+        <script src="../data/mixed.js"></script>
+        <script>
+            let mapWidth = 638
+            let mapHeight = 608
+
+            basemap = function () {
+                return (
+                    eurostatmap
+                        .map('ch')
+                        .svgId('mappy')
+                        .containerId('container')
+                        .pixSize(7400)
+                        .width(mapWidth)
+                        .height(mapHeight)
+                        .bottomText(null)
+                        .showSourceLink(false)
+                        .nutsLvl('mixed')
+                        //.nutsLvl(0)
+                        .classifMethod('threshold')
+                        .drawGraticule(true)
+                        .graticuleStroke('#ccc')
+                        .graticuleStrokeWidth(0.5)
+                        .geoCenter([4980000, 3610000])
+                        .legend(false)
+                        .drawCoastalMargin(false)
+                        .cntrgFillStyle('#E6E6E6')
+                        .nutsrgFillStyle('#E6E6E6')
+                        .nutsbnStroke({
+                            0: '#000',
+                            1: '#000',
+                            2: '#000',
+                            3: '#000',
+                            co: 'grey',
+                        })
+                        .noDataFillStyle('darkgrey')
+                        .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
+                        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
+                        .bordersToShow(['eu', 'co', 'cc', 'efta'])
+                        .nuts2jsonBaseURL('https:gisco-services.ec.europa.eu/pub/nuts2json/v2/')
+                        .insets(insetsConfig)
+                        //.zoomExtent([1,10])
+                        .showScalebar(true)
+                        .scalebarPosition([420, 560])
+                        .nutsrgSelFillSty('#003E8C')
+                        //.labelling(true)
+                        .labelsToShow(['seas', 'values', 'cc'])
+                        .labelValuesFontSize(10)
+                        .labelFill({ seas: '#012a7c', cc: 'black' })
+                        .labelShadow(true)
+                    /*                         .colors(['#feedde', '#fdd0a2', '#fdae6b', '#fd8d3c', '#e6550d', '#a63603', '#999'])
+                        .threshold([0, 5, 99999]) */
+                )
+            }
+
+            let exampleData1 = {
+                FRY: 10,
+                TRB: 10,
+                AT: 10,
+                BE: 10,
+                BG: 10,
+                CY: 10,
+                CZ: 10,
+                // DE: 10,
+                DK: 10,
+                EE: 10,
+                EL: 10,
+                ES: 10,
+                FI: 10,
+                FR: 10,
+                HR: 10,
+                HU: 10,
+                IE: 10,
+                IS: 10,
+                IT: 10,
+                LI: 10,
+                LT: 10,
+                LU: 10,
+                LV: 10,
+                MT: 10,
+                NL: 10,
+                PL: 10,
+                PT: 10,
+                RO: 10,
+                SE: 10,
+                SI: 10,
+                SK: 10,
+                UK: 10,
+                RS: 10,
+                CH: 10,
+                NO: 10,
+                ME: 10,
+                MK: 10,
+                AL: 10,
+                TR: 10,
+            }
+            let exampleData2 = { ES: 10 }
+            let map = basemap()
+            map.statData().setData(exampleData1)
+            map.build()
+        </script>
+    </body>
+</html>
