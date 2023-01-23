@@ -193,19 +193,60 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
-                    sel.style('fill', m.nutsrgSelFillSty())
-                    sel.attr('fill___', function (d) {
-                        select(this).attr('fill')
-                    })
                     select(this).style('fill', m.nutsrgSelFillSty())
+                    highlightRegions(svgMap, 'nd')
+                    // apply hover to all external insets
+                    if (out.map.insetTemplates_) {
+                        let insets = out.map.insetTemplates_
+                        for (const geo in insets) {
+                            if (Array.isArray(insets[geo])) {
+                                for (var i = 0; i < insets[geo].length; i++) {
+                                    // insets with same geo that do not share the same parent inset
+                                    if (Array.isArray(insets[geo][i])) {
+                                        // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                                        for (var c = 0; c < insets[geo][i].length; c++) {
+                                            if (insets[geo][i][c].svgId_ !== out.svgId_)
+                                                highlightRegions(insets[geo][i][c].svg(), 'nd')
+                                        }
+                                    } else {
+                                        if (insets[geo][i].svgId_ !== out.svgId_) highlightRegions(insets[geo][i].svg(), 'nd')
+                                    }
+                                }
+                            } else {
+                                // unique inset geo_
+                                if (insets[geo].svgId_ !== out.svgId_) highlightRegions(insets[geo].svg(), 'nd')
+                            }
+                        }
+                    }
                 })
                 .on('mouseout', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
-                    sel.style('fill', function (d) {
-                        select(this).attr('fill___')
-                    })
+                    // legend cell colour
                     select(this).style('fill', m.noDataFillStyle())
+                    unhighlightRegions(svgMap, 'nd')
+
+                    // apply hover to all external insets
+                    if (out.map.insetTemplates_) {
+                        let insets = out.map.insetTemplates_
+                        for (const geo in insets) {
+                            if (Array.isArray(insets[geo])) {
+                                for (var i = 0; i < insets[geo].length; i++) {
+                                    // insets with same geo that do not share the same parent inset
+                                    if (Array.isArray(insets[geo][i])) {
+                                        // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                                        for (var c = 0; c < insets[geo][i].length; c++) {
+                                            if (insets[geo][i][c].svgId_ !== out.svgId_)
+                                                unhighlightRegions(insets[geo][i][c].svg(), ecl)
+                                        }
+                                    } else {
+                                        if (insets[geo][i].svgId_ !== out.svgId_) unhighlightRegions(insets[geo][i].svg(), ecl)
+                                    }
+                                }
+                            } else {
+                                // unique inset geo_
+                                if (insets[geo].svgId_ !== out.svgId_) unhighlightRegions(insets[geo].svg(), ecl)
+                            }
+                        }
+                    }
                 })
 
             //'no data' label
