@@ -250,18 +250,18 @@ export const map = function (config) {
                     if (map.geo_ == 'WORLD') {
                         //world template
                         const ecl = select(this).attr('ecl')
-                        if (!ecl) return map.nutsrgFillStyle_
-                        if (ecl === 'nd') return map.noDataFillStyle() || 'gray'
-                        return map.classToFillStyle()(ecl, out.clnb())
+                        if (!ecl) return out.nutsrgFillStyle_
+                        if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
+                        return out.classToFillStyle()(ecl, out.clnb())
                     } else {
                         // only apply data-driven colour to included countries for NUTS templates
-                        if (map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const ecl = select(this).attr('ecl')
-                            if (!ecl) return map.nutsrgFillStyle_
-                            if (ecl === 'nd') return map.noDataFillStyle() || 'gray'
+                            if (!ecl) return out.nutsrgFillStyle_
+                            if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
                             return out.classToFillStyle()(ecl, out.clnb())
                         } else {
-                            return map.nutsrgFillStyle_
+                            return out.nutsrgFillStyle_
                         }
                     }
                 })

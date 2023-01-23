@@ -53,7 +53,22 @@
                         .graticuleStroke('#ccc')
                         .graticuleStrokeWidth(0.5)
                         .geoCenter([4980000, 3610000])
-                        .legend(false)
+                        .legend({
+                            ascending: true,
+                            boxPadding: 5,
+                            boxOpacity: 0,
+                            boxMargin: 0,
+                            x: 25,
+                            y: 330,
+                            shapeHeight: 20,
+                            shapeWidth: 50,
+                            sepLineLength: 55,
+                            labelDecNb: 0,
+                            title: 'title',
+                            titleFontSize: 20,
+                            labelFontSize: 15,
+                            noData: true,
+                        })
                         .drawCoastalMargin(false)
                         .cntrgFillStyle('#E6E6E6')
                         .nutsrgFillStyle('#E6E6E6')
