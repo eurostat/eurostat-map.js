@@ -64,6 +64,7 @@ export const legend = function (map, config) {
         //draw title
         if (out.title)
             lgg.append('text')
+                .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(out.title)
@@ -156,6 +157,7 @@ export const legend = function (map, config) {
             //separation line
             if (i > 0)
                 lgg.append('line')
+                    .attr('class', 'eurostatmap-legend-line')
                     .attr('x1', out.boxPadding)
                     .attr('y1', y)
                     .attr('x2', out.boxPadding + out.sepLineLength)
@@ -166,6 +168,7 @@ export const legend = function (map, config) {
             //label
             if (i < m.clnb() - 1)
                 lgg.append('text')
+                    .attr('class', 'eurostatmap-legend-label')
                     .attr('x', out.boxPadding + Math.max(out.shapeWidth, out.sepLineLength) + out.labelOffset)
                     .attr('y', y + out.shapeHeight)
                     .attr('alignment-baseline', 'middle')
@@ -251,6 +254,7 @@ export const legend = function (map, config) {
 
             //'no data' label
             lgg.append('text')
+                .attr('class', 'eurostatmap-legend-label')
                 .attr('x', out.boxPadding + out.shapeWidth + out.labelOffset)
                 .attr('y', y + out.shapeHeight * 0.5)
                 .attr('alignment-baseline', 'middle')
