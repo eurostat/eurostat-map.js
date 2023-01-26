@@ -1,236 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
 
-  <body>
-    <div style="margin-left: 1%">
-      <svg id="mappy"></svg>
-    </div>
+    <body>
+        <div style="margin-left: 1%">
+            <svg id="mappy"></svg>
+        </div>
 
-    <script src="../../build/eurostatmap.js"></script>
-    <script src="../data/nuts3.js"></script>
-    <script src="../configs/insetConfig.js"></script>
-    <script src="../data/mixed.js"></script>
-    <script>
-      let mapWidth = 638;
-      let mapHeight = 608;
+        <script src="../../build/eurostatmap.js"></script>
+        <script src="../data/nuts3.js"></script>
+        <script src="../configs/insetConfig.js"></script>
+        <script src="../data/mixed.js"></script>
+        <script>
+            let mapWidth = 638
+            let mapHeight = 608
 
-      basemap = function () {
-        return (
-          eurostatmap
-            .map("ch")
-            .svgId("mappy")
-            .containerId("mappy")
-            .pixSize(7400)
-            .width(mapWidth)
-            .height(mapHeight)
-            .bottomText(null)
-            .showSourceLink(false)
-            .nutsLvl("mixed")
-            //.nutsLvl(0)
-            .classifMethod("threshold")
-            .drawGraticule(true)
-            .graticuleStroke("#ccc")
-            .graticuleStrokeWidth(0.5)
-            .geoCenter([4980000, 3610000])
-            .legend(false)
-            .drawCoastalMargin(false)
-            .seaFillStyle("#E6FFFF")
-            .cntrgFillStyle("#E6E6E6")
-            .nutsrgFillStyle("#E6E6E6")
-            .nutsbnStroke({
-              0: "#000",
-              1: "#000",
-              2: "#000",
-              3: "#000",
-              co: "grey",
-            })
-            .noDataFillStyle("darkgrey")
-            .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
-            .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
-            .bordersToShow(["eu", "co", "cc", "efta"])
-            .nuts2jsonBaseURL(
-              "https:gisco-services.ec.europa.eu/pub/nuts2json/v2/"
-            )
-            .insets(insetsConfig)
-            //.zoomExtent([1,10])
-            .showScalebar(true)
-            .scalebarPosition([420, 560])
-            .nutsrgSelFillSty("#003E8C")
+            basemap = function () {
+                return (
+                    eurostatmap
+                        .map('ch')
+                        .svgId('mappy')
+                        .containerId('mappy')
+                        .pixSize(7400)
+                        .width(mapWidth)
+                        .height(mapHeight)
+                        .bottomText(null)
+                        .showSourceLink(false)
+                        .nutsLvl('mixed')
+                        //.nutsLvl(0)
+                        .classifMethod('threshold')
+                        .drawGraticule(true)
+                        .graticuleStroke('#ccc')
+                        .graticuleStrokeWidth(0.5)
+                        .geoCenter([4980000, 3610000])
+                        .legend({
+                            ascending: false,
+                            boxPadding: 5,
+                            x: 10,
+                            y: 200,
+                            title: 'title',
+                            titleFontSize: 17,
+                            labelFontSize: 14,
+                            shapeWidth: 30,
+                            shapeHeight: 20,
+                            sepLineLength: 35,
+                            noData: true,
+                            labels: [1, 2, 3, 4, 5, 6, 7],
+                        })
+                        .drawCoastalMargin(false)
+                        .seaFillStyle('#E6FFFF')
+                        .cntrgFillStyle('#E6E6E6')
+                        .nutsrgFillStyle('#E6E6E6')
+                        .nutsbnStroke({
+                            0: '#000',
+                            1: '#000',
+                            2: '#000',
+                            3: '#000',
+                            co: 'grey',
+                        })
+                        .noDataFillStyle('darkgrey')
+                        .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
+                        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
+                        .bordersToShow(['eu', 'co', 'cc', 'efta'])
+                        .nuts2jsonBaseURL('https:gisco-services.ec.europa.eu/pub/nuts2json/v2/')
+                        .insets(insetsConfig)
+                        //.zoomExtent([1,10])
+                        .showScalebar(true)
+                        .scalebarPosition([420, 560])
+                        .nutsrgSelFillSty('#003E8C')
 
-            //.labelling(true)
-            .labelsToShow(["seas", "values", "cc"])
-            .labelValuesFontSize(10)
-            .labelFill({ seas: "#012a7c", cc: "black" })
-            .labelShadow(true)
+                        //.labelling(true)
+                        .labelsToShow(['seas', 'values', 'cc'])
+                        .labelValuesFontSize(10)
+                        .labelFill({ seas: '#012a7c', cc: 'black' })
+                        .labelShadow(true)
 
-            // adjust regions to show
-            //.bordersToShow(["eu", "co","cc"])
-            .nutsYear(2016)
-            //.countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'RS']);
-            .colors([
-              "#feedde",
-              "#fdd0a2",
-              "#fdae6b",
-              "#fd8d3c",
-              "#e6550d",
-              "#a63603",
-              "#999",
-            ])
-            .threshold([0, 5, 99999])
-        );
-      };
+                        // adjust regions to show
+                        //.bordersToShow(["eu", "co","cc"])
+                        .nutsYear(2016)
+                        //.countriesToShow(['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'EL', 'ES', 'FI', 'FR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK', 'UK', 'RS']);
+                        .colors(['#feedde', '#fdd0a2', '#fdae6b', '#fd8d3c', '#e6550d', '#a63603', '#999'])
+                        .threshold([0, 5, 99999])
+                )
+            }
 
-      let exampleData1 = {
-        FRY: 10,
-        TRB: 10,
-        AT: 10,
-        BE: 10,
-        BG: 10,
-        CY: 10,
-        CZ: 10,
-        // DE: 10,
-        DK: 10,
-        EE: 10,
-        EL: 10,
-        ES: 10,
-        FI: 10,
-        FR: 10,
-        HR: 10,
-        HU: 10,
-        IE: 10,
-        IS: 10,
-        IT: 10,
-        LI: 10,
-        LT: 10,
-        LU: 10,
-        LV: 10,
-        MT: 10,
-        NL: 10,
-        PL: 10,
-        PT: 10,
-        RO: 10,
-        SE: 10,
-        SI: 10,
-        SK: 10,
-        UK: 10,
-        RS: 10,
-        CH: 10,
-        NO: 10,
-        ME: 10,
-        MK: 10,
-        AL: 10,
-        TR: 10,
-      };
-      let exampleData2 = { ES: 10 };
-      let map = basemap();
-      map.statData().setData(exampleData1);
-      map.build();
+            let exampleData1 = {
+                FRY: 10,
+                TRB: 10,
+                AT: 10,
+                BE: 10,
+                BG: 10,
+                CY: 10,
+                CZ: 10,
+                // DE: 10,
+                DK: 10,
+                EE: 10,
+                EL: 10,
+                ES: 10,
+                FI: 10,
+                FR: 10,
+                HR: 10,
+                HU: 10,
+                IE: 10,
+                IS: 10,
+                IT: 10,
+                LI: 10,
+                LT: 10,
+                LU: 10,
+                LV: 10,
+                MT: 10,
+                NL: 10,
+                PL: 10,
+                PT: 10,
+                RO: 10,
+                SE: 10,
+                SI: 10,
+                SK: 10,
+                UK: 10,
+                RS: 10,
+                CH: 10,
+                NO: 10,
+                ME: 10,
+                MK: 10,
+                AL: 10,
+                TR: 10,
+            }
+            let exampleData2 = { ES: 10 }
+            let map = basemap()
+            map.statData().setData(exampleData1)
+            map.build()
 
-      // update data, classification and labels
-      setTimeout(() => {
-        // map.statData().setData(nuts3);
-        // map.updateStatValues();
-        // map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
-        // map.threshold([2, 4, 6, 8, 10, 9999])
-        // //map.updateClassification();
-        // map.updateStyle();
-        // map.cntrgFillStyle("lightblue")
-        map.nutsrgFillStyle("red");
-      }, 2000);
+            // update data, classification and labels
+            setTimeout(() => {
+                // map.statData().setData(nuts3);
+                // map.updateStatValues();
+                // map.colors(['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#3182bd', '#08519c', '#999'])
+                // map.threshold([2, 4, 6, 8, 10, 9999])
+                // //map.updateClassification();
+                // map.updateStyle();
+                // map.cntrgFillStyle("lightblue")
+                map.nutsrgFillStyle('red')
+            }, 2000)
 
-      // setTimeout(() => {
-      //   //map.statData().setData({ ZZ: 0 });
-      //   //map.updateStatValues();
-      //   map.colors(['#edf8e9', '#c7e9c0', '#a1d99b', '#74c476', '#31a354', '#006d2c', '#999'],)
-      //   map.threshold([1, 2, 3, 4, 5, 9999])
+            // setTimeout(() => {
+            //   //map.statData().setData({ ZZ: 0 });
+            //   //map.updateStatValues();
+            //   map.colors(['#edf8e9', '#c7e9c0', '#a1d99b', '#74c476', '#31a354', '#006d2c', '#999'],)
+            //   map.threshold([1, 2, 3, 4, 5, 9999])
 
-      //   //map.updateClassification();
-      //   map.updateStyle();
-      // }, 4000)
+            //   //map.updateClassification();
+            //   map.updateStyle();
+            // }, 4000)
 
-      // dynamic labelling
-      // setTimeout(() => {
-      //   map.labelling(true)
-      //     .labelsToShow(["seas", "cc"])
-      //     .labelValuesFontSize(10)
-      //     .labelFill({ seas: "#012a7c", cc: "black" })
-      //     .labelShadow(true)
-      //   map.updateLabels();
-      // }, 2000)
+            // dynamic labelling
+            // setTimeout(() => {
+            //   map.labelling(true)
+            //     .labelsToShow(["seas", "cc"])
+            //     .labelValuesFontSize(10)
+            //     .labelFill({ seas: "#012a7c", cc: "black" })
+            //     .labelShadow(true)
+            //   map.updateLabels();
+            // }, 2000)
 
-      // setTimeout(() => {
-      //   map.labelling(true)
-      //     .labelsToShow(["seas", "countries"])
-      //     .labelValuesFontSize(12)
-      //     .labelFill({ seas: "#012a7c", countries: "red" })
-      //     .labelShadow(false)
-      //   map.updateLabels();
-      // }, 4000)
+            // setTimeout(() => {
+            //   map.labelling(true)
+            //     .labelsToShow(["seas", "countries"])
+            //     .labelValuesFontSize(12)
+            //     .labelFill({ seas: "#012a7c", countries: "red" })
+            //     .labelShadow(false)
+            //   map.updateLabels();
+            // }, 4000)
 
-      //switch to world map
-      // setTimeout(() => {
-      //   const map = eurostatmap
-      //   .map("ch")
-      //   .geo("WORLD")
-      //   .width(900.68)
-      //   .height(491.34)
-      //   .nutsLvl(0)
-      //   .title("World map")
-      //   .drawGraticule(true)
-      //   .graticuleStrokeWidth(0.4)
-      //   .seaFillStyle("#E6FFFF")
-      //   .cntrgFillStyle("#E6E6E6")
-      //   .classifMethod("threshold")
-      //   .threshold([10, 20, 30, 40, 50, 60, 70])
-      //   .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
+            //switch to world map
+            // setTimeout(() => {
+            //   const map = eurostatmap
+            //   .map("ch")
+            //   .geo("WORLD")
+            //   .width(900.68)
+            //   .height(491.34)
+            //   .nutsLvl(0)
+            //   .title("World map")
+            //   .drawGraticule(true)
+            //   .graticuleStrokeWidth(0.4)
+            //   .seaFillStyle("#E6FFFF")
+            //   .cntrgFillStyle("#E6E6E6")
+            //   .classifMethod("threshold")
+            //   .threshold([10, 20, 30, 40, 50, 60, 70])
+            //   .colors(["#174060", "#1C627C", "#288AA1", "#2CAFC4", "#FDBEB0", "#F3767E", "#CE3658", "#94003A"]);
 
-      // map.statData().setData({US:1,UK:2,CA:3,CH:4});
-      // map.build();
-      // }, 8000)
+            // map.statData().setData({US:1,UK:2,CA:3,CH:4});
+            // map.build();
+            // }, 8000)
 
-      // setTimeout(() => {
-      //   map.statData().setData(mixedNUTS);
-      //   map.updateStatValues();
-      //   map.colors(['#f7f7f7', '#d9d9d9', '#bdbdbd', '#969696', '#636363', '#252525', '#999'],)
-      //   map.threshold([1, 2, 3, 4, 5, 9999])
+            // setTimeout(() => {
+            //   map.statData().setData(mixedNUTS);
+            //   map.updateStatValues();
+            //   map.colors(['#f7f7f7', '#d9d9d9', '#bdbdbd', '#969696', '#636363', '#252525', '#999'],)
+            //   map.threshold([1, 2, 3, 4, 5, 9999])
 
-      //   //map.updateClassification();
-      //   map.updateStyle();
-      // }, 7000)
+            //   //map.updateClassification();
+            //   map.updateStyle();
+            // }, 7000)
 
-      setTimeout(() => {
-        map.seaFillStyle("white");
-        //.drawCoastalMargin(true).coastalMarginWidth(2).coastalMarginColor('red')
-      }, 5000);
+            setTimeout(() => {
+                map.seaFillStyle('white')
+                //.drawCoastalMargin(true).coastalMarginWidth(2).coastalMarginColor('red')
+            }, 5000)
 
-      // setTimeout(()=>{
-      //   map.nutsLvl("mixed")
-      //   map.statData().setData({UK: 7});
-      //   map.build();
-      // },5000)
-      // let i = 0;
-      // loopBetweenNUTS = function () {
-      //   setTimeout(() => {
-      //     let map = basemap();
-      //     i++;
-      //     let g = i % 2;
-      //     if (g == 0) {
-      //       map.statData().setData(data);
-      //       map.build();
-      //     } else {
-      //       map.statData().setData(data3);
-      //       map.build();
-      //     }
+            // setTimeout(()=>{
+            //   map.nutsLvl("mixed")
+            //   map.statData().setData({UK: 7});
+            //   map.build();
+            // },5000)
+            // let i = 0;
+            // loopBetweenNUTS = function () {
+            //   setTimeout(() => {
+            //     let map = basemap();
+            //     i++;
+            //     let g = i % 2;
+            //     if (g == 0) {
+            //       map.statData().setData(data);
+            //       map.build();
+            //     } else {
+            //       map.statData().setData(data3);
+            //       map.build();
+            //     }
 
-      //     loopBetweenNUTS();
-      //   }, 3000);
-      // };
+            //     loopBetweenNUTS();
+            //   }, 3000);
+            // };
 
-      //loopBetweenNUTS();
-    </script>
-  </body>
+            //loopBetweenNUTS();
+        </script>
+    </body>
 </html>

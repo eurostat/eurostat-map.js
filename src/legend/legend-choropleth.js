@@ -34,6 +34,8 @@ export const legend = function (map, config) {
     out.labelOffset = 3
     //labelFormatter function
     out.labelFormatter = null
+    // manually define labels
+    out.labels = null
 
     //show no data
     out.noData = true
@@ -172,7 +174,7 @@ export const legend = function (map, config) {
                     .attr('x', out.boxPadding + Math.max(out.shapeWidth, out.sepLineLength) + out.labelOffset)
                     .attr('y', y + out.shapeHeight)
                     .attr('alignment-baseline', 'middle')
-                    .text(f(m.classifier().invertExtent(ecl)[out.ascending ? 0 : 1]))
+                    .text(out.labels ? out.labels[i] : f(m.classifier().invertExtent(ecl)[out.ascending ? 0 : 1]))
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)
                     .style('fill', out.fontFill)

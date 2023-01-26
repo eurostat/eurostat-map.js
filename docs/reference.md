@@ -203,6 +203,7 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 | **labelFormatter**     | Function | _d3.format("." + labelDecNb + "f")_ | A function used to format the values of the legend labels.                    |
 | **noData**             | boolean  | _true_                              | Show 'no data' style.                                                         |
 | **noDataText**         | Text     | _"No data"_                         | 'No data' text label.                                                         |
+| **labels**             | []       | _null_                              | Manually define the labels to be used in the legend as an array               |
 
 ## Proportional symbol map
 
