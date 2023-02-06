@@ -147,14 +147,14 @@ export const mapTemplate = function (config, withCenterPoints) {
         'UK',
     ]
 
-    //nuts
+    //nuts styling
     out.nutsrgFillStyle_ = 'white'
     out.nutsrgSelFillSty_ = '#e0bcdf'
     out.nutsbnStroke_ = { 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: 'black' }
     out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
-    //country borders
-    out.cntrgFillStyle_ = '#f4f4f4'
-    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
+    //country borders styling
+    out.cntrgFillStyle_ = '#E6E6E6'
+    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: '#ffffff', co: '#7f7f7f' }
     out.cntbnStrokeWidth_ = { eu: 0.8, efta: 0.8, cc: 0.8, oth: 0.8, co: 0.5 }
     //world map
     out.worldFillStyle_ = '#E6E6E6'
@@ -164,7 +164,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.worldCoastStrokeWidth_ = 0.3
     //sea
     out.seaFillStyle_ = 'white'
-    out.drawCoastalMargin_ = true
+    out.drawCoastalMargin_ = false
     out.coastalMarginColor_ = '#c2daed'
     out.coastalMarginWidth_ = 5
     out.coastalMarginStdDev_ = 2
