@@ -40,6 +40,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.nutsYear_ = 2016
     out.geo_ = 'EUR'
     out.proj_ = '3035'
+    out.projectionFunction_ // e.g. d3.geoRobinson()
     out.scale_ = '20M' //TODO choose automatically, depending on pixSize ?
     out.geoCenter_ = undefined
     out.pixSize_ = undefined
@@ -443,7 +444,15 @@ export const mapTemplate = function (config, withCenterPoints) {
         //update existing land
         if (out.geo_ == 'WORLD') {
             let cntrg = selectAll('.worldrg')
-            if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
+            if (cntrg) {
+                // only change fill for world regions without an ecl class
+                cntrg.style('fill', (region, i, nodes) => {
+                    let node = select(nodes[i])
+                    if (!node.attr('ecl')) {
+                        return out.cntrgFillStyle_
+                    }
+                })
+            }
         } else {
             let cntrg = selectAll('.cntrg')
             if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
@@ -1095,14 +1104,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //WORLD geo uses 4326 geometries and reprojects to 54030 using d3
         if (out.geo_ == 'WORLD') {
-            if (out.proj_ == '54030') {
-                out._projection = geoRobinson()
-                    // center and scale to container properly
-                    .translate([out.width_ / 2, out.height_ / 2])
-                    .scale((out.width_ - 20) / 2 / Math.PI)
-            } else {
-                console.error('unsupported projection')
-            }
+            out._projection = out.projectionFunction_
+                ? out.projectionFunction_
+                : geoRobinson()
+                      // center and scale to container properly
+                      .translate([out.width_ / 2, out.height_ / 2])
+                      .scale((out.width_ - 20) / 2 / Math.PI)
         } else {
             out._projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
         }
