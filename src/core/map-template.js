@@ -152,7 +152,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.nutsrgFillStyle_ = 'white'
     out.nutsrgSelFillSty_ = '#e0bcdf'
     out.nutsbnStroke_ = { 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: 'black' }
-    out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
+    out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 }
     //country borders styling
     out.cntrgFillStyle_ = '#E6E6E6'
     out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: '#ffffff', co: '#7f7f7f' }
