@@ -1739,6 +1739,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .attr('transform', function (d) {
                         return 'translate(' + out._geom.path.centroid(d) + ')'
                     })
+                    .style('pointer-events', 'none')
                     .attr('class', 'stat-label')
 
                 //SHADOWS
@@ -1750,6 +1751,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .attr('transform', function (d) {
                             return 'translate(' + out._geom.path.centroid(d) + ')'
                         })
+                        .style('pointer-events', 'none')
                         .attr('class', 'stat-label-shadow')
                 }
             }
