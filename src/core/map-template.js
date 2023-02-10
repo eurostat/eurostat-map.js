@@ -446,16 +446,17 @@ export const mapTemplate = function (config, withCenterPoints) {
             let cntrg = selectAll('.worldrg')
             if (cntrg) {
                 // only change fill for world regions without an ecl class
-                cntrg.style('fill', (region, i, nodes) => {
+                cntrg.attr('fill', (region, i, nodes) => {
                     let node = select(nodes[i])
                     if (!node.attr('ecl')) {
+                        node.attr('fill___', node.attr('fill')) // save current for hover
                         return out.cntrgFillStyle_
                     }
                 })
             }
         } else {
             let cntrg = selectAll('.cntrg')
-            if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
+            if (cntrg) cntrg.attr('fill', out.cntrgFillStyle_)
         }
 
         //update insets

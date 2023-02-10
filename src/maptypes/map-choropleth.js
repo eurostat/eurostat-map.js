@@ -171,14 +171,13 @@ export const map = function (config) {
             let regions = map.svg().selectAll(selector)
             regions.attr('ecl', function (rg, w, e, t, d) {
                 const sv = out.statData().get(rg.properties.id)
-                if (!sv) {
-                    // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
-                    return
-                }
+                // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
+                if (!sv) return
                 const v = sv.value
                 if (v != 0 && !v) return
                 if (v == ':') return 'nd'
-                return +out.classifier()(+v)
+                let ecl = +out.classifier()(+v)
+                return ecl
             })
 
             //when mixing NUTS, level 0 is separated from the rest (class nutsrg0)
@@ -252,14 +251,17 @@ export const map = function (config) {
                         const ecl = select(this).attr('ecl')
                         if (!ecl) return out.nutsrgFillStyle_
                         if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
-                        return out.classToFillStyle()(ecl, out.clnb())
+                        let cf = out.classToFillStyle_
+                        let v = cf(ecl, out.clnb_)
+                        if (!v) return out.nutsrgFillStyle_
+                        return v
                     } else {
                         // only apply data-driven colour to included countries for NUTS templates
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const ecl = select(this).attr('ecl')
                             if (!ecl) return out.nutsrgFillStyle_
                             if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
-                            return out.classToFillStyle()(ecl, out.clnb())
+                            return out.classToFillStyle()(ecl, out.clnb_)
                         } else {
                             return out.nutsrgFillStyle_
                         }
