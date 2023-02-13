@@ -249,11 +249,11 @@ export const map = function (config) {
                     if (map.geo_ == 'WORLD') {
                         //world template
                         const ecl = select(this).attr('ecl')
-                        if (!ecl) return out.nutsrgFillStyle_
+                        if (!ecl) return out.cntrgFillStyle_
                         if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
                         let cf = out.classToFillStyle_
                         let v = cf(ecl, out.clnb_)
-                        if (!v) return out.nutsrgFillStyle_
+                        if (!v) return out.cntrgFillStyle_
                         return v
                     } else {
                         // only apply data-driven colour to included countries for NUTS templates

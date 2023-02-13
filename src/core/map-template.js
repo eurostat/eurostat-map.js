@@ -449,8 +449,10 @@ export const mapTemplate = function (config, withCenterPoints) {
                 cntrg.attr('fill', (region, i, nodes) => {
                     let node = select(nodes[i])
                     if (!node.attr('ecl')) {
-                        node.attr('fill___', node.attr('fill')) // save current for hover
                         return out.cntrgFillStyle_
+                    } else {
+                        // leave fill as it is
+                        return node.attr('fill')
                     }
                 })
             }

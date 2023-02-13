@@ -49,16 +49,25 @@
 
             setTimeout(() => {
                 map.cntrgFillStyle('red')
-            }, 2000)
+            }, 4000)
 
             setTimeout(() => {
-                map.statData().setData({ ES: 10, DE: ':', CN: '20' })
+                map.statData().setData({ ES: 10, DE: '900', CN: '20' })
                 map.updateStatValues()
                 map.colors(['red', 'pink', 'violet', 'purple', 'lightgreen'])
                     .threshold([1, 100, 1000, 99999])
                     .updateClassification()
                     .updateStyle()
-            }, 4000)
+            }, 2000)
+
+            setTimeout(() => {
+                map.statData().setData({ ES: 1, DE: 200, CN: 2000 })
+                map.updateStatValues()
+                map.colors(['red', 'pink', 'violet', 'purple', 'lightgreen'].reverse())
+                    .threshold([1, 100, 1000, 99999])
+                    .updateClassification()
+                    .updateStyle()
+            }, 6000)
         </script>
     </body>
 </html>
