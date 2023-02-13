@@ -458,7 +458,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             }
         } else {
             let cntrg = selectAll('.cntrg')
-            if (cntrg) cntrg.attr('fill', out.cntrgFillStyle_)
+            if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
         }
 
         //update insets

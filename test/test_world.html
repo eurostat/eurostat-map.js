@@ -22,7 +22,8 @@
                 pixSize: 5000,
                 geoCenter: [14, 17],
                 projectionFunction: d3
-                    .geoRobinson()
+                    //.geoRobinson()
+                    .geoWinkel3()
                     // center and scale to container properly
                     .translate([982.68 / 2, 491.34 / 2])
                     .scale((982.68 - 20) / 2 / Math.PI + 0.1),
