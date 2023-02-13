@@ -60,13 +60,14 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 It is also possible to build thematic world maps using eurostat-map. Simply pass "WORLD" to the map.geo() method. See [this example](https://github.com/eurostat/eurostat-map.js/blob/master/examples/world.html) for how to configure a world map.
 
-| Method                                     | Type   | Default value | Description                                                                |
-| ------------------------------------------ | ------ | ------------- | -------------------------------------------------------------------------- |
-| _map_.**worldFillStyle**([*value*])        | string | _'#E6E6E6'_   | The default fill colour for territories on a world map                     |
-| _map_.**worldStroke**([*value*])           | string | _'black'_     | The default stroke colour of the borders for states on a world map.        |
-| _map_.**worldStrokeWidth**([*value*])      | number | _1_           | The default stroke width of the borders of states on a world map.          |
-| _map_.**worldCoastStroke**([*value*])      | string | _'none'_      | The default stroke colour of the coastal borders of states on a world map. |
-| _map_.**worldCoastStrokeWidth**([*value*]) | number | _0.3_         | The default stroke width of the coastal borders of states on a world map.  |
+| Method                                     | Type          | Default value       | Description                                                                |
+| ------------------------------------------ | ------------- | ------------------- | -------------------------------------------------------------------------- |
+| _map_.**worldFillStyle**([*value*])        | string        | _'#E6E6E6'_         | The default fill colour for territories on a world map                     |
+| _map_.**worldStroke**([*value*])           | string        | _'black'_           | The default stroke colour of the borders for states on a world map.        |
+| _map_.**worldStrokeWidth**([*value*])      | number        | _1_                 | The default stroke width of the borders of states on a world map.          |
+| _map_.**worldCoastStroke**([*value*])      | string        | _'none'_            | The default stroke colour of the coastal borders of states on a world map. |
+| _map_.**worldCoastStrokeWidth**([*value*]) | number        | _0.3_               | The default stroke width of the coastal borders of states on a world map.  |
+| _map_.**projectionFunction**([*value*])    | d3 projection | _d3.geoRobninson()_ | Here you can define your own custom projection function for world maps     |
 
 ## Statistical data
 

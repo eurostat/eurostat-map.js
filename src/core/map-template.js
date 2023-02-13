@@ -40,7 +40,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.nutsYear_ = 2016
     out.geo_ = 'EUR'
     out.proj_ = '3035'
-    out.projectionFunction_ // e.g. d3.geoRobinson()
+    out.projectionFunction_ = undefined // e.g. d3.geoRobinson()
     out.scale_ = '20M' //TODO choose automatically, depending on pixSize ?
     out.geoCenter_ = undefined
     out.pixSize_ = undefined
@@ -2144,6 +2144,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             'labelsToShow_',
             'fontFamily_',
             'lg_',
+            'projectionFunction_',
         ].forEach(function (att) {
             mt[att] = out[att]
         })
