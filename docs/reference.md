@@ -74,7 +74,7 @@ It is also possible to build thematic world maps using eurostat-map. Simply pass
 The map statistical data can be accessed with the _map_.**statData**() method, which returns an object with the following methods:
 
 | Method                   | Description                                                                                                                                                                  |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **get**([*nutsId*])      | Return the stat value {value,status} from a nuts id. If no argument is specified, returns the entire index.                                                                  |
 | **getValue**([*nutsId*]) | Return the stat value from a nuts id.                                                                                                                                        |
 | **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only.                                                |
@@ -238,25 +238,25 @@ Along with data-driven sizing, it is possible to colour the symbols according to
     .stat("size", { eurostatDatasetCode: "nama_10r_3gdp", unitText: "Million EUR", filters: { unit: "MIO_EUR", time: "2018" } })
 ```
 
-| Method                               | Type     | Default value        | Description                                                                                                                                                                                           |
-| ------------------------------------ | -------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _map_.**psShape**([*value*])         | string   | _circle_             | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom                                                                                          |
-| _map_.**psCustomShape**([*value*])   | Object   | null                 | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT                                                                  |
-| _map_.**psCustomPath**([*value*])    | Object   | null                 | Use this method for defining the "d" attribute of a custom SVG path, which will be used as the proportional symbol. For optimized (single path) svg icons check out https://materialdesignicons.com/. |
-| _map_.**psOffset**([*value*])        | Object   | {x:0,y:0}            | Defines the offsets to apply to the symbols on the map. Only applicable to symbols where custom paths are specified ( through psCustomPath)                                                           |
-| _map_.**psMaxSize**([*value*])       | number   | _30_                 | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomPath() it represents the scale factor of the transform applied to it.                          |
-| _map_.**psMinSize**([*value*])       | number   | _0.8_                | The minimum size / scale of the symbol.                                                                                                                                                               |
-| _map_.**psBarWidth**([*value*])      | number   | _5_                  | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar"                                                                                                                    |
-| _map_.**psFill**([*value*])          | String   | _"#B45F04"_          | The fill color or pattern of the symbol, for when a colour scheme is not defined.                                                                                                                     |
-| _map_.**psFillOpacity**([*value*])   | number   | _0.7_                | The opacity of the symbol, from 0 to 1.                                                                                                                                                               |
-| _map_.**psStroke**([*value*])        | String   | _"#fff"_             | The stroke color of the symbol.                                                                                                                                                                       |
-| _map_.**psStrokeWidth**([*value*])   | number   | _0.3_                | The width of the stroke.                                                                                                                                                                              |
-| _map_.**psClasses**([*value*])       | number   | _5_                  | The number of classes to use when applying data-driven colour for the symbols. Similar to clnb() for choropleth maps.                                                                                 |
-| _map_.**psColorFun**([*value*])      | function | _d3.interpolateOrRd_ | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/)                                                                                                     |
-| _map_.**psClassifMethod**([*value*]) | String   | _"quantile"_         | The classification method. Possible values are _"quantile"_, _"equinter"_ for equal intervals, and _"threshold"_ for user defined threshold (see threshold method).                                   |
-| _map_.**psThreshold**([*value*])     | Array    | _[0]_                | If _psClassifMethod = "threshold"_, the breaks of the classification.                                                                                                                                 |
-| _map_.**psColours**([*value*])       | Array    | null                 | The colours to be using data-driven colour. The number of colours specified in the array should match the number of classes (specified using psClasses())                                             |
-| _map_.**noDataFillStyle**([*value*]) | String   | _"lightgray"_        | The fill style to be used for regions where no data is available.                                                                                                                                     |
+| Method                               | Type             | Default value        | Description                                                                                                                                                                              |
+| ------------------------------------ | ---------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _map_.**psShape**([*value*])         | string           | _circle_             | The shape of the symbol. Accepted values: circle, bar, square, star, cross, diamond, triangle, wye or custom                                                                             |
+| _map_.**psCustomShape**([*value*])   | Object           | null                 | A custom symbol to be used with d3.symbol when psShape is set to "custom". See http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT                                                     |
+| _map_.**psCustomSVG**([*value*])     | Template Literal | null                 | Use this method for defining a custom SVG, which will be used as the proportional symbol. E.g. map.psCustomSVG(`<svg width="100" height="100"><rect width="100" height="100" /></svg>`). |
+| _map_.**psOffset**([*value*])        | Object           | {x:0,y:0}            | Defines the offsets to apply to the symbols on the map. Only applicable to symbols where custom svgs are specified ( through psCustomSVG)                                                |
+| _map_.**psMaxSize**([*value*])       | number           | _30_                 | The maximum size of the symbol. For shapes and vertical bars, this value is in pixels, but for psCustomSVG() it represents the scale factor of the transform applied to it.              |
+| _map_.**psMinSize**([*value*])       | number           | _0.8_                | The minimum size / scale of the symbol.                                                                                                                                                  |
+| _map_.**psBarWidth**([*value*])      | number           | _5_                  | Width in pixels of the vertical bars. Only to be used with a psShape of type "bar"                                                                                                       |
+| _map_.**psFill**([*value*])          | String           | _"#B45F04"_          | The fill color or pattern of the symbol, for when a colour scheme is not defined.                                                                                                        |
+| _map_.**psFillOpacity**([*value*])   | number           | _0.7_                | The opacity of the symbol, from 0 to 1.                                                                                                                                                  |
+| _map_.**psStroke**([*value*])        | String           | _"#fff"_             | The stroke color of the symbol.                                                                                                                                                          |
+| _map_.**psStrokeWidth**([*value*])   | number           | _0.3_                | The width of the stroke.                                                                                                                                                                 |
+| _map_.**psClasses**([*value*])       | number           | _5_                  | The number of classes to use when applying data-driven colour for the symbols. Similar to clnb() for choropleth maps.                                                                    |
+| _map_.**psColorFun**([*value*])      | function         | _d3.interpolateOrRd_ | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/)                                                                                        |
+| _map_.**psClassifMethod**([*value*]) | String           | _"quantile"_         | The classification method. Possible values are _"quantile"_, _"equinter"_ for equal intervals, and _"threshold"_ for user defined threshold (see threshold method).                      |
+| _map_.**psThreshold**([*value*])     | Array            | _[0]_                | If _psClassifMethod = "threshold"_, the breaks of the classification.                                                                                                                    |
+| _map_.**psColours**([*value*])       | Array            | null                 | The colours to be using data-driven colour. The number of colours specified in the array should match the number of classes (specified using psClasses())                                |
+| _map_.**noDataFillStyle**([*value*]) | String           | _"lightgray"_        | The fill style to be used for regions where no data is available.                                                                                                                        |
 
 In addition to [the default legend parameters](#map-legend), proportional symbol maps have the following specific legend parameters:
 As proportional symbol maps allow for two visual variables (size and colour), a legend configuration object can be specified for each variable (sizeLegend and colorLegend).
@@ -273,18 +273,18 @@ As proportional symbol maps allow for two visual variables (size and colour), a 
 
 The following parameters are properties of the sizeLegend object:
 
-| Parameter          | Type     | Default value                       | Description                                                                                    |
-| ------------------ | -------- | ----------------------------------- | ---------------------------------------------------------------------------------------------- |
-| **title**          | String   | _null_                              | Title of the size legend                                                                       |
-| **titlePadding**   | Number   | _10_                                | Padding between the legend title and legend body                                               |
-| **values**         | Number   | _undefined_                         | Manually set the raw data values to be used in the legend                                      |
-| **cellNb**         | Number   | _4_                                 | Number of symbols to be shown in the legend (when values are not set manually)                 |
-| **shapePadding**   | Number   | _10_                                | The padding between consecutive legend shape elements                                          |
-| **shapeOffset**    | Object   | _{x:0, y:0}_                        | The offset applied to the shape elements in the legend. Applicable for use with psCustomPath() |
-| **shapeFill**      | String   | _white_                             | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used.  |
-| **labelOffset**    | Number   | _25_                                | The distance between the legend box elements to the corresponding text label.                  |
-| **labelDecNb**     | Number   | _0_                                 | The number of decimals for each label.                                                         |
-| **labelFormatter** | Function | _d3.format("." + labelDecNb + "f")_ | A function used to format the values of the legend labels.                                     |
+| Parameter          | Type     | Default value                       | Description                                                                                   |
+| ------------------ | -------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| **title**          | String   | _null_                              | Title of the size legend                                                                      |
+| **titlePadding**   | Number   | _10_                                | Padding between the legend title and legend body                                              |
+| **values**         | Number   | _undefined_                         | Manually set the raw data values to be used in the legend                                     |
+| **cellNb**         | Number   | _4_                                 | Number of symbols to be shown in the legend (when values are not set manually)                |
+| **shapePadding**   | Number   | _10_                                | The padding between consecutive legend shape elements                                         |
+| **shapeOffset**    | Object   | _{x:0, y:0}_                        | The offset applied to the shape elements in the legend. Applicable for use with psCustomSVG() |
+| **shapeFill**      | String   | _white_                             | The colour of the symbols in the size legend. If unspecified, the colour of psFill() is used. |
+| **labelOffset**    | Number   | _25_                                | The distance between the legend box elements to the corresponding text label.                 |
+| **labelDecNb**     | Number   | _0_                                 | The number of decimals for each label.                                                        |
+| **labelFormatter** | Function | _d3.format("." + labelDecNb + "f")_ | A function used to format the values of the legend labels.                                    |
 
 **colorLegend**
 

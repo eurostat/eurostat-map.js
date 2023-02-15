@@ -165,9 +165,6 @@ export const legend = function (map, config) {
             //calculate shape size
             let size = m.classifierSize_(val)
 
-            //set shape size and define 'd'
-            let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(size * size)()
-
             //define position of the legend symbol
             let x
             let y
@@ -212,24 +209,50 @@ export const legend = function (map, config) {
             }
 
             //append symbol & style
-            prevSymb = lgg
-                .append('g')
-                .attr('transform', `translate(${x},${y})`)
-                .style('fill', (d) => {
-                    // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-                    return m.classifierColor_ ? config.shapeFill : m.psFill_
-                })
-                .style('fill-opacity', m.psFillOpacity())
-                .style('stroke', m.psStroke())
-                .style('stroke-width', m.psStrokeWidth())
-                .attr('stroke', 'black')
-                .attr('stroke-width', 0.5)
-                .append('path')
-                .attr('d', d)
-                .attr('transform', () => {
-                    if (out.map.psCustomPath_) return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
-                    else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
-                })
+            if (out.map.psCustomSVG_) {
+                prevSymb = lgg
+                    .append('g')
+                    .attr('transform', `translate(${x},${y})`)
+                    .attr('fill', (d) => {
+                        // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+                        return m.classifierColor_ ? config.shapeFill : m.psFill_
+                    })
+                    .style('fill-opacity', m.psFillOpacity())
+                    .style('stroke', m.psStroke())
+                    .style('stroke-width', m.psStrokeWidth())
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 0.5)
+                    .append('g')
+                    .html(out.map.psCustomSVG_)
+                    .attr('transform', () => {
+                        if (out.map.psCustomSVG_)
+                            return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
+                        else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
+                    })
+            } else {
+                //set shape size and define 'd'
+                let d = shape.size(size * size)()
+
+                prevSymb = lgg
+                    .append('g')
+                    .attr('transform', `translate(${x},${y})`)
+                    .style('fill', (d) => {
+                        // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+                        return m.classifierColor_ ? config.shapeFill : m.psFill_
+                    })
+                    .style('fill-opacity', m.psFillOpacity())
+                    .style('stroke', m.psStroke())
+                    .style('stroke-width', m.psStrokeWidth())
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 0.5)
+                    .append('path')
+                    .attr('d', d)
+                    .attr('transform', () => {
+                        if (out.map.psCustomSVG_)
+                            return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
+                        else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
+                    })
+            }
 
             //label position
             let labelX = x + config.labelOffset.x
@@ -296,7 +319,7 @@ export const legend = function (map, config) {
 
             // we now use rect instead of shapes
             // let shape = getShape();
-            // let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+            // let d = out.map.psCustomSVG_ ? out.map.psCustomSVG_ : shape.size(config.shapeSize * config.shapeSize)();
 
             //append symbol & style
             lgg.append('g')
@@ -376,7 +399,7 @@ export const legend = function (map, config) {
 
             //shape
             // let shape = getShape();
-            // let d = out.map.psCustomPath_ ? out.map.psCustomPath_ : shape.size(config.shapeSize * config.shapeSize)();
+            // let d = out.map.psCustomSVG_ ? out.map.psCustomSVG_ : shape.size(config.shapeSize * config.shapeSize)();
             //append symbol & style
             lgg.append('g')
                 .attr('transform', `translate(${x},${y})`)
@@ -427,8 +450,8 @@ export const legend = function (map, config) {
     // returns the d3.symbol object chosen by the user
     function getShape() {
         let shape
-        if (out.map.psCustomPath_) {
-            shape = out.map.psCustomPath_
+        if (out.map.psCustomSVG_) {
+            shape = out.map.psCustomSVG_
         } else if (out.map.psCustomShape_) {
             shape = out.map.psCustomShape_
         } else if (out.map.psShape_ == 'bar') {

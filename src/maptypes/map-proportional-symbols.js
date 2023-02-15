@@ -18,7 +18,7 @@ export const map = function (config) {
     //shape
     out.psShape_ = 'circle' // accepted values: circle, bar, square, star, diamond, wye, cross
     out.psCustomShape_ // see http://using-d3js.com/05_10_symbols.html#h_66iIQ5sJIT
-    out.psCustomPath_ // see http://bl.ocks.org/jessihamel/9648495
+    out.psCustomSVG_ // see http://bl.ocks.org/jessihamel/9648495
     out.psOffset_ = { x: 0, y: 0 }
 
     //size
@@ -78,7 +78,7 @@ export const map = function (config) {
         'noDataFillStyle_',
         'psThreshold_',
         'psColors_',
-        'psCustomPath_',
+        'psCustomSVG_',
         'psOffset_',
         'psClassifMethod_',
         'psClasses_',
@@ -109,7 +109,7 @@ export const map = function (config) {
             'noDataFillStyle',
             'psThreshold',
             'psColors',
-            'psCustomPath',
+            'psCustomSVG',
             'psOffset',
             'psClassifMethod',
             'psClasses',
@@ -219,18 +219,18 @@ export const map = function (config) {
             //set paths of symbols
 
             //custom symbol
-            if (out.psCustomPath_) {
+            if (out.psCustomSVG_) {
                 symb = out
                     .svg()
                     .select('#g_ps')
                     .selectAll('g.symbol')
-                    .append('path')
+                    .append('g')
                     .filter((rg) => {
                         const sv = data.get(rg.properties.id)
                         if (sv && sv.value !== ':') return rg
                     })
                     .attr('class', 'ps')
-                    .attr('d', out.psCustomPath_)
+                    .html(out.psCustomSVG_)
                     .attr('transform', (rg) => {
                         //calculate size
                         const sv = data.get(rg.properties.id)
@@ -363,24 +363,42 @@ export const map = function (config) {
                 }
 
                 // nuts regions fill colour only for those with data
-                regions.attr('fill', function (rg) {
-                    const sv = data.get(rg.properties.id)
-                    if (sv) {
-                        return out.nutsrgFillStyle_
-                    } else {
-                        return out.cntrgFillStyle_
-                    }
-                })
+                regions
+                    .attr('fill', function (rg) {
+                        const sv = data.get(rg.properties.id)
+                        if (sv) {
+                            return out.nutsrgFillStyle_
+                        } else {
+                            return out.cntrgFillStyle_
+                        }
+                    })
+                    .style('fill', function (rg) {
+                        const sv = data.get(rg.properties.id)
+                        if (!sv || !sv.value) {
+                            return out.worldFillStyle_
+                        } else {
+                            return out.nutsrgFillStyle_
+                        }
+                    })
             } else {
                 // world countries fill
-                regions.attr('fill', function (rg) {
-                    const sv = data.get(rg.properties.id)
-                    if (!sv || !sv.value) {
-                        return out.worldFillStyle_
-                    } else {
-                        return out.nutsrgFillStyle_
-                    }
-                })
+                regions
+                    .attr('fill', function (rg) {
+                        const sv = data.get(rg.properties.id)
+                        if (!sv || !sv.value) {
+                            return out.worldFillStyle_
+                        } else {
+                            return out.nutsrgFillStyle_
+                        }
+                    })
+                    .style('fill', function (rg) {
+                        const sv = data.get(rg.properties.id)
+                        if (!sv || !sv.value) {
+                            return out.worldFillStyle_
+                        } else {
+                            return out.nutsrgFillStyle_
+                        }
+                    })
             }
 
             symb.style('fill-opacity', out.psFillOpacity())
