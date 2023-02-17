@@ -54,7 +54,7 @@ export const legend = function (map, config) {
         const lgg = out.lgg
         const clnb = m.clnb()
         const sz = out.squareSize / clnb
-        const xc = 0.7071 * out.squareSize + out.boxPadding
+        const xc = out.rotation === 0 ? 0 : 0.7071 * out.squareSize + out.boxPadding
 
         //remove previous content
         lgg.selectAll('*').remove()
@@ -242,7 +242,10 @@ export const legend = function (map, config) {
             // add extra padding when rotation is 0
             out.noDataYOffset =
                 out.rotation == 0 ? out.noDataYOffset + out.squareSize / out.map.clnb_ + out.arrowHeight / 2 : out.noDataYOffset
-            y = y + 1.4142 * out.squareSize + out.boxPadding * 2 + out.labelFontSize + out.noDataYOffset
+            y =
+                out.rotation == 0
+                    ? y + out.squareSize + out.noDataYOffset
+                    : y + 1.4142 * out.squareSize + out.boxPadding * 2 + out.noDataYOffset
 
             //rectangle
             lgg.append('rect')
