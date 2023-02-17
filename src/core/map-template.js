@@ -194,7 +194,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.labelOpacity_ = { seas: 1, countries: 0.8, cc: 0.8, values: 0.9 }
     out.labelValuesFontSize_ = 10 //when labelsToShow includes "values", this is their font size
     out.labelShadow_ = false
-    out.labelShadowWidth_ = { seas: 3, countries: 3, cc: 3, values: 1 }
+    out.labelShadowWidth_ = { seas: 3, countries: 1, cc: 1, values: 1 }
     out.labelShadowColor_ = {
         seas: 'white',
         countries: 'white',
@@ -1383,11 +1383,21 @@ export const mapTemplate = function (config, withCenterPoints) {
                     bn = bn.properties
                     if (bn.co === 'T') return out.nutsbnStroke_.co || '#1f78b4'
                     //if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
+
+                    //KOSOVO
+                    if (bn.id > 100000) {
+                        return '#4f4f4f'
+                    }
+
                     return out.nutsbnStroke_[bn.lvl] || '#777'
                 })
                 .style('stroke-width', function (bn) {
                     bn = bn.properties
                     if (bn.co === 'T') return out.nutsbnStrokeWidth_.co
+                    //KOSOVO
+                    if (bn.id > 100000) {
+                        return 0.2
+                    }
                     if (bn.lvl > 0) return out.nutsbnStrokeWidth_[bn.lvl]
                     //if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
                     return out.nutsbnStrokeWidth_[bn.lvl] || 0.2
