@@ -74,7 +74,7 @@ It is also possible to build thematic world maps using eurostat-map. Simply pass
 The map statistical data can be accessed with the _map_.**statData**() method, which returns an object with the following methods:
 
 | Method                   | Description                                                                                                                                                                  |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
 | **get**([*nutsId*])      | Return the stat value {value,status} from a nuts id. If no argument is specified, returns the entire index.                                                                  |
 | **getValue**([*nutsId*]) | Return the stat value from a nuts id.                                                                                                                                        |
 | **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only.                                                |
@@ -485,27 +485,31 @@ eurostatmap
     .build()
 ```
 
-| Method                                | Type     | Default value | Description                                                                              |
-| ------------------------------------- | -------- | ------------- | ---------------------------------------------------------------------------------------- |
-| _map_.**clnb**([*value*])             | int      | _3_           | The number of classes for the classification. The same value is used for both variables. |
-| _map_.**startColor**([*value*])       | color    | _"#e8e8e8"_   | The color for lowest values of both variables.                                           |
-| _map_.**color1**([*value*])           | color    | _"#73ae80"_   | The color for the highest values of variable 1, and lowest of variable 2.                |
-| _map_.**color2**([*value*])           | color    | _"#6c83b5"_   | The color for the highest values of variable 2, and lowest of variable 1.                |
-| _map_.**endColor**([*value*])         | color    | _"#2a5a5b"_   | The color for highest values of both variables.                                          |
-| _map_.**classToFillStyle**([*value*]) | Function | _auto_        | A function returning the colors for each pair of classes i,j.                            |
-| _map_.**noDataFillStyle**([*value*])  | color    | _"lightgray"_ | The fill style to be used for regions where no data is available.                        |
+| Method                                | Type     | Default value | Description                                                                                                      |
+| ------------------------------------- | -------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| _map_.**clnb**([*value*])             | int      | _3_           | The number of classes for the classification. The same value is used for both variables.                         |
+| _map_.**startColor**([*value*])       | color    | _"#e8e8e8"_   | The color for lowest values of both variables.                                                                   |
+| _map_.**color1**([*value*])           | color    | _"#73ae80"_   | The color for the highest values of variable 1, and lowest of variable 2.                                        |
+| _map_.**color2**([*value*])           | color    | _"#6c83b5"_   | The color for the highest values of variable 2, and lowest of variable 1.                                        |
+| _map_.**endColor**([*value*])         | color    | _"#2a5a5b"_   | The color for highest values of both variables.                                                                  |
+| _map_.**classifier1**([*value*])      | Function | _auto_        | A function which returns a class number from a stat value. This allows you to set the class thresholds manually. |
+| _map_.**classifier2**([*value*])      | Function | _auto_        | A function which returns a class number from a stat value. This allows you to set the class thresholds manually. |
+| _map_.**classToFillStyle**([*value*]) | Function | _auto_        | A function returning the colors for each pair of classes i,j.                                                    |
+| _map_.**noDataFillStyle**([*value*])  | color    | _"lightgray"_ | The fill style to be used for regions where no data is available.                                                |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
-| Parameter           | Type    | Default value  | Description                                        |
-| ------------------- | ------- | -------------- | -------------------------------------------------- |
-| **squareSize**      | number  | _50_           | The size, in pixel, of the legend square.          |
-| **label1**          | string  | _"Variable 1"_ | The text for the label of variable 1.              |
-| **label2**          | string  | _"Variable 2"_ | The text for the label of variable 1.              |
-| **labelFontSize**   | int     | _12_           | The font size of the legend label.                 |
-| **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.           |
-| **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape. |
-| **noDataText**      | Text    | _"No data"_    | 'No data' text label.                              |
+| Parameter           | Type    | Default value  | Description                                                                      |
+| ------------------- | ------- | -------------- | -------------------------------------------------------------------------------- |
+| **squareSize**      | number  | _50_           | The size, in pixel, of the legend square.                                        |
+| **rotation**        | number  | _0_            | The rotation to apply to the main legend. Recommended values are either 0 or -45 |
+| **label1**          | string  | _"Variable 1"_ | The text for the label of variable 1.                                            |
+| **label2**          | string  | _"Variable 2"_ | The text for the label of variable 1.                                            |
+| **labelFontSize**   | int     | _12_           | The font size of the legend label.                                               |
+| **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.                                         |
+| **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape.                               |
+| **noDataText**      | Text    | _"No data"_    | 'No data' text label.                                                            |
+| **noDataYOffset**   | Text    | 25             | Add distance between the main legend and the 'no data' item in pixels            |
 
 ## Stripe composition map
 
