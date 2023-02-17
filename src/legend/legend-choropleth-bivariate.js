@@ -1,5 +1,6 @@
 import { select } from 'd3-selection'
 import * as lg from '../core/legend'
+import { line } from 'd3-shape'
 
 /**
  * A legend for choropleth-bivariate maps
@@ -12,6 +13,9 @@ export const legend = function (map, config) {
 
     //size
     out.squareSize = 50
+
+    //orientation
+    out.rotation = 0
 
     //labels
     out.label1 = 'Variable 1'
@@ -29,6 +33,16 @@ export const legend = function (map, config) {
     out.noDataShapeSize = 15
     //no data text label
     out.noDataText = 'No data'
+
+    //override padding
+    out.boxPadding = out.labelFontSize
+
+    //add extra distance between legend and no data item
+    out.noDataYOffset = 0
+
+    //arrows
+    out.arrowHeight = 15
+    out.arrowWidth = 14
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -72,7 +86,17 @@ export const legend = function (map, config) {
             .append('g')
             .attr(
                 'transform',
-                'translate(' + out.boxPadding + ',' + (xc + y) + ') rotate(-45) translate(' + out.boxPadding + ',' + 0 + ')'
+                'translate(' +
+                    (out.boxPadding + (out.rotation == 0 ? out.arrowWidth / 2 + out.labelFontSize / 2 : 0)) +
+                    ',' +
+                    (xc + y) +
+                    ') rotate(' +
+                    out.rotation +
+                    ') translate(' +
+                    out.boxPadding +
+                    ',' +
+                    0 +
+                    ')'
             )
 
         for (let i = 0; i < clnb; i++)
@@ -130,7 +154,7 @@ export const legend = function (map, config) {
         square
             .append('text')
             .attr('x', 0)
-            .attr('y', out.squareSize + out.labelFontSize + (out.breaks1 ? out.labelFontSize + 2 : 0))
+            .attr('y', out.squareSize + out.labelFontSize + out.arrowHeight / 1.5 + (out.breaks1 ? out.labelFontSize + 2 : 0))
             .text(out.label1)
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
@@ -139,10 +163,23 @@ export const legend = function (map, config) {
         //labels 2
         square
             .append('text')
-            .attr('x', -out.labelFontSize)
-            .attr('y', out.labelFontSize)
+
+            // settings for -45 rotation
+            // .attr('x', -out.labelFontSize)
+            // .attr('y', out.labelFontSize)
+            // .attr('transform', 'rotate(90) translate(' + out.labelFontSize + ',0)')
+
+            // settings for 0 or 45 rotation
+            .attr('x', out.rotation == 0 ? -out.squareSize : -out.labelFontSize + out.arrowWidth / 2) //with roation 0, acts as Y axis
+            .attr('y', out.rotation == 0 ? -out.arrowWidth / 1.5 : out.labelFontSize + out.arrowHeight / 2)
+            .attr(
+                'transform',
+                out.rotation == 0
+                    ? 'rotate(-90) translate(0,' + -out.labelFontSize / 2 + ')'
+                    : 'rotate(90) translate(' + out.labelFontSize / 2 + ',0)'
+            )
+
             .text(out.label2)
-            .attr('transform', 'rotate(90) translate(' + out.labelFontSize + ',0)')
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
             .style('fill', out.fontFill)
@@ -159,9 +196,53 @@ export const legend = function (map, config) {
             .style('stroke', 'black')
             .attr('stroke-width', 0.7)
 
+        // ARROWS
+        square
+            .append('defs')
+            .append('marker')
+            .attr('viewBox', `0 0 ${out.arrowWidth} ${out.arrowHeight}`)
+            .attr('id', 'arrowhead')
+            .attr('refX', 0)
+            .attr('refY', 5)
+            .attr('markerWidth', out.arrowWidth)
+            .attr('markerHeight', out.arrowHeight)
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M 0 0 L 5 5 L 0 10') //M2,2 L10,6 L2,10 L6,6 L2,2
+            .attr('marker-units', 'strokeWidth')
+
+        // horizontal arrow
+        square
+            .append('path')
+            .attr(
+                'd',
+                line()([
+                    [0, out.squareSize + out.arrowHeight / 2],
+                    [out.squareSize, out.squareSize + out.arrowHeight / 2],
+                ])
+            )
+            .attr('stroke', 'black')
+            .attr('marker-end', 'url(#arrowhead)')
+
+        // vertical arrow
+        square
+            .append('path')
+            .attr(
+                'd',
+                line()([
+                    [-out.arrowWidth / 2, out.squareSize],
+                    [-out.arrowWidth / 2, 0],
+                ])
+            )
+            .attr('stroke', 'black')
+            .attr('marker-end', 'url(#arrowhead)')
+
         //'no data' legend box
         if (out.noData) {
-            y = y + 1.4142 * out.squareSize + out.boxPadding * 2 + out.labelFontSize
+            // add extra padding when rotation is 0
+            out.noDataYOffset =
+                out.rotation == 0 ? out.noDataYOffset + out.squareSize / out.map.clnb_ + out.arrowHeight / 2 : out.noDataYOffset
+            y = y + 1.4142 * out.squareSize + out.boxPadding * 2 + out.labelFontSize + out.noDataYOffset
 
             //rectangle
             lgg.append('rect')
