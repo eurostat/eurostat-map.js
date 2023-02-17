@@ -509,7 +509,7 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 | **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.                                         |
 | **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape.                               |
 | **noDataText**      | Text    | _"No data"_    | 'No data' text label.                                                            |
-| **noDataYOffset**   | Text    | 25             | Add distance between the main legend and the 'no data' item in pixels            |
+| **noDataYOffset**   | Text    | 0              | Add distance between the main legend and the 'no data' item in pixels            |
 
 ## Stripe composition map
 
