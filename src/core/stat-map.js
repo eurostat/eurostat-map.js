@@ -105,6 +105,8 @@ export const statMap = function (config, withCenterPoints) {
      * This method should be called once, preferably after the map attributes have been set to some initial values.
      */
     out.build = function () {
+        if (out.projectionFunction_) out.proj('4326') //when using custom d3 projection function always request WGS84
+
         //build map template base
         out.buildMapTemplateBase()
 

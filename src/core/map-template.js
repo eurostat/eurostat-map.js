@@ -68,7 +68,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.subtitleStrokeWidth_ = 'none'
 
     //map frame (none by default)
-    out.frameStroke_ = 'grey'
+    out.frameStroke_ = 'none'
     out.frameStrokeWidth_ = 0.5
 
     //scalebar
@@ -1114,7 +1114,9 @@ export const mapTemplate = function (config, withCenterPoints) {
                       .translate([out.width_ / 2, out.height_ / 2])
                       .scale((out.width_ - 20) / 2 / Math.PI)
         } else {
-            out._projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
+            out._projection = out.projectionFunction_
+                ? out.projectionFunction_.fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
+                : geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
         }
 
         out._geom.path = geoPath().projection(out._projection)
