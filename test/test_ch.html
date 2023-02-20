@@ -8,31 +8,9 @@
     <body>
         <svg id="map"></svg>
         <script src="../build/eurostatmap.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
-        <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
-        <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+
         <script>
-            let projectionFunction = d3
-                //.geoRobinson()
-                .geoWinkel3()
-
-            const map = eurostatmap
-                .map('ch')
-                .width(600)
-                .height(600)
-                .scale('03M')
-                .projectionFunction(projectionFunction)
-                .pixSize(0.025)
-                .geoCenter([34.5, 36])
-                .countriesToShow(['TR'])
-                .bordersToShow(['TR'])
-                .title('Population in Europe')
-                .nutsLvl(0)
-                .classifMethod('threshold')
-                .threshold([50, 75, 100, 150, 300, 850])
-            map.build()
-
-            setTimeout(() => console.log(map), 2000)
+            const map = eurostatmap.map('ch').width(600).height(600).title('Population in Europe').nutsLvl(0).build()
         </script>
     </body>
 </html>

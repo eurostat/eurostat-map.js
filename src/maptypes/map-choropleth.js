@@ -274,13 +274,25 @@ export const map = function (config) {
                     () => {
                         regions
                             .on('mouseover', function (rg) {
-                                const sel = select(this)
-                                sel.attr('fill___', sel.attr('fill'))
-                                sel.attr('fill', map.nutsrgSelFillSty_)
-                                if (map._tooltip) map._tooltip.mouseover(map.tooltip_.textFunction(rg, out))
+                                if (out.countriesToShow_) {
+                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                        const sel = select(this)
+                                        sel.attr('fill___', sel.attr('fill'))
+                                        sel.attr('fill', map.nutsrgSelFillSty_)
+                                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                                    }
+                                } else {
+                                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                                }
                             })
-                            .on('mousemove', function () {
-                                if (map._tooltip) map._tooltip.mousemove()
+                            .on('mousemove', function (rg) {
+                                if (out.countriesToShow_) {
+                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                        if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                                    }
+                                } else {
+                                    if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                                }
                             })
                             .on('mouseout', function () {
                                 const sel = select(this)

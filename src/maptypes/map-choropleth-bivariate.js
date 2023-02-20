@@ -80,7 +80,7 @@ export const map = function (config) {
                     const sv = out.statData('v1').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
-                    if (v != 0 && !v || v == ':') return 'nd'
+                    if ((v != 0 && !v) || v == ':') return 'nd'
                     return +out.classifier1_(+v)
                 })
                 .attr('ecl2', function (rg) {
@@ -88,7 +88,7 @@ export const map = function (config) {
                     const sv = out.statData('v2').get(rg.properties.id)
                     if (!sv) return 'nd'
                     const v = sv.value
-                    if (v != 0 && !v || v == ':') return 'nd'
+                    if ((v != 0 && !v) || v == ':') return 'nd'
                     return +out.classifier2_(+v)
                 })
                 .attr('nd', function (rg) {
@@ -97,9 +97,9 @@ export const map = function (config) {
                     const sv2 = out.statData('v2').get(rg.properties.id)
                     if (!sv1 || !sv2) return 'nd'
                     let v = sv1.value
-                    if (v != 0 && !v || v == ':') return 'nd'
+                    if ((v != 0 && !v) || v == ':') return 'nd'
                     v = sv2.value
-                    if (v != 0 && !v || v == ':') return 'nd'
+                    if ((v != 0 && !v) || v == ':') return 'nd'
                     return ''
                 })
 
@@ -117,14 +117,14 @@ export const map = function (config) {
                         const sv = out.statData('v2').get(rg.properties.id)
                         if (!sv) return 'nd'
                         const v = sv.value
-                        if (v != 0 && !v || v == ':') return 'nd'
+                        if ((v != 0 && !v) || v == ':') return 'nd'
                         return +out.classifier1_(+v)
                     })
                     .attr('ecl2', function (rg) {
                         const sv = out.statData('v2').get(rg.properties.id)
                         if (!sv) return 'nd'
                         const v = sv.value
-                        if (v != 0 && !v || v == ':') return 'nd'
+                        if ((v != 0 && !v) || v == ':') return 'nd'
                         return +out.classifier2_(+v)
                     })
             }
@@ -160,13 +160,32 @@ export const map = function (config) {
             let regions = out.svg().selectAll(selector)
             regions
                 .on('mouseover', function (rg) {
-                    const sel = select(this)
-                    sel.attr('fill___', sel.attr('fill'))
-                    sel.attr('fill', out.nutsrgSelFillSty_)
-                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            const sel = select(this)
+                            sel.attr('fill___', sel.attr('fill'))
+                            sel.attr('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) {
+                                out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                            }
+                        }
+                    } else {
+                        const sel = select(this)
+                        sel.attr('fill___', sel.attr('fill'))
+                        sel.attr('fill', out.nutsrgSelFillSty_)
+                        if (out._tooltip) {
+                            out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    }
                 })
                 .on('mousemove', function () {
-                    if (out._tooltip) out._tooltip.mousemove()
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            if (out._tooltip) out._tooltip.mousemove()
+                        }
+                    } else {
+                        if (out._tooltip) out._tooltip.mousemove()
+                    }
                 })
                 .on('mouseout', function () {
                     const sel = select(this)

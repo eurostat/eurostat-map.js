@@ -1516,13 +1516,32 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (rg) {
-                    const sel = select(this.childNodes[0])
-                    sel.attr('fill___', sel.style('fill'))
-                    sel.style('fill', out.nutsrgSelFillSty_)
-                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    if (map.countriesToShow_) {
+                        if (map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            const sel = select(this.childNodes[0])
+                            sel.attr('fill___', sel.style('fill'))
+                            sel.style('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) {
+                                out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                            }
+                        }
+                    } else {
+                        const sel = select(this.childNodes[0])
+                        sel.attr('fill___', sel.style('fill'))
+                        sel.style('fill', out.nutsrgSelFillSty_)
+                        if (out._tooltip) {
+                            out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    }
                 })
                 .on('mousemove', function () {
-                    if (out._tooltip) out._tooltip.mousemove()
+                    if (map.countriesToShow_) {
+                        if (map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            if (out._tooltip) out._tooltip.mousemove()
+                        }
+                    } else {
+                        if (out._tooltip) out._tooltip.mousemove()
+                    }
                 })
                 .on('mouseout', function () {
                     const sel = select(this.childNodes[0])
