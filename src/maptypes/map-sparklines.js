@@ -178,24 +178,30 @@ export const map = function (config) {
         let regions = out.svg().selectAll(selector)
         regions
             .on('mouseover', function (rg) {
-                if (out.countriesToShow_) {
-                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                        const sel = select(this)
-                        sel.attr('fill___', sel.attr('fill'))
-                        sel.attr('fill', out.nutsrgSelFillSty_)
+                const data = getComposition(rg.properties.id)
+                if (data) {
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            const sel = select(this)
+                            sel.attr('fill___', sel.attr('fill'))
+                            sel.attr('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    } else {
                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
-                } else {
-                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                 }
             })
             .on('mousemove', function (rg) {
-                if (out.countriesToShow_) {
-                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                const data = getComposition(rg.properties.id)
+                if (data) {
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            if (out._tooltip) out._tooltip.mousemove()
+                        }
+                    } else {
                         if (out._tooltip) out._tooltip.mousemove()
                     }
-                } else {
-                    if (out._tooltip) out._tooltip.mousemove()
                 }
             })
             .on('mouseout', function () {
@@ -219,7 +225,9 @@ export const map = function (config) {
             let node = out.svg().select('#spark_' + nutsid)
             let data = getComposition(nutsid)
 
-            createSparkLineChart(node, data)
+            if (data) {
+                createSparkLineChart(node, data)
+            }
         })
     }
 
@@ -384,14 +392,17 @@ export const map = function (config) {
         let width = out.sparkTooltipChart_.width
         let margin = out.sparkTooltipChart_.margin
         const data = getComposition(rg.properties.id)
-        let svg = tp
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        //.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-        createTooltipChart(svg, data, width, height)
+        if (data) {
+            let svg = tp
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+            //.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+            createTooltipChart(svg, data, width, height)
+        }
     }
 
     function createTooltipChart(node, data, width, height) {
