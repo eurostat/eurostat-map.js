@@ -1534,7 +1534,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         }
                     }
                 })
-                .on('mousemove', function () {
+                .on('mousemove', function (rg) {
                     if (map.countriesToShow_) {
                         if (map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             if (out._tooltip) out._tooltip.mousemove()

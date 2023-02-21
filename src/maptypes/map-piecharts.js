@@ -308,7 +308,7 @@ export const map = function (config) {
                 let regions = out.svg().selectAll(selector)
                 regions
                     .on('mouseover', function (rg) {
-                        if (out.countriesToShow_) {
+                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                             if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                 const sel = select(this)
                                 sel.attr('fill___', sel.attr('fill'))
@@ -322,8 +322,8 @@ export const map = function (config) {
                             if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                         }
                     })
-                    .on('mousemove', function () {
-                        if (out.countriesToShow_) {
+                    .on('mousemove', function (rg) {
+                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                             if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                 if (out._tooltip) out._tooltip.mousemove()
                             }
@@ -424,7 +424,7 @@ export const map = function (config) {
         // set the dimensions and margins of the graph
         const width = 120,
             height = 120,
-            margin = 30
+            margin = 25
 
         // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
         const radius = Math.min(width, height) / 2 - margin
@@ -432,7 +432,7 @@ export const map = function (config) {
         const svg = tp
             .append('svg')
             .attr('width', width)
-            .attr('height', height)
+            .attr('height', height - margin / 2)
             .append('g')
             .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
 

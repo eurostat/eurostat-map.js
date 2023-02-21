@@ -98,7 +98,7 @@ export const map = function (config) {
                 () => {
                     regions
                         .on('mouseover', function (rg) {
-                            if (out.countriesToShow_) {
+                            if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                                 if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                     const sel = select(this)
                                     sel.attr('fill___', sel.attr('fill'))
@@ -116,8 +116,8 @@ export const map = function (config) {
                                 }
                             }
                         })
-                        .on('mousemove', function () {
-                            if (out.countriesToShow_) {
+                        .on('mousemove', function (rg) {
+                            if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                                 if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                     if (out._tooltip) out._tooltip.mousemove()
                                 }
