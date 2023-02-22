@@ -3,7 +3,7 @@ import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
 
 /**
- * Returns a chroropleth map.
+ * Returns a sparkline map.
  *
  * @param {*} config
  */
@@ -262,8 +262,11 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', out.sparkAreaColor_)
-                .attr('stroke', out.sparkLineColor_)
+                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'stroke',
+                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                )
                 .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr('fill-opacity', 0.3)
@@ -286,7 +289,7 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', out.sparkLineColor_)
+            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
             .attr(
                 'd',
@@ -437,8 +440,11 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', out.sparkAreaColor_)
-                .attr('stroke', out.sparkLineColor_)
+                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'stroke',
+                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                )
                 .attr('stroke-width', 1)
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr('fill-opacity', 0.3)
@@ -461,7 +467,7 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', out.sparkLineColor_)
+            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', 1)
             .attr(
                 'd',

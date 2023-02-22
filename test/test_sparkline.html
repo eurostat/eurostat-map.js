@@ -1,87 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
+    <body>
+        <style>
+            #tooltip_eurostat {
+                max-width: 1000px !important;
+            }
+        </style>
+        <svg id="map"></svg>
+        <svg id="map1"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script>
+            // POPULATION
+            eurostatmap
+                .map('spark')
+                .nutsLvl(3)
+                .width(1000)
+                .nutsYear(2016)
+                //.zoomExtent([1, 2])
+                .statSpark(
+                    { eurostatDatasetCode: 'demo_r_pjanaggr3', filters: { sex: 'T', unit: 'NR' }, unitText: 'people' },
+                    ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'], //dates
+                    ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'] //labels
+                )
+                .sparkType('line')
+                .sparkLineWidth(10)
+                .sparkLineStrokeWidth(2)
+                .sparkLineColor((d, i) => (d[d.length - 1].value > 100000 ? 'red' : 'blue'))
+                .sparkLineHeight(5)
+                .sparkLineOpacity(0.9)
 
-<body>
-  <style>
-    #tooltip_eurostat {
-      max-width: 1000px !important
-    }
-  </style>
-  <svg id="map"></svg>
-  <svg id="map1"></svg>
-  <script src="../build/eurostatmap.js"></script>
-  <script>
+                //map styling
+                .nutsbnStroke({ 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'black', co: 'black' })
+                .nutsbnStrokeWidth({ 0: 1, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
+                .cntbnStroke({ def: 'none', co: 'none' })
+                .cntbnStrokeWidth({ def: 0, co: 0 })
+                .tooltip({
+                    xOffset: 30,
+                    yOffset: 150,
+                    fontSize: '12px',
+                    maxWidth: Math.min(400, window.innerWidth),
+                })
+                .sparkTooltipChart({
+                    width: 150,
+                    height: 50,
+                    margin: { left: 60, right: 40, top: 40, bottom: 40 },
+                    circleRadius: 1.5,
+                })
+                //.seaFillStyle("lightblue")
+                .build()
 
-    // POPULATION
-    eurostatmap
-      .map("spark")
-      .nutsLvl(3)
-      .width(1000)
-      .nutsYear(2016)
-      //.zoomExtent([1, 2])
-      .statSpark(
-        { eurostatDatasetCode: "demo_r_pjanaggr3", filters: { sex: "T", unit: "NR" }, unitText: "people" },
-        ["2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"], //dates
-        ["2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019"], //labels
-      )
-      .sparkType("line")
-      .sparkLineWidth(10)
-      .sparkLineStrokeWidth(2)
-      .sparkLineColor("#c44a4a")
-      .sparkLineHeight(5)
-      .sparkLineOpacity(0.9)
-
-      //map styling
-      .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "black", co: "black" })
-      .nutsbnStrokeWidth({ 0: 1, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
-      .cntbnStroke({ def: "none", co: "none" })
-      .cntbnStrokeWidth({ def: 0, co: 0 })
-      .tooltip({
-        xOffset: 30,
-        yOffset: 150,
-        fontSize: "12px",
-        maxWidth: Math.min(400, window.innerWidth)
-      })
-      .sparkTooltipChart({
-        width: 150,
-        height: 50,
-        margin: { left: 60, right: 40, top: 40, bottom: 40 },
-        circleRadius: 1.5
-      })
-      //.seaFillStyle("lightblue")
-      .build()
-
-        //deaths per week 
-        // eurostatmap
-        // .map("spark")
-        // .svgId("map1")
-        // .nutsLvl(1)
-        // .width(1000)
-        // .zoomExtent([1,2])
-        // .statSpark(
-        //   { eurostatDatasetCode: "demo_r_mwk3_t", filters: { unit: "NR"}, unitText: "people" },
-        //   ["2020W10","2020W11","2020W11","2020W12","2020W13","2020W14","2020W15","2020W16", "2020W17", "2020W18", "2020W19"], //dates
-        //   ["week 10","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //labels
-        // )
-        // .sparkType("area")
-        // .sparkLineWidth(70)
-        // .sparkLineHeight(20)
-        // .sparkLineStrokeWidth(1)
-        // .sparkLineOpacity(0.9)
-        // .sparkLineFill("#41afaa")
-        // //map styling
-        // .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "black", co: "black" })
-        // .nutsbnStrokeWidth({ 0: 0.2, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
-        // .cntbnStroke({ def: "none", co: "none" })
-        // .cntbnStrokeWidth({ def: 0, co: 0 })
-        // .build()
-
-  </script>
-</body>
-
+            //deaths per week
+            // eurostatmap
+            // .map("spark")
+            // .svgId("map1")
+            // .nutsLvl(1)
+            // .width(1000)
+            // .zoomExtent([1,2])
+            // .statSpark(
+            //   { eurostatDatasetCode: "demo_r_mwk3_t", filters: { unit: "NR"}, unitText: "people" },
+            //   ["2020W10","2020W11","2020W11","2020W12","2020W13","2020W14","2020W15","2020W16", "2020W17", "2020W18", "2020W19"], //dates
+            //   ["week 10","2010","2011","2012","2013","2014","2015","2016", "2017", "2018", "2019"], //labels
+            // )
+            // .sparkType("area")
+            // .sparkLineWidth(70)
+            // .sparkLineHeight(20)
+            // .sparkLineStrokeWidth(1)
+            // .sparkLineOpacity(0.9)
+            // .sparkLineFill("#41afaa")
+            // //map styling
+            // .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "black", co: "black" })
+            // .nutsbnStrokeWidth({ 0: 0.2, 1: 0.1, 2: 0, 3: 0, oth: 0.1, co: 0.2 })
+            // .cntbnStroke({ def: "none", co: "none" })
+            // .cntbnStrokeWidth({ def: 0, co: 0 })
+            // .build()
+        </script>
+    </body>
 </html>
