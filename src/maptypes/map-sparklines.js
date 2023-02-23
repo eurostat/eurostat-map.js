@@ -241,7 +241,7 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             width = out.widthClassifier_(ext[1])
             height = out.heightClassifier_(ext[1])
-            yScale = scaleLog()
+            yScale = scaleLinear()
                 .domain(ext)
                 .range([height - 0.5, 0])
             xScale = scaleLinear()
@@ -250,7 +250,7 @@ export const map = function (config) {
         } else {
             width = out.sparkLineWidth_
             height = out.sparkLineHeight_
-            yScale = scaleLog()
+            yScale = scaleLinear()
                 .domain(ext)
                 .range([out.sparkLineHeight_ - 0.5, 0])
             xScale = scaleLinear()
@@ -299,6 +299,7 @@ export const map = function (config) {
                         return xScale(i)
                     })
                     .y(function (d) {
+                        console.log(d, yScale(d.value))
                         return yScale(d.value)
                     })
             )
@@ -412,7 +413,7 @@ export const map = function (config) {
     function createTooltipChart(node, data, width, height) {
         //define scales
         let ext = extent(data.map((v) => v.value))
-        let yScale = scaleLog()
+        let yScale = scaleLinear()
             .domain(ext)
             .range([height - 0.5, 0])
         let xScale = scaleLinear()
@@ -432,7 +433,7 @@ export const map = function (config) {
 
         // Add the Y Axis
         let domainY = yScale.domain()
-        let tickValues = [domainY[0], Math.round((domainY[0] + domainY[1]) / 2), domainY[1]]
+        let tickValues = [domainY[0], ((domainY[0] + domainY[1]) / 2).toFixed(1), domainY[1]]
         node.append('g')
             .attr('class', 'axis')
             .call(axisLeft(yScale).tickValues(tickValues).tickFormat(format(',.2r')))
