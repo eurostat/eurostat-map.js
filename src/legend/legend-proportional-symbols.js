@@ -130,6 +130,7 @@ export const legend = function (map, config) {
         //draw title
         if (config.title) {
             lgg.append('text')
+                .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(config.title)
@@ -268,6 +269,7 @@ export const legend = function (map, config) {
                 .attr('x', labelX)
                 .attr('y', labelY)
                 .attr('alignment-baseline', 'middle')
+                .attr('class', 'eurostatmap-legend-label')
                 .text(f(val))
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)
@@ -290,6 +292,7 @@ export const legend = function (map, config) {
         //title
         if (config.title)
             lgg.append('text')
+                .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + config.titlePadding)
                 .text(config.title)
@@ -374,6 +377,7 @@ export const legend = function (map, config) {
             let labelY = y + config.labelOffset.y + out.labelFontSize * 1.2
             if (i < clnb - 1) {
                 lgg.append('text')
+                    .attr('class', 'eurostatmap-legend-label')
                     .attr('x', x + config.labelOffset.x)
                     .attr('y', labelY)
                     .attr('alignment-baseline', 'middle')
@@ -440,6 +444,7 @@ export const legend = function (map, config) {
                 .attr('x', x + config.labelOffset.x)
                 .attr('y', y + out.boxPadding)
                 .attr('alignment-baseline', 'middle')
+                .attr('class', 'eurostatmap-legend-label')
                 .text(config.noDataText)
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)

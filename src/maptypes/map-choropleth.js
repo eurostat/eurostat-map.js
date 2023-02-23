@@ -320,7 +320,7 @@ export const map = function (config) {
                         const ecl = select(this).attr('ecl')
                         const lvl = select(this).attr('lvl')
                         // always display NUTS 0 for mixed, and filter countries to show
-                        if ((ecl && map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) || lvl == '0') {
+                        if ((ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) || lvl == '0') {
                             return 'block'
                         } else {
                             // dont show unclassified regions
