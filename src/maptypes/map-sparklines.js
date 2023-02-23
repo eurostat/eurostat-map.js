@@ -299,7 +299,6 @@ export const map = function (config) {
                         return xScale(i)
                     })
                     .y(function (d) {
-                        console.log(d, yScale(d.value))
                         return yScale(d.value)
                     })
             )
