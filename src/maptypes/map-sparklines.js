@@ -289,6 +289,7 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
+            .attr('opacity', out.sparkLineOpacity_)
             .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
             .attr(
