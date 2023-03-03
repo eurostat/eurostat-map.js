@@ -901,6 +901,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         }
 
         //recursive call to inset components
+        let isInset = true
         for (const geo in out.insetTemplates_) {
             // check for insets with same geo
             if (Array.isArray(out.insetTemplates_[geo])) {
@@ -909,14 +910,14 @@ export const mapTemplate = function (config, withCenterPoints) {
                     if (Array.isArray(out.insetTemplates_[geo][i])) {
                         // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
                         for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                            out.insetTemplates_[geo][i][c].updateGeoMT(callback)
+                            out.insetTemplates_[geo][i][c].updateGeoMT(callback(isInset))
                         }
                     } else {
-                        out.insetTemplates_[geo][i].updateGeoMT(callback)
+                        out.insetTemplates_[geo][i].updateGeoMT(callback(isInset))
                     }
                 }
             } else {
-                out.insetTemplates_[geo].updateGeoMT(callback)
+                out.insetTemplates_[geo].updateGeoMT(callback(isInset))
             }
         }
         return out
