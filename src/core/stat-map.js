@@ -167,7 +167,7 @@ export const statMap = function (config, withCenterPoints) {
             //proceed with map construction
             out.updateStatValues()
             //execute callback function
-            if (out.callback()) out.callback()()
+            if (out.callback()) out.callback()(out)
         })
 
         return out

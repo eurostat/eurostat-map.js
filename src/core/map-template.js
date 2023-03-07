@@ -194,6 +194,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.labelOpacity_ = { seas: 1, countries: 0.8, cc: 0.8, values: 0.9 }
     out.labelValuesFontSize_ = 10 //when labelsToShow includes "values", this is their font size
     out.labelShadow_ = false
+    out.labelShadowsToShow_ = ['countries', 'seas', 'cc', 'values'] //accepted: "countries", "cc","seas", "values"
     out.labelShadowWidth_ = { seas: 3, countries: 1, cc: 1, values: 1 }
     out.labelShadowColor_ = {
         seas: 'white',
@@ -1783,6 +1784,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     gsls.selectAll('g')
                         .data(labelRegions)
                         .enter()
+                        .filter((d) => out.labelShadowsToShow_.includes('values'))
                         .append('g')
                         .attr('transform', function (d) {
                             return 'translate(' + out._geom.path.centroid(d) + ')'
@@ -1834,8 +1836,10 @@ export const mapTemplate = function (config, withCenterPoints) {
                 let shadows = shadowg
                     .selectAll('text')
                     .data(data)
+
                     .enter()
                     .append('text')
+                    .filter((d) => out.labelShadowsToShow_.includes(d.class))
                     .attr('class', (d) => {
                         return 'labelShadow_' + d.class
                     })
@@ -1869,8 +1873,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                             return 'rotate(0)'
                         }
                     })
-                    //.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
-                    .style('font-style', (d) => (d.class == 'seas' ? 'italic' : 'normal'))
                     .text(function (d) {
                         return d.text
                     }) // define the text to display
@@ -2172,6 +2174,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             'labelShadowWidth_',
             'labelShadow_',
             'labelShadowColor_',
+            'labelShadowsToShow_',
             'labelsToShow_',
             'fontFamily_',
             'lg_',
