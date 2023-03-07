@@ -909,14 +909,14 @@ export const mapTemplate = function (config, withCenterPoints) {
                     if (Array.isArray(out.insetTemplates_[geo][i])) {
                         // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
                         for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                            out.insetTemplates_[geo][i][c].updateGeoMT(callback())
+                            out.insetTemplates_[geo][i][c].updateGeoMT(callback)
                         }
                     } else {
-                        out.insetTemplates_[geo][i].updateGeoMT(callback())
+                        out.insetTemplates_[geo][i].updateGeoMT(callback)
                     }
                 }
             } else {
-                out.insetTemplates_[geo].updateGeoMT(callback())
+                out.insetTemplates_[geo].updateGeoMT(callback)
             }
         }
         return out
