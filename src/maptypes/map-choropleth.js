@@ -299,7 +299,6 @@ export const map = function (config) {
                             })
                             .on('mouseout', function () {
                                 const sel = select(this)
-                                let currentFill = sel.attr('fill')
                                 let newFill = sel.attr('fill___')
                                 if (newFill) {
                                     sel.attr('fill', sel.attr('fill___'))

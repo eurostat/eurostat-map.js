@@ -1517,37 +1517,36 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (rg) {
-                    if (out.countriesToShow_) {
+                    if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sel = select(this.childNodes[0])
                             sel.attr('fill___', sel.style('fill'))
                             sel.style('fill', out.nutsrgSelFillSty_)
-                            if (out._tooltip) {
-                                out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                            }
+                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                         }
                     } else {
                         const sel = select(this.childNodes[0])
                         sel.attr('fill___', sel.style('fill'))
                         sel.style('fill', out.nutsrgSelFillSty_)
-                        if (out._tooltip) {
-                            out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                        }
+                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
                 })
                 .on('mousemove', function (rg) {
-                    if (out.countriesToShow_) {
+                    if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                            if (out._tooltip) out._tooltip.mousemove()
+                            if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
                         }
                     } else {
-                        if (out._tooltip) out._tooltip.mousemove()
+                        if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
                     }
                 })
                 .on('mouseout', function () {
                     const sel = select(this.childNodes[0])
-                    sel.style('fill', sel.attr('fill___'))
-                    if (out._tooltip) out._tooltip.mouseout()
+                    let newFill = sel.attr('fill___')
+                    if (newFill) {
+                        sel.style('fill', newFill)
+                        if (out._tooltip) out._tooltip.mouseout()
+                    }
                 })
         }
 
