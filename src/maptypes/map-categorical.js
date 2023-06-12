@@ -97,14 +97,14 @@ export const map = function (config) {
             .then(
                 () => {
                     regions
-                        .on('mouseover', function (rg) {
+                        .on('mouseover', function (e, rg) {
                             const sel = select(this)
                             sel.attr('fill___', sel.attr('fill'))
                             sel.attr('fill', out.nutsrgSelFillSty_)
                             if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                         })
-                        .on('mousemove', function () {
-                            if (out._tooltip) out._tooltip.mousemove()
+                        .on('mousemove', function (e) {
+                            if (out._tooltip) out._tooltip.mousemove(e)
                         })
                         .on('mouseout', function () {
                             const sel = select(this)

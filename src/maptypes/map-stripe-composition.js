@@ -180,7 +180,7 @@ export const map = function (config) {
             .attr('fill', function (d) {
                 const id = d.properties.id
 
-                if (!out.countriesToShow_.includes(id[0] + id[1])) return out.nutsrgFillStyle_;
+                if (!out.countriesToShow_.includes(id[0] + id[1])) return out.nutsrgFillStyle_
 
                 //compute composition
                 const composition = getComposition(id)
@@ -247,14 +247,14 @@ export const map = function (config) {
         let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
         let regions = out.svg().selectAll(selector)
         regions
-            .on('mouseover', function (rg) {
+            .on('mouseover', function (e, rg) {
                 const sel = select(this)
                 sel.attr('fill___', sel.attr('fill'))
                 sel.attr('fill', out.nutsrgSelFillSty_)
                 if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
             })
-            .on('mousemove', function () {
-                if (out._tooltip) out._tooltip.mousemove()
+            .on('mousemove', function (e) {
+                if (out._tooltip) out._tooltip.mousemove(e)
             })
             .on('mouseout', function () {
                 const sel = select(this)
