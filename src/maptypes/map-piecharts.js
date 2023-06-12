@@ -307,7 +307,7 @@ export const map = function (config) {
                 let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
                 let regions = out.svg().selectAll(selector)
                 regions
-                    .on('mouseover', function (rg) {
+                    .on('mouseover', function (e, rg) {
                         if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                             if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                 const sel = select(this)

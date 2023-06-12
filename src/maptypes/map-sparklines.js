@@ -177,7 +177,7 @@ export const map = function (config) {
         let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
         let regions = out.svg().selectAll(selector)
         regions
-            .on('mouseover', function (rg) {
+            .on('mouseover', function (e, rg) {
                 const data = getComposition(rg.properties.id)
                 if (data) {
                     if (out.countriesToShow_) {

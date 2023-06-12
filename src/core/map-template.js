@@ -1,6 +1,6 @@
 import { json } from 'd3-fetch'
 import { zoom, zoomTransform } from 'd3-zoom'
-import { select, event, selectAll, mouse } from 'd3-selection'
+import { select, selectAll, pointer } from 'd3-selection'
 import { formatDefaultLocale } from 'd3-format'
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from 'd3-geo'
 import { geoRobinson } from 'd3-geo-projection'
@@ -214,7 +214,10 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.botTxtTooltipTxt_ =
         'The designations employed and the presentation of material on this map do not imply the expression of any opinion whatsoever on the part of the European Union concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Kosovo*: This designation is without prejudice to positions on status, and is in line with UNSCR 1244/1999 and the ICJ Opinion on the Kosovo declaration of independence.'
 
-    out.nuts2jsonBaseURL_ = 'https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/'
+    out.nuts2jsonBaseURL_ =
+        window.location.hostname == 'ec.europa.eu'
+            ? 'https://ec.europa.eu/assets/estat/E/E4/gisco/pub/nuts2json/v2/'
+            : 'https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/'
 
     /**
      * Insets.
@@ -1038,8 +1041,8 @@ export const mapTemplate = function (config, withCenterPoints) {
         if (out.zoomExtent()) {
             let xoo = zoom()
                 .scaleExtent(out.zoomExtent())
-                .on('zoom', function () {
-                    const k = event.transform.k
+                .on('zoom', function (e) {
+                    const k = e.transform.k
                     const cs = ['gra', 'bn_0', /*"bn_1", "bn_2", "bn_3",*/ 'bn_co', 'cntbn', 'symbol']
                     for (let i = 0; i < cs.length; i++)
                         out.svg()
@@ -1047,11 +1050,11 @@ export const mapTemplate = function (config, withCenterPoints) {
                             .style('stroke-width', function (d) {
                                 return 1 / k + 'px'
                             })
-                    zg.attr('transform', event.transform)
+                    zg.attr('transform', e.transform)
                 })
-                .on('end', function () {
+                .on('end', function (e) {
                     let transform = zoomTransform(svg.node()) // get the current zoom
-                    let m = mouse(this)
+                    let m = pointer(this)
                     let xy = transform.invert([out.width_ / 2, out.height_ / 2])
                     let longlat = out._projection.invert(xy)
                     //console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
@@ -1063,7 +1066,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         // get projected coordinates on click
         // zg.on('click', function(e) {
         // 	let transform = zoomTransform(svg.node()); // get the current zoom
-        // 	let xy = transform.invert(mouse(this));
+        // 	let xy = transform.invert(pointer(this));
         // 	let longlat = out._projection.invert(xy);
         // 	console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
         // 	console.log('pixSize:', out.pixSize_ / transform.k)
@@ -1516,7 +1519,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .attr('class', 'symbol')
                 .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
-                .on('mouseover', function (rg) {
+                .on('mouseover', function (e, rg) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sel = select(this.childNodes[0])
@@ -1540,7 +1543,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
                     }
                 })
-                .on('mouseout', function () {
+                .on('mouseout', function (e) {
                     const sel = select(this.childNodes[0])
                     let newFill = sel.attr('fill___')
                     if (newFill) {
@@ -1618,11 +1621,11 @@ export const mapTemplate = function (config, withCenterPoints) {
                     out._tooltip.style('font-size', out.botTxtFontSize_)
                     if (out.botTxtTooltipTxt_) out._tooltip.mouseover(out.botTxtTooltipTxt_)
                 })
-                .on('mousemove', function () {
-                    if (out.botTxtTooltipTxt_) out._tooltip.mousemove()
+                .on('mousemove', function (e) {
+                    if (out.botTxtTooltipTxt_) out._tooltip.mousemove(e)
                 })
-                .on('mouseout', function () {
-                    if (out.botTxtTooltipTxt_) out._tooltip.mouseout()
+                .on('mouseout', function (e) {
+                    if (out.botTxtTooltipTxt_) out._tooltip.mouseout(e)
                     out._tooltip.style('max-width', out._tooltip.mw___)
                     // tooltip.style("font", tooltip.f___);
                 })

@@ -1,4 +1,4 @@
-import { select, event } from 'd3-selection'
+import { select } from 'd3-selection'
 
 /**
  * @param {*} config
@@ -49,7 +49,7 @@ export const tooltip = function (config) {
         my.ensureTooltipOnScreen(x, y)
     }
 
-    my.mousemove = function () {
+    my.mousemove = function (event) {
         let x = event.pageX
         let y = event.pageY
         this.ensureTooltipOnScreen(x, y)
