@@ -274,17 +274,31 @@ export const map = function (config) {
                     () => {
                         regions
                             .on('mouseover', function (e, rg) {
-                                const sel = select(this)
-                                sel.attr('fill___', sel.attr('fill'))
-                                sel.attr('fill', map.nutsrgSelFillSty_)
-                                if (map._tooltip) map._tooltip.mouseover(map.tooltip_.textFunction(rg, out))
+                                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                        const sel = select(this)
+                                        sel.attr('fill___', sel.attr('fill'))
+                                        sel.attr('fill', map.nutsrgSelFillSty_)
+                                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                                    }
+                                } else {
+                                    const sel = select(this)
+                                    sel.attr('fill___', sel.attr('fill'))
+                                    sel.attr('fill', map.nutsrgSelFillSty_)
+                                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                                }
                             })
-                            .on('mousemove', function (e) {
-                                if (map._tooltip) map._tooltip.mousemove(e)
+                            .on('mousemove', function (rg) {
+                                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                        if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                                    }
+                                } else {
+                                    if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                                }
                             })
                             .on('mouseout', function () {
                                 const sel = select(this)
-                                let currentFill = sel.attr('fill')
                                 let newFill = sel.attr('fill___')
                                 if (newFill) {
                                     sel.attr('fill', sel.attr('fill___'))
@@ -305,7 +319,7 @@ export const map = function (config) {
                         const ecl = select(this).attr('ecl')
                         const lvl = select(this).attr('lvl')
                         // always display NUTS 0 for mixed, and filter countries to show
-                        if ((ecl && map.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) || lvl == '0') {
+                        if ((ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) || lvl == '0') {
                             return 'block'
                         } else {
                             // dont show unclassified regions
@@ -346,7 +360,7 @@ export const map = function (config) {
             .selectAll('g.stat-label')
             .append('text')
             .text(function (d) {
-                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1])) {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                     const s = out.statData()
                     const sv = s.get(d.properties.id)
                     if (!sv || !sv.value) {
@@ -365,7 +379,7 @@ export const map = function (config) {
                 .selectAll('g.stat-label-shadow')
                 .append('text')
                 .text(function (d) {
-                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1])) {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                         const s = out.statData()
                         const sv = s.get(d.properties.id)
                         if (!sv || !sv.value) {

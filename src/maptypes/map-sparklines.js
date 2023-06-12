@@ -3,7 +3,7 @@ import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
 
 /**
- * Returns a chroropleth map.
+ * Returns a sparkline map.
  *
  * @param {*} config
  */
@@ -178,13 +178,31 @@ export const map = function (config) {
         let regions = out.svg().selectAll(selector)
         regions
             .on('mouseover', function (e, rg) {
-                const sel = select(this)
-                sel.attr('fill___', sel.attr('fill'))
-                sel.attr('fill', out.nutsrgSelFillSty_)
-                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                const data = getComposition(rg.properties.id)
+                if (data) {
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            const sel = select(this)
+                            sel.attr('fill___', sel.attr('fill'))
+                            sel.attr('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    } else {
+                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    }
+                }
             })
-            .on('mousemove', function (e) {
-                if (out._tooltip) out._tooltip.mousemove(e)
+            .on('mousemove', function (rg) {
+                const data = getComposition(rg.properties.id)
+                if (data) {
+                    if (out.countriesToShow_) {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            if (out._tooltip) out._tooltip.mousemove()
+                        }
+                    } else {
+                        if (out._tooltip) out._tooltip.mousemove()
+                    }
+                }
             })
             .on('mouseout', function () {
                 const sel = select(this)
@@ -207,7 +225,9 @@ export const map = function (config) {
             let node = out.svg().select('#spark_' + nutsid)
             let data = getComposition(nutsid)
 
-            createSparkLineChart(node, data)
+            if (data) {
+                createSparkLineChart(node, data)
+            }
         })
     }
 
@@ -221,7 +241,7 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             width = out.widthClassifier_(ext[1])
             height = out.heightClassifier_(ext[1])
-            yScale = scaleLog()
+            yScale = scaleLinear()
                 .domain(ext)
                 .range([height - 0.5, 0])
             xScale = scaleLinear()
@@ -230,7 +250,7 @@ export const map = function (config) {
         } else {
             width = out.sparkLineWidth_
             height = out.sparkLineHeight_
-            yScale = scaleLog()
+            yScale = scaleLinear()
                 .domain(ext)
                 .range([out.sparkLineHeight_ - 0.5, 0])
             xScale = scaleLinear()
@@ -242,8 +262,11 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', out.sparkAreaColor_)
-                .attr('stroke', out.sparkLineColor_)
+                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'stroke',
+                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                )
                 .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr('fill-opacity', 0.3)
@@ -266,7 +289,8 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', out.sparkLineColor_)
+            .attr('opacity', out.sparkLineOpacity_)
+            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
             .attr(
                 'd',
@@ -372,20 +396,23 @@ export const map = function (config) {
         let width = out.sparkTooltipChart_.width
         let margin = out.sparkTooltipChart_.margin
         const data = getComposition(rg.properties.id)
-        let svg = tp
-            .append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
-            .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        //.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-        createTooltipChart(svg, data, width, height)
+        if (data) {
+            let svg = tp
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+            //.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+            createTooltipChart(svg, data, width, height)
+        }
     }
 
     function createTooltipChart(node, data, width, height) {
         //define scales
         let ext = extent(data.map((v) => v.value))
-        let yScale = scaleLog()
+        let yScale = scaleLinear()
             .domain(ext)
             .range([height - 0.5, 0])
         let xScale = scaleLinear()
@@ -405,7 +432,7 @@ export const map = function (config) {
 
         // Add the Y Axis
         let domainY = yScale.domain()
-        let tickValues = [domainY[0], Math.round((domainY[0] + domainY[1]) / 2), domainY[1]]
+        let tickValues = [domainY[0], ((domainY[0] + domainY[1]) / 2).toFixed(1), domainY[1]]
         node.append('g')
             .attr('class', 'axis')
             .call(axisLeft(yScale).tickValues(tickValues).tickFormat(format(',.2r')))
@@ -414,8 +441,11 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', out.sparkAreaColor_)
-                .attr('stroke', out.sparkLineColor_)
+                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'stroke',
+                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                )
                 .attr('stroke-width', 1)
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr('fill-opacity', 0.3)
@@ -438,7 +468,7 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', out.sparkLineColor_)
+            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', 1)
             .attr(
                 'd',

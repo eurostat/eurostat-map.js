@@ -1,76 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
 
-  <body>
-    <svg id="map"></svg>
-    <svg id="map1"></svg>
-    <script src="../build/eurostatmap.js"></script>
-    <script src="https://d3js.org/d3-color.v2.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
-    <script>
-    //   eurostatmap
-    //     .map("ct")
-    //     .title("NUTS urban/rural typology")
-    //     //.insets("default")
-    //     .width(1000)
-    //     .zoomExtent([1, 2])
-    //     .scale("60M")
-    //     .nutsYear(2013)
-    //     .insets("default")
-    //     .nutsLvl(3)
-    //     .stat({ csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
-    //     .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
-    //     .classToText({ urb: "Urban", int: "Intermediate", rur: "Rural" })
-    //     .labelling(true)
-    //     .labelsToShow(["cc", "seas"])
-    //     .labelFill({ seas: "#003399", countries: "black", cc: "black", values: "black" })
-    //     .labelStroke({ seas: "#003399", countries: "black", cc: "black", values: "black" })
-    //     .labelStrokeWidth({ seas: 0.2, countries: 2, cc: 0.9, values: 2 })
-    //     .labelOpacity({ seas: 1, countries: 0.8, cc: 1, values: 0.9 })
-    //     .legend({
-    //       labelFontSize: 14,
-    //       shapeWidth: 20,
-    //       shapeHeight: 18,
-    //       x: 10,
-    //       y: 170,
-    //     })
-    //     .labelShadow(true)
-    //     .build();
+    <body>
+        <svg id="map"></svg>
+        <svg id="map1"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script src="https://d3js.org/d3-color.v2.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
+        <script>
+            //   eurostatmap
+            //     .map("ct")
+            //     .title("NUTS urban/rural typology")
+            //     //.insets("default")
+            //     .width(1000)
+            //     .zoomExtent([1, 2])
+            //     .scale("60M")
+            //     .nutsYear(2013)
+            //     .insets("default")
+            //     .nutsLvl(3)
+            //     .stat({ csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" })
+            //     .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
+            //     .classToText({ urb: "Urban", int: "Intermediate", rur: "Rural" })
+            //     .labelling(true)
+            //     .labelsToShow(["cc", "seas"])
+            //     .labelFill({ seas: "#003399", countries: "black", cc: "black", values: "black" })
+            //     .labelStroke({ seas: "#003399", countries: "black", cc: "black", values: "black" })
+            //     .labelStrokeWidth({ seas: 0.2, countries: 2, cc: 0.9, values: 2 })
+            //     .labelOpacity({ seas: 1, countries: 0.8, cc: 1, values: 0.9 })
+            //     .legend({
+            //       labelFontSize: 14,
+            //       shapeWidth: 20,
+            //       shapeHeight: 18,
+            //       x: 10,
+            //       y: 170,
+            //     })
+            //     .labelShadow(true)
+            //     .build();
 
-      const map = eurostatmap
-        .map("ch")
-        .svgId("map1")
-        .zoomExtent([1, 20])
-        .title("Population Density in Europe")
-        //.insets("default")
-        .width(1000)
-        .scale("10M")
-        .nutsLvl(1)
-        .colorFun(d3.interpolateBlues)
-        .classifMethod("threshold")
-        .threshold([50, 75, 100, 150, 300, 850])
-        .tooltipShowFlags(false)
-        .legend({ labelDecNb: 0, x: 15, y: 160 })
-        //styling
-        .lg("en")
-        .seaFillStyle("aliceblue")
-        .drawCoastalMargin(false)
-        .nutsbnStroke({ 0: "black", 1: "grey", 2: "grey", 3: "grey", oth: "lightgrey", co: "black" })
-        .graticuleStroke("lightgrey")
-        .graticuleStrokeWidth(0.4)
-        .countriesToShow(['ES'])
-        .labelling(true)
-        .labelsToShow(["seas","values","cc"])
-        .labelValuesFontSize(10)
-        .labelFill({ seas: "#012a7c", countries: "black" })
-        .labelShadow(true)
-        //.labelFontSize({"seas":13, "countries":13})
-        .build();
-    </script>
-  </body>
+            const map = eurostatmap
+                .map('ch')
+                .svgId('map1')
+                .zoomExtent([1, 20])
+                .title('Population Density in Europe')
+                //.insets("default")
+                .width(1000)
+                .scale('10M')
+                .nutsLvl(1)
+                .colorFun(d3.interpolateBlues)
+                .classifMethod('threshold')
+                .threshold([50, 75, 100, 150, 300, 850])
+                .tooltipShowFlags(false)
+                .legend({ labelDecNb: 0, x: 15, y: 160 })
+                //styling
+                .lg('en')
+                .seaFillStyle('aliceblue')
+                .drawCoastalMargin(false)
+                .nutsbnStroke({ 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'lightgrey', co: 'black' })
+                .graticuleStroke('lightgrey')
+                .graticuleStrokeWidth(0.4)
+                .countriesToShow(['ES'])
+                .labelling(true)
+                .labelsToShow(['seas', 'values', 'cc'])
+                .labelValuesFontSize(10)
+                .labelFill({ seas: '#012a7c', countries: 'black' })
+                .labelShadow(true)
+                .labelShadowsToShow(['cc'])
+                .labelShadowWidth({
+                    cc: 5,
+                })
+                //.labelFontSize({"seas":13, "countries":13})
+                .build()
+        </script>
+    </body>
 </html>

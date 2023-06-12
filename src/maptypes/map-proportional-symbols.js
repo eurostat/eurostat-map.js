@@ -319,7 +319,10 @@ export const map = function (config) {
                                 sv.value == ':'
                             ) {
                                 return 'none'
-                            } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            } else if (
+                                out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
+                                out.geo_ == 'WORLD'
+                            ) {
                                 return 'block'
                             }
                         })
@@ -329,7 +332,10 @@ export const map = function (config) {
                         const sv = data.get(rg.properties.id)
                         if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             return 'none'
-                        } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                        } else if (
+                            out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
+                            out.geo_ == 'WORLD'
+                        ) {
                             return 'block'
                         }
                     })
@@ -354,7 +360,10 @@ export const map = function (config) {
                             const sv = data.get(rg.properties.id)
                             if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                 return
-                            } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            } else if (
+                                out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
+                                out.geo_ == 'WORLD'
+                            ) {
                                 if (lvl !== '0') {
                                     return out.nutsbnStrokeWidth_[parseInt(lvl)] || '#777'
                                 }

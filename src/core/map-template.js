@@ -68,7 +68,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.subtitleStrokeWidth_ = 'none'
 
     //map frame (none by default)
-    out.frameStroke_ = 'grey'
+    out.frameStroke_ = 'none'
     out.frameStrokeWidth_ = 0.5
 
     //scalebar
@@ -194,7 +194,8 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.labelOpacity_ = { seas: 1, countries: 0.8, cc: 0.8, values: 0.9 }
     out.labelValuesFontSize_ = 10 //when labelsToShow includes "values", this is their font size
     out.labelShadow_ = false
-    out.labelShadowWidth_ = { seas: 3, countries: 3, cc: 3, values: 1 }
+    out.labelShadowsToShow_ = ['countries', 'seas', 'cc', 'values'] //accepted: "countries", "cc","seas", "values"
+    out.labelShadowWidth_ = { seas: 3, countries: 1, cc: 1, values: 1 }
     out.labelShadowColor_ = {
         seas: 'white',
         countries: 'white',
@@ -1117,7 +1118,9 @@ export const mapTemplate = function (config, withCenterPoints) {
                       .translate([out.width_ / 2, out.height_ / 2])
                       .scale((out.width_ - 20) / 2 / Math.PI)
         } else {
-            out._projection = geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
+            out._projection = out.projectionFunction_
+                ? out.projectionFunction_.fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
+                : geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
         }
 
         out._geom.path = geoPath().projection(out._projection)
@@ -1386,11 +1389,21 @@ export const mapTemplate = function (config, withCenterPoints) {
                     bn = bn.properties
                     if (bn.co === 'T') return out.nutsbnStroke_.co || '#1f78b4'
                     //if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
+
+                    //KOSOVO
+                    if (bn.id > 100000) {
+                        return '#4f4f4f'
+                    }
+
                     return out.nutsbnStroke_[bn.lvl] || '#777'
                 })
                 .style('stroke-width', function (bn) {
                     bn = bn.properties
                     if (bn.co === 'T') return out.nutsbnStrokeWidth_.co
+                    //KOSOVO
+                    if (bn.id > 100000) {
+                        return 0.2
+                    }
                     if (bn.lvl > 0) return out.nutsbnStrokeWidth_[bn.lvl]
                     //if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
                     return out.nutsbnStrokeWidth_[bn.lvl] || 0.2
@@ -1507,18 +1520,36 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (e, rg) {
-                    const sel = select(this.childNodes[0])
-                    sel.attr('fill___', sel.style('fill'))
-                    sel.style('fill', out.nutsrgSelFillSty_)
-                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            const sel = select(this.childNodes[0])
+                            sel.attr('fill___', sel.style('fill'))
+                            sel.style('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    } else {
+                        const sel = select(this.childNodes[0])
+                        sel.attr('fill___', sel.style('fill'))
+                        sel.style('fill', out.nutsrgSelFillSty_)
+                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    }
                 })
-                .on('mousemove', function (e) {
-                    if (out._tooltip) out._tooltip.mousemove(e)
+                .on('mousemove', function (rg) {
+                    if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                            if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                        }
+                    } else {
+                        if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))
+                    }
                 })
                 .on('mouseout', function (e) {
                     const sel = select(this.childNodes[0])
-                    sel.style('fill', sel.attr('fill___'))
-                    if (out._tooltip) out._tooltip.mouseout(e)
+                    let newFill = sel.attr('fill___')
+                    if (newFill) {
+                        sel.style('fill', newFill)
+                        if (out._tooltip) out._tooltip.mouseout()
+                    }
                 })
         }
 
@@ -1755,6 +1786,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     gsls.selectAll('g')
                         .data(labelRegions)
                         .enter()
+                        .filter((d) => out.labelShadowsToShow_.includes('values'))
                         .append('g')
                         .attr('transform', function (d) {
                             return 'translate(' + out._geom.path.centroid(d) + ')'
@@ -1806,8 +1838,10 @@ export const mapTemplate = function (config, withCenterPoints) {
                 let shadows = shadowg
                     .selectAll('text')
                     .data(data)
+
                     .enter()
                     .append('text')
+                    .filter((d) => out.labelShadowsToShow_.includes(d.class))
                     .attr('class', (d) => {
                         return 'labelShadow_' + d.class
                     })
@@ -1841,8 +1875,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                             return 'rotate(0)'
                         }
                     })
-                    //.style("font-weight", d => d.class == "seas" ? "normal" : "bold")
-                    .style('font-style', (d) => (d.class == 'seas' ? 'italic' : 'normal'))
                     .text(function (d) {
                         return d.text
                     }) // define the text to display
@@ -2144,6 +2176,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             'labelShadowWidth_',
             'labelShadow_',
             'labelShadowColor_',
+            'labelShadowsToShow_',
             'labelsToShow_',
             'fontFamily_',
             'lg_',

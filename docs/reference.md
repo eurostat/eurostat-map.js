@@ -485,27 +485,31 @@ eurostatmap
     .build()
 ```
 
-| Method                                | Type     | Default value | Description                                                                              |
-| ------------------------------------- | -------- | ------------- | ---------------------------------------------------------------------------------------- |
-| _map_.**clnb**([*value*])             | int      | _3_           | The number of classes for the classification. The same value is used for both variables. |
-| _map_.**startColor**([*value*])       | color    | _"#e8e8e8"_   | The color for lowest values of both variables.                                           |
-| _map_.**color1**([*value*])           | color    | _"#73ae80"_   | The color for the highest values of variable 1, and lowest of variable 2.                |
-| _map_.**color2**([*value*])           | color    | _"#6c83b5"_   | The color for the highest values of variable 2, and lowest of variable 1.                |
-| _map_.**endColor**([*value*])         | color    | _"#2a5a5b"_   | The color for highest values of both variables.                                          |
-| _map_.**classToFillStyle**([*value*]) | Function | _auto_        | A function returning the colors for each pair of classes i,j.                            |
-| _map_.**noDataFillStyle**([*value*])  | color    | _"lightgray"_ | The fill style to be used for regions where no data is available.                        |
+| Method                                | Type     | Default value | Description                                                                                                      |
+| ------------------------------------- | -------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| _map_.**clnb**([*value*])             | int      | _3_           | The number of classes for the classification. The same value is used for both variables.                         |
+| _map_.**startColor**([*value*])       | color    | _"#e8e8e8"_   | The color for lowest values of both variables.                                                                   |
+| _map_.**color1**([*value*])           | color    | _"#73ae80"_   | The color for the highest values of variable 1, and lowest of variable 2.                                        |
+| _map_.**color2**([*value*])           | color    | _"#6c83b5"_   | The color for the highest values of variable 2, and lowest of variable 1.                                        |
+| _map_.**endColor**([*value*])         | color    | _"#2a5a5b"_   | The color for highest values of both variables.                                                                  |
+| _map_.**classifier1**([*value*])      | Function | _auto_        | A function which returns a class number from a stat value. This allows you to set the class thresholds manually. |
+| _map_.**classifier2**([*value*])      | Function | _auto_        | A function which returns a class number from a stat value. This allows you to set the class thresholds manually. |
+| _map_.**classToFillStyle**([*value*]) | Function | _auto_        | A function returning the colors for each pair of classes i,j.                                                    |
+| _map_.**noDataFillStyle**([*value*])  | color    | _"lightgray"_ | The fill style to be used for regions where no data is available.                                                |
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
-| Parameter           | Type    | Default value  | Description                                        |
-| ------------------- | ------- | -------------- | -------------------------------------------------- |
-| **squareSize**      | number  | _50_           | The size, in pixel, of the legend square.          |
-| **label1**          | string  | _"Variable 1"_ | The text for the label of variable 1.              |
-| **label2**          | string  | _"Variable 2"_ | The text for the label of variable 1.              |
-| **labelFontSize**   | int     | _12_           | The font size of the legend label.                 |
-| **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.           |
-| **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape. |
-| **noDataText**      | Text    | _"No data"_    | 'No data' text label.                              |
+| Parameter           | Type    | Default value  | Description                                                                      |
+| ------------------- | ------- | -------------- | -------------------------------------------------------------------------------- |
+| **squareSize**      | number  | _50_           | The size, in pixel, of the legend square.                                        |
+| **rotation**        | number  | _0_            | The rotation to apply to the main legend. Recommended values are either 0 or -45 |
+| **label1**          | string  | _"Variable 1"_ | The text for the label of variable 1.                                            |
+| **label2**          | string  | _"Variable 2"_ | The text for the label of variable 1.                                            |
+| **labelFontSize**   | int     | _12_           | The font size of the legend label.                                               |
+| **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.                                         |
+| **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape.                               |
+| **noDataText**      | Text    | _"No data"_    | 'No data' text label.                                                            |
+| **noDataYOffset**   | Text    | 0              | Add distance between the main legend and the 'no data' item in pixels            |
 
 ## Stripe composition map
 
@@ -613,17 +617,17 @@ eurostatmap
     .build()
 ```
 
-| Method                                      | Type   | Default                                                                                           | Description                                                |
-| ------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| _map_.**sparkType**([*value*])              | string | "area"                                                                                            | Type of chart to use. Can be 'line' or 'area'              |
-| _map_.**sparkLineColor**([*value*])         | string | "black"                                                                                           | colour of the sparklines                                   |
-| _map_.**sparkAreaColor**([*value*])         | string | "#41afaa"                                                                                         | colour of the area chart fill (when sparkType set to area) |
-| _map_.**sparkLineWidth**([*value*])         | number | 30                                                                                                | width of the spark charts                                  |
-| _map_.**sparkLineHeight**([*value*])        | number | 20                                                                                                | height of the spark charts                                 |
-| _map_.**sparkLineStrokeWidth**([*value*])   | number | 0.4                                                                                               | stroke width of the spark lines                            |
-| _map_.**sparkLineOpacity**([*value*])       | number | 0.6                                                                                               | opacity of the spark lines                                 |
-| _map_.**sparkChartCircleRadius**([*value*]) | number | 0.5                                                                                               | Radius of the circles at each record                       |
-| _map_.**sparkTooltipChart**([*value*])      | object | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip                  |
+| Method                                      | Type              | Default                                                                                           | Description                                                                                                                                                                  |
+| ------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _map_.**sparkType**([*value*])              | string            | "area"                                                                                            | Type of chart to use. Can be 'line' or 'area'                                                                                                                                |
+| _map_.**sparkLineColor**([*value*])         | string / Function | "black"                                                                                           | colour of the sparklines. Also accepts an acessor function e.g: `.sparkLineColor((d, i) => (d[d.length - 1].value > 100 ? 'red' : 'blue'))`                                  |
+| _map_.**sparkAreaColor**([*value*])         | string / Function | "#41afaa"                                                                                         | colour of the area chart fill (when sparkType set to area) Also accepts an acessor function e.g: `.sparkAreaColor((d, i) => (d[d.length - 1].value > 100 ? 'red' : 'blue'))` |
+| _map_.**sparkLineWidth**([*value*])         | number            | 30                                                                                                | width of the spark charts                                                                                                                                                    |
+| _map_.**sparkLineHeight**([*value*])        | number            | 20                                                                                                | height of the spark charts                                                                                                                                                   |
+| _map_.**sparkLineStrokeWidth**([*value*])   | number            | 0.4                                                                                               | stroke width of the spark lines                                                                                                                                              |
+| _map_.**sparkLineOpacity**([*value*])       | number            | 0.6                                                                                               | opacity of the spark lines                                                                                                                                                   |
+| _map_.**sparkChartCircleRadius**([*value*]) | number            | 0.5                                                                                               | Radius of the circles at each record                                                                                                                                         |
+| _map_.**sparkTooltipChart**([*value*])      | object            | {width: 100, height: 80, margin: { left: 60, right: 40, top: 40, bottom: 40 }, circleRadius: 1.5} | config for the chart shown in the tooltip                                                                                                                                    |
 
 ## Map title & subtitle
 
@@ -778,6 +782,7 @@ Labels for country names, country codes, and/or seas can be added to the map. La
 | _map_.**labelFill**([*value*])           | Object  | _{"seas":"#003399", "countries":"#383838", "cc":"black", "values":"black"}_   | The colours of the labels.                                                                                                                                                                                                                                                                                   |
 | _map_.**labelOpacity**([*value*])        | Object  | _{"seas":1, "countries":0.8}_                                                 | The opacity of the labels.                                                                                                                                                                                                                                                                                   |
 | _map_.**labelShadow**([*value*])         | Boolean | _false_                                                                       | Whether or not to add shadows to the labels.                                                                                                                                                                                                                                                                 |
+| _map_.**labelShadowsToShow**([*value*])  | Array   | ["countries","seas", "cc", "values"]                                          | Which label types will have shadows (halos).                                                                                                                                                                                                                                                                 |
 | _map_.**labelShadowWidth**([*value*])    | Object  | _{ "seas": 3, "countries": 3, "cc": 3, "values": 3 }_                         | The width of the shadow added to each type of label.                                                                                                                                                                                                                                                         |
 | _map_.**labelShadowColor**([*value*])    | Object  | _{ "seas": "white", "countries": "white", "cc": "white", "values": "white" }_ | The color of the shadow added to each type of label.                                                                                                                                                                                                                                                         |
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+    <body>
+        <svg id="map"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+        <script>
+            let projectionFunction = d3
+                //.geoRobinson()
+                .geoMercator()
+
+            let labels = {
+                EUR_4326: {
+                    // map.geo underscore map.proj. If you are using a different geo or projection then change this key accordingly
+                    en: [
+                        // you can define labels for 'en', 'fr' or 'de' which will be shown according to the language of the map. E.g. map.lg('en')
+                        {
+                            text: 'TURKEY',
+                            x: 39,
+                            y: 39,
+                            class: 'countries', // the type of label. Used for filtering with map.labelsToShow([]). options are 'countries', 'cc' or 'seas'
+                            size: 12,
+                            rotate: 0, // optional
+                            letterSpacing: 0, //optional
+                        },
+                    ],
+                },
+            }
+
+            const map = eurostatmap
+                .map('ch')
+                .width(600)
+                .height(600)
+                .scale('03M')
+                .projectionFunction(projectionFunction)
+                .pixSize(0.025)
+                .geoCenter([34.5, 36])
+                .countriesToShow(['TR'])
+                .title('Population in Europe')
+                .labelling(true)
+                .labelsToShow(['countries'])
+                .labelsConfig(labels)
+                .classifMethod('threshold')
+                .threshold([50, 75, 100, 150, 300, 850])
+
+                .build()
+        </script>
+    </body>
+</html>
