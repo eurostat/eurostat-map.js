@@ -192,7 +192,7 @@ export const map = function (config) {
                     }
                 }
             })
-            .on('mousemove', function (rg) {
+            .on('mousemove', function (e, rg) {
                 const data = getComposition(rg.properties.id)
                 if (data) {
                     if (out.countriesToShow_) {

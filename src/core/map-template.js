@@ -1534,7 +1534,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
                 })
-                .on('mousemove', function (rg) {
+                .on('mousemove', function (e, rg) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             if (out._tooltip) out._tooltip.mousemove(out.tooltip_.textFunction(rg, out))

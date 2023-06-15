@@ -178,7 +178,7 @@ export const map = function (config) {
                         }
                     }
                 })
-                .on('mousemove', function (rg) {
+                .on('mousemove', function (e, rg) {
                     if (out.countriesToShow_) {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             if (out._tooltip) out._tooltip.mousemove()
