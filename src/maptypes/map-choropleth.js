@@ -355,6 +355,8 @@ export const map = function (config) {
         //clear previous labels
         let prevLabels = out.svg_.selectAll('g.stat-label > *')
         prevLabels.remove()
+        let prevShadows = out.svg_.selectAll('g.stat-label-shadow > *')
+        prevShadows.remove()
 
         out.svg()
             .selectAll('g.stat-label')
