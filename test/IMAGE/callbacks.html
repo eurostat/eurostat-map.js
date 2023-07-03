@@ -6,11 +6,15 @@
     </head>
 
     <body>
-        <svg style="width: 100%; height: 1000px">
-            <svg id="map" x="2px" y="2px"></svg>
-            <svg id="ma2" x="600px" y="2px"></svg>
-            <svg id="eurostatmap-legend" x="0px" y="620px"></svg>
-        </svg>
+        <div>
+            <svg id="map"></svg>
+        </div>
+        <div>
+            <svg id="map2"></svg>
+        </div>
+        <div>
+            <svg id="map3"></svg>
+        </div>
 
         <script src="../../build/eurostatmap.js"></script>
         <script src="../data/nuts3.js"></script>
@@ -20,30 +24,33 @@
             let mapHeight = 608
 
             basemap = function (id) {
-                return eurostatmap
-                    .map('ps')
-                    .svgId(id)
-                    .pixSize(7400)
-                    .width(mapWidth)
-                    .height(mapHeight)
-                    .nutsLvl('mixed')
-                    .psFill('#4ac499')
-                    .psShape('square')
-                    .psFillOpacity(0.8)
-                    .psMaxSize(100)
-                    .psMinSize(5)
-                    .legend({
-                        ascending: false,
-                        boxPadding: 5,
-                        boxOpacity: 0,
-                        sizeLegend: {
-                            title: 'legeend',
-                            cellNb: 3,
-                        },
-                        legendSpacing: 0,
-                    })
-                    .insets(insetsConfig)
-                    .callback((m) => console.log(m))
+                return (
+                    eurostatmap
+                        .map('ps')
+                        .svgId(id)
+                        .containerId(id)
+                        .pixSize(7400)
+                        .width(mapWidth)
+                        .height(mapHeight)
+                        .nutsLvl('mixed')
+                        .psFill('#4ac499')
+                        .psShape('square')
+                        .psFillOpacity(0.8)
+                        .psMaxSize(100)
+                        .psMinSize(5)
+                        // .legend({
+                        //     ascending: false,
+                        //     boxPadding: 5,
+                        //     boxOpacity: 0,
+                        //     sizeLegend: {
+                        //         title: 'legeend',
+                        //         cellNb: 3,
+                        //     },
+                        //     legendSpacing: 0,
+                        // })
+                        .insets(insetsConfig)
+                        .callback((m) => console.log(id))
+                )
             }
 
             // map 1
@@ -59,6 +66,13 @@
             map2.updateClassification()
             map2.updateStyle()
             map2.build()
+
+            // map 2
+            let map3 = basemap('map3')
+            map3.statData('size').setData({ ES: 10000, DE: 10000, FR: 5000 })
+            map3.updateClassification()
+            map3.updateStyle()
+            map3.build()
 
             // setTimeout(() => {
             //     map.nutsrgFillStyle('red')
