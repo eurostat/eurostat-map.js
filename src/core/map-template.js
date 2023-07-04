@@ -1053,10 +1053,10 @@ export const mapTemplate = function (config, withCenterPoints) {
                     zg.attr('transform', e.transform)
                 })
                 .on('end', function (e) {
-                    let transform = zoomTransform(svg.node()) // get the current zoom
-                    let m = pointer(this)
-                    let xy = transform.invert([out.width_ / 2, out.height_ / 2])
-                    let longlat = out._projection.invert(xy)
+                    // let transform = zoomTransform(svg.node()) // get the current zoom
+                    // let m = pointer(this)
+                    // let xy = transform.invert([out.width_ / 2, out.height_ / 2])
+                    // let longlat = out._projection.invert(xy)
                     //console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
                     //console.log('pixSize:', parseInt(out.pixSize_ / transform.k))
                 })

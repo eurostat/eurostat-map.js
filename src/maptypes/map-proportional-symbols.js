@@ -209,6 +209,7 @@ export const map = function (config) {
         // symbol selection
         let symb
         // if size dataset not defined then use default
+
         let data = out.statData('size').getArray() ? out.statData('size') : out.statData()
 
         if (out.svg()) {
@@ -282,9 +283,8 @@ export const map = function (config) {
                     })
                     .attr('class', 'ps')
                     .attr('d', (rg) => {
-                        const v = out.statData('size') ? out.statData('size') : out.statData()
-                        if (!v) return
-                        const sv = v.get(rg.properties.id)
+                        if (!data) return
+                        const sv = data.get(rg.properties.id)
                         //calculate size
                         if (sv != 0 && !sv) return
                         let size = out.classifierSize_(+sv.value) || 0
