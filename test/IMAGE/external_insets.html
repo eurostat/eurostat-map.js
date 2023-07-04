@@ -38,7 +38,7 @@
             basemap = function () {
                 return (
                     eurostatmap
-                        .map('ch')
+                        .map('ps')
                         .svgId('mappy')
                         .containerId('container')
                         .pixSize(7400)
@@ -48,7 +48,7 @@
                         .showSourceLink(false)
                         .nutsLvl('mixed')
                         //.nutsLvl(0)
-                        .classifMethod('threshold')
+
                         .drawGraticule(true)
                         .graticuleStroke('#ccc')
                         .graticuleStrokeWidth(0.5)
@@ -93,8 +93,6 @@
                         .labelValuesFontSize(10)
                         .labelFill({ seas: '#012a7c', cc: 'black' })
                         .labelShadow(true)
-                        .colors(['#feedde', '#fdd0a2', '#fdae6b', '#fd8d3c', '#e6550d', '#a63603', '#999'])
-                        .threshold([6])
                 )
             }
 

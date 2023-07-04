@@ -136,24 +136,53 @@ export const map = function (config) {
         //define classifiers for sizing and colouring (out.classifierSize_ & out.classifierColor_)
         defineClassifiers()
 
-        if (out.svg()) {
-            if (out.classifierColor_) {
+        // apply classification to all insets that are outside of the main map's SVG
+        if (out.insetTemplates_) {
+            for (const geo in out.insetTemplates_) {
+                if (Array.isArray(out.insetTemplates_[geo])) {
+                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                        // insets with same geo that do not share the same parent inset
+                        if (Array.isArray(out.insetTemplates_[geo][i])) {
+                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
+                            }
+                        } else {
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
+                                applyClassificationToMap(out.insetTemplates_[geo][i])
+                        }
+                    }
+                } else {
+                    // unique inset geo_
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
+                }
+            }
+        }
+
+        // apply to main map
+        applyClassificationToMap(out)
+
+        return out
+    }
+
+    function applyClassificationToMap(map) {
+        if (map.svg()) {
+            if (map.classifierColor_) {
                 //assign color class to each symbol, based on their value
                 // at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
-                out.svg()
+                map.svg()
                     .selectAll('.symbol')
                     .attr('ecl', function (rg) {
-                        const sv = out.statData('color').get(rg.properties.id)
+                        const sv = map.statData('color').get(rg.properties.id)
                         if (!sv) return 'nd'
                         const v = sv.value
                         if (v != 0 && !v) return 'nd'
-                        let c = +out.classifierColor()(+v)
+                        let c = +map.classifierColor()(+v)
                         return c
                     })
             }
         }
-
-        return out
     }
 
     function defineClassifiers() {
@@ -199,10 +228,14 @@ export const map = function (config) {
         }
     }
 
-    //@override
-    out.updateStyle = function () {
+    /**
+     * Applies proportional symbol styling to a map object
+     *
+     * @param {*} map
+     * @returns
+     */
+    function applyStyleToMap(map) {
         //see https://bl.ocks.org/mbostock/4342045 and https://bost.ocks.org/mike/bubble-map/
-
         //define style per class
         if (!out.psClassToFillStyle()) out.psClassToFillStyle(getColorLegend(out.psColorFun_, out.psColors_))
 
@@ -210,18 +243,18 @@ export const map = function (config) {
         let symb
         // if size dataset not defined then use default
 
-        let data = out.statData('size').getArray() ? out.statData('size') : out.statData()
+        let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
 
-        if (out.svg()) {
+        if (map.svg()) {
             //clear previous symbols
-            let prevSymbols = out.svg_.selectAll('g.symbol > *')
+            let prevSymbols = map.svg_.selectAll('g.symbol > *')
             prevSymbols.remove()
 
             //set paths of symbols
 
             //custom symbol
             if (out.psCustomSVG_) {
-                symb = out
+                symb = map
                     .svg()
                     .select('#g_ps')
                     .selectAll('g.symbol')
@@ -244,7 +277,7 @@ export const map = function (config) {
                 // bars
             } else if (out.psShape_ == 'bar') {
                 // vertical bars
-                symb = out
+                symb = map
                     .svg()
                     .select('#g_ps')
                     .selectAll('g.symbol')
@@ -273,7 +306,7 @@ export const map = function (config) {
                 // d3.symbol symbols
                 // circle, cross, star, triangle, diamond, square, wye or custom
 
-                symb = out
+                symb = map
                     .svg()
                     .selectAll('g.symbol')
                     .append('path')
@@ -302,13 +335,13 @@ export const map = function (config) {
             }
 
             // set style of symbols
-            let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
-            let regions = out.svg().selectAll(selector)
+            let selector = map.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            let regions = map.svg().selectAll(selector)
 
-            if (out.geo_ !== 'WORLD') {
-                if (out.nutsLvl_ == 'mixed') {
+            if (map.geo_ !== 'WORLD') {
+                if (map.nutsLvl_ == 'mixed') {
                     // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
-                    out.svg()
+                    map.svg()
                         .selectAll('g.symbol')
                         .style('display', function (rg) {
                             const sv = data.get(rg.properties.id)
@@ -321,7 +354,7 @@ export const map = function (config) {
                                 return 'none'
                             } else if (
                                 out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                                out.geo_ == 'WORLD'
+                                map.geo_ == 'WORLD'
                             ) {
                                 return 'block'
                             }
@@ -334,7 +367,7 @@ export const map = function (config) {
                             return 'none'
                         } else if (
                             out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                            out.geo_ == 'WORLD'
+                            map.geo_ == 'WORLD'
                         ) {
                             return 'block'
                         }
@@ -426,6 +459,38 @@ export const map = function (config) {
                     }
                 })
         }
+        return map
+    }
+
+    //@override
+    out.updateStyle = function () {
+        // apply style to insets
+        // apply classification to all insets
+        if (out.insetTemplates_) {
+            for (const geo in out.insetTemplates_) {
+                if (Array.isArray(out.insetTemplates_[geo])) {
+                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                        // insets with same geo that do not share the same parent inset
+                        if (Array.isArray(out.insetTemplates_[geo][i])) {
+                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyStyleToMap(out.insetTemplates_[geo][i][c])
+                            }
+                        } else {
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo][i])
+                        }
+                    }
+                } else {
+                    // unique inset geo_
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo])
+                }
+            }
+        }
+
+        // apply to main map
+        applyStyleToMap(out)
+
         return out
     }
 
