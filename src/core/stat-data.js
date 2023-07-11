@@ -24,7 +24,17 @@ export const statData = function (config) {
      * If no argument is specified, returns the entire index.
      * @param {*} nutsId
      */
-    out.get = (nutsId) => (!nutsId ? _data_ : _data_ ? _data_[nutsId] : undefined)
+    out.get = (nutsId) => {
+        if (!nutsId) {
+            return _data_
+        } else {
+            if (_data_) {
+                return _data_[nutsId]
+            } else {
+                return undefined
+            }
+        }
+    }
 
     /**
      * Return the stat value from a nuts id.

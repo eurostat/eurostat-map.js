@@ -151,7 +151,7 @@ export const statMap = function (config, withCenterPoints) {
 
     /** Check if all stat datasets have been loaded. */
     const isStatDataReady = function () {
-        for (let statKey in out.stat_) if (!out.statData(statKey).isReady()) return false
+        for (let statKey in out.stat_) if (!out.statData_[statKey].isReady()) return false
         return true
     }
 
@@ -180,6 +180,7 @@ export const statMap = function (config, withCenterPoints) {
     out.updateStatData = function () {
         for (let statKey in out.stat_) {
             //case when no stat data source is specified and stat data where specified programmatically
+            //bug - map.statData('size').setData({ ES: 10000, DE: 10000, FR: 5000 }) results in out.statData(statKey).get() = undefined
             if (!out.stat(statKey) && out.statData(statKey).get()) return
 
             //if no config is specified, use default data source: population density
@@ -204,8 +205,9 @@ export const statMap = function (config, withCenterPoints) {
 
                 //proceed with map construction
                 out.updateStatValues()
+
                 //execute callback function
-                if (out.callback()) out.callback()(out)
+                if (out.callback()) out.callback()()
             })
         }
 
