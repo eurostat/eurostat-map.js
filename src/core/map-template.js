@@ -7,7 +7,7 @@ import { geoRobinson } from 'd3-geo-projection'
 import { feature } from 'topojson-client'
 import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util'
 import * as tp from '../lib/eurostat-tooltip'
-import { defaultLabels } from './labels'
+import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
 
 // set default d3 locale
@@ -176,7 +176,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //labelling (country names and geographical features)
     out.labelling_ = false
-    out.labelsConfig_ = defaultLabels // allow user to override map labels | see ./labels.js for example config
+    out.labelsConfig_ = DEFAULTLABELS // allow user to override map labels | see ./labels.js for example config
+    out.statLabelsPositions_ = STATLABELPOSITIONS // allow user to override positions of statistical labels
     out.labelsToShow_ = ['countries', 'seas'] //accepted: "countries", "cc","seas", "values"
     out.labelFill_ = {
         seas: '#003399',
@@ -1776,6 +1777,17 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .enter()
                     .append('g')
                     .attr('transform', function (d) {
+                        // use geographic names labels' positions for NUTS0
+                        if (out.statLabelsPositions_[d.properties.id]) {
+                            let pos = out._projection([
+                                out.statLabelsPositions_[d.properties.id].x,
+                                out.statLabelsPositions_[d.properties.id].y,
+                            ])
+                            let x = pos[0]
+                            let y = pos[1]
+                            return `translate(${x},${y})`
+                        }
+                        // otherwise calculate centroid
                         return 'translate(' + out._geom.path.centroid(d) + ')'
                     })
                     .style('pointer-events', 'none')
@@ -1789,6 +1801,17 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .filter((d) => out.labelShadowsToShow_.includes('values'))
                         .append('g')
                         .attr('transform', function (d) {
+                            // use geographic names labels' positions for NUTS0
+                            if (out.statLabelsPositions_[d.properties.id]) {
+                                let pos = out._projection([
+                                    out.statLabelsPositions_[d.properties.id].x,
+                                    out.statLabelsPositions_[d.properties.id].y,
+                                ])
+                                let x = pos[0]
+                                let y = pos[1]
+                                return `translate(${x},${y})`
+                            }
+                            // otherwise calculate centroid
                             return 'translate(' + out._geom.path.centroid(d) + ')'
                         })
                         .style('pointer-events', 'none')
