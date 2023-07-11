@@ -197,10 +197,10 @@ export const map = function (config) {
                 if (data) {
                     if (out.countriesToShow_) {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                            if (out._tooltip) out._tooltip.mousemove()
+                            if (out._tooltip) out._tooltip.mousemove(e)
                         }
                     } else {
-                        if (out._tooltip) out._tooltip.mousemove()
+                        if (out._tooltip) out._tooltip.mousemove(e)
                     }
                 }
             })
