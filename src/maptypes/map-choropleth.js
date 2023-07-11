@@ -360,6 +360,18 @@ export const map = function (config) {
 
         out.svg()
             .selectAll('g.stat-label')
+            .filter((d) => {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                    const s = out.statData()
+                    const sv = s.get(d.properties.id)
+                    if (!sv || !sv.value) {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                return false
+            })
             .append('text')
             .text(function (d) {
                 if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
@@ -379,6 +391,18 @@ export const map = function (config) {
         if (out.labelShadow_) {
             out.svg()
                 .selectAll('g.stat-label-shadow')
+                .filter((d) => {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                        const s = out.statData()
+                        const sv = s.get(d.properties.id)
+                        if (!sv || !sv.value) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }
+                    return false
+                })
                 .append('text')
                 .text(function (d) {
                     if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {

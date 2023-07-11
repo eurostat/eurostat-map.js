@@ -12,6 +12,7 @@
         <script src="https://d3js.org/d3-color.v2.min.js"></script>
         <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
         <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
+        <script src="../data/mixed.js"></script>
         <script>
             const map = eurostatmap
                 .map('ch')
@@ -21,7 +22,7 @@
                 //.insets("default")
                 .width(1000)
                 .scale('10M')
-                .nutsLvl(0)
+                .nutsLvl('mixed')
                 .colorFun(d3.interpolateBlues)
                 .classifMethod('threshold')
                 .threshold([50, 75, 100, 150, 300, 850])
@@ -44,8 +45,10 @@
                 .labelShadowWidth({
                     values: 3,
                 })
-                //.labelFontSize({"seas":13, "countries":13})
-                .build()
+            //.labelFontSize({"seas":13, "countries":13})
+
+            map.statData().setData(mixedNUTS)
+            map.build()
         </script>
     </body>
 </html>
