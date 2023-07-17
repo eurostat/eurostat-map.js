@@ -364,37 +364,41 @@ export const mapTemplate = function (config, withCenterPoints) {
         out.drawGraticule_ = v
 
         //update graticule
-        let graticule = select('#g_gra')
+        let graticule = out.svg_ ? out.svg().select('#g_gra') : null
         let zg = out.svg_ ? out.svg_.select('#zoomgroup' + out.svgId_) : null
 
         // if existing and argument is false
-        if (graticule._groups[0][0] && v == false) {
-            //remove graticule
-            graticule.remove()
+        if (graticule) {
+            if (graticule._groups[0][0] && v == false) {
+                //remove graticule
+                graticule.remove()
 
-            // if map already created and argument is true
-        } else if (out._geom.gra && out._geom.path && zg && v == true) {
-            //remove existing graticule
-            graticule.remove()
-            // add new graticule
-            zg.append('g')
-                .attr('id', 'g_gra')
-                .style('fill', 'none')
-                .style('stroke', out.graticuleStroke())
-                .style('stroke-width', out.graticuleStrokeWidth())
-                .selectAll('path')
-                .data(out._geom.gra)
-                .enter()
-                .append('path')
-                .attr('d', out._geom.path)
-                .attr('class', 'gra')
+                // if map already created and argument is true
+            } else if (out._geom.gra && out._geom.path && zg && v == true) {
+                //remove existing graticule
+                graticule.remove()
+                // add new graticule
+                zg.append('g')
+                    .attr('id', 'g_gra')
+                    .style('fill', 'none')
+                    .style('stroke', out.graticuleStroke())
+                    .style('stroke-width', out.graticuleStrokeWidth())
+                    .selectAll('path')
+                    .data(out._geom.gra)
+                    .enter()
+                    .append('path')
+                    .attr('d', out._geom.path)
+                    .attr('class', 'gra')
 
-            select('#g_gra').each(function () {
-                // move graticule to back (in front of sea)
-                out.geo_ == 'WORLD'
-                    ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
-                    : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
-            })
+                out.svg()
+                    .select('#g_gra')
+                    .each(function () {
+                        // move graticule to back (in front of sea)
+                        out.geo_ == 'WORLD'
+                            ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
+                            : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
+                    })
+            }
         }
         return out
     }
@@ -406,11 +410,15 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //update existing sea
         if (out.geo_ == 'WORLD') {
-            let sea = select('#sphere')
-            if (sea) sea.style('fill', out.seaFillStyle_)
+            if (out.svg_) {
+                let sea = out.svg_.select('#sphere')
+                if (sea) sea.style('fill', out.seaFillStyle_)
+            }
         } else {
-            let sea = selectAll('#sea')
-            if (sea) sea.style('fill', out.seaFillStyle_)
+            if (out.svg_) {
+                let sea = out.svg_.selectAll('#sea')
+                if (sea) sea.style('fill', out.seaFillStyle_)
+            }
         }
 
         //update insets
@@ -447,47 +455,49 @@ export const mapTemplate = function (config, withCenterPoints) {
         out.cntrgFillStyle_ = v
 
         //update existing land
-        if (out.geo_ == 'WORLD') {
-            let cntrg = selectAll('.worldrg')
-            if (cntrg) {
-                // only change fill for world regions without an ecl class
-                cntrg.attr('fill', (region, i, nodes) => {
-                    let node = select(nodes[i])
-                    if (!node.attr('ecl')) {
-                        return out.cntrgFillStyle_
-                    } else {
-                        // leave fill as it is
-                        return node.attr('fill')
-                    }
-                })
+        if (out.svg_) {
+            if (out.geo_ == 'WORLD') {
+                let cntrg = out.svg().selectAll('.worldrg')
+                if (cntrg) {
+                    // only change fill for world regions without an ecl class
+                    cntrg.attr('fill', (region, i, nodes) => {
+                        let node = select(nodes[i])
+                        if (!node.attr('ecl')) {
+                            return out.cntrgFillStyle_
+                        } else {
+                            // leave fill as it is
+                            return node.attr('fill')
+                        }
+                    })
+                }
+            } else {
+                let cntrg = out.svg().selectAll('.cntrg')
+                if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
             }
-        } else {
-            let cntrg = selectAll('.cntrg')
-            if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
-        }
 
-        //update insets
-        for (const geo in out.insetTemplates_) {
-            if (Array.isArray(out.insetTemplates_[geo])) {
-                // check for insets within insets
-                for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                    //check for insets within insets within insets
-                    if (Array.isArray(out.insetTemplates_[geo][i])) {
-                        for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                            let inset = out.insetTemplates_[geo][i][n]
+            //update insets
+            for (const geo in out.insetTemplates_) {
+                if (Array.isArray(out.insetTemplates_[geo])) {
+                    // check for insets within insets
+                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                        //check for insets within insets within insets
+                        if (Array.isArray(out.insetTemplates_[geo][i])) {
+                            for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
+                                let inset = out.insetTemplates_[geo][i][n]
+                                //set
+                                inset.cntrgFillStyle_ = out.cntrgFillStyle_
+                            }
+                        } else {
+                            let inset = out.insetTemplates_[geo][i]
                             //set
                             inset.cntrgFillStyle_ = out.cntrgFillStyle_
                         }
-                    } else {
-                        let inset = out.insetTemplates_[geo][i]
-                        //set
-                        inset.cntrgFillStyle_ = out.cntrgFillStyle_
                     }
+                } else {
+                    let inset = out.insetTemplates_[geo]
+                    //set
+                    inset.cntrgFillStyle_ = out.cntrgFillStyle_
                 }
-            } else {
-                let inset = out.insetTemplates_[geo]
-                //set
-                inset.cntrgFillStyle_ = out.cntrgFillStyle_
             }
         }
 
@@ -538,120 +548,124 @@ export const mapTemplate = function (config, withCenterPoints) {
         out.drawCoastalMargin_ = v
 
         //update existing
-        let margin = selectAll('#g_coast_margin')
-        let filter = select('#coastal_blur')
-        let zg = out.svg_ ? out.svg_.select('#zoomgroup' + out.svgId_) : null
-        if (margin._groups[0][0] && v == false) {
-            // remove existing
-            margin.remove()
-        } else if (v == true && out._geom.path && zg) {
-            //remove existing graticule
-            margin.remove()
-            filter.remove()
-            //add filter
-            out.svg_
-                .append('filter')
-                .attr('id', 'coastal_blur')
-                .attr('x', '-200%')
-                .attr('y', '-200%')
-                .attr('width', '400%')
-                .attr('height', '400%')
-                .append('feGaussianBlur')
-                .attr('in', 'SourceGraphic')
-                .attr('stdDeviation', out.coastalMarginStdDev_)
+        if (out.svg_) {
+            let margin = out.svg().selectAll('#g_coast_margin')
+            let filter = out.svg().select('#coastal_blur')
+            let zg = out.svg_ ? out.svg_.select('#zoomgroup' + out.svgId_) : null
+            if (margin._groups[0][0] && v == false) {
+                // remove existing
+                margin.remove()
+            } else if (v == true && out._geom.path && zg) {
+                //remove existing graticule
+                margin.remove()
+                filter.remove()
+                //add filter
+                out.svg_
+                    .append('filter')
+                    .attr('id', 'coastal_blur')
+                    .attr('x', '-200%')
+                    .attr('y', '-200%')
+                    .attr('width', '400%')
+                    .attr('height', '400%')
+                    .append('feGaussianBlur')
+                    .attr('in', 'SourceGraphic')
+                    .attr('stdDeviation', out.coastalMarginStdDev_)
 
-            //draw for main map - geometries are still in memory so no rebuild needed
-            const drawNewCoastalMargin = (map) => {
-                const zoomGroup = out.svg().select('#zoomgroup' + map.svgId_)
-                //draw new coastal margin
-                const cg = zoomGroup
-                    .append('g')
-                    .attr('id', 'g_coast_margin')
-                    .style('fill', 'none')
-                    .style('stroke-width', map.coastalMarginWidth_)
-                    .style('stroke', map.coastalMarginColor_)
-                    .style('filter', 'url(#coastal_blur)')
-                    .style('stroke-linejoin', 'round')
-                    .style('stroke-linecap', 'round')
-                //countries bn
-                if (map._geom.cntbn)
-                    cg.append('g')
-                        .attr('id', 'g_coast_margin_cnt')
-                        .selectAll('path')
-                        .data(map._geom.cntbn)
-                        .enter()
-                        .filter(function (bn) {
-                            return bn.properties.co === 'T'
-                        })
-                        .append('path')
-                        .attr('d', map._geom.path)
-                //nuts bn
-                if (map._geom.nutsbn)
-                    cg.append('g')
-                        .attr('id', 'g_coast_margin_nuts')
-                        .selectAll('path')
-                        .data(map._geom.nutsbn)
-                        .enter()
-                        .filter(function (bn) {
-                            return bn.properties.co === 'T'
-                        })
-                        .append('path')
-                        .attr('d', map._geom.path)
-                //world bn
-                if (map._geom.worldbn)
-                    cg.append('g')
-                        .attr('id', 'g_coast_margin_nuts')
-                        .selectAll('path')
-                        .data(map._geom.worldbn)
-                        .enter()
-                        .filter(function (bn) {
-                            return bn.properties.COAS_FLAG === 'T'
-                        })
-                        .append('path')
-                        .attr('d', map._geom.path)
-            }
+                //draw for main map - geometries are still in memory so no rebuild needed
+                const drawNewCoastalMargin = (map) => {
+                    const zoomGroup = out.svg().select('#zoomgroup' + map.svgId_)
+                    //draw new coastal margin
+                    const cg = zoomGroup
+                        .append('g')
+                        .attr('id', 'g_coast_margin')
+                        .style('fill', 'none')
+                        .style('stroke-width', map.coastalMarginWidth_)
+                        .style('stroke', map.coastalMarginColor_)
+                        .style('filter', 'url(#coastal_blur)')
+                        .style('stroke-linejoin', 'round')
+                        .style('stroke-linecap', 'round')
+                    //countries bn
+                    if (map._geom.cntbn)
+                        cg.append('g')
+                            .attr('id', 'g_coast_margin_cnt')
+                            .selectAll('path')
+                            .data(map._geom.cntbn)
+                            .enter()
+                            .filter(function (bn) {
+                                return bn.properties.co === 'T'
+                            })
+                            .append('path')
+                            .attr('d', map._geom.path)
+                    //nuts bn
+                    if (map._geom.nutsbn)
+                        cg.append('g')
+                            .attr('id', 'g_coast_margin_nuts')
+                            .selectAll('path')
+                            .data(map._geom.nutsbn)
+                            .enter()
+                            .filter(function (bn) {
+                                return bn.properties.co === 'T'
+                            })
+                            .append('path')
+                            .attr('d', map._geom.path)
+                    //world bn
+                    if (map._geom.worldbn)
+                        cg.append('g')
+                            .attr('id', 'g_coast_margin_nuts')
+                            .selectAll('path')
+                            .data(map._geom.worldbn)
+                            .enter()
+                            .filter(function (bn) {
+                                return bn.properties.COAS_FLAG === 'T'
+                            })
+                            .append('path')
+                            .attr('d', map._geom.path)
+                }
 
-            //draw for insets - requires geometries so we have to rebuild base template
-            for (const geo in out.insetTemplates_) {
-                if (Array.isArray(out.insetTemplates_[geo])) {
-                    // check for insets within insets
-                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                        //check for insets within insets within insets
-                        if (Array.isArray(out.insetTemplates_[geo][i])) {
-                            for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                                let inset = out.insetTemplates_[geo][i][n]
+                //draw for insets - requires geometries so we have to rebuild base template
+                for (const geo in out.insetTemplates_) {
+                    if (Array.isArray(out.insetTemplates_[geo])) {
+                        // check for insets within insets
+                        for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                            //check for insets within insets within insets
+                            if (Array.isArray(out.insetTemplates_[geo][i])) {
+                                for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
+                                    let inset = out.insetTemplates_[geo][i][n]
+                                    //setter for inset margin
+                                    inset.drawCoastalMargin_ = out.drawCoastalMargin_
+                                    // redraw
+                                    const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
+                                    if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
+                                }
+                            } else {
+                                let inset = out.insetTemplates_[geo][i]
                                 //setter for inset margin
                                 inset.drawCoastalMargin_ = out.drawCoastalMargin_
                                 // redraw
                                 const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
                                 if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                             }
-                        } else {
-                            let inset = out.insetTemplates_[geo][i]
-                            //setter for inset margin
-                            inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                            // redraw
-                            const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
-                            if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                         }
+                    } else {
+                        let inset = out.insetTemplates_[geo]
+                        //setter for inset margin
+                        inset.drawCoastalMargin_ = out.drawCoastalMargin_
+                        const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
+                        if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                     }
-                } else {
-                    let inset = out.insetTemplates_[geo]
-                    //setter for inset margin
-                    inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                    const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
-                    if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                 }
+
+                if (out.drawCoastalMargin_) drawNewCoastalMargin(out)
+
+                // move margin to back (in front of sea)
+                out.svg()
+                    .selectAll('#g_coast_margin')
+                    .each(function () {
+                        out.geo_ == 'WORLD'
+                            ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
+                            : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
+                    })
             }
-
-            if (out.drawCoastalMargin_) drawNewCoastalMargin(out)
-
-            // move margin to back (in front of sea)
-            selectAll('#g_coast_margin').each(function () {
-                out.geo_ == 'WORLD'
-                    ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
-                    : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
-            })
         }
         return out
     }
