@@ -1500,9 +1500,17 @@ export const mapTemplate = function (config, withCenterPoints) {
                     centroidFeatures = []
                     out._geom.worldrg.forEach((feature) => {
                         let newFeature = { ...feature }
-                        newFeature.geometry = {
-                            coordinates: geoCentroid(feature),
-                            type: 'Point',
+                        // exception for France (because guyane)
+                        if (feature.properties.id == 'FR') {
+                            newFeature.geometry = {
+                                coordinates: [2.2, 46.2],
+                                type: 'Point',
+                            }
+                        } else {
+                            newFeature.geometry = {
+                                coordinates: geoCentroid(feature),
+                                type: 'Point',
+                            }
                         }
                         centroidFeatures.push(newFeature)
                     })

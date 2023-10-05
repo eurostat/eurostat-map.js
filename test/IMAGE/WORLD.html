@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+    <body style="margin: 0">
+        <svg id="map"></svg>
+        <script src="../../build/eurostatmap.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
+
+        <script>
+            let mapConfig = {
+                geo: 'WORLD',
+                width: 982.68,
+                height: 491.34,
+                frameStroke: 'white',
+                frameStrokeWidth: 0,
+                pixSize: 5000,
+                geoCenter: [14, 17],
+                projectionFunction: d3
+                    //.geoRobinson()
+                    .geoWinkel3()
+                    // center and scale to container properly
+                    .translate([982.68 / 2, 491.34 / 2])
+                    .scale((982.68 - 20) / 2 / Math.PI + 0.1),
+            }
+            const map = eurostatmap
+                .map('ps')
+                .width(mapConfig.width)
+                .height(mapConfig.height)
+                // common
+                .nuts2jsonBaseURL('https://gisco-services.ec.europa.eu/pub/nuts2json/v2/') //nuts2json geometries retrieved internally
+                .containerId('map') //for tooltip overflow control
+                .seaFillStyle('white')
+                .scale('10M')
+                .nutsrgSelFillSty('yellow')
+                .cntrgFillStyle('lightgrey')
+                .nutsrgFillStyle('lightgrey')
+                //specific
+                .pixSize(mapConfig.pixSize)
+                .geoCenter(mapConfig.geoCenter)
+                .frameStrokeWidth(mapConfig.frameStrokeWidth)
+                .frameStroke(mapConfig.frameStroke)
+                .nutsLvl(0)
+                .geo(mapConfig.geo)
+                .cntbnStroke(mapConfig.cntbnStroke)
+                .cntbnStrokeWidth(mapConfig.cntbnStrokeWidth)
+                .tooltipText(this.tooltipWorld)
+                .worldCoastStroke('#000')
+                .worldCoastStrokeWidth(0.1)
+                .projectionFunction(mapConfig.projectionFunction)
+
+            map.statData().setData({ DE: 50, FR:5 })
+            map.build()
+
+
+        </script>
+    </body>
+</html>
