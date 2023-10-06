@@ -1,4 +1,5 @@
 import { scaleSqrt, scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
+// import {extent} from 'd3-array'
 import { select } from 'd3-selection'
 import { interpolateOrRd } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
@@ -194,6 +195,7 @@ export const map = function (config) {
         // use size dataset
         let sizeDomain
         let data = out.statData('size').getArray()
+        // let domain = extent(data)
         let min = out.psMinValue_ ? out.psMinValue_ : out.statData('size').getMin()
         let max = out.psMaxValue_ ? out.psMaxValue_ : out.statData('size').getMax()
 

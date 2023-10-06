@@ -97,7 +97,7 @@ export const statData = function (config) {
             return Object.values(_data_)
                 .map((s) => s.value)
                 .filter((s) => s == 0 || (s && s !== ':'))
-                .reduce((acc, v) => Math.min(acc, v), 0)
+                .reduce((acc, v) => Math.min(acc, v))
         }
     }
     /** Get max value. */
@@ -106,7 +106,7 @@ export const statData = function (config) {
             return Object.values(_data_)
                 .map((s) => s.value)
                 .filter((s) => s == 0 || (s && s !== ':'))
-                .reduce((acc, v) => Math.max(acc, v), 0)
+                .reduce((acc, v) => Math.max(acc, v))
         }
     }
 
