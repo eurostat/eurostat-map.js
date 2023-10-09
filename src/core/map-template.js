@@ -10,6 +10,7 @@ import * as tp from '../lib/eurostat-tooltip'
 import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
 
+
 // set default d3 locale
 formatDefaultLocale({
     decimal: '.',

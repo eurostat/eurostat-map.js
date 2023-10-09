@@ -14,7 +14,7 @@ const mixedNUTS = {
     UKE13: 0,
     UKF30: 2,
     UKF: 3,
-    UKM: 6,
+    UKM: 6009826134,
     RS: ':',
     SE: ':',
     NO: ':',
@@ -122,5 +122,5 @@ const mixedNUTS = {
     "FRY20": ':',
     "FRY30": ':',
     "FRY40": ':',
-    "FRY50": ':',
+    "FRY50": '12342345',
   }

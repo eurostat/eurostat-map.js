@@ -4,6 +4,7 @@ import { scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
 import { interpolateYlOrBr } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
+import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 
 /**
  * Returns a chroropleth map.
@@ -381,7 +382,7 @@ export const map = function (config) {
                         return ''
                     } else {
                         if (sv.value !== ':') {
-                            return sv.value
+                            return spaceAsThousandSeparator(sv.value)
                         }
                     }
                 }
@@ -412,7 +413,7 @@ export const map = function (config) {
                             return ''
                         } else {
                             if (sv.value !== ':') {
-                                return sv.value
+                                return spaceAsThousandSeparator(sv.value)
                             }
                         }
                     }
