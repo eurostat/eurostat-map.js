@@ -187,13 +187,13 @@ export const mapTemplate = function (config, withCenterPoints) {
         values: 'black',
     }
     out.labelStroke_ = {
-        seas: '#003399',
-        countries: 'black',
-        cc: 'black',
-        values: 'black',
+        seas: 'none',
+        countries: 'none',
+        cc: 'none',
+        values: 'none',
     }
     out.labelStrokeWidth_ = { seas: 0.5, countries: 0.5, cc: 0.5, values: 0.5 }
-    out.labelOpacity_ = { seas: 1, countries: 0.8, cc: 0.8, values: 0.9 }
+    out.labelOpacity_ = { seas: 1, countries: 1, cc: 1, values: 1 }
     out.labelValuesFontSize_ = 10 //when labelsToShow includes "values", this is their font size
     out.labelShadow_ = false
     out.labelShadowsToShow_ = ['countries', 'seas', 'cc', 'values'] //accepted: "countries", "cc","seas", "values"
