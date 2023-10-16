@@ -353,15 +353,16 @@ export const map = function (config) {
     }
 
     out.updateValuesLabels = function (map) {
-
+        // apply to main map
         //clear previous labels
         let prevLabels = map.svg_.selectAll('g.stat-label > *')
         prevLabels.remove()
         let prevShadows = map.svg_.selectAll('g.stat-label-shadow > *')
         prevShadows.remove()
 
-        map.svg_
-            .selectAll('g.stat-label')
+        let statLabels = map.svg_.selectAll('g.stat-label')
+
+        statLabels
             .filter((d) => {
                 if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                     const s = out.statData()
@@ -420,7 +421,6 @@ export const map = function (config) {
                     }
                 })
         }
-
         return out
     }
 

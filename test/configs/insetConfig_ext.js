@@ -173,6 +173,7 @@ const insetsConfig = [
 ]
 
 insetsConfig.forEach((c) => {
+    c.labelsToShow = ['values']
     c.frameStroke = 'grey'
     c.frameStrokeWidth = 1
     if (!c.titleFontSize) c.titleFontSize = 8.78

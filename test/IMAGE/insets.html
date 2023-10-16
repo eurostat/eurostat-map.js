@@ -29,65 +29,70 @@
 
         <script src="../../build/eurostatmap.js"></script>
         <script src="../data/nuts3.js"></script>
-        <script src="../configs/insetConfig_ext.js"></script>
+        <!-- <script src="../configs/insetConfig_ext.js"></script> -->
         <script src="../data/mixed.js"></script>
         <script>
             let mapWidth = 638
             let mapHeight = 608
+            const h = 81.26
+            const w = 71.81
+            const s = 70 // inset size
+            const p = 4 // inset padding
+            const insetsCfg = [
+                {
+                    geo: 'MT',
+                    x: 0,
+                    y: 0,
+                    width: w,
+                    height: h,
+                    title: 'Malta',
+                    titleFontSize: 8.78,
+                    scalebarPosition: [1, 65],
+                    labelling: true,
+                    labelsToShow: ['values'],
+                },
+                {
+                    geo: 'LI',
+                    x: w + p,
+                    y: 0,
+                    width: w,
+                    height: h,
+                    title: 'Liechtenstein',
+                    titlePosition: [2, 11],
+                    titleFill: 'white',
+                    titleStroke: 'white',
+                    titleStrokeWidth: '2px',
+                    titleFontSize: 8.78,
+                    titleFontWeight: 'normal',
+                    subtitle: 'Liechtenstein',
+                    subtitlePosition: [2, 11],
+                    subtitleFill: 'black',
+                    subtitleFontWeight: 'normal',
+                    subtitleFontSize: 8.78,
+                    geoCenter: [4285060, 2674000],
+                    scale: '01M',
+                    scalebarPosition: [1, 65],
+                    labelling: true,
+                    labelsToShow: ['values'],
+                },
+            ]
 
             basemap = function () {
-                return (
-                    eurostatmap
-                        .map('ch')
-                        .svgId('mappy')
-                        .containerId('container')
-                        .pixSize(7400)
-                        .width(mapWidth)
-                        .height(mapHeight)
-                        .bottomText(null)
-                        .showSourceLink(false)
-                        .nutsLvl('mixed')
-                        //.nutsLvl(0)
-                        .drawGraticule(true)
-                        .graticuleStroke('#ccc')
-                        .graticuleStrokeWidth(0.5)
-                        .geoCenter([4980000, 3610000])
-                        .legend({
-                            ascending: true,
-                            boxPadding: 5,
-                            boxOpacity: 0,
-                            boxMargin: 0,
-                            x: 25,
-                            y: 330,
-                            shapeHeight: 20,
-                            shapeWidth: 50,
-                            sepLineLength: 55,
-                            labelDecNb: 0,
-                            title: 'title',
-                            titleFontSize: 20,
-                            labelFontSize: 15,
-                            noData: true,
-                        })
-                        .drawCoastalMargin(false)
-                        .cntrgFillStyle('#E6E6E6')
-                        .nutsrgFillStyle('#E6E6E6')
-                        .nutsbnStroke({
-                            0: '#000',
-                            1: '#000',
-                            2: '#000',
-                            3: '#000',
-                            co: 'grey',
-                        })
-                        .noDataFillStyle('darkgrey')
-                        .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
-                        .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
-                        .bordersToShow(['eu', 'co', 'cc', 'efta'])
-                        .insets(insetsConfig)
-                        //.zoomExtent([1,10])
-                        .showScalebar(true)
-                        .scalebarPosition([420, 560])
-                        .nutsrgSelFillSty('#003E8C')
-                )
+                return eurostatmap
+                    .map('ch')
+                    .svgId('mappy')
+                    .containerId('container')
+                    .pixSize(7400)
+                    .width(mapWidth)
+                    .height(mapHeight)
+                    .nutsLvl('mixed')
+                    .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
+                    .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
+                    .bordersToShow(['eu', 'co', 'cc', 'efta'])
+                    .insets(insetsCfg)
+                    .nuts2jsonBaseURL('https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/')
+                    .scalebarPosition([420, 560])
+                    .nutsrgSelFillSty('#003E8C')
             }
 
             let exampleData1 = {
@@ -139,24 +144,12 @@
             // apply labelling
             setTimeout(() => {
                 map.labelling(true)
-                    .labelsToShow(['seas', 'values', 'countries'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
-                map.updateLabels()
-            }, 2000)
-
-            setTimeout(() => {
-                map.labelling(true)
                     .labelsToShow(['values'])
                     .labelValuesFontSize(10)
                     .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
                     .labelShadow(true)
                 map.updateLabels()
-            }, 4000)
-
-            map.build()
-
+            }, 2000)
 
             setTimeout(() => {
                 map.labelling(true)
@@ -166,11 +159,14 @@
                     .labelShadow(true)
 
                 // update insets
-                map.insetTemplates_.MT.labelling(true).labelsToShow(['values'])
+                map.insetTemplates_.MT.labelling(false)
 
                 map.updateLabels()
             }, 3000)
 
+            setTimeout(() => {}, 4000)
+
+            map.build()
         </script>
     </body>
 </html>
