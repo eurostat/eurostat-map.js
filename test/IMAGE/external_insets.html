@@ -7,7 +7,7 @@
 
     <body>
         <div style="margin-left: 1%">
-            <svg id="container" width="800" height="800">
+            <svg id="container" width="1800" height="800">
                 <svg id="mappy"></svg>
                 <!-- insets -->
                 <svg id="inset0" width="80" height="80" y="650" x="0"></svg>
@@ -38,7 +38,7 @@
             basemap = function () {
                 return (
                     eurostatmap
-                        .map('ps')
+                        .map('ch')
                         .svgId('mappy')
                         .containerId('container')
                         .pixSize(7400)
@@ -48,7 +48,6 @@
                         .showSourceLink(false)
                         .nutsLvl('mixed')
                         //.nutsLvl(0)
-
                         .drawGraticule(true)
                         .graticuleStroke('#ccc')
                         .graticuleStrokeWidth(0.5)
@@ -88,55 +87,55 @@
                         .showScalebar(true)
                         .scalebarPosition([420, 560])
                         .nutsrgSelFillSty('#003E8C')
-                        //.labelling(true)
-                        .labelsToShow(['seas', 'values', 'cc'])
+                        .labelling(true)
+                        .labelsToShow(['seas', 'values'])
                         .labelValuesFontSize(10)
-                        .labelFill({ seas: '#012a7c', cc: 'black' })
+                        .labelFill({ seas: '#012a7c', cc: 'black', values:'black' })
                         .labelShadow(true)
                 )
             }
 
             let exampleData1 = {
-                FRY: 10,
-                TRB: 10,
-                AT: 10,
-                BE: 10,
-                BG: 10,
-                CY: 10,
-                CZ: 10,
+                FRY: 120,
+                TRB: 110,
+                AT: 130,
+                BE: 110,
+                BG: 150,
+                CY: 170,
+                CZ: 100,
                 DE: ':',
-                DK: 10,
-                EE: 10,
-                EL: 10,
-                ES: 5,
+                DK: 100,
+                EE: 190,
+                EL: 180,
+                ES: 75,
                 ES30: ':',
-                FI: 10,
-                FR: 10,
-                HR: 10,
-                HU: 10,
-                IE: 10,
-                IS: 10,
-                IT: 10,
-                LI: 10,
-                LT: 10,
-                LU: 10,
-                LV: 10,
-                MT: 10,
-                NL: 10,
-                PL: 10,
-                PT: 10,
-                RO: 10,
-                SE: 10,
-                SI: 10,
-                SK: 10,
-                UK: 10,
-                RS: 10,
-                CH: 10,
-                NO: 10,
-                ME: 10,
-                MK: 10,
-                AL: 10,
-                TR: 10,
+                FI: 150,
+                FR: 140,
+                HR: 130,
+                HU: 120,
+                IE: 110,
+                IS: 120,
+                IT: 130,
+                LI: 140,
+                LT: 150,
+                LU: 160,
+                LV: 170,
+                MT: 180,
+                NL: 190,
+                PL: 110,
+                PT: 120,
+                RO: 130,
+                SE: 140,
+                SI: 150,
+                SK: 160,
+                UK: 170,
+                RS: 180,
+                CH: 170,
+                NO: 140,
+                ME: 160,
+                MK: 130,
+                AL: 120,
+                TR: 110,
             }
             let exampleData2 = { ES: 10 }
             let map = basemap()

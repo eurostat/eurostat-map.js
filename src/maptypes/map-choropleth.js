@@ -347,19 +347,20 @@ export const map = function (config) {
 
             // update labels of stat values, appending the stat labels to the region centroids
             if (out.labelsToShow_.includes('values')) {
-                out.updateValuesLabels()
+                out.updateValuesLabels(map)
             }
         }
     }
 
-    out.updateValuesLabels = function () {
+    out.updateValuesLabels = function (map) {
+
         //clear previous labels
-        let prevLabels = out.svg_.selectAll('g.stat-label > *')
+        let prevLabels = map.svg_.selectAll('g.stat-label > *')
         prevLabels.remove()
-        let prevShadows = out.svg_.selectAll('g.stat-label-shadow > *')
+        let prevShadows = map.svg_.selectAll('g.stat-label-shadow > *')
         prevShadows.remove()
 
-        out.svg()
+        map.svg_
             .selectAll('g.stat-label')
             .filter((d) => {
                 if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
@@ -390,7 +391,7 @@ export const map = function (config) {
 
         //add shadows to labels
         if (out.labelShadow_) {
-            out.svg()
+            map.svg_
                 .selectAll('g.stat-label-shadow')
                 .filter((d) => {
                     if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
