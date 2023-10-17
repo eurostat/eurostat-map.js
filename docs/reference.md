@@ -786,6 +786,8 @@ Labels for country names, country codes, and/or seas can be added to the map. La
 | _map_.**labelShadowWidth**([*value*])    | Object  | _{ "seas": 3, "countries": 3, "cc": 3, "values": 3 }_                         | The width of the shadow added to each type of label.                                                                                                                                                                                                                                                         |
 | _map_.**labelShadowColor**([*value*])    | Object  | _{ "seas": "white", "countries": "white", "cc": "white", "values": "white" }_ | The color of the shadow added to each type of label.                                                                                                                                                                                                                                                         |
 | _map_.**statLabelsPositions**([*value*]) | Object  | _{ "regionId": {x:number, y:number} }_                                        | Override the positions of statistical labels. Define the x and y position of the statistical value label for each region. If the region is not found here, the label is positioned at the centroid of the region.                                                                                            |
+| _map_.**labelFilterFunction**([*value*]) | Function  | _`(rg, map) => rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]`_                                        | Filter the regions used for the labels.                                                                                            |
+
 
 ## Insets
 

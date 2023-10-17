@@ -132,12 +132,13 @@ export const legend = function (map, config) {
             lgg.append('text')
                 .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
-                .attr('y', out.boxPadding + out.titleFontSize)
+                .attr('y', out.boxPadding )
                 .text(config.title)
                 .style('font-size', out.titleFontSize + 'px')
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
+                .style('alignment-baseline','hanging')
         }
 
         let shape = getShape()
@@ -269,6 +270,7 @@ export const legend = function (map, config) {
                 .attr('x', labelX)
                 .attr('y', labelY)
                 .attr('alignment-baseline', 'middle')
+                .attr('text-anchor','start')
                 .attr('class', 'eurostatmap-legend-label')
                 .text(f(val))
                 .style('font-size', out.labelFontSize + 'px')

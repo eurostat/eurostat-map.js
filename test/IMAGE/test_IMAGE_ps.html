@@ -16,6 +16,7 @@
     <script>
       let mapWidth = 638;
       let mapHeight = 608;
+      let maxRadius = 60;
 
       basemap = function () {
         return eurostatmap
@@ -27,20 +28,22 @@
           .psFill("#4ac499")
           .psShape("square")
           .psFillOpacity(0.8)
-          .psMaxSize(20)
+          .psMaxSize(maxRadius)
           .psMinSize(1)
           .legend({
             //svgId: "eurostatmap-legend",
             ascending: false,
             boxPadding: 5,
             boxOpacity: 0,
+            x:450,
+            y:20,
             sizeLegend: {
               title: "legeend",
               cellNb: 3,
               // shapePadding: 90,
               // titlePadding: -60,
               // shapeOffset: { x: 0, y: -30 },
-              // labelOffset: 70,
+              labelOffset: { x: maxRadius -5, y: 0 },
             },
             legendSpacing: 0,
           });

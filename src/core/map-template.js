@@ -203,6 +203,9 @@ export const mapTemplate = function (config, withCenterPoints) {
         cc: 'white',
         values: 'white',
     }
+    out.labelFilterFunction_ = (rg, map) => {
+        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]
+    } // filter the regions used for the labels array
 
     //dataset source link
     out.showSourceLink_ = true
@@ -1721,13 +1724,13 @@ export const mapTemplate = function (config, withCenterPoints) {
         let prevLabels = out.svg_.selectAll('g.labels-container > *')
         if (prevLabels) prevLabels.remove()
 
-         //main map
+        //main map
         if (out.labelling_) {
             let zg = out.svg_.select('#zoomgroup' + out.svgId_)
             addLabelsToMap(out, zg)
             if (out.labelsToShow_.includes('values') && out.updateValuesLabels) out.updateValuesLabels(out)
         }
-    
+
         // apply to all insets
         if (out.insetTemplates_) {
             for (const geo in out.insetTemplates_) {
@@ -1839,10 +1842,9 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
 
                 // filter label regions for insets, e.g. only load MT for MT and avoid loading 2000 regions for every single inset
-                if (map.geo_ !== 'EUR') {
-                    labelRegions = labelRegions.filter((rg)=> {
-                        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]
-                    });
+                // TODO: let user define this filter e.g. out.statLabelFilter(function)
+                if (map.geo_ !== 'EUR' && out.labelFilterFunction_) {
+                    labelRegions = labelRegions.filter((rg,map)=>out.labelFilterFunction_(rg,map))
                 }
 
                 // stats labels
