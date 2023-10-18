@@ -1719,7 +1719,6 @@ export const mapTemplate = function (config, withCenterPoints) {
     }
 
     out.updateLabels = function () {
-        console.log(out.geo_, out.updateValuesLabels)
         //clear previous labels
         let prevLabels = out.svg_.selectAll('g.labels-container > *')
         if (prevLabels) prevLabels.remove()
@@ -2060,7 +2059,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         const scalebarSVG = out
             .svg()
             .append('svg')
-            .attr('id', 'scalebar')
+            .attr('class', 'scalebar')
             .attr('x', out.scalebarPosition_[0])
             .attr('y', out.scalebarPosition_[1])
             .attr('width', maxLengthPix + 20)
