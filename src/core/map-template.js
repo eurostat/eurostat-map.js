@@ -204,7 +204,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         values: 'white',
     }
     out.labelFilterFunction_ = (rg, map) => {
-        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]
+        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1] || map.geo_ =='SJ_SV'
     } // filter the regions used for the labels array
 
     //dataset source link
