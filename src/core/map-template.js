@@ -204,7 +204,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         values: 'white',
     }
     out.labelFilterFunction_ = (rg, map) => {
-        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]
+        if (map) return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1]
     } // filter the regions used for the labels array
 
     //dataset source link
@@ -1843,7 +1843,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 // filter label regions for insets, e.g. only load MT for MT and avoid loading 2000 regions for every single inset
                 // TODO: let user define this filter e.g. out.statLabelFilter(function)
                 if (map.geo_ !== 'EUR' && out.labelFilterFunction_) {
-                    labelRegions = labelRegions.filter((rg,map)=>out.labelFilterFunction_(rg,map))
+                    labelRegions = labelRegions.filter((rg)=>out.labelFilterFunction_(rg,map))
                 }
 
                 // stats labels
