@@ -249,7 +249,8 @@ export const map = function (config) {
 
         if (map.svg()) {
             //clear previous symbols
-            let prevSymbols = map.svg_.selectAll('g.symbol > *')
+            let prevSymbols = map.svg_.selectAll(':not(#insetsgroup) g.symbol > *')
+            // if map is main map this clears insets too
             prevSymbols.remove()
 
             //set paths of symbols
@@ -466,6 +467,9 @@ export const map = function (config) {
 
     //@override
     out.updateStyle = function () {
+        // apply to main map
+        applyStyleToMap(out)
+        
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
@@ -489,9 +493,6 @@ export const map = function (config) {
                 }
             }
         }
-
-        // apply to main map
-        applyStyleToMap(out)
 
         return out
     }

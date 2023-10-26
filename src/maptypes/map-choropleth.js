@@ -199,6 +199,8 @@ export const map = function (config) {
 
     //@override
     out.updateStyle = function () {
+
+
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
@@ -223,8 +225,8 @@ export const map = function (config) {
             }
         }
 
-        // apply to main map
-        applyStyleToMap(out)
+                // apply to main map
+                applyStyleToMap(out)
 
         return out
     }

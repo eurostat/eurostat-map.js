@@ -1842,7 +1842,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
                 // filter label regions for insets, e.g. only load MT for MT and avoid loading 2000 regions for every single inset
                 if (map.geo_ !== 'EUR' && out.labelFilterFunction_) {
-                    labelRegions = labelRegions.filter((rg)=>out.labelFilterFunction_(rg, map))
+                    labelRegions = labelRegions.filter((rg) => out.labelFilterFunction_(rg, map))
                 }
 
                 // stats labels
