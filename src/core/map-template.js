@@ -204,7 +204,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         values: 'white',
     }
     out.labelFilterFunction_ = (rg, map) => {
-        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1] || map.geo_ =='SJ_SV'
+        return rg.properties.id[0] + rg.properties.id[1] == map.geo_[0] + map.geo_[1] || map.geo_ == 'SJ_SV'
     } // filter the regions used for the labels array
 
     //dataset source link
@@ -552,9 +552,9 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //update existing
         if (out.svg_) {
-            let margin = out.svg().selectAll('#g_coast_margin')
-            let filter = out.svg().select('#coastal_blur')
-            let zg = out.svg_ ? out.svg_.select('#zoomgroup' + out.svgId_) : null
+            let margin = selectAll('#g_coast_margin')
+            let filter = select('#coastal_blur')
+            let zg = select('#zoomgroup' + out.svgId_) || null
             if (margin._groups[0][0] && v == false) {
                 // remove existing
                 margin.remove()
@@ -576,7 +576,8 @@ export const mapTemplate = function (config, withCenterPoints) {
 
                 //draw for main map - geometries are still in memory so no rebuild needed
                 const drawNewCoastalMargin = (map) => {
-                    const zoomGroup = out.svg().select('#zoomgroup' + map.svgId_)
+                    // zoom group might not be inside main map (out.svg_)
+                    const zoomGroup = select('#zoomgroup' + map.svgId_)
                     //draw new coastal margin
                     const cg = zoomGroup
                         .append('g')
@@ -637,7 +638,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                                     //setter for inset margin
                                     inset.drawCoastalMargin_ = out.drawCoastalMargin_
                                     // redraw
-                                    const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
                                     if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                                 }
                             } else {
@@ -645,7 +645,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                                 //setter for inset margin
                                 inset.drawCoastalMargin_ = out.drawCoastalMargin_
                                 // redraw
-                                const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
                                 if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                             }
                         }
@@ -653,7 +652,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                         let inset = out.insetTemplates_[geo]
                         //setter for inset margin
                         inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                        const zoomGroup = out.svg().select('#zoomgroup' + inset.svgId_)
                         if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
                     }
                 }
@@ -661,13 +659,11 @@ export const mapTemplate = function (config, withCenterPoints) {
                 if (out.drawCoastalMargin_) drawNewCoastalMargin(out)
 
                 // move margin to back (in front of sea)
-                out.svg()
-                    .selectAll('#g_coast_margin')
-                    .each(function () {
-                        out.geo_ == 'WORLD'
-                            ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
-                            : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
-                    })
+                selectAll('#g_coast_margin').each(function () {
+                    out.geo_ == 'WORLD'
+                        ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
+                        : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
+                })
             }
         }
         return out
@@ -1935,7 +1931,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                 let shadows = shadowg
                     .selectAll('text')
                     .data(data)
-
                     .enter()
                     .append('text')
                     .filter((d) => map.labelShadowsToShow_.includes(d.class))

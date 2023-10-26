@@ -87,6 +87,7 @@
                         .showScalebar(true)
                         .scalebarPosition([420, 560])
                         .nutsrgSelFillSty('#003E8C')
+                        .drawCoastalMargin(true)
                 )
             }
 
@@ -138,37 +139,40 @@
 
             // apply labelling
             setTimeout(() => {
-                map.labelling(true)
-                    .labelsToShow(['seas', 'values', 'countries'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
-                map.updateLabels()
+                // map.labelling(true)
+                //     .labelsToShow(['seas', 'values', 'countries'])
+                //     .labelValuesFontSize(10)
+                //     .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
+                //     .labelShadow(true)
+                // map.updateLabels()
+                map.drawCoastalMargin(false)
             }, 2000)
 
-            setTimeout(() => {
-                map.labelling(true)
-                    .labelsToShow(['values'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
-                map.updateLabels()
-            }, 4000)
+            // setTimeout(() => {
+            //     // map.labelling(true)
+            //     //     .labelsToShow(['values'])
+            //     //     .labelValuesFontSize(10)
+            //     //     .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
+            //     //     .labelShadow(true)
+            //     // map.updateLabels()
+            // }, 4000)
 
             map.build()
 
 
             setTimeout(() => {
-                map.labelling(true)
-                    .labelsToShow(['seas', 'countries'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
+                // map.labelling(true)
+                //     .labelsToShow(['seas', 'countries'])
+                //     .labelValuesFontSize(10)
+                //     .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
+                //     .labelShadow(true)
 
-                // update insets
-                map.insetTemplates_.MT.labelling(true).labelsToShow(['values'])
+                // // update insets
+                // map.insetTemplates_.MT.labelling(true).labelsToShow(['values'])
 
-                map.updateLabels()
+                // map.updateLabels()
+
+                map.drawCoastalMargin(true)
             }, 3000)
 
         </script>

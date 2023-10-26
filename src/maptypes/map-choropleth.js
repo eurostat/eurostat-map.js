@@ -11,7 +11,7 @@ import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
  *
  * @param {*} config
  */
-export const map = function (config) {
+ export const map = function (config) {
     //create map object to return, using the template
     const out = smap.statMap(config)
 
@@ -354,6 +354,12 @@ export const map = function (config) {
         }
     }
 
+
+    /**
+    * @description update the statistical values labels on the map
+    * @param {Object} map eurostat-map map instance
+    * @return {} out
+    */
     out.updateValuesLabels = function (map) {
         // apply to main map
         //clear previous labels
@@ -369,7 +375,7 @@ export const map = function (config) {
                 if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                     const s = out.statData()
                     const sv = s.get(d.properties.id)
-                    if (!sv || !sv.value) {
+                    if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
                         return false
                     } else {
                         return true
@@ -382,7 +388,7 @@ export const map = function (config) {
                 if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                     const s = out.statData()
                     const sv = s.get(d.properties.id)
-                    if (!sv || !sv.value) {
+                    if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
                         return ''
                     } else {
                         if (sv.value !== ':') {
@@ -400,7 +406,7 @@ export const map = function (config) {
                     if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                         const s = out.statData()
                         const sv = s.get(d.properties.id)
-                        if (!sv || !sv.value) {
+                        if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
                             return false
                         } else {
                             return true
@@ -413,7 +419,7 @@ export const map = function (config) {
                     if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
                         const s = out.statData()
                         const sv = s.get(d.properties.id)
-                        if (!sv || !sv.value) {
+                        if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
                             return ''
                         } else {
                             if (sv.value !== ':') {
