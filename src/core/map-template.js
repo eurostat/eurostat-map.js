@@ -1133,7 +1133,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                       .scale((out.width_ - 20) / 2 / Math.PI)
         } else {
             out._projection = out.projectionFunction_
-                ? out.projectionFunction_.fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
+                ? out.projectionFunction_
                 : geoIdentity().reflectY(true).fitSize([out.width_, out.height_], getBBOXAsGeoJSON(bbox))
         }
 

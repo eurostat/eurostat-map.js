@@ -95,7 +95,7 @@ export const tooltip = function (config) {
             // check if mouse covers tooltip
             if (node.offsetLeft + node.clientWidth > eventX) {
                 //move tooltip left so it doesnt cover mouse
-                let left2 = eventX - (node.clientWidth + config.xOffset)
+                let left2 = eventX - node.clientWidth - config.xOffset
                 node.style.left = left2 + 'px'
             }
             // node.style.top = node.offsetTop + config.yOffset + "px";

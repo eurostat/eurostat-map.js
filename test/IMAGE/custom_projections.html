@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+    <body>
+        <div>
+            <svg id="map"></svg>
+        </div>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.1/d3.min.js" integrity="sha512-VcfmBa1zrzVT5htmBM63lMjDtqe4SAcxAlVLpQmBpUoO9beX5iNTKLGRWDuJ5F37jJZotqq65u00EZSVhJuikw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <script src="../../build/eurostatmap.js"></script>
+        <script src="../data/nuts3.js"></script>
+        <script src="../configs/insetConfig.js"></script>
+        <script src="../data/mixed.js"></script>
+        <script src="https://d3js.org/d3.v4.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+        <script>
+            let mapWidth = 790
+            let mapHeight = 635
+
+            let projection = d3.geoAzimuthalEqualArea().rotate([-8.8, -46.9]).scale(12400)
+
+            eurostatmap.map('ch').projectionFunction(projection).width(mapWidth).height(mapHeight).proj('4326').build()
+        </script>
+    </body>
+</html>
