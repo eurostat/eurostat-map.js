@@ -20,9 +20,56 @@
             let mapWidth = 790
             let mapHeight = 635
 
-            let projection = d3.geoAzimuthalEqualArea().rotate([-8.8, -46.9]).scale(12400)
+            let proj = {
+                rotate: [1.5, -40.55],
+                scale: 3900,
+            }
 
-            eurostatmap.map('ch').projectionFunction(projection).width(mapWidth).height(mapHeight).proj('4326').build()
+            let projection = d3.geoAzimuthalEqualArea().rotate(proj.rotate).scale(proj.scale)
+
+            let map = eurostatmap
+                .map('ch')
+                .projectionFunction(projection)
+                .width(mapWidth)
+                .height(mapHeight)
+                .proj('4326')
+                .stat({
+                    eurostatDatasetCode: 'demo_r_d3dens',
+                    unitText: 'people/km²',
+                    filters: { time: 2016 },
+                })
+                .proj('4326')
+                .nutsLvl(2)
+                .scale('03M')
+
+            // surrounding data or not
+            map.countriesToShow(['ES'])
+                .bordersToShow(['eu', 'efta', 'cc', 'oth'])
+                .filterGeometriesFunction((geom) => {
+                    console.log(geom)
+                    return geom
+                })
+
+            //IMAGE styling
+            map.drawCoastalMargin(false)
+                .seaFillStyle('#FFFFFF')
+                .cntrgFillStyle('#E6E6E6')
+                .nutsrgFillStyle('#E6E6E6')
+                .nutsbnStroke({
+                    0: '#000',
+                    1: '#000',
+                    2: '#000',
+                    3: '#000',
+                    co: 'grey',
+                })
+                .noDataFillStyle('darkgrey')
+                .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
+                .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
+                .showScalebar(true)
+                .scalebarPosition([420, 560])
+                .nutsrgSelFillSty('#003E8C')
+                .zoomExtent([-100, 100])
+                .build()
         </script>
     </body>
 </html>

@@ -41,6 +41,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.geo_ = 'EUR'
     out.proj_ = '3035'
     out.projectionFunction_ = undefined // e.g. d3.geoRobinson()
+    out.filterGeometriesFunction_ = undefined // user defined filter function
     out.scale_ = '20M' //TODO choose automatically, depending on pixSize ?
     out.geoCenter_ = undefined
     out.pixSize_ = undefined
@@ -887,6 +888,8 @@ export const mapTemplate = function (config, withCenterPoints) {
             let promises = out.getGeoDataPromise()
             Promise.all(promises).then(
                 (geo___) => {
+                    //user-defined filter function
+                    if (out.filterGeometriesFunction_) { geo___ = out.filterGeometriesFunction_(geo___)}
                     allNUTSGeoData = geo___
                     geoData = geo___[0]
                     if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6], geo___[7]]
@@ -904,6 +907,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             let promises = out.getGeoDataPromise()
             Promise.all(promises).then(
                 (geo___) => {
+                    if (out.filterGeometriesFunction_) { geo___ = out.filterGeometriesFunction_(geo___)}
                     geoData = geo___[0]
                     if (withCenterPoints) centroidsData = geo___[1]
                     //build map template
@@ -1293,7 +1297,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 })
 
                 //add kosovo
-                if (out.geo_ == 'EUR') {
+                if (out.geo_ == 'EUR' && out.proj == '3035') {
                     // add kosovo manually
                     let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features
                     if (out.bordersToShow_.includes('cc')) {
@@ -1423,7 +1427,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     return out.nutsbnStrokeWidth_[bn.lvl] || 0.2
                 })
 
-            if (out.geo_ == 'EUR') {
+            if (out.geo_ == 'EUR' && out.proj == '3035') {
                 // add kosovo manually
                 let kosovoBn = feature(kosovoBnFeatures[out.scale_], 'nutsbn_1').features
                 if (out.bordersToShow_.includes('cc')) {
@@ -2273,6 +2277,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             'fontFamily_',
             'lg_',
             'projectionFunction_',
+            'filterGeometriesFunction_',
         ].forEach(function (att) {
             mt[att] = out[att]
         })
