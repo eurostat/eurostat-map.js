@@ -889,7 +889,9 @@ export const mapTemplate = function (config, withCenterPoints) {
             Promise.all(promises).then(
                 (geo___) => {
                     //user-defined filter function
-                    if (out.filterGeometriesFunction_) { geo___ = out.filterGeometriesFunction_(geo___)}
+                    if (out.filterGeometriesFunction_) {
+                        geo___ = out.filterGeometriesFunction_(geo___)
+                    }
                     allNUTSGeoData = geo___
                     geoData = geo___[0]
                     if (withCenterPoints) centroidsData = [geo___[4], geo___[5], geo___[6], geo___[7]]
@@ -907,7 +909,9 @@ export const mapTemplate = function (config, withCenterPoints) {
             let promises = out.getGeoDataPromise()
             Promise.all(promises).then(
                 (geo___) => {
-                    if (out.filterGeometriesFunction_) { geo___ = out.filterGeometriesFunction_(geo___)}
+                    if (out.filterGeometriesFunction_) {
+                        geo___ = out.filterGeometriesFunction_(geo___)
+                    }
                     geoData = geo___[0]
                     if (withCenterPoints) centroidsData = geo___[1]
                     //build map template
@@ -1106,17 +1110,19 @@ export const mapTemplate = function (config, withCenterPoints) {
         }
 
         //geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
-        const dp = _defaultPosition[out.geo() + '_' + out.proj()]
+        const dp = _defaultPosition[out.geo_ + '_' + out.proj_]
         if (!out.geoCenter())
             if (dp) out.geoCenter(dp.geoCenter)
             else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])])
         //pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
-        if (!out.pixSize())
-            if (dp) out.pixSize((dp.pixSize * 800) / out.width())
-            else
+        if (!out.pixSize_)
+            if (dp) {
+                out.pixSize((dp.pixSize * 800) / out.width_)
+            } else {
                 out.pixSize(
                     Math.min((geoData.bbox[2] - geoData.bbox[0]) / out.width_, (geoData.bbox[3] - geoData.bbox[1]) / out.height_)
                 )
+            }
 
         //SVG drawing function
         //compute geo bbox from geocenter, pixsize and SVG dimensions

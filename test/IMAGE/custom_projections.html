@@ -25,6 +25,88 @@
                 scale: 3900,
             }
 
+            let insets = [
+                {
+                    geo: 'IC',
+                    x: 0,
+                    y: 0,
+                    pixSize: 2900,
+                    projectionFunction: undefined,
+                    geoCenter: [410000, 3160000],
+                    width: 200,
+                    height: 90,
+                    title: 'Islas Canarias',
+                    fontFamily: 'Myriad-Pro, Arial',
+                    labelling: false,
+                    titleFontSize: 14,
+                    titleFontWeight: '',
+                    frameStroke: 'grey',
+                    frameStrokeWidth: 1,
+                    showScalebar: true,
+                    scalebarTickHeight: 6,
+                    scalebarSegmentHeight: 6,
+                    scalebarFontSize: 9,
+                    scalebarUnits: ' km',
+                    scalebarTextOffset: [0, 8],
+                    scalebarPosition: [135, 72],
+                    scalebarMaxWidth: 35,
+                },
+                {
+                geo: 'EUR',
+                x: 250,
+                y: 20,
+                scale: '03M',
+                pixSize: 300,
+                geoCenter: [2935033,1564629],
+                projectionFunction: undefined,
+                width: 60,
+                height: 60,
+                title: 'Ceuta',
+                titlePosition: [4, 13],
+                fontFamily: 'Myriad-Pro, Arial',
+                labelling: false,
+                titleFontSize: 13,
+                titleFontWeight: '',
+                frameStroke: 'grey',
+                frameStrokeWidth: 1,
+                showScalebar: true,
+                scalebarTickHeight: 6,
+                scalebarSegmentHeight: 6,
+                scalebarFontSize: 9,
+                scalebarUnits: ' km',
+                scalebarTextOffset: [0, 8],
+                scalebarPosition: [26, 42],
+                scalebarMaxWidth: 18,
+            },
+            {
+                geo: 'EUR',
+                x: 390,
+                y: 40,
+                scale: '03M',
+                pixSize: 250,
+                geoCenter: [3141000,1461000],
+                projectionFunction: undefined,
+                width: 60,
+                height: 60,
+                title: 'Melilla',
+                titlePosition: [4, 13],
+                fontFamily: 'Myriad-Pro, Arial',
+                labelling: false,
+                titleFontSize: 13,
+                titleFontWeight: '',
+                frameStroke: 'grey',
+                frameStrokeWidth: 1,
+                showScalebar: true,
+                scalebarTickHeight: 6,
+                scalebarSegmentHeight: 6,
+                scalebarFontSize: 9,
+                scalebarUnits: ' km',
+                scalebarTextOffset: [0, 8],
+                scalebarPosition: [23, 42],
+                scalebarMaxWidth: 20,
+            },
+            ]
+
             let projection = d3.geoAzimuthalEqualArea().rotate(proj.rotate).scale(proj.scale)
 
             let map = eurostatmap
@@ -41,6 +123,8 @@
                 .proj('4326')
                 .nutsLvl(2)
                 .scale('03M')
+                .insets(insets)
+                .insetBoxPosition([0, 530])
 
             // surrounding data or not
             map.countriesToShow(['ES'])
@@ -66,7 +150,7 @@
                 .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
                 .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
                 .showScalebar(true)
-                .scalebarPosition([420, 560])
+                .scalebarPosition([520, 560])
                 .nutsrgSelFillSty('#003E8C')
                 .zoomExtent([-100, 100])
                 .build()
