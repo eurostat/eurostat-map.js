@@ -253,88 +253,15 @@ export const map = function (config) {
             // if map is main map this clears insets too
             prevSymbols.remove()
 
-            //set paths of symbols
-
-            //custom symbol
+            // append symbols
             if (out.psCustomSVG_) {
-                symb = map
-                    .svg()
-                    .select('#g_ps')
-                    .selectAll('g.symbol')
-                    .append('g')
-                    .filter((rg) => {
-                        const sv = data.get(rg.properties.id)
-                        if (sv && sv.value !== ':') return rg
-                    })
-                    .attr('class', 'ps')
-                    .html(out.psCustomSVG_)
-                    .attr('transform', (rg) => {
-                        //calculate size
-                        const sv = data.get(rg.properties.id)
-                        let size = out.classifierSize_(+sv.value)
-                        if (size) {
-                            return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
-                        }
-                    })
-
-                // bars
+                symb = appendCustomSymbolsToMap(map,data)
             } else if (out.psShape_ == 'bar') {
-                // vertical bars
-                symb = map
-                    .svg()
-                    .select('#g_ps')
-                    .selectAll('g.symbol')
-                    .append('rect')
-                    .filter((rg) => {
-                        const sv = data.get(rg.properties.id)
-                        if (sv && sv.value !== ':') return rg
-                    })
-                    .attr('width', out.psBarWidth_)
-                    //for vertical bars we scale the height attribute using the classifier
-                    .attr('height', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (!sv || !sv.value) {
-                            return 0
-                        }
-                        let v = out.classifierSize_(+sv.value)
-                        return v
-                    })
-                    .attr('transform', function () {
-                        let bRect = this.getBoundingClientRect()
-                        return `translate(${-this.getAttribute('width') / 2}` + `, -${this.getAttribute('height')})`
-                    })
-                    .transition()
-                    .duration(out.transitionDuration())
+                symb = appendBarsToMap(map, data)
             } else {
                 // d3.symbol symbols
                 // circle, cross, star, triangle, diamond, square, wye or custom
-
-                symb = map
-                    .svg()
-                    .selectAll('g.symbol')
-                    .append('path')
-                    .filter((rg) => {
-                        const sv = data.get(rg.properties.id)
-                        if (sv && sv.value !== ':') return rg
-                    })
-                    .attr('class', 'ps')
-                    .attr('d', (rg) => {
-                        if (!data) return
-                        const sv = data.get(rg.properties.id)
-                        //calculate size
-                        if (sv != 0 && !sv) return
-                        let size = out.classifierSize_(+sv.value) || 0
-
-                        //apply size to shape
-                        if (out.psCustomShape_) {
-                            return out.psCustomShape_.size(size * size)()
-                        } else {
-                            const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary['circle']
-                            return symbol()
-                                .type(symbolType)
-                                .size(size * size)()
-                        }
-                    })
+                symb = appendD3SymbolsToMap(map, data)
             }
 
             // set style of symbols
@@ -343,68 +270,7 @@ export const map = function (config) {
 
             if (map.geo_ !== 'WORLD') {
                 if (map.nutsLvl_ == 'mixed') {
-                    // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
-                    map.svg()
-                        .selectAll('g.symbol')
-                        .style('display', function (rg) {
-                            const sv = data.get(rg.properties.id)
-                            if (
-                                !sv ||
-                                !sv.value ||
-                                !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                                sv.value == ':'
-                            ) {
-                                return 'none'
-                            } else if (
-                                out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                                map.geo_ == 'WORLD'
-                            ) {
-                                return 'block'
-                            }
-                        })
-
-                    // toggle display of mixed NUTS levels
-                    regions.style('display', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                            return 'none'
-                        } else if (
-                            out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                            map.geo_ == 'WORLD'
-                        ) {
-                            return 'block'
-                        }
-                    })
-
-                    // nuts border stroke
-                    regions
-                        .style('stroke', function (rg) {
-                            const lvl = select(this).attr('lvl')
-                            const sv = data.get(rg.properties.id)
-                            if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                return
-                            } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                if (lvl !== '0') {
-                                    return out.nutsbnStroke_[parseInt(lvl)] || '#777'
-                                }
-                            }
-                        })
-
-                        // nuts border stroke width
-                        .style('stroke-width', function (rg) {
-                            const lvl = select(this).attr('lvl')
-                            const sv = data.get(rg.properties.id)
-                            if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                return
-                            } else if (
-                                out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                                out.geo_ == 'WORLD'
-                            ) {
-                                if (lvl !== '0') {
-                                    return out.nutsbnStrokeWidth_[parseInt(lvl)] || '#777'
-                                }
-                            }
-                        })
+                    addSymbolsToMixedNUTS()
                 }
 
                 // nuts regions fill colour only for those with data
@@ -446,11 +312,11 @@ export const map = function (config) {
                     })
             }
 
+            // common settings for all symbols
             symb.style('fill-opacity', out.psFillOpacity())
                 .style('stroke', out.psStroke())
                 .style('stroke-width', out.psStrokeWidth())
                 .style('fill', function () {
-                    // use colour classifier when applicable
                     if (out.classifierColor_) {
                         //for ps, ecl attribute belongs to the parent g.symbol node created in map-template
                         const ecl = select(this.parentNode).attr('ecl')
@@ -465,11 +331,151 @@ export const map = function (config) {
         return map
     }
 
+    function appendD3SymbolsToMap(map, data) {
+        return map
+            .svg()
+            .selectAll('g.symbol')
+            .append('path')
+            .filter((rg) => {
+                const sv = data.get(rg.properties.id)
+                if (sv && sv.value !== ':') return rg
+            })
+            .attr('class', 'ps')
+            .attr('d', (rg) => {
+                if (!data) return
+                const sv = data.get(rg.properties.id)
+                //calculate size
+                if (sv != 0 && !sv) return
+                let size = out.classifierSize_(+sv.value) || 0
+
+                //apply size to shape
+                if (out.psCustomShape_) {
+                    return out.psCustomShape_.size(size * size)()
+                } else {
+                    const symbolType = symbolsLibrary[out.psShape_] || symbolsLibrary['circle']
+                    return symbol()
+                        .type(symbolType)
+                        .size(size * size)()
+                }
+            })
+    }
+
+    function appendBarsToMap(map, data) {
+        return (
+            map
+                .svg()
+                .select('#g_ps')
+                .selectAll('g.symbol')
+                .append('rect')
+                .filter((rg) => {
+                    const sv = data.get(rg.properties.id)
+                    if (sv && sv.value !== ':') return rg
+                })
+                .attr('width', out.psBarWidth_)
+                //for vertical bars we scale the height attribute using the classifier
+                .attr('height', function (rg) {
+                    const sv = data.get(rg.properties.id)
+                    if (!sv || !sv.value) {
+                        return 0
+                    }
+                    let v = out.classifierSize_(+sv.value)
+                    return v
+                })
+                .attr('transform', function () {
+                    let bRect = this.getBoundingClientRect()
+                    return `translate(${-this.getAttribute('width') / 2}` + `, -${this.getAttribute('height')})`
+                })
+                .transition()
+                .duration(out.transitionDuration())
+        )
+    }
+
+    function appendCustomSymbolsToMap(map, data) {
+        return map
+            .svg()
+            .select('#g_ps')
+            .selectAll('g.symbol')
+            .append('g')
+            .filter((rg) => {
+                const sv = data.get(rg.properties.id)
+                if (sv && sv.value !== ':') return rg
+            })
+            .attr('class', 'ps')
+            .html(out.psCustomSVG_)
+            .attr('transform', (rg) => {
+                //calculate size
+                const sv = data.get(rg.properties.id)
+                let size = out.classifierSize_(+sv.value)
+                if (size) {
+                    return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
+                }
+            })
+    }
+
+    function addSymbolsToMixedNUTS(map) {
+        // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
+        let symb = map
+            .svg()
+            .selectAll('g.symbol')
+            .style('display', function (rg) {
+                const sv = data.get(rg.properties.id)
+                if (
+                    !sv ||
+                    !sv.value ||
+                    !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
+                    sv.value == ':'
+                ) {
+                    return 'none'
+                } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
+                    return 'block'
+                }
+            })
+
+        // toggle display of mixed NUTS levels
+        regions.style('display', function (rg) {
+            const sv = data.get(rg.properties.id)
+            if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                return 'none'
+            } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
+                return 'block'
+            }
+        })
+
+        // nuts border stroke
+        regions
+            .style('stroke', function (rg) {
+                const lvl = select(this).attr('lvl')
+                const sv = data.get(rg.properties.id)
+                if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                    return
+                } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                    if (lvl !== '0') {
+                        return out.nutsbnStroke_[parseInt(lvl)] || '#777'
+                    }
+                }
+            })
+
+            // nuts border stroke width
+            .style('stroke-width', function (rg) {
+                const lvl = select(this).attr('lvl')
+                const sv = data.get(rg.properties.id)
+                if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                    return
+                } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || out.geo_ == 'WORLD') {
+                    if (lvl !== '0') {
+                        return out.nutsbnStrokeWidth_[parseInt(lvl)] || '#777'
+                    }
+                }
+            })
+
+        return symb
+    }
+
     //@override
     out.updateStyle = function () {
         // apply to main map
         applyStyleToMap(out)
-        
+
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {

@@ -5,6 +5,7 @@ import { symbolsLibrary } from '../maptypes/map-proportional-symbols'
 import { symbol } from 'd3-shape'
 import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 import { formatDefaultLocale } from 'd3-format'
+import { max } from 'd3-array'
 
 //set legend labels locale
 formatDefaultLocale({
@@ -37,7 +38,7 @@ export const legend = function (map, config) {
         shapePadding: 10, //the y distance between consecutive legend shape elements
         shapeOffset: { x: 0, y: 0 },
         shapeFill: 'white',
-        labelOffset: { x: 25, y: 0 }, //the distance between the legend box elements to the corresponding text label
+        labelOffset: { x: 5, y: 0 }, //the distance between the legend box elements to the corresponding text label
         labelDecNb: 0, //the number of decimal for the legend labels
         labelFormatter: undefined,
     }
@@ -47,15 +48,15 @@ export const legend = function (map, config) {
         title: null,
         titleFontSize: 12,
         titlePadding: 10, //padding between title and legend body
-        shapeWidth: 13, //the width of the legend box elements
-        shapeHeight: 15, //the height of the legend box elements
+        shapeWidth: 20, //the width of the legend box elements
+        shapeHeight: 20, //the height of the legend box elements
         shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
         labelOffset: { x: 25, y: 0 }, //distance (x) between label text and its corresponding shape element
         labelDecNb: 0, //the number of decimal for the legend labels
         labelFormatter: undefined, // user-defined d3 format function
         noData: true, //show no data
         noDataText: 'No data', //no data text label
-        sepLineLength: 17, // //the separation line length
+        sepLineLength: 24, // //the separation line length
         sepLineStroke: 'black', //the separation line color
         sepLineStrokeWidth: 1, //the separation line width
     }
@@ -104,13 +105,17 @@ export const legend = function (map, config) {
         //set font family
         lgg.style('font-family', m.fontFamily_)
 
-        // legend for
+        // legend for size
+        out._sizeLegendNode = lgg.append('g').attr('class', 'size-legend-container')
         if (m.classifierSize_) {
-            buildSizeLegend(m, lgg, out.sizeLegend)
+            buildSizeLegend(m, out.sizeLegend)
         }
         // legend for ps color values
+        out._colorLegendNode = lgg.append('g').attr('class', 'color-legend-container')
+        // position it below size legend
+        out._colorLegendNode.attr('transform', `translate(0,${out._sizeLegendNode.node().getBBox().height})`)
         if (m.classifierColor_) {
-            buildColorLegend(m, lgg, out.colorLegend)
+            buildColorLegend(m, out.colorLegend)
         }
 
         //set legend box dimensions
@@ -120,184 +125,382 @@ export const legend = function (map, config) {
     /**
      * Builds a legend which illustrates the statistical values of different symbol sizes
      *
-     * @param {*} m map
-     * @param {*} lgg parent legend object from core/legend.js
-     * @param {*} config size legend config object (sizeLegend object specified as property of legend() config object)
+     * @param {*} map map instance
+     * @param {*} container parent legend object from core/legend.js
      */
-    function buildSizeLegend(m, lgg, config) {
+    function buildSizeLegend(m) {
+        if (!m.psCustomSVG_ && m.psShape_ == 'circle') {
+            buildCircleLegend(m, out.sizeLegend)
+        }
+
         //define format for labels
-        let f = config.labelFormatter || spaceAsThousandSeparator
+        let labelFormatter = out.sizeLegend.labelFormatter || spaceAsThousandSeparator
         //draw title
-        if (config.title) {
-            lgg.append('text')
+        if (out.sizeLegend.title) {
+            out._sizeLegendNode
+                .append('text')
                 .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
-                .attr('y', out.boxPadding )
-                .text(config.title)
+                .attr('y', out.boxPadding)
+                .text(out.sizeLegend.title)
                 .style('font-size', out.titleFontSize + 'px')
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
-                .style('alignment-baseline','hanging')
+                .style('alignment-baseline', 'hanging')
         }
 
-        let shape = getShape()
         let domain = m.classifierSize_.domain()
         let maxVal = domain[1] //maximum value of dataset (used for first or last symbol by default)
         out._sizeLegendHeight = 0 //sum of shape sizes: used for positioning legend elements and color legend
 
         // if user defines values for legend manually
-        if (config.values) {
-            config.cellNb = config.values.length
+        if (out.sizeLegend.values) {
+            out.sizeLegend.cellNb = out.sizeLegend.values.length
         }
 
         //draw legend elements for classes: symbol + label
 
         // for custom paths
-        let prevSymb //previous item in legend
-        let prevScale //previous item scale
-        let initialTranslateY //y translate of initial legend item
-        let nodeHeights = 0 // total node heights in px for custom
+        m.customSymbols = { nodeHeights: 0 } // save some custom settings for buildCustomSVGItem
 
-        for (let i = 1; i < config.cellNb + 1; i++) {
+        for (let i = 1; i < out.sizeLegend.cellNb + 1; i++) {
             //define class number
-            const c = out.ascending ? config.cellNb - i + 1 : i
+            const c = out.ascending ? out.sizeLegend.cellNb - i + 1 : i
             //define raw value
-            let val = config.values ? config.values[c - 1] : maxVal / c
+            let val = out.sizeLegend.values ? out.sizeLegend.values[c - 1] : maxVal / c
             //calculate shape size
-            let size = m.classifierSize_(val)
+            let symbolSize = m.classifierSize_(val)
 
-            //define position of the legend symbol
-            let x
-            let y
-
-            if (out.map.psShape_ == 'bar') {
-                // for vertical bars we dont use a dynamic X offset because all bars have the same width
-                x = out.boxPadding + 10
-                //we also dont need the y offset
-                y = out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight
-                out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding
-            } else if (out.map.psShape_ == 'custom') {
-                out._xOffset = m.classifierSize_(maxVal) //save value (to use in color legend as well)
-                x = out.boxPadding + out._xOffset //set X offset
-                //first item
-                if (!prevSymb) {
-                    y = out.boxPadding + (config.title ? out.titleFontSize + config.titlePadding : 0) + out._sizeLegendHeight
-                    initialTranslateY = y
-                    prevScale = size
-                    out._sizeLegendHeight = out._sizeLegendHeight + y
-                }
-
-                //following items
-                if (prevSymb) {
-                    let prevNode = prevSymb.node()
-                    let bbox = prevNode.getBBox()
-                    nodeHeights = nodeHeights + bbox.height * prevScale
-                    y = initialTranslateY + nodeHeights + config.shapePadding * (i - 1)
-                    out._sizeLegendHeight = out._sizeLegendHeight + bbox.height + config.shapePadding
-                    prevScale = size
-                }
+            if (m.psShape_ == 'bar') {
+                buildBarsItem(map, val, symbolSize, labelFormatter)
+            } else if (m.psShape_ == 'custom' || m.psCustomSVG_) {
+                buildCustomSVGItem(map, val, symbolSize, i, labelFormatter)
             } else {
-                // x and y for all other symbols
-                out._xOffset = m.classifierSize_(maxVal) / 1.5 //save value (to use in color legend as well)
-                x = out.boxPadding + out._xOffset //set X offset
-                y =
-                    out.boxPadding +
-                    (config.title ? out.titleFontSize + config.titlePadding : 0) +
-                    out._sizeLegendHeight +
-                    size / 2 +
-                    config.shapePadding
-                out._sizeLegendHeight = out._sizeLegendHeight + size + config.shapePadding
+                buildD3SymbolItem(map, val, symbolSize, labelFormatter)
             }
+        }
+    }
 
-            //append symbol & style
-            if (out.map.psCustomSVG_) {
-                prevSymb = lgg
-                    .append('g')
-                    .attr('transform', `translate(${x},${y})`)
-                    .attr('fill', (d) => {
-                        // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-                        return m.classifierColor_ ? config.shapeFill : m.psFill_
-                    })
-                    .style('fill-opacity', m.psFillOpacity())
-                    .style('stroke', m.psStroke())
-                    .style('stroke-width', m.psStrokeWidth())
-                    .attr('stroke', 'black')
-                    .attr('stroke-width', 0.5)
-                    .append('g')
-                    .html(out.map.psCustomSVG_)
-                    .attr('transform', () => {
-                        if (out.map.psCustomSVG_)
-                            return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
-                        else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
-                    })
-            } else {
-                //set shape size and define 'd'
-                let d = shape.size(size * size)()
+    /**
+     * @description
+     * @param {*} m
+     * @param {*} symbolSize
+     */
+    function buildD3SymbolItem(m, symbolSize, labelFormatter) {
+        // x and y for all other symbols
+        out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) * 1.5 //save value (to use in color legend as well)
+        let x = out.boxPadding + out._xOffset //set X offset
+        let y =
+            out.boxPadding +
+            (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
+            out._sizeLegendHeight +
+            symbolSize / 2 +
+            out.sizeLegend.shapePadding
+        out._sizeLegendHeight = out._sizeLegendHeight + symbolSize + out.sizeLegend.shapePadding
 
-                prevSymb = lgg
-                    .append('g')
-                    .attr('transform', `translate(${x},${y})`)
-                    .style('fill', (d) => {
-                        // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
-                        return m.classifierColor_ ? config.shapeFill : m.psFill_
-                    })
-                    .style('fill-opacity', m.psFillOpacity())
-                    .style('stroke', m.psStroke())
-                    .style('stroke-width', m.psStrokeWidth())
-                    .attr('stroke', 'black')
-                    .attr('stroke-width', 0.5)
-                    .append('path')
-                    .attr('d', d)
-                    .attr('transform', () => {
-                        if (out.map.psCustomSVG_)
-                            return `translate(${config.shapeOffset.x},${config.shapeOffset.y}) scale(${size})`
-                        else return `translate(${config.shapeOffset.x},${config.shapeOffset.y})`
-                    })
-            }
+        //set shape size and define 'd' attribute
+        let shape = getShape()
+        let d = shape.size(symbolSize * symbolSize)()
 
-            //label position
-            let labelX = x + config.labelOffset.x
-            let labelY = y + config.labelOffset.y
-            if (out.map.psShape_ == 'bar') {
-                labelY = labelY + size / 2
-            } else if (out.map.psShape_ == 'custom') {
-                labelY = labelY + size * 10
-            }
+        //container for symbol and label
+        let itemContainer = out._sizeLegendNode.append('g').attr('transform', `translate(${x},${y})`)
 
-            //append label
-            lgg.append('text')
-                .attr('x', labelX)
-                .attr('y', labelY)
-                .attr('alignment-baseline', 'middle')
-                .attr('text-anchor','start')
-                .attr('class', 'eurostatmap-legend-label')
-                .text(f(val))
-                .style('font-size', out.labelFontSize + 'px')
+        // draw standard symbol
+        let itemSymbol = itemContainer
+            .append('g')
+            // .attr('transform', `translate(${x},${y})`)
+            .style('fill', (d) => {
+                // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+                return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
+            })
+            .style('fill-opacity', m.psFillOpacity())
+            .style('stroke', m.psStroke())
+            .style('stroke-width', m.psStrokeWidth())
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
+            .append('path')
+            .attr('d', d)
+            .attr('transform', () => {
+                if (out.map.psCustomSVG_)
+                    return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y}) scale(${size})`
+                else return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
+            })
+
+        //label position
+        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
+        let labelY = y + out.sizeLegend.labelOffset.y
+        if (out.map.psShape_ == 'bar') {
+            labelY = labelY + symbolSize / 2
+        } else if (out.map.psShape_ == 'custom') {
+            labelY = labelY + symbolSize * 10
+        }
+
+        //append label
+        let itemLabel = itemContainer
+            .append('text')
+            .attr('x', labelX)
+            .attr('y', labelY)
+            .attr('alignment-baseline', 'middle')
+            .attr('text-anchor', 'start')
+            .attr('class', 'eurostatmap-legend-label')
+            .text(labelFormatter(value))
+            .style('font-size', out.labelFontSize + 'px')
+            .style('font-family', m.fontFamily_)
+            .style('fill', out.fontFill)
+    }
+
+    /**
+     * @description
+     * @param {*} m
+     * @param {*} value
+     * @param {*} symbolSize
+     * @param {*} index
+     * @param {*} labelFormatter
+     */
+    function buildCustomSVGItem(m, value, symbolSize, index, labelFormatter) {
+        out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) //save value (to use in color legend as well)
+        let x = out.boxPadding + out._xOffset //set X offset
+        let y
+        //first item
+        if (!m.customSymbols.prevSymb) {
+            y =
+                out.boxPadding +
+                (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
+                out._sizeLegendHeight
+            m.customSymbols.initialTranslateY = y
+            m.customSymbols.prevScale = symbolSize
+            out._sizeLegendHeight = out._sizeLegendHeight + y
+        }
+
+        //following items
+        if (m.customSymbols.prevSymb) {
+            let prevNode = m.customSymbols.prevSymb.node()
+            let bbox = prevNode.getBBox()
+            m.customSymbols.nodeHeights = m.customSymbols.nodeHeights + bbox.height * m.customSymbols.prevScale
+            y = m.customSymbols.initialTranslateY + m.customSymbols.nodeHeights + out.sizeLegend.shapePadding * (index - 1)
+            out._sizeLegendHeight = out._sizeLegendHeight + bbox.height + out.sizeLegend.shapePadding
+            m.customSymbols.prevScale = symbolSize
+        }
+
+        //container for symbol and label
+        let itemContainer = out._sizeLegendNode
+            .append('g')
+            .attr('transform', `translate(${x},${y})`)
+            .attr('class', 'size-legend-item')
+
+        // draw standard symbol
+        m.customSymbols.prevSymb = itemContainer
+            .append('g')
+            //.attr('transform', `translate(${x},${y})`)
+            .attr('fill', (d) => {
+                // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+                return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
+            })
+            .style('fill-opacity', m.psFillOpacity())
+            .style('stroke', m.psStroke())
+            .style('stroke-width', m.psStrokeWidth())
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
+            .append('g')
+            .html(out.map.psCustomSVG_)
+            .attr('transform', () => {
+                if (out.map.psCustomSVG_)
+                    return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y}) scale(${symbolSize})`
+                else return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
+            })
+
+        //label position
+        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
+        let labelY = out.sizeLegend.shapeOffset.y / 2 //y + out.sizeLegend.labelOffset.y
+
+        //append label
+        itemContainer
+            .append('text')
+            .attr('x', labelX)
+            .attr('y', labelY)
+            .attr('alignment-baseline', 'middle')
+            .attr('text-anchor', 'start')
+            .attr('class', 'eurostatmap-legend-label')
+            .text(labelFormatter(value))
+            .style('font-size', out.labelFontSize + 'px')
+            .style('font-family', m.fontFamily_)
+            .style('fill', out.fontFill)
+    }
+
+    /**
+     * @description
+     * @param {*} m
+     * @param {*} symbolSize
+     */
+    function buildBarsItem(m, value, symbolSize) {
+        // for vertical bars we dont use a dynamic X offset because all bars have the same width
+        let x = out.boxPadding + 10
+        //we also dont need the y offset
+        let y =
+            out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + out._sizeLegendHeight
+        out._sizeLegendHeight = out._sizeLegendHeight + symbolSize + out.sizeLegend.shapePadding
+        //set shape size and define 'd' attribute
+        let d = shape.size(symbolSize * symbolSize)()
+
+        //container for symbol and label
+        let itemContainer = out._sizeLegendNode
+            .append('g')
+            .attr('transform', `translate(${x},${y})`)
+            .attr('class', 'size-legend-item')
+
+        // draw bar symbol
+        itemContainer
+            .append('g')
+            .attr('transform', `translate(${x},${y})`)
+            .style('fill', (d) => {
+                // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
+                return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
+            })
+            .style('fill-opacity', m.psFillOpacity())
+            .style('stroke', m.psStroke())
+            .style('stroke-width', m.psStrokeWidth())
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5)
+            .append('path')
+            .attr('d', d)
+            .attr('transform', () => {
+                if (out.map.psCustomSVG_)
+                    return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y}) scale(${symbolSize})`
+                else return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
+            })
+        //label position
+        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
+        let labelY = y + out.sizeLegend.labelOffset.y
+        if (out.map.psShape_ == 'custom') {
+            labelY = labelY + symbolSize * 10
+        }
+
+        //append label
+        itemContainer
+            .append('text')
+            .attr('x', labelX)
+            .attr('y', labelY)
+            .attr('alignment-baseline', 'middle')
+            .attr('text-anchor', 'start')
+            .attr('class', 'eurostatmap-legend-label')
+            .text(labelFormatter(value))
+            .style('font-size', out.labelFontSize + 'px')
+            .style('font-family', m.fontFamily_)
+            .style('fill', out.fontFill)
+    }
+
+    /**
+     * @description builds a nested circle legend for proportional circles
+     * @param {*} m map
+     */
+    function buildCircleLegend(m) {
+        //assign default circle radiuses if none specified by user
+        let domain = m.classifierSize_.domain()
+        if (!out.sizeLegend.values) {
+            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[0])]
+        }
+
+        let maxSize = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
+
+        //draw title
+        if (!out.sizeLegend.title && out.title) out.sizeLegend.title = out.title //allow root legend title
+        if (out.sizeLegend.title)
+            out._sizeLegendNode
+                .append('text')
+                .attr('x', out.boxPadding)
+                .attr('y', out.boxPadding + out.titleFontSize)
+                .attr('class', 'eurostatmap-legend-title')
+                .text(out.sizeLegend.title)
+                .style('font-size', out.titleFontSize + 'px')
+                .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
-        }
+
+        let x = out.boxPadding
+        let y =
+            out.boxPadding +
+            (out.sizeLegend.title ? out.titleFontSize + out.boxPadding + out.sizeLegend.titlePadding : 0) +
+            maxSize * 2
+
+        let itemContainer = out._sizeLegendNode
+            .append('g')
+            .attr('transform', `translate(${x},${y})`)
+            .attr('class', 'color-legend-item')
+
+        //circles
+
+        let container = itemContainer
+            .append('g')
+            .attr('fill', 'black')
+            .attr('transform', `translate(${maxSize + out.boxPadding},${y})`) //needs to be dynamic
+            .attr('text-anchor', 'right')
+            .selectAll('g')
+            .data(out.sizeLegend.values)
+            .join('g')
+        container
+            .append('circle')
+            .attr('fill', 'none')
+            .attr('stroke', 'black')
+            .attr('cy', (d) => -m.classifierSize_(d))
+            .attr('r', m.classifierSize_)
+
+        //labels
+        container
+            .append('text')
+            .style('font-size', out.labelFontSize + 'px')
+            .attr('class', 'eurostatmap-legend-label')
+            .attr('y', (d, i) => {
+                let y = -1 - 2 * m.classifierSize_(d) - out.labelFontSize
+                return y
+            })
+            .attr('x', 30)
+            .attr('dy', '1.2em')
+            .attr('xml:space', 'preserve')
+            .text((d) => {
+                return d.toLocaleString('en').replace(/,/gi, ' ')
+            })
+        //line pointing to top of corresponding circle:
+        container
+            .append('line')
+            .style('stroke-dasharray', 2)
+            .style('stroke', 'grey')
+            .attr('x1', 2)
+            .attr('y1', (d, i) => {
+                let y = -1 - 2 * m.classifierSize_(d) //add padding
+                return y
+            })
+            .attr('xml:space', 'preserve')
+            .attr('x2', 30)
+            .attr('y2', (d, i) => {
+                let y = -1 - 2 * m.classifierSize_(d) //add padding
+                return y
+            })
+
+        out._sizeLegendHeight = y //save height value for positioning colorLegend
+        return out
     }
 
     /**
      * Builds a legend illustrating the statistical values of different symbol colours
      *
      * @param {*} m map
-     * @param {*} lgg parent legend object from core/legend.js
-     * @param {*} config color legend config object (colorLegend object specified as property of legend config parameter)
      */
-    function buildColorLegend(m, lgg, config) {
+    function buildColorLegend(m) {
         //define format for labels
-        let f = config.labelFormatter || spaceAsThousandSeparator
+        let f = out.colorLegend.labelFormatter || spaceAsThousandSeparator
         const svgMap = m.svg()
 
+        let marginTop = 30
+
         //title
-        if (config.title)
-            lgg.append('text')
+        if (out.colorLegend.title)
+            out._colorLegendNode
+                .append('text')
                 .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
-                .attr('y', out._sizeLegendHeight + out.boxPadding + out.titleFontSize + out.legendSpacing + config.titlePadding)
-                .text(config.title)
+                .attr('y', out.titleFontSize + marginTop)
+                .text(out.colorLegend.title)
                 .style('font-size', out.titleFontSize + 'px')
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
@@ -311,35 +514,28 @@ export const legend = function (map, config) {
 
         for (let i = 0; i < clnb; i++) {
             //the vertical position of the legend element
-            let y =
-                out._sizeLegendHeight +
-                out.boxPadding +
-                (config.title ? out.titleFontSize + config.titlePadding * 2 : 0) +
-                i * (config.shapeHeight + config.shapePadding) +
-                out.legendSpacing +
-                config.shapePadding
+            let y = out.titleFontSize + marginTop * 1.5 + i * out.colorLegend.shapeHeight // account for title + margin
 
             //the class number, depending on order
             const ecl = out.ascending ? i : clnb - i - 1
 
-            // we now use rect instead of shapes
-            // let shape = getShape();
-            // let d = out.map.psCustomSVG_ ? out.map.psCustomSVG_ : shape.size(config.shapeSize * config.shapeSize)();
+            let itemContainer = out._colorLegendNode
+                .append('g')
+                .attr('transform', `translate(${x},${y})`)
+                .attr('class', 'color-legend-item')
 
             //append symbol & style
-            lgg.append('g')
-                .attr('transform', `translate(${x},${y})`)
+            itemContainer
+                .append('g')
                 .attr('fill', m.psClassToFillStyle()(ecl, clnb))
                 .style('fill-opacity', m.psFillOpacity())
                 .style('stroke', m.psStroke())
                 .style('stroke-width', 1)
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
-                // .append("path")
-                // .attr('d', d)
                 .append('rect')
-                .attr('width', config.shapeWidth)
-                .attr('height', config.shapeHeight)
+                .attr('width', out.colorLegend.shapeWidth)
+                .attr('height', out.colorLegend.shapeHeight)
                 .on('mouseover', function () {
                     //for ps, the symbols are the children of each g_ps element
                     const parents = svgMap.select('#g_ps').selectAll("[ecl='" + ecl + "']")
@@ -364,24 +560,24 @@ export const legend = function (map, config) {
                 })
 
             //separation line
-            let lineY = out.map.psShape_ == 'bar' ? y : y
             if (i > 0) {
-                lgg.append('line')
-                    .attr('x1', x)
-                    .attr('y1', lineY)
-                    .attr('x2', x + config.sepLineLength)
-                    .attr('y2', lineY)
-                    .attr('stroke', config.sepLineStroke)
-                    .attr('stroke-width', config.sepLineStrokeWidth)
+                itemContainer
+                    .append('line')
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', 0 + out.colorLegend.sepLineLength)
+                    .attr('y2', 0)
+                    .attr('stroke', out.colorLegend.sepLineStroke)
+                    .attr('stroke-width', out.colorLegend.sepLineStrokeWidth)
             }
 
             //label
-            let labelY = y + config.labelOffset.y + out.labelFontSize * 1.2
             if (i < clnb - 1) {
-                lgg.append('text')
+                itemContainer
+                    .append('text')
                     .attr('class', 'eurostatmap-legend-label')
-                    .attr('x', x + config.labelOffset.x)
-                    .attr('y', labelY)
+                    .attr('x', out.colorLegend.labelOffset.x)
+                    .attr('y', out.colorLegend.shapeHeight)
                     .attr('alignment-baseline', 'middle')
                     .text((d) => {
                         let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
@@ -394,30 +590,24 @@ export const legend = function (map, config) {
         }
 
         //'no data' legend box
-        if (config.noData) {
-            const y =
-                out._sizeLegendHeight +
-                out.boxPadding +
-                (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding * 2 : 0) +
-                m.psClasses_ * (config.shapeHeight + config.shapePadding) +
-                out.legendSpacing +
-                config.shapePadding
+        if (out.colorLegend.noData) {
+            let y = out.titleFontSize + marginTop + clnb * out.colorLegend.shapeHeight + 20 // add 20 to separate it from the rest
 
-            //shape
-            // let shape = getShape();
-            // let d = out.map.psCustomSVG_ ? out.map.psCustomSVG_ : shape.size(config.shapeSize * config.shapeSize)();
-            //append symbol & style
-            lgg.append('g')
+            let itemContainer = out._colorLegendNode
+                .append('g')
                 .attr('transform', `translate(${x},${y})`)
+                .attr('class', 'color-legend-item')
+
+            //append symbol & style
+            itemContainer
+                .append('g')
                 .attr('fill', m.noDataFillStyle())
                 .style('fill-opacity', m.psFillOpacity())
                 .style('stroke', m.psStroke())
                 .attr('stroke-width', 1)
-                // .append("path")
-                // .attr('d', d)
                 .append('rect')
-                .attr('width', config.shapeWidth)
-                .attr('height', config.shapeHeight)
+                .attr('width', out.colorLegend.shapeWidth)
+                .attr('height', out.colorLegend.shapeHeight)
                 .on('mouseover', function () {
                     const parents = svgMap.select('#g_ps').selectAll("[ecl='nd']")
                     let cellFill = select(this.parentNode).attr('fill')
@@ -442,12 +632,13 @@ export const legend = function (map, config) {
                 })
 
             //'no data' label
-            lgg.append('text')
-                .attr('x', x + config.labelOffset.x)
-                .attr('y', y + out.boxPadding)
-                .attr('alignment-baseline', 'middle')
+            itemContainer
+                .append('text')
+                .attr('x', out.colorLegend.labelOffset.x)
+                .attr('y', out.colorLegend.shapeHeight)
+                .attr('alignment-baseline', 'start')
                 .attr('class', 'eurostatmap-legend-label')
-                .text(config.noDataText)
+                .text(out.colorLegend.noDataText)
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)

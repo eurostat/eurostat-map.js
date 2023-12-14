@@ -8,7 +8,7 @@
 
     <body>
         <svg id="map"></svg>
-        <script src="https://unpkg.com/eurostat-map"></script>
+        <script src="../build/eurostatmap.js"></script>
 
         <!-- for formatting legend labels -->
         <script src="https://d3js.org/d3-format.v2.min.js"></script>
@@ -91,13 +91,14 @@
 
                 //legend config
                 .legend({
-                    x: 580,
+                    x: 10,
+                    y:200,
                     ascending: false,
                     boxPadding: 15,
                     sizeLegend: {
                         title: 'Total GDP (million EUR)',
                         cellNb: 3,
-                        shapePadding: 30,
+                        shapePadding: 0,
                         titlePadding: 50,
                         shapeOffset: { x: 0, y: -50 },
                         labelOffset: { x: 40, y: -40 },
