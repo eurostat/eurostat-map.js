@@ -255,9 +255,11 @@ export const map = function (config) {
 
             // append symbols
             if (out.psCustomSVG_) {
-                symb = appendCustomSymbolsToMap(map,data)
+                symb = appendCustomSymbolsToMap(map, data)
             } else if (out.psShape_ == 'bar') {
                 symb = appendBarsToMap(map, data)
+            } else if (out.psShape_ == 'circle') {
+                symb = appendCirclesToMap(map, data)
             } else {
                 // d3.symbol symbols
                 // circle, cross, star, triangle, diamond, square, wye or custom
@@ -331,6 +333,35 @@ export const map = function (config) {
         return map
     }
 
+    /**
+     * @description Appends <circle> elements for each region in the map SVG
+     * @param {*} map map instance
+     * @param {*} data e.g. map.statData('size')
+     * @return {*}
+     */
+    function appendCirclesToMap(map, data) {
+        return map
+            .svg()
+            .selectAll('g.symbol')
+            .append('circle')
+            .filter((rg) => {
+                const sv = data.get(rg.properties.id)
+                if (sv && sv.value !== ':') return rg
+            })
+            .attr('fill', 'none')
+            .attr('stroke', 'black')
+            .attr('r', (rg) => {
+                let s = out.classifierSize_(data.get(rg.properties.id).value)
+                return s || 0
+            })
+    }
+
+    /**
+     * @description Appends <path> elements containing symbols for each region in the map SVG
+     * @param {*} map map instance
+     * @param {*} data e.g. map.statData('size')
+     * @return {*}
+     */
     function appendD3SymbolsToMap(map, data) {
         return map
             .svg()
@@ -360,6 +391,12 @@ export const map = function (config) {
             })
     }
 
+    /**
+     * @description Appends <rect> elements containing bars for each region in the map SVG
+     * @param {*} map map instance
+     * @param {*} data e.g. map.statData('size')
+     * @return {*}
+     */
     function appendBarsToMap(map, data) {
         return (
             map
@@ -390,6 +427,12 @@ export const map = function (config) {
         )
     }
 
+    /**
+     * @description Appends custom SVG symbols for each region in the map
+     * @param {*} map
+     * @param {*} data
+     * @return {*}
+     */
     function appendCustomSymbolsToMap(map, data) {
         return map
             .svg()

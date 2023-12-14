@@ -131,6 +131,7 @@ export const legend = function (map, config) {
     function buildSizeLegend(m) {
         if (!m.psCustomSVG_ && m.psShape_ == 'circle') {
             buildCircleLegend(m, out.sizeLegend)
+            return
         }
 
         //define format for labels
@@ -187,7 +188,7 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    function buildD3SymbolItem(m, symbolSize, labelFormatter) {
+    function buildD3SymbolItem(m, value, symbolSize,labelFormatter) {
         // x and y for all other symbols
         out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) * 1.5 //save value (to use in color legend as well)
         let x = out.boxPadding + out._xOffset //set X offset
@@ -429,7 +430,6 @@ export const legend = function (map, config) {
             .attr('class', 'color-legend-item')
 
         //circles
-
         let container = itemContainer
             .append('g')
             .attr('fill', 'black')
