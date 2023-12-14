@@ -272,7 +272,7 @@ export const map = function (config) {
 
             if (map.geo_ !== 'WORLD') {
                 if (map.nutsLvl_ == 'mixed') {
-                    addSymbolsToMixedNUTS()
+                    addSymbolsToMixedNUTS(map,data,regions)
                 }
 
                 // nuts regions fill colour only for those with data
@@ -455,7 +455,7 @@ export const map = function (config) {
             })
     }
 
-    function addSymbolsToMixedNUTS(map) {
+    function addSymbolsToMixedNUTS(map,data,regions) {
         // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
         let symb = map
             .svg()

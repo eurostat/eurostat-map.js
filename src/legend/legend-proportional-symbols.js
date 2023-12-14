@@ -257,12 +257,13 @@ export const legend = function (map, config) {
      * @param {*} labelFormatter
      */
     function buildCustomSVGItem(m, value, symbolSize, index, labelFormatter) {
-        out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) //save value (to use in color legend as well)
-        let x = out.boxPadding + out._xOffset //set X offset
+        let maxSize = m.classifierSize_.domain()[0]
+        out._xOffset = m.classifierSize_() //save value (to use in color legend as well)
+        let x = out.boxPadding //set X offset
         let y
         //first item
         if (!m.customSymbols.prevSymb) {
-            y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
+            y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
             m.customSymbols.initialTranslateY = y
             m.customSymbols.prevScale = symbolSize
         }
@@ -285,7 +286,7 @@ export const legend = function (map, config) {
         // draw standard symbol
         m.customSymbols.prevSymb = itemContainer
             .append('g')
-            //.attr('transform', `translate(${x},${y})`)
+            .attr('class', 'size-legend-symbol')
             .attr('fill', (d) => {
                 // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
@@ -304,7 +305,7 @@ export const legend = function (map, config) {
             })
 
         //label position
-        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
+        let labelX = x + m.classifierSize_(maxSize) + out.sizeLegend.labelOffset.x
         let labelY = out.sizeLegend.shapeOffset.y / 2 //y + out.sizeLegend.labelOffset.y
 
         //append label
@@ -407,33 +408,31 @@ export const legend = function (map, config) {
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
 
-        let maxSize = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
-        let x = out.boxPadding
-        let y = out.boxPadding + maxSize + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
+        let maxRadius = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
+        let x = out.boxPadding + maxRadius
+        let y = out.boxPadding + (maxRadius * 2) + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
 
         let itemContainer = out._sizeLegendNode
             .append('g')
             .attr('transform', `translate(${x},${y})`)
-            .attr('class', 'color-legend-item')
-
-        //circles
-        let container = itemContainer
-            .append('g')
-            .attr('fill', 'black')
-            .attr('transform', `translate(${maxSize + out.boxPadding},${y})`) //needs to be dynamic
+            .attr('class', 'circle-legend')
             .attr('text-anchor', 'right')
+            .attr('fill', 'black')
             .selectAll('g')
             .data(out.sizeLegend.values)
-            .join('g')
-        container
+            .join('g').attr('class', 'eurostatmap-legend-item')
+
+        //circles
+        itemContainer
             .append('circle')
+            .attr('class', 'eurostatmap-legend-circle')
             .attr('fill', 'none')
             .attr('stroke', 'black')
             .attr('cy', (d) => -m.classifierSize_(d))
             .attr('r', m.classifierSize_)
 
         //labels
-        container
+        itemContainer
             .append('text')
             .style('font-size', out.labelFontSize + 'px')
             .attr('class', 'eurostatmap-legend-label')
@@ -441,14 +440,14 @@ export const legend = function (map, config) {
                 let y = -1 - 2 * m.classifierSize_(d) - out.labelFontSize
                 return y
             })
-            .attr('x', 30)
+            .attr('x', maxRadius + 5)
             .attr('dy', '1.2em')
             .attr('xml:space', 'preserve')
             .text((d) => {
                 return d.toLocaleString('en').replace(/,/gi, ' ')
             })
         //line pointing to top of corresponding circle:
-        container
+        itemContainer
             .append('line')
             .style('stroke-dasharray', 2)
             .style('stroke', 'grey')
@@ -458,7 +457,7 @@ export const legend = function (map, config) {
                 return y
             })
             .attr('xml:space', 'preserve')
-            .attr('x2', 30)
+            .attr('x2', maxRadius + 5)
             .attr('y2', (d, i) => {
                 let y = -1 - 2 * m.classifierSize_(d) //add padding
                 return y
@@ -477,7 +476,7 @@ export const legend = function (map, config) {
         let f = out.colorLegend.labelFormatter || spaceAsThousandSeparator
         const svgMap = m.svg()
 
-        let marginTop = 30
+        let marginTop = 35
 
         //title
         if (out.colorLegend.title)
@@ -554,7 +553,7 @@ export const legend = function (map, config) {
                     .attr('x2', 0 + out.colorLegend.sepLineLength)
                     .attr('y2', 0)
                     .attr('stroke', out.colorLegend.sepLineStroke)
-                    .attr('stroke-width', out.colorLegend.sepLineStrokeWidth)
+                    .attr('stroke-width', out.colorLegend.sepLineStrokeWidth).attr('class', 'eurostatmap-legend-line')
             }
 
             //label
