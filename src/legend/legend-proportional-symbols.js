@@ -153,7 +153,6 @@ export const legend = function (map, config) {
 
         let domain = m.classifierSize_.domain()
         let maxVal = domain[1] //maximum value of dataset (used for first or last symbol by default)
-        out._sizeLegendHeight = 0 //sum of shape sizes: used for positioning legend elements and color legend
 
         // if user defines values for legend manually
         if (out.sizeLegend.values) {
@@ -188,17 +187,15 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    function buildD3SymbolItem(m, value, symbolSize,labelFormatter) {
+    function buildD3SymbolItem(m, value, symbolSize, labelFormatter) {
         // x and y for all other symbols
         out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) * 1.5 //save value (to use in color legend as well)
         let x = out.boxPadding + out._xOffset //set X offset
         let y =
             out.boxPadding +
             (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            out._sizeLegendHeight +
             symbolSize / 2 +
             out.sizeLegend.shapePadding
-        out._sizeLegendHeight = out._sizeLegendHeight + symbolSize + out.sizeLegend.shapePadding
 
         //set shape size and define 'd' attribute
         let shape = getShape()
@@ -265,13 +262,9 @@ export const legend = function (map, config) {
         let y
         //first item
         if (!m.customSymbols.prevSymb) {
-            y =
-                out.boxPadding +
-                (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-                out._sizeLegendHeight
+            y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
             m.customSymbols.initialTranslateY = y
             m.customSymbols.prevScale = symbolSize
-            out._sizeLegendHeight = out._sizeLegendHeight + y
         }
 
         //following items
@@ -280,7 +273,6 @@ export const legend = function (map, config) {
             let bbox = prevNode.getBBox()
             m.customSymbols.nodeHeights = m.customSymbols.nodeHeights + bbox.height * m.customSymbols.prevScale
             y = m.customSymbols.initialTranslateY + m.customSymbols.nodeHeights + out.sizeLegend.shapePadding * (index - 1)
-            out._sizeLegendHeight = out._sizeLegendHeight + bbox.height + out.sizeLegend.shapePadding
             m.customSymbols.prevScale = symbolSize
         }
 
@@ -338,9 +330,8 @@ export const legend = function (map, config) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
         let x = out.boxPadding + 10
         //we also dont need the y offset
-        let y =
-            out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + out._sizeLegendHeight
-        out._sizeLegendHeight = out._sizeLegendHeight + symbolSize + out.sizeLegend.shapePadding
+        let y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
+
         //set shape size and define 'd' attribute
         let d = shape.size(symbolSize * symbolSize)()
 
@@ -402,8 +393,6 @@ export const legend = function (map, config) {
             out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[0])]
         }
 
-        let maxSize = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
-
         //draw title
         if (!out.sizeLegend.title && out.title) out.sizeLegend.title = out.title //allow root legend title
         if (out.sizeLegend.title)
@@ -418,11 +407,9 @@ export const legend = function (map, config) {
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
 
+        let maxSize = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
         let x = out.boxPadding
-        let y =
-            out.boxPadding +
-            (out.sizeLegend.title ? out.titleFontSize + out.boxPadding + out.sizeLegend.titlePadding : 0) +
-            maxSize * 2
+        let y = out.boxPadding + maxSize + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
 
         let itemContainer = out._sizeLegendNode
             .append('g')
@@ -477,7 +464,6 @@ export const legend = function (map, config) {
                 return y
             })
 
-        out._sizeLegendHeight = y //save height value for positioning colorLegend
         return out
     }
 
