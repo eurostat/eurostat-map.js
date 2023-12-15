@@ -167,6 +167,10 @@ export const map = function (config) {
         return out
     }
 
+    /**
+     * @description assigns a color to each symbol, based on their value
+     * @param {*} map
+     */
     function applyClassificationToMap(map) {
         if (map.svg()) {
             if (map.classifierColor_) {
@@ -186,6 +190,9 @@ export const map = function (config) {
         }
     }
 
+    /**
+     * @description defines classifier functions (out.classifierColor and out.classifierSize) for both symbol size and color
+     */
     function defineClassifiers() {
         //simply return the array [0,1,2,3,...,nb-1]
         const getA = function (nb) {
@@ -272,7 +279,7 @@ export const map = function (config) {
 
             if (map.geo_ !== 'WORLD') {
                 if (map.nutsLvl_ == 'mixed') {
-                    addSymbolsToMixedNUTS(map,data,regions)
+                    addSymbolsToMixedNUTS(map, data, regions)
                 }
 
                 // nuts regions fill colour only for those with data
@@ -455,7 +462,14 @@ export const map = function (config) {
             })
     }
 
-    function addSymbolsToMixedNUTS(map,data,regions) {
+    /**
+     * @description adds proportional symbols to each regions in a map with mixed NUTS levels (IMAGE)
+     * @param {*} map
+     * @param {*} data
+     * @param {*} regions
+     * @return {*}
+     */
+    function addSymbolsToMixedNUTS(map, data, regions) {
         // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
         let symb = map
             .svg()

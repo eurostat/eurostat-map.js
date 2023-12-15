@@ -173,11 +173,11 @@ export const legend = function (map, config) {
             let symbolSize = m.classifierSize_(val)
 
             if (m.psShape_ == 'bar') {
-                buildBarsItem(map, val, symbolSize, labelFormatter)
+                buildBarsItem(map, val, symbolSize, i, labelFormatter)
             } else if (m.psShape_ == 'custom' || m.psCustomSVG_) {
                 buildCustomSVGItem(map, val, symbolSize, i, labelFormatter)
             } else {
-                buildD3SymbolItem(map, val, symbolSize, labelFormatter)
+                buildD3SymbolItem(map, val, symbolSize, i, labelFormatter)
             }
         }
     }
@@ -187,25 +187,25 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    function buildD3SymbolItem(m, value, symbolSize, labelFormatter) {
-        // x and y for all other symbols
-        out._xOffset = m.classifierSize_(m.classifierSize_.domain()[0]) * 1.5 //save value (to use in color legend as well)
-        let x = out.boxPadding + out._xOffset //set X offset
+    function buildD3SymbolItem(m, value, symbolSize, index, labelFormatter) {
+        let maxSize = m.classifierSize_(m.classifierSize_.domain()[0]) * 2
+        // x and y position of item in legend
+        let x = out.boxPadding + maxSize
         let y =
             out.boxPadding +
             (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            symbolSize / 2 +
-            out.sizeLegend.shapePadding
-
-        //set shape size and define 'd' attribute
-        let shape = getShape()
-        let d = shape.size(symbolSize * symbolSize)()
+            (symbolSize / 2 + out.sizeLegend.shapePadding) * index
 
         //container for symbol and label
-        let itemContainer = out._sizeLegendNode.append('g').attr('transform', `translate(${x},${y})`)
+        let itemContainer = out._sizeLegendNode
+            .append('g')
+            .attr('transform', `translate(${x},${y})`)
+            .attr('class', 'size-legend-item')
 
-        // draw standard symbol
-        let itemSymbol = itemContainer
+        // draw D3 symbol
+        let shape = getShape()
+        let d = shape.size(symbolSize * symbolSize)()
+        itemContainer
             .append('g')
             // .attr('transform', `translate(${x},${y})`)
             .style('fill', (d) => {
@@ -220,25 +220,17 @@ export const legend = function (map, config) {
             .append('path')
             .attr('d', d)
             .attr('transform', () => {
-                if (out.map.psCustomSVG_)
-                    return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y}) scale(${size})`
-                else return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
+                return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
             })
 
         //label position
-        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
-        let labelY = y + out.sizeLegend.labelOffset.y
-        if (out.map.psShape_ == 'bar') {
-            labelY = labelY + symbolSize / 2
-        } else if (out.map.psShape_ == 'custom') {
-            labelY = labelY + symbolSize * 10
-        }
+        let labelX = x + maxSize + out.sizeLegend.labelOffset.x
 
         //append label
-        let itemLabel = itemContainer
+        itemContainer
             .append('text')
             .attr('x', labelX)
-            .attr('y', labelY)
+            .attr('y', 0)
             .attr('alignment-baseline', 'middle')
             .attr('text-anchor', 'start')
             .attr('class', 'eurostatmap-legend-label')
@@ -257,10 +249,9 @@ export const legend = function (map, config) {
      * @param {*} labelFormatter
      */
     function buildCustomSVGItem(m, value, symbolSize, index, labelFormatter) {
-        let maxSize = m.classifierSize_.domain()[0]
-        out._xOffset = m.classifierSize_() //save value (to use in color legend as well)
         let x = out.boxPadding //set X offset
         let y
+        
         //first item
         if (!m.customSymbols.prevSymb) {
             y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
@@ -305,7 +296,7 @@ export const legend = function (map, config) {
             })
 
         //label position
-        let labelX = x + m.classifierSize_(maxSize) + out.sizeLegend.labelOffset.x
+        let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
         let labelY = out.sizeLegend.shapeOffset.y / 2 //y + out.sizeLegend.labelOffset.y
 
         //append label
@@ -327,7 +318,7 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    function buildBarsItem(m, value, symbolSize) {
+    function buildBarsItem(m, value, index, symbolSize) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
         let x = out.boxPadding + 10
         //we also dont need the y offset
@@ -391,7 +382,7 @@ export const legend = function (map, config) {
         //assign default circle radiuses if none specified by user
         let domain = m.classifierSize_.domain()
         if (!out.sizeLegend.values) {
-            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[0])]
+            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[1]/2), Math.floor(domain[0])]
         }
 
         //draw title
@@ -410,7 +401,7 @@ export const legend = function (map, config) {
 
         let maxRadius = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
         let x = out.boxPadding + maxRadius
-        let y = out.boxPadding + (maxRadius * 2) + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
+        let y = out.boxPadding + maxRadius * 2 + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
 
         let itemContainer = out._sizeLegendNode
             .append('g')
@@ -420,7 +411,8 @@ export const legend = function (map, config) {
             .attr('fill', 'black')
             .selectAll('g')
             .data(out.sizeLegend.values)
-            .join('g').attr('class', 'eurostatmap-legend-item')
+            .join('g')
+            .attr('class', 'eurostatmap-legend-item')
 
         //circles
         itemContainer
@@ -553,7 +545,8 @@ export const legend = function (map, config) {
                     .attr('x2', 0 + out.colorLegend.sepLineLength)
                     .attr('y2', 0)
                     .attr('stroke', out.colorLegend.sepLineStroke)
-                    .attr('stroke-width', out.colorLegend.sepLineStrokeWidth).attr('class', 'eurostatmap-legend-line')
+                    .attr('stroke-width', out.colorLegend.sepLineStrokeWidth)
+                    .attr('class', 'eurostatmap-legend-line')
             }
 
             //label
@@ -630,7 +623,10 @@ export const legend = function (map, config) {
         }
     }
 
-    // returns the d3.symbol object chosen by the user
+    /**
+     * @description returns the d3.symbol object chosen by the user
+     * @return {d3.shape || SVG}
+     */
     function getShape() {
         let shape
         if (out.map.psCustomSVG_) {
