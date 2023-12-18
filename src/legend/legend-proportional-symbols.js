@@ -251,7 +251,7 @@ export const legend = function (map, config) {
     function buildCustomSVGItem(m, value, symbolSize, index, labelFormatter) {
         let x = out.boxPadding //set X offset
         let y
-        
+
         //first item
         if (!m.customSymbols.prevSymb) {
             y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
@@ -318,13 +318,18 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    function buildBarsItem(m, value, index, symbolSize) {
+    function buildBarsItem(m, value, symbolSize, index, labelFormatter) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
+        let maxSize = m.classifierSize_(m.classifierSize_.domain()[0]) * 2
+        // x and y position of item in legend
         let x = out.boxPadding + 10
-        //we also dont need the y offset
-        let y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0)
+        let y =
+            out.boxPadding +
+            (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
+            (symbolSize / 2 + out.sizeLegend.shapePadding) * index
 
         //set shape size and define 'd' attribute
+        let shape = getShape()
         let d = shape.size(symbolSize * symbolSize)()
 
         //container for symbol and label
@@ -336,7 +341,7 @@ export const legend = function (map, config) {
         // draw bar symbol
         itemContainer
             .append('g')
-            .attr('transform', `translate(${x},${y})`)
+            // .attr('transform', `translate(${x},${y})`)
             .style('fill', (d) => {
                 // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
@@ -382,7 +387,7 @@ export const legend = function (map, config) {
         //assign default circle radiuses if none specified by user
         let domain = m.classifierSize_.domain()
         if (!out.sizeLegend.values) {
-            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[1]/2), Math.floor(domain[0])]
+            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[0])]
         }
 
         //draw title
