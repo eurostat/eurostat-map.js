@@ -260,6 +260,14 @@ export const map = function (config) {
             // if map is main map this clears insets too
             prevSymbols.remove()
 
+            //change draw order according to size
+            let symbolgs = map.svg().selectAll('g.symbol')
+            symbolgs.sort(function (a, b) {
+                let val1 = data.get(a.properties.id) || 0
+                let val2 = data.get(b.properties.id) || 0
+                return val2.value - val1.value
+            })
+
             // append symbols
             if (out.psCustomSVG_) {
                 symb = appendCustomSymbolsToMap(map, data)
