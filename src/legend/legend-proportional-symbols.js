@@ -190,11 +190,11 @@ export const legend = function (map, config) {
     function buildD3SymbolItem(m, value, symbolSize, index, labelFormatter) {
         let maxSize = m.classifierSize_(m.classifierSize_.domain()[0]) * 2
         // x and y position of item in legend
-        let x = out.boxPadding + maxSize
+        let x = out.boxPadding + maxSize * 3
         let y =
             out.boxPadding +
             (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            (symbolSize / 2 + out.sizeLegend.shapePadding) * index
+            (symbolSize + out.sizeLegend.shapePadding) * index
 
         //container for symbol and label
         let itemContainer = out._sizeLegendNode
@@ -224,7 +224,7 @@ export const legend = function (map, config) {
             })
 
         //label position
-        let labelX = x + maxSize + out.sizeLegend.labelOffset.x
+        let labelX = x + maxSize * 2 + out.sizeLegend.labelOffset.x
 
         //append label
         itemContainer
