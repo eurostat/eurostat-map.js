@@ -318,14 +318,14 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
+    let totalBarsHeight = 0
     function buildBarsItem(m, value, symbolSize, index, labelFormatter) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
         let x = out.boxPadding
         //we also dont need the y offset
-        let y =
-            out.boxPadding +
-            (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            (symbolSize + out.sizeLegend.shapePadding) * index
+        let y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + totalBarsHeight + 10
+
+        totalBarsHeight += symbolSize + 10
 
         //set shape size and define 'd' attribute
         let shape = getShape()
@@ -357,16 +357,14 @@ export const legend = function (map, config) {
                 else return `translate(${out.sizeLegend.shapeOffset.x},${out.sizeLegend.shapeOffset.y})`
             })
         //label position
-        let labelX = x + out.boxPadding + out.map.psBarWidth_ + out.sizeLegend.labelOffset.x
-        let labelY = y + out.sizeLegend.labelOffset.y
-        if (out.map.psShape_ == 'custom') {
-            labelY = labelY + symbolSize * 10
-        }
+        let labelX = x + out.map.psBarWidth_ + out.sizeLegend.labelOffset.x
+        let labelY = symbolSize/2 + out.sizeLegend.labelOffset.y
 
         //append label
         itemContainer
             .append('text')
             .attr('x', labelX)
+            .attr('y', labelY)
             .attr('alignment-baseline', 'middle')
             .attr('text-anchor', 'start')
             .attr('class', 'eurostatmap-legend-label')
