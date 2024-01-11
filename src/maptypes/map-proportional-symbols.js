@@ -261,16 +261,8 @@ export const map = function (config) {
             prevSymbols.remove()
 
             //change draw order according to size
-            let symbolgs = map.svg().selectAll('g.symbol')
-            // causes weird bug where all g symbols are appended to canaries inset
-            symbolgs.sort(function (a, b) {
-                let val1 = data.get(a.properties.id)
-                let val2 = data.get(b.properties.id)
-                if (!val1) val1 = 0
-                if (!val2) val2 = 0
-                // smallest values on top
-                return val2.value - val1.value
-            })
+            //TODO - find a more efficient way of updating the symbols and their draw order (maybe using D3 join?)
+            updateSymbolsDrawOrder(map)
 
             // append symbols
             if (out.psCustomSVG_) {
@@ -350,6 +342,70 @@ export const map = function (config) {
                 })
         }
         return map
+    }
+
+
+        /**
+     * @description Updates the draw order of the symbols according to their data values
+     * @param {*} map map instance
+     */
+    function updateSymbolsDrawOrder(map) {
+        let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
+        const gcp = zoomGroup.append('g').attr('id', 'g_ps')
+        let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
+        gcp.selectAll('g')
+            .data(
+                // filter out regions with no data
+                map.centroidFeatures
+                    .filter((rg) => data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !== ':')
+                    .sort(function (a, b) {
+                        let val1 = data.get(a.properties.id)
+                        let val2 = data.get(b.properties.id)
+                        return val2.value - val1.value
+                    })
+            )
+            .enter()
+            .append('g')
+            .attr('transform', function (d) {
+                return 'translate(' + map._projection(d.geometry.coordinates) + ')'
+            })
+            //.attr("r", 1)
+            .attr('class', 'symbol')
+            //.attr('val', (rg)=>data.get(rg.properties.id).value) //debugging
+            .style('fill', 'gray')
+            .attr('id', (d) => 'ps' + d.properties.id)
+            .on('mouseover', function (e, rg) {
+                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                        const sel = select(this.childNodes[0])
+                        sel.attr('fill___', sel.style('fill'))
+                        sel.style('fill', out.nutsrgSelFillSty_)
+                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                    }
+                } else {
+                    const sel = select(this.childNodes[0])
+                    sel.attr('fill___', sel.style('fill'))
+                    sel.style('fill', out.nutsrgSelFillSty_)
+                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                }
+            })
+            .on('mousemove', function (e, rg) {
+                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                        if (out._tooltip) out._tooltip.mousemove(e)
+                    }
+                } else {
+                    if (out._tooltip) out._tooltip.mousemove(e)
+                }
+            })
+            .on('mouseout', function (e) {
+                const sel = select(this.childNodes[0])
+                let newFill = sel.attr('fill___')
+                if (newFill) {
+                    sel.style('fill', newFill)
+                    if (out._tooltip) out._tooltip.mouseout()
+                }
+            })
     }
 
     /**

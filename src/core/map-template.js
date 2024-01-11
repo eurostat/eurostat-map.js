@@ -1537,19 +1537,18 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             }
 
+            out.centroidFeatures = centroidFeatures
+
             // g_ps is the g element containing all prop symbols for the map
             const gcp = zg.append('g').attr('id', 'g_ps')
-
             //allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
             let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
             gcp.selectAll('g')
                 .data(
-                    centroidFeatures.sort(function (a, b) {
+                    // filter out regions with no data
+                    out.centroidFeatures.filter((rg)=>data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !==':').sort(function (a, b) {
                         let val1 = data.get(a.properties.id)
                         let val2 = data.get(b.properties.id)
-                        if (!val1) val1 = 0
-                        if (!val2) val2 = 0
-                        // smallest values on top
                         return val2.value - val1.value
                     })
                 )
@@ -1560,6 +1559,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 })
                 //.attr("r", 1)
                 .attr('class', 'symbol')
+                //.attr('val', (rg)=>data.get(rg.properties.id).value) //debugging
                 .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (e, rg) {
