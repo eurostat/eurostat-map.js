@@ -34,8 +34,8 @@ export const legend = function (map, config) {
         titleFontSize: 12,
         titlePadding: 5, //padding between title and legend body
         values: undefined, //manually define raw data values
-        cellNb: 4, //number of elements in the legend
-        shapePadding: 10, //the y distance between consecutive legend shape elements
+        cellNb: 3, //number of elements in the legend
+        shapePadding: 5, //the y distance between consecutive legend shape elements
         shapeOffset: { x: 0, y: 0 },
         shapeFill: 'white',
         labelOffset: { x: 5, y: 0 }, //the distance between the legend box elements to the corresponding text label
@@ -183,18 +183,23 @@ export const legend = function (map, config) {
     }
 
     /**
-     * @description
-     * @param {*} m
-     * @param {*} symbolSize
+     * @description builds a size legend item for proportional D3 shapes (e.g. square, triangle, star)
+     * @param {*} m map instance
+     * @param {number} symbolSize the size of the symbol item
      */
+    let totalD3SymbolsHeight = 0
     function buildD3SymbolItem(m, value, symbolSize, index, labelFormatter) {
-        let maxSize = m.classifierSize_(m.classifierSize_.domain()[0]) * 2
+        let symbolHeight = out.map.psShape_ == 'triangle' || out.map.psShape_ == 'diamond' ? symbolSize : symbolSize / 2
+        if (totalD3SymbolsHeight == 0) totalD3SymbolsHeight += symbolHeight + out.boxPadding //add first item height to y
+        let maxSize = m.classifierSize_(m.classifierSize_.domain()[1])
         // x and y position of item in legend
-        let x = out.boxPadding + maxSize * 3
+        let x = maxSize
         let y =
-            out.boxPadding +
             (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            (symbolSize + out.sizeLegend.shapePadding) * index
+            totalD3SymbolsHeight +
+            (out.sizeLegend.shapePadding * index - 1)
+
+        totalD3SymbolsHeight += symbolSize
 
         //container for symbol and label
         let itemContainer = out._sizeLegendNode
@@ -224,7 +229,7 @@ export const legend = function (map, config) {
             })
 
         //label position
-        let labelX = x + maxSize * 2 + out.sizeLegend.labelOffset.x
+        let labelX = maxSize / 2 + out.sizeLegend.labelOffset.x
 
         //append label
         itemContainer
@@ -323,7 +328,8 @@ export const legend = function (map, config) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
         let x = out.boxPadding
         //we also dont need the y offset
-        let y = out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + totalBarsHeight + 10
+        let y =
+            out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + totalBarsHeight + 10
 
         totalBarsHeight += symbolSize + 10
 
@@ -358,7 +364,7 @@ export const legend = function (map, config) {
             })
         //label position
         let labelX = x + out.map.psBarWidth_ + out.sizeLegend.labelOffset.x
-        let labelY = symbolSize/2 + out.sizeLegend.labelOffset.y
+        let labelY = symbolSize / 2 + out.sizeLegend.labelOffset.y
 
         //append label
         itemContainer

@@ -113,7 +113,7 @@
                 .psMaxSize(4)
                 .psMinSize(1) //minSize for customPaths indicates scale() value, not pixel size
                 .psFillOpacity(1)
-                .psOffset({ x: -10, y: -10 })
+                .psOffset({ x: -5, y: -10 })
                 .psStroke('black')
                 .psStrokeWidth(10)
                 .psClassifMethod('threshold')
@@ -179,6 +179,7 @@
                 .psClasses(6)
                 .psStroke('black')
                 .psStrokeWidth('1')
+                .psOffset({ x: -5, y: -10 })
                 .tooltipShowFlags('long')
                 .nutsrgSelFillSty('cyan')
                 .legend({
@@ -223,7 +224,7 @@
                 .psCustomSVG(euSVG)
                 .psMaxSize(4)
                 .psMinSize(1)
-                .psOffset({ x: -10, y: -10 })
+                .psOffset({ x: -5, y: -10 })
                 .psColorFun(d3.interpolateGreens)
                 .psClasses(6)
                 .psStroke('black')
@@ -292,10 +293,8 @@
                     boxPadding: 15,
                     sizeLegend: {
                         title: 'Total nights spent',
-                        titlePadding: -5,
                         cellNb: 3,
                         labelFormatter: d3.format('.2s'),
-                        labelOffset: { x: -10, y: 0 },
                     },
                     colorLegend: {
                         title: '% change compared to 2019',

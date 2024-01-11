@@ -22,7 +22,7 @@ export const legend = function (map) {
     //the legend box
     out.boxMargin = 10
     out.boxPadding = 7
-    out.boxCornerRad = 7
+    out.boxCornerRad = 0
     out.boxFill = 'white'
     out.boxOpacity = 0.7
 

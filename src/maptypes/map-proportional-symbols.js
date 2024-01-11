@@ -263,9 +263,9 @@ export const map = function (config) {
             //change draw order according to size
             let symbolgs = map.svg().selectAll('g.symbol')
             symbolgs.sort(function (a, b) {
-                let val1 = data.get(a.properties.id) || 0
-                let val2 = data.get(b.properties.id) || 0
-                return val2.value - val1.value
+                let val1 = data.get(a.properties.id)
+                let val2 = data.get(b.properties.id)
+                if (val1 && val2) return val2.value - val1.value
             })
 
             // append symbols
@@ -388,9 +388,9 @@ export const map = function (config) {
             })
             .attr('class', 'ps')
             .attr('d', (rg) => {
+                //calculate size
                 if (!data) return
                 const sv = data.get(rg.properties.id)
-                //calculate size
                 if (sv != 0 && !sv) return
                 let size = out.classifierSize_(+sv.value) || 0
 
