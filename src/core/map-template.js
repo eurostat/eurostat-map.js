@@ -1537,11 +1537,22 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             }
 
+            // g_ps is the g element containing all prop symbols for the map
             const gcp = zg.append('g').attr('id', 'g_ps')
 
             //allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
+            let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
             gcp.selectAll('g')
-                .data(centroidFeatures)
+                .data(
+                    centroidFeatures.sort(function (a, b) {
+                        let val1 = data.get(a.properties.id)
+                        let val2 = data.get(b.properties.id)
+                        if (!val1) val1 = 0
+                        if (!val2) val2 = 0
+                        // smallest values on top
+                        return val2.value - val1.value
+                    })
+                )
                 .enter()
                 .append('g')
                 .attr('transform', function (d) {
@@ -1724,6 +1735,10 @@ export const mapTemplate = function (config, withCenterPoints) {
         return out
     }
 
+    /**
+     * @function updateLabels
+     * @description update existing map labels
+     */
     out.updateLabels = function () {
         //clear previous labels
         let prevLabels = out.svg_.selectAll('g.labels-container > *')

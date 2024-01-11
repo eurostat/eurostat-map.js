@@ -32,8 +32,8 @@ export const map = function (config) {
     //colour
     out.psFill_ = '#2d50a0' //same fill for all symbols when no visual variable (setData()) for 'color' is specified
     out.psFillOpacity_ = 0.7
-    out.psStroke_ = '#000'
-    out.psStrokeWidth_ = 0.3
+    out.psStroke_ = '#ffffff'
+    out.psStrokeWidth_ = 0.5
     out.psClasses_ = 5 // number of classes to use for colouring
     out.psColors_ = null //colours to use for threshold colouring
     out.psColorFun_ = interpolateOrRd
@@ -262,10 +262,14 @@ export const map = function (config) {
 
             //change draw order according to size
             let symbolgs = map.svg().selectAll('g.symbol')
+            // causes weird bug where all g symbols are appended to canaries inset
             symbolgs.sort(function (a, b) {
                 let val1 = data.get(a.properties.id)
                 let val2 = data.get(b.properties.id)
-                if (val1 && val2) return val2.value - val1.value
+                if (!val1) val1 = 0
+                if (!val2) val2 = 0
+                // smallest values on top
+                return val2.value - val1.value
             })
 
             // append symbols

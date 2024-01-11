@@ -12,6 +12,7 @@
             <svg id="eurostatmap-legend" x="0px" y="620px"></svg>
         </svg>
 
+      <script src="../configs/insetConfig.js"></script>
         <script src="../../build/eurostatmap.js"></script>
         <script src="../data/nuts3.js"></script>
         <script>
@@ -19,6 +20,13 @@
             let mapHeight = 608
             let maxRadius = 60
             let data = {
+                PT300: 5000,
+                ES709:5000,
+                PT30: 5000,
+                FRY3: 5000,
+                LI: 10000,
+                MT001: 5000, 
+                MT002: 5000, 
                 BE10: 20700,
                 BE21: 22900,
                 BE22: 22200,
@@ -273,20 +281,21 @@
             let map = eurostatmap
                 .map('ps')
                 .pixSize(7400)
+                .insets(insetsConfig)
+                .insetBoxPosition([400,10])
                 .width(mapWidth)
                 .height(mapHeight)
                 .nutsLvl('mixed')
                 .psFill('#4ac499')
-                .psShape('square')
+                .psShape('circle')
                 .psFillOpacity(0.8)
                 .psMaxSize(maxRadius)
-                .psMinSize(1)
                 .legend({
                     //svgId: "eurostatmap-legend",
                     x: 450,
-                    y: 20,
+                    y: 400,
                     sizeLegend: {
-                        title: 'legeend',
+                        title: 'legend title',
                     },
                 })
             map.statData('size').setData(data)
@@ -305,19 +314,39 @@
                 .psShape('triangle')
                 .psFillOpacity(0.8)
                 .psMaxSize(maxRadius)
-                .psMinSize(1)
                 .legend({
                     //svgId: "eurostatmap-legend",
                     x: 450,
                     y: 20,
                     sizeLegend: {
-                        title: 'legeend',
+                        title: 'legend',
                     },
                 })
             map2.statData('size').setData(data)
             map2.updateClassification()
             map2.updateStyle()
             map2.build()
+
+            setTimeout(()=>{
+              let data = {
+                ES: 1000,
+                FR:200,
+                DE: 300,
+                IT: 400,
+                LI: 500,
+                CZ: 600, 
+                CH: 700, 
+                UK: 800,
+                NO: 900,
+                NL: 1000,
+                PO: 1100,
+                RO: 1200
+              }
+              map.statData('size').setData(data)
+              map.updateStatValues()
+              map.updateClassification()
+            map.updateStyle()
+            },1000)
 
             //D3 symbols
 // symbolsFill

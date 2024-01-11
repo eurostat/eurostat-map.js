@@ -388,7 +388,7 @@ export const legend = function (map, config) {
         //assign default circle radiuses if none specified by user
         let domain = m.classifierSize_.domain()
         if (!out.sizeLegend.values) {
-            out.sizeLegend.values = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[0])]
+            out._sizeLegendValues = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[0])]
         }
 
         //draw title
@@ -405,7 +405,7 @@ export const legend = function (map, config) {
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
 
-        let maxRadius = m.classifierSize_(max(out.sizeLegend.values)) //maximum circle radius to be shown in legend
+        let maxRadius = m.classifierSize_(max(out._sizeLegendValues)) //maximum circle radius to be shown in legend
         let x = out.boxPadding + maxRadius
         let y = out.boxPadding + maxRadius * 2 + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + 20
 
@@ -416,7 +416,7 @@ export const legend = function (map, config) {
             .attr('text-anchor', 'right')
             .attr('fill', 'black')
             .selectAll('g')
-            .data(out.sizeLegend.values)
+            .data(out._sizeLegendValues)
             .join('g')
             .attr('class', 'eurostatmap-legend-item')
 
