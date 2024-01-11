@@ -339,7 +339,7 @@
             map2.statData('size').setData(data)
             map2.updateClassification()
             map2.updateStyle()
-             //map2.build()
+             map2.build()
 
              setTimeout(()=>{
 
@@ -349,12 +349,12 @@
             map.updateStyle()
             },2000)
 
-            // setTimeout(()=>{
-            //   map.statData('size').setData(data)
-            //   map.updateStatValues()
-            //   map.updateClassification()
-            // map.updateStyle()
-            // },4000)
+            setTimeout(()=>{
+              map.statData('size').setData(data)
+              map.updateStatValues()
+              map.updateClassification()
+            map.updateStyle()
+            },4000)
 
             //D3 symbols
 // symbolsFill
