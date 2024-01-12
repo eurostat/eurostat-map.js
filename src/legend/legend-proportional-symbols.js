@@ -41,6 +41,8 @@ export const legend = function (map, config) {
         labelOffset: { x: 5, y: 0 }, //the distance between the legend box elements to the corresponding text label
         labelDecNb: 0, //the number of decimal for the legend labels
         labelFormatter: undefined,
+        _totalBarsHeight: 0,
+        _totalD3SymbolsHeight: 0,
     }
 
     // color legend config (legend illustrating the data-driven colour classes)
@@ -104,6 +106,10 @@ export const legend = function (map, config) {
 
         //set font family
         lgg.style('font-family', m.fontFamily_)
+
+        // reset height counters
+        out.sizeLegend._totalBarsHeight = 0
+        out.sizeLegend._totalD3SymbolsHeight = 0
 
         // legend for size
         out._sizeLegendNode = lgg.append('g').attr('class', 'size-legend-container')
@@ -187,19 +193,18 @@ export const legend = function (map, config) {
      * @param {*} m map instance
      * @param {number} symbolSize the size of the symbol item
      */
-    let totalD3SymbolsHeight = 0
     function buildD3SymbolItem(m, value, symbolSize, index, labelFormatter) {
         let symbolHeight = out.map.psShape_ == 'triangle' || out.map.psShape_ == 'diamond' ? symbolSize : symbolSize / 2
-        if (totalD3SymbolsHeight == 0) totalD3SymbolsHeight += symbolHeight + out.boxPadding //add first item height to y
+        if (out.sizeLegend._totalD3SymbolsHeight == 0) out.sizeLegend._totalD3SymbolsHeight += symbolHeight + out.boxPadding //add first item height to y
         let maxSize = m.classifierSize_(m.classifierSize_.domain()[1])
         // x and y position of item in legend
         let x = maxSize
         let y =
             (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
-            totalD3SymbolsHeight +
+            out.sizeLegend._totalD3SymbolsHeight +
             (out.sizeLegend.shapePadding * index - 1)
 
-        totalD3SymbolsHeight += symbolSize
+        out.sizeLegend._totalD3SymbolsHeight += symbolSize
 
         //container for symbol and label
         let itemContainer = out._sizeLegendNode
@@ -220,8 +225,6 @@ export const legend = function (map, config) {
             .style('fill-opacity', m.psFillOpacity())
             .style('stroke', m.psStroke())
             .style('stroke-width', m.psStrokeWidth())
-            .attr('stroke', 'black')
-            .attr('stroke-width', 0.5)
             .append('path')
             .attr('d', d)
             .attr('transform', () => {
@@ -323,15 +326,17 @@ export const legend = function (map, config) {
      * @param {*} m
      * @param {*} symbolSize
      */
-    let totalBarsHeight = 0
     function buildBarsItem(m, value, symbolSize, index, labelFormatter) {
         // for vertical bars we dont use a dynamic X offset because all bars have the same width
         let x = out.boxPadding
         //we also dont need the y offset
         let y =
-            out.boxPadding + (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) + totalBarsHeight + 10
+            out.boxPadding +
+            (out.sizeLegend.title ? out.titleFontSize + out.sizeLegend.titlePadding : 0) +
+            out.sizeLegend._totalBarsHeight +
+            10
 
-        totalBarsHeight += symbolSize + 10
+        out.sizeLegend._totalBarsHeight += symbolSize + 10
 
         //set shape size and define 'd' attribute
         let shape = getShape()
@@ -388,7 +393,11 @@ export const legend = function (map, config) {
         //assign default circle radiuses if none specified by user
         let domain = m.classifierSize_.domain()
         if (!out.sizeLegend.values) {
+            // default legend values
             out._sizeLegendValues = [Math.floor(domain[1]), Math.floor(domain[1] / 2), Math.floor(domain[0])]
+        } else {
+            // user defined legend values
+            out._sizeLegendValues = out.sizeLegend.values
         }
 
         //draw title

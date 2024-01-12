@@ -291,14 +291,14 @@ export const map = function (config) {
 
                 // nuts regions fill colour only for those with data
                 regions
-                    .attr('fill', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (sv) {
-                            return out.nutsrgFillStyle_
-                        } else {
-                            return out.cntrgFillStyle_
-                        }
-                    })
+                    // .attr('fill', function (rg) {
+                    //     const sv = data.get(rg.properties.id)
+                    //     if (sv) {
+                    //         return out.nutsrgFillStyle_
+                    //     } else {
+                    //         return out.cntrgFillStyle_
+                    //     }
+                    // })
                     .style('fill', function (rg) {
                         const sv = data.get(rg.properties.id)
                         if (!sv || !sv.value) {
@@ -310,14 +310,14 @@ export const map = function (config) {
             } else {
                 // world countries fill
                 regions
-                    .attr('fill', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (!sv || !sv.value) {
-                            return out.worldFillStyle_
-                        } else {
-                            return out.nutsrgFillStyle_
-                        }
-                    })
+                    // .attr('fill', function (rg) {
+                    //     const sv = data.get(rg.properties.id)
+                    //     if (!sv || !sv.value) {
+                    //         return out.worldFillStyle_
+                    //     } else {
+                    //         return out.nutsrgFillStyle_
+                    //     }
+                    // })
                     .style('fill', function (rg) {
                         const sv = data.get(rg.properties.id)
                         if (!sv || !sv.value) {
@@ -355,7 +355,7 @@ export const map = function (config) {
     function updateSymbolsDrawOrder(map) {
         if (!map._centroidFeatures) console.log(map)
         let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
-        const gcp = zoomGroup.append('g').attr('id', 'g_ps')
+        const gcp = zoomGroup.select('#g_ps')
         let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
         gcp.selectAll('g')
             .data(
@@ -368,8 +368,8 @@ export const map = function (config) {
                         return val2.value - val1.value
                     })
             )
-            .enter()
-            .append('g')
+            // .enter()
+            .join('g')
             .attr('transform', function (d) {
                 return 'translate(' + map._projection(d.geometry.coordinates) + ')'
             })
@@ -427,8 +427,6 @@ export const map = function (config) {
                 const sv = data.get(rg.properties.id)
                 if (sv && sv.value !== ':') return rg
             })
-            .attr('fill', 'none')
-            .attr('stroke', 'black')
             .attr('r', (rg) => {
                 let s = out.classifierSize_(data.get(rg.properties.id).value)
                 return s || 0

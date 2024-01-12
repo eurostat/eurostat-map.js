@@ -12,7 +12,7 @@
             <svg id="eurostatmap-legend" x="0px" y="620px"></svg>
         </svg>
 
-      <script src="../configs/insetConfig.js"></script>
+        <script src="../configs/insetConfig.js"></script>
         <script src="../../build/eurostatmap.js"></script>
         <script src="../data/nuts3.js"></script>
         <script>
@@ -21,12 +21,12 @@
             let maxRadius = 30
             let data = {
                 PT300: 5000,
-                ES709:5000,
+                ES709: 5000,
                 PT30: 5000,
                 FRY3: 5000,
                 LI: 10000,
-                MT001: 5000, 
-                MT002: 5000, 
+                MT001: 5000,
+                MT002: 5000,
                 BE10: 20700,
                 BE21: 22900,
                 BE22: 22200,
@@ -277,26 +277,26 @@
                 NO0A: ':',
                 ME00: ':',
             }
-              let data2= {
+            let data2 = {
                 ES: 1000,
-                FR:200,
+                FR: 200,
                 DE: 300,
                 IT: 400,
                 LI: 500,
-                CZ: 600, 
-                CH: 700, 
+                CZ: 600,
+                CH: 700,
                 UK: 800,
                 NO: 900,
                 NL: 1000,
                 PO: 1100,
-                RO: 1200
-              }
+                RO: 1200,
+            }
 
             let map = eurostatmap
                 .map('ps')
                 .pixSize(7400)
                 .insets(insetsConfig)
-                .insetBoxPosition([400,10])
+                .insetBoxPosition([400, 10])
                 .width(mapWidth)
                 .height(mapHeight)
                 .nutsLvl('mixed')
@@ -337,42 +337,69 @@
                     },
                 })
             map2.statData('size').setData(data)
+            map2.psFillOpacity(0.2)
             map2.updateClassification()
             map2.updateStyle()
-             map2.build()
+            map2.build()
 
-             setTimeout(()=>{
+            setTimeout(() => {
+                // map.statData('size').setData(data)
+                map.psFillOpacity(0.2)
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 2000)
 
-              map.statData('size').setData(data)
-              map.updateStatValues()
-              map.updateClassification()
-            map.updateStyle()
-            },2000)
+            setTimeout(() => {
+                // map.statData('size').setData(data)
+                map.psFillOpacity(0.8)
+                .legend({
+                    sizeLegend: {
+                        values: [1000, 5000],
+                    },
+                })
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 3000)
 
-            setTimeout(()=>{
-              map.statData('size').setData(data)
-              map.updateStatValues()
-              map.updateClassification()
-            map.updateStyle()
-            },4000)
+            setTimeout(() => {
+                // map.statData('size').setData(data)
+                map.psFillOpacity(0.2)
+                .legend({
+                    sizeLegend: {
+                        values: [1200, 200],
+                    },
+                })
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 4000)
+
+            setTimeout(() => {
+                // map.statData('size').setData(data)
+                map.psFillOpacity(0.1)
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 5000)
 
             //D3 symbols
-// symbolsFill
-// symbolsStroke
-// symbolAsterisk
-// symbolCircle
-// symbolCross
-// symbolDiamond
-// symbolDiamond2
-// symbolPlus
-// symbolSquare
-// symbolSquare2
-// symbolStar
-// symbolTriangle
-// symbolTriangle2
-// symbolWye
-// symbolTimes
-
+            // symbolsFill
+            // symbolsStroke
+            // symbolAsterisk
+            // symbolCircle
+            // symbolCross
+            // symbolDiamond
+            // symbolDiamond2
+            // symbolPlus
+            // symbolSquare
+            // symbolSquare2
+            // symbolStar
+            // symbolTriangle
+            // symbolTriangle2
+            // symbolWye
+            // symbolTimes
         </script>
     </body>
 </html>
