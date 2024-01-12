@@ -1537,16 +1537,16 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             }
 
-            out.centroidFeatures = centroidFeatures
+            out._centroidFeatures = centroidFeatures
 
             // g_ps is the g element containing all prop symbols for the map
             const gcp = zg.append('g').attr('id', 'g_ps')
             //allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
-            let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
+            let data = out.statData('size').getArray() ? out.statData('size') : out.statData()
             gcp.selectAll('g')
                 .data(
                     // filter out regions with no data
-                    out.centroidFeatures.filter((rg)=>data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !==':').sort(function (a, b) {
+                    out._centroidFeatures.filter((rg)=>data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !==':').sort(function (a, b) {
                         let val1 = data.get(a.properties.id)
                         let val2 = data.get(b.properties.id)
                         return val2.value - val1.value

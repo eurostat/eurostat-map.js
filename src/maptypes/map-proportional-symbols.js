@@ -262,7 +262,10 @@ export const map = function (config) {
 
             //change draw order according to size
             //TODO - find a more efficient way of updating the symbols and their draw order (maybe using D3 join?)
-            updateSymbolsDrawOrder(map)
+            if (map._centroidFeatures) {
+                updateSymbolsDrawOrder(map)
+            }
+            
 
             // append symbols
             if (out.psCustomSVG_) {
@@ -350,13 +353,14 @@ export const map = function (config) {
      * @param {*} map map instance
      */
     function updateSymbolsDrawOrder(map) {
+        if (!map._centroidFeatures) console.log(map)
         let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
         const gcp = zoomGroup.append('g').attr('id', 'g_ps')
         let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
         gcp.selectAll('g')
             .data(
                 // filter out regions with no data
-                map.centroidFeatures
+                map._centroidFeatures
                     .filter((rg) => data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !== ':')
                     .sort(function (a, b) {
                         let val1 = data.get(a.properties.id)
