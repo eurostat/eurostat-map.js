@@ -89,7 +89,7 @@ export const legend = function (map, config) {
                 if (key == 'colorLegend' || key == 'sizeLegend') {
                     for (let p in out[key]) {
                         //override each property in size and color legend m.legend_
-                        if (m.legend_[key][p]) {
+                        if (typeof m.legend_[key][p] !== 'undefined') {
                             out[key][p] = m.legend_[key][p]
                         }
                     }

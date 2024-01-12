@@ -299,6 +299,7 @@
                 .insetBoxPosition([400, 10])
                 .width(mapWidth)
                 .height(mapHeight)
+                .labelling(true)
                 .nutsLvl('mixed')
                 .psFill('#4ac499')
                 .psShape('circle')
@@ -323,6 +324,10 @@
                 .pixSize(7400)
                 .width(mapWidth)
                 .height(mapHeight)
+                .labelling(true)
+                .labelsConfig({
+                    test:false
+                })
                 .nutsLvl('mixed')
                 .psFill('#4ac499')
                 .psShape('triangle')
@@ -368,7 +373,7 @@
                 map.psFillOpacity(0.2)
                 .legend({
                     sizeLegend: {
-                        values: [1200, 200],
+                        values: false,
                     },
                 })
                 map.updateStatValues()

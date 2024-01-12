@@ -1809,12 +1809,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //define which labels to use (cc, countries, seas, values)
         if (map.labelsToShow_.includes('countries') || map.labelsToShow_.includes('seas')) {
-            if (labels[map.geo_ + '_' + map.proj_][language]) {
-                labelsArray = labels[map.geo_ + '_' + map.proj_][language]
+            if (labels[map.geo_ + '_' + map.proj_] && labels[map.geo_ + '_' + map.proj_][language]) {
+                labelsArray = labels[map.geo_ + '_' + map.proj_][language] || []
             } else {
                 //if geo doesnt have labels in the chosen language, fall back to english
                 //this helps save space by not including labels in other languages that are spelt the same in english
-                labelsArray = labels[map.geo_ + '_' + map.proj_].en
+                labelsArray = labels[map.geo_ + '_' + map.proj_]?.en || []
             }
         }
         //add country codes to labels array
