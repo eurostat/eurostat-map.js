@@ -158,6 +158,16 @@
                 map.build()
             }, 4000)
 
+            setTimeout(() => {
+                map.insets(insetsCfg)
+                map.build()
+            }, 5000)
+
+            setTimeout(() => {
+                map.insets([])
+                map.build()
+            }, 6000)
+
             map.build()
         </script>
     </body>

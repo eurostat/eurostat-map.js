@@ -9,6 +9,7 @@ import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util'
 import * as tp from '../lib/eurostat-tooltip'
 import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
+import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 
 // set default d3 locale
 formatDefaultLocale({
@@ -1051,13 +1052,11 @@ export const mapTemplate = function (config, withCenterPoints) {
      */
     out.removeInsets = function () {
         if (out.insetTemplates_) {
-            console.log(out.insetTemplates_)
-
             for (let template in out.insetTemplates_) {
                 let id = out.insetTemplates_[template].svgId_
                 let existing = select('#' + id)
                 // if (existing) existing.remove()
-                if (existing) existing.html(""); // empty them, but dont remove them.
+                if (existing) existing.html('') // empty them, but dont remove them.
             }
             out.insetTemplates_ = {} //  GISCO-2676
         }
@@ -1809,6 +1808,83 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             }
         }
+    }
+
+    /**
+     * @description update the statistical values labels on the map
+     * @param {Object} map eurostat-map map instance
+     * @return {} out
+     */
+    out.updateValuesLabels = function (map) {
+        // apply to main map
+        //clear previous labels
+        let prevLabels = map.svg_.selectAll('g.stat-label > *')
+        prevLabels.remove()
+        let prevShadows = map.svg_.selectAll('g.stat-label-shadow > *')
+        prevShadows.remove()
+
+        let statLabels = map.svg_.selectAll('g.stat-label')
+
+        statLabels
+            .filter((d) => {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                    const s = out.statData()
+                    const sv = s.get(d.properties.id)
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                return false
+            })
+            .append('text')
+            .text(function (d) {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                    const s = out.statData()
+                    const sv = s.get(d.properties.id)
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        return ''
+                    } else {
+                        if (sv.value !== ':') {
+                            return spaceAsThousandSeparator(sv.value)
+                        }
+                    }
+                }
+            })
+
+        //add shadows to labels
+        if (out.labelShadow_) {
+            map.svg_
+                .selectAll('g.stat-label-shadow')
+                .filter((d) => {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                        const s = out.statData()
+                        const sv = s.get(d.properties.id)
+                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }
+                    return false
+                })
+                .append('text')
+                .text(function (d) {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                        const s = out.statData()
+                        const sv = s.get(d.properties.id)
+                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                            return ''
+                        } else {
+                            if (sv.value !== ':') {
+                                return spaceAsThousandSeparator(sv.value)
+                            }
+                        }
+                    }
+                })
+        }
+        return out
     }
 
     /**

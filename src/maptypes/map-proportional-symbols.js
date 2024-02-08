@@ -256,7 +256,6 @@ export const map = function (config) {
         // if size dataset not defined then use default
 
         let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
-        let colorData = map.statData('color')
 
         if (map.svg_) {
             //clear previous symbols
@@ -292,9 +291,9 @@ export const map = function (config) {
                     addSymbolsToMixedNUTS(map, sizeData, regions)
                 }
 
-                // nuts regions fill colour only for those with colorData
+                // nuts regions fill colour only for those with sizeData
                 regions.style('fill', function (rg) {
-                    const sv = colorData.get(rg.properties.id)
+                    const sv = sizeData.get(rg.properties.id)
                     if (!sv || !sv.value) {
                         return out.worldFillStyle_
                     } else {
@@ -304,7 +303,7 @@ export const map = function (config) {
             } else {
                 // world countries fill
                 regions.style('fill', function (rg) {
-                    const sv = colorData.get(rg.properties.id)
+                    const sv = sizeData.get(rg.properties.id)
                     if (!sv || !sv.value) {
                         return out.worldFillStyle_
                     } else {
@@ -315,8 +314,88 @@ export const map = function (config) {
 
             // set color/stroke/opacity styles
             setSymbolColors(symb)
+
+            // update labels of stat values, appending the stat labels to the region centroids
+            if (out.labelsToShow_.includes('values')) {
+                out.updateValuesLabels(map)
+            }
         }
         return map
+    }
+
+    /**
+     * OVERRIDE
+     * @description update the statistical values labels on the map
+     * @param {Object} map eurostat-map map instance
+     * @return {} out
+     */
+    out.updateValuesLabels = function (map) {
+        // apply to main map
+        //clear previous labels
+        let prevLabels = map.svg_.selectAll('g.stat-label > *')
+        prevLabels.remove()
+        let prevShadows = map.svg_.selectAll('g.stat-label-shadow > *')
+        prevShadows.remove()
+
+        let statLabels = map.svg_.selectAll('g.stat-label')
+        let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
+
+        statLabels
+            .filter((d) => {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                    const sv = sizeData.get(d.properties.id)
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                return false
+            })
+            .append('text')
+            .text(function (d) {
+                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                    const sv = sizeData.get(d.properties.id)
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        return ''
+                    } else {
+                        if (sv.value !== ':') {
+                            return spaceAsThousandSeparator(sv.value)
+                        }
+                    }
+                }
+            })
+
+        //add shadows to labels
+        if (out.labelShadow_) {
+            map.svg_
+                .selectAll('g.stat-label-shadow')
+                .filter((d) => {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                        const sv = sizeData.get(d.properties.id)
+                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }
+                    return false
+                })
+                .append('text')
+                .text(function (d) {
+                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+                        const sv = sizeData.get(d.properties.id)
+                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                            return ''
+                        } else {
+                            if (sv.value !== ':') {
+                                return spaceAsThousandSeparator(sv.value)
+                            }
+                        }
+                    }
+                })
+        }
+        return out
     }
 
     /**

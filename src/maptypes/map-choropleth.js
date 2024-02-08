@@ -4,7 +4,7 @@ import { scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
 import { interpolateYlOrBr } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+
 
 /**
  * Returns a chroropleth map.
@@ -354,83 +354,6 @@ import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
         }
     }
 
-
-    /**
-    * @description update the statistical values labels on the map
-    * @param {Object} map eurostat-map map instance
-    * @return {} out
-    */
-    out.updateValuesLabels = function (map) {
-        // apply to main map
-        //clear previous labels
-        let prevLabels = map.svg_.selectAll('g.stat-label > *')
-        prevLabels.remove()
-        let prevShadows = map.svg_.selectAll('g.stat-label-shadow > *')
-        prevShadows.remove()
-
-        let statLabels = map.svg_.selectAll('g.stat-label')
-
-        statLabels
-            .filter((d) => {
-                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                    const s = out.statData()
-                    const sv = s.get(d.properties.id)
-                    if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-                return false
-            })
-            .append('text')
-            .text(function (d) {
-                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                    const s = out.statData()
-                    const sv = s.get(d.properties.id)
-                    if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
-                        return ''
-                    } else {
-                        if (sv.value !== ':') {
-                            return spaceAsThousandSeparator(sv.value)
-                        }
-                    }
-                }
-            })
-
-        //add shadows to labels
-        if (out.labelShadow_) {
-            map.svg_
-                .selectAll('g.stat-label-shadow')
-                .filter((d) => {
-                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                        const s = out.statData()
-                        const sv = s.get(d.properties.id)
-                        if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }
-                    return false
-                })
-                .append('text')
-                .text(function (d) {
-                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                        const s = out.statData()
-                        const sv = s.get(d.properties.id)
-                        if (!sv || !sv.value && (sv !==0 && sv.value !== 0)) {
-                            return ''
-                        } else {
-                            if (sv.value !== ':') {
-                                return spaceAsThousandSeparator(sv.value)
-                            }
-                        }
-                    }
-                })
-        }
-        return out
-    }
 
     //@override
     out.getLegendConstructor = function () {
