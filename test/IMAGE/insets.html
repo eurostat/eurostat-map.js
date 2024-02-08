@@ -28,6 +28,7 @@
         </div>
 
         <script src="../../build/eurostatmap.js"></script>
+        <script src="./newInsetsLayout.js"></script>
         <script src="../data/nuts3.js"></script>
         <!-- <script src="../configs/insetConfig_ext.js"></script> -->
         <script src="../data/mixed.js"></script>
@@ -36,8 +37,8 @@
             let mapHeight = 608
             const h = 81.26
             const w = 71.81
-            const s = 70 // inset size
-            const p = 4 // inset padding
+            const size = 70 // inset size
+            const padding = 4 // inset padding
             const insetsCfg = [
                 {
                     geo: 'MT',
@@ -89,7 +90,7 @@
                     .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
                     .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
                     .bordersToShow(['eu', 'co', 'cc', 'efta'])
-                    .insets(false)
+                    .insets(insetsConfig())
                     .nuts2jsonBaseURL('https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/')
                     .scalebarPosition([420, 560])
                     .nutsrgSelFillSty('#003E8C')
@@ -143,7 +144,7 @@
 
             // apply labelling
             setTimeout(() => {
-                map.insets('default')
+                map.insets(false)
                 map.build()
             }, 2000)
 
@@ -153,7 +154,7 @@
             }, 3000)
 
             setTimeout(() => {
-                map.insets('default')
+                map.insets(insetsConfig())
                 map.build()
             }, 4000)
 

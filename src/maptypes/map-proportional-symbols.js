@@ -138,28 +138,28 @@ export const map = function (config) {
         defineClassifiers()
 
         // apply classification to all insets that are outside of the main map's SVG
-        if (out.insetTemplates_) {
-            for (const geo in out.insetTemplates_) {
-                if (Array.isArray(out.insetTemplates_[geo])) {
-                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                        // insets with same geo that do not share the same parent inset
-                        if (Array.isArray(out.insetTemplates_[geo][i])) {
-                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
-                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
-                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
-                            }
-                        } else {
-                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
-                                applyClassificationToMap(out.insetTemplates_[geo][i])
-                        }
-                    }
-                } else {
-                    // unique inset geo_
-                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
-                }
-            }
-        }
+        // if (out.insetTemplates_) {
+        //     for (const geo in out.insetTemplates_) {
+        //         if (Array.isArray(out.insetTemplates_[geo])) {
+        //             for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+        //                 // insets with same geo that do not share the same parent inset
+        //                 if (Array.isArray(out.insetTemplates_[geo][i])) {
+        //                     // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+        //                     for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+        //                         if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+        //                             applyClassificationToMap(out.insetTemplates_[geo][i][c])
+        //                     }
+        //                 } else {
+        //                     if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
+        //                         applyClassificationToMap(out.insetTemplates_[geo][i])
+        //                 }
+        //             }
+        //         } else {
+        //             // unique inset geo_
+        //             if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
+        //         }
+        //     }
+        // }
 
         // apply to main map
         applyClassificationToMap(out)
@@ -172,20 +172,23 @@ export const map = function (config) {
      * @param {*} map
      */
     function applyClassificationToMap(map) {
-        if (map.svg()) {
+        if (map.svg_) {
             if (map.classifierColor_) {
                 //assign color class to each symbol, based on their value
                 // at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
-                map.svg()
-                    .selectAll('.symbol')
-                    .attr('ecl', function (rg) {
-                        const sv = map.statData('color').get(rg.properties.id)
-                        if (!sv) return 'nd'
-                        const v = sv.value
-                        if (v != 0 && !v) return 'nd'
-                        let c = +map.classifierColor()(+v)
-                        return c
-                    })
+                let colorData = map.statData('color')
+                map.svg_.selectAll('.symbol').attr('ecl', function (rg) {
+                    const sv = colorData.get(rg.properties.id)
+                    if (!sv) {
+                        return 'nd'
+                    }
+                    const v = sv.value
+                    if (v !== 0 && !v) {
+                        return 'nd'
+                    }
+                    let c = +map.classifierColor_(+v)
+                    return c
+                })
             }
         }
     }
@@ -252,32 +255,32 @@ export const map = function (config) {
         let symb
         // if size dataset not defined then use default
 
-        let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
+        let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
+        let colorData = map.statData('color')
 
-        if (map.svg()) {
+        if (map.svg_) {
             //clear previous symbols
             let prevSymbols = map.svg_.selectAll(':not(#insetsgroup) g.symbol > *')
             // if map is main map this clears insets too
             prevSymbols.remove()
 
-            //change draw order according to size
-            //TODO - find a more efficient way of updating the symbols and their draw order (maybe using D3 join?)
+            //change draw order according to size, then reclassify (there was an issue with nodes changing ecl attributes)
             if (map._centroidFeatures) {
                 updateSymbolsDrawOrder(map)
+                applyClassificationToMap(map)
             }
-            
 
             // append symbols
             if (out.psCustomSVG_) {
-                symb = appendCustomSymbolsToMap(map, data)
+                symb = appendCustomSymbolsToMap(map, sizeData)
             } else if (out.psShape_ == 'bar') {
-                symb = appendBarsToMap(map, data)
+                symb = appendBarsToMap(map, sizeData)
             } else if (out.psShape_ == 'circle') {
-                symb = appendCirclesToMap(map, data)
+                symb = appendCirclesToMap(map, sizeData)
             } else {
                 // d3.symbol symbols
                 // circle, cross, star, triangle, diamond, square, wye or custom
-                symb = appendD3SymbolsToMap(map, data)
+                symb = appendD3SymbolsToMap(map, sizeData)
             }
 
             // set style of symbols
@@ -286,85 +289,80 @@ export const map = function (config) {
 
             if (map.geo_ !== 'WORLD') {
                 if (map.nutsLvl_ == 'mixed') {
-                    addSymbolsToMixedNUTS(map, data, regions)
+                    addSymbolsToMixedNUTS(map, sizeData, regions)
                 }
 
-                // nuts regions fill colour only for those with data
-                regions
-                    // .attr('fill', function (rg) {
-                    //     const sv = data.get(rg.properties.id)
-                    //     if (sv) {
-                    //         return out.nutsrgFillStyle_
-                    //     } else {
-                    //         return out.cntrgFillStyle_
-                    //     }
-                    // })
-                    .style('fill', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (!sv || !sv.value) {
-                            return out.worldFillStyle_
-                        } else {
-                            return out.nutsrgFillStyle_
-                        }
-                    })
-            } else {
-                // world countries fill
-                regions
-                    // .attr('fill', function (rg) {
-                    //     const sv = data.get(rg.properties.id)
-                    //     if (!sv || !sv.value) {
-                    //         return out.worldFillStyle_
-                    //     } else {
-                    //         return out.nutsrgFillStyle_
-                    //     }
-                    // })
-                    .style('fill', function (rg) {
-                        const sv = data.get(rg.properties.id)
-                        if (!sv || !sv.value) {
-                            return out.worldFillStyle_
-                        } else {
-                            return out.nutsrgFillStyle_
-                        }
-                    })
-            }
-
-            // common settings for all symbols
-            symb.style('fill-opacity', out.psFillOpacity())
-                .style('stroke', out.psStroke())
-                .style('stroke-width', out.psStrokeWidth())
-                .style('fill', function () {
-                    if (out.classifierColor_) {
-                        //for ps, ecl attribute belongs to the parent g.symbol node created in map-template
-                        const ecl = select(this.parentNode).attr('ecl')
-                        if (!ecl || ecl === 'nd') return out.noDataFillStyle() || 'gray'
-                        let color = out.psClassToFillStyle_(ecl, out.psClasses_)
-                        return color
+                // nuts regions fill colour only for those with colorData
+                regions.style('fill', function (rg) {
+                    const sv = colorData.get(rg.properties.id)
+                    if (!sv || !sv.value) {
+                        return out.worldFillStyle_
                     } else {
-                        return out.psFill()
+                        return out.nutsrgFillStyle_
                     }
                 })
+            } else {
+                // world countries fill
+                regions.style('fill', function (rg) {
+                    const sv = colorData.get(rg.properties.id)
+                    if (!sv || !sv.value) {
+                        return out.worldFillStyle_
+                    } else {
+                        return out.nutsrgFillStyle_
+                    }
+                })
+            }
+
+            // set color/stroke/opacity styles
+            setSymbolColors(symb)
         }
         return map
     }
 
+    /**
+     * @description sets color/stroke/opacity styles of all symbols
+     * @param {d3.selection} symb symbols d3 selection
+     */
+    function setSymbolColors(symb) {
+        symb.style('fill-opacity', out.psFillOpacity())
+            .style('stroke', out.psStroke())
+            .style('stroke-width', out.psStrokeWidth())
+            .style('fill', function () {
+                if (out.classifierColor_) {
+                    //for ps, ecl attribute belongs to the parent g.symbol node created in map-template
+                    const ecl = select(this.parentNode).attr('ecl')
+                    if (!ecl || ecl === 'nd') return out.noDataFillStyle_ || 'gray'
+                    let color = out.psClassToFillStyle_(ecl, out.psClasses_)
+                    return color
+                } else {
+                    return out.psFill_
+                }
+            })
+    }
 
-        /**
+    /**
      * @description Updates the draw order of the symbols according to their data values
      * @param {*} map map instance
      */
     function updateSymbolsDrawOrder(map) {
-        if (!map._centroidFeatures) console.log(map)
         let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
         const gcp = zoomGroup.select('#g_ps')
-        let data = map.statData('size').getArray() ? map.statData('size') : map.statData()
-        gcp.selectAll('g')
+        let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
+        let symbols = gcp
+            .selectAll('g')
             .data(
-                // filter out regions with no data
-                map._centroidFeatures
-                    .filter((rg) => data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !== ':')
+                // filter out regions with no data and sort by size
+                [...map._centroidFeatures]
+                    .filter((rg) => {
+                        const sv = sizeData.get(rg.properties.id)
+                        // has size data
+                        if (sv && sv.value !== 0) {
+                            return rg
+                        }
+                    })
                     .sort(function (a, b) {
-                        let val1 = data.get(a.properties.id)
-                        let val2 = data.get(b.properties.id)
+                        let val1 = sizeData.get(a.properties.id)
+                        let val2 = sizeData.get(b.properties.id)
                         return val2.value - val1.value
                     })
             )
@@ -373,62 +371,28 @@ export const map = function (config) {
             .attr('transform', function (d) {
                 return 'translate(' + map._projection(d.geometry.coordinates) + ')'
             })
-            //.attr("r", 1)
-            .attr('class', 'symbol')
-            //.attr('val', (rg)=>data.get(rg.properties.id).value) //debugging
-            .style('fill', 'gray')
-            .attr('id', (d) => 'ps' + d.properties.id)
-            .on('mouseover', function (e, rg) {
-                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                        const sel = select(this.childNodes[0])
-                        sel.attr('fill___', sel.style('fill'))
-                        sel.style('fill', out.nutsrgSelFillSty_)
-                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                    }
-                } else {
-                    const sel = select(this.childNodes[0])
-                    sel.attr('fill___', sel.style('fill'))
-                    sel.style('fill', out.nutsrgSelFillSty_)
-                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                }
-            })
-            .on('mousemove', function (e, rg) {
-                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                        if (out._tooltip) out._tooltip.mousemove(e)
-                    }
-                } else {
-                    if (out._tooltip) out._tooltip.mousemove(e)
-                }
-            })
-            .on('mouseout', function (e) {
-                const sel = select(this.childNodes[0])
-                let newFill = sel.attr('fill___')
-                if (newFill) {
-                    sel.style('fill', newFill)
-                    if (out._tooltip) out._tooltip.mouseout()
-                }
-            })
+
+        // update colors
+        setSymbolColors(symbols)
     }
 
     /**
      * @description Appends <circle> elements for each region in the map SVG
      * @param {*} map map instance
-     * @param {*} data e.g. map.statData('size')
-     * @return {*}
+     * @param {*} sizeData statistical data for size e.g. map.statData('size')
+     * @return {void}
      */
-    function appendCirclesToMap(map, data) {
+    function appendCirclesToMap(map, sizeData) {
         return map
             .svg()
             .selectAll('g.symbol')
             .append('circle')
             .filter((rg) => {
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (sv && sv.value !== ':') return rg
             })
             .attr('r', (rg) => {
-                let s = out.classifierSize_(data.get(rg.properties.id).value)
+                let s = out.classifierSize_(sizeData.get(rg.properties.id).value)
                 return s || 0
             })
     }
@@ -436,23 +400,23 @@ export const map = function (config) {
     /**
      * @description Appends <path> elements containing symbols for each region in the map SVG
      * @param {*} map map instance
-     * @param {*} data e.g. map.statData('size')
+     * @param {*} sizeData e.g. map.statData('size')
      * @return {*}
      */
-    function appendD3SymbolsToMap(map, data) {
+    function appendD3SymbolsToMap(map, sizeData) {
         return map
             .svg()
             .selectAll('g.symbol')
             .append('path')
             .filter((rg) => {
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (sv && sv.value !== ':') return rg
             })
             .attr('class', 'ps')
             .attr('d', (rg) => {
                 //calculate size
-                if (!data) return
-                const sv = data.get(rg.properties.id)
+                if (!sizeData) return
+                const sv = sizeData.get(rg.properties.id)
                 if (sv != 0 && !sv) return
                 let size = out.classifierSize_(+sv.value) || 0
 
@@ -471,10 +435,10 @@ export const map = function (config) {
     /**
      * @description Appends <rect> elements containing bars for each region in the map SVG
      * @param {*} map map instance
-     * @param {*} data e.g. map.statData('size')
+     * @param {*} sizeData e.g. map.statData('size')
      * @return {*}
      */
-    function appendBarsToMap(map, data) {
+    function appendBarsToMap(map, sizeData) {
         return (
             map
                 .svg()
@@ -482,13 +446,13 @@ export const map = function (config) {
                 .selectAll('g.symbol')
                 .append('rect')
                 .filter((rg) => {
-                    const sv = data.get(rg.properties.id)
+                    const sv = sizeData.get(rg.properties.id)
                     if (sv && sv.value !== ':') return rg
                 })
                 .attr('width', out.psBarWidth_)
                 //for vertical bars we scale the height attribute using the classifier
                 .attr('height', function (rg) {
-                    const sv = data.get(rg.properties.id)
+                    const sv = sizeData.get(rg.properties.id)
                     if (!sv || !sv.value) {
                         return 0
                     }
@@ -507,24 +471,24 @@ export const map = function (config) {
     /**
      * @description Appends custom SVG symbols for each region in the map
      * @param {*} map
-     * @param {*} data
+     * @param {*} sizeData
      * @return {*}
      */
-    function appendCustomSymbolsToMap(map, data) {
+    function appendCustomSymbolsToMap(map, sizeData) {
         return map
             .svg()
             .select('#g_ps')
             .selectAll('g.symbol')
             .append('g')
             .filter((rg) => {
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (sv && sv.value !== ':') return rg
             })
             .attr('class', 'ps')
             .html(out.psCustomSVG_)
             .attr('transform', (rg) => {
                 //calculate size
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 let size = out.classifierSize_(+sv.value)
                 if (size) {
                     return `translate(${out.psOffset_.x * size},${out.psOffset_.y * size}) scale(${size})`
@@ -535,17 +499,17 @@ export const map = function (config) {
     /**
      * @description adds proportional symbols to each regions in a map with mixed NUTS levels (IMAGE)
      * @param {*} map
-     * @param {*} data
+     * @param {*} sizeData
      * @param {*} regions
      * @return {*}
      */
-    function addSymbolsToMixedNUTS(map, data, regions) {
-        // Toggle symbol visibility - only show regions with stat values when mixing different NUTS levels
+    function addSymbolsToMixedNUTS(map, sizeData, regions) {
+        // Toggle symbol visibility - only show regions with sizeData stat values when mixing different NUTS levels
         let symb = map
             .svg()
             .selectAll('g.symbol')
             .style('display', function (rg) {
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (
                     !sv ||
                     !sv.value ||
@@ -560,7 +524,7 @@ export const map = function (config) {
 
         // toggle display of mixed NUTS levels
         regions.style('display', function (rg) {
-            const sv = data.get(rg.properties.id)
+            const sv = sizeData.get(rg.properties.id)
             if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                 return 'none'
             } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
@@ -572,7 +536,7 @@ export const map = function (config) {
         regions
             .style('stroke', function (rg) {
                 const lvl = select(this).attr('lvl')
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                     return
                 } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
@@ -585,7 +549,7 @@ export const map = function (config) {
             // nuts border stroke width
             .style('stroke-width', function (rg) {
                 const lvl = select(this).attr('lvl')
-                const sv = data.get(rg.properties.id)
+                const sv = sizeData.get(rg.properties.id)
                 if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                     return
                 } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || out.geo_ == 'WORLD') {

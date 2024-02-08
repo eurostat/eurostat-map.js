@@ -558,7 +558,7 @@ export const map = function (config) {
 
         //write total
         let total = getRegionTotal(rg.properties.id)
-        breakdownDiv.innerHTML = breakdownDiv.innerHTML + `<hr><strong>Total</strong>: ${total.toFixed()} <br>`
+        breakdownDiv.innerHTML = breakdownDiv.innerHTML + `<strong>Total</strong>: ${total.toFixed()} <br>`
         // append div to tooltip
         tp.node().appendChild(breakdownDiv)
     }

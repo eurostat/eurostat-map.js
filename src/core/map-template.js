@@ -64,7 +64,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.subtitleFontSize_ = 12
     out.subtitleFill_ = 'grey'
     out.subtitlePosition_ = undefined
-    out.subtitleFontWeight_ = 'bold'
+    out.subtitleFontWeight_ = 100
     out.subtitleStroke_ = 'none'
     out.subtitleStrokeWidth_ = 'none'
 
@@ -953,8 +953,6 @@ export const mapTemplate = function (config, withCenterPoints) {
      * Build a map object, including container, frame, map svg, insets and d3 zoom
      */
     out.buildMapTemplateBase = function () {
-        out.insetTemplates_ = {} //  GISCO-2676
-
         //get svg element. Create it if it does not exists
         let svg = select('#' + out.svgId())
         if (svg.size() == 0) svg = select('body').append('svg').attr('id', out.svgId())
@@ -1013,11 +1011,8 @@ export const mapTemplate = function (config, withCenterPoints) {
         const zg = dg.append('g').attr('id', 'zoomgroup' + out.svgId_) //out.geo changed to out.svgId in order to be unique
 
         //insets
-        if (out.insets_) {
-            out.buildInsets()
-        } else {
-            out.removeInsets()
-        }
+        out.removeInsets() //remove existing
+        out.buildInsets() //build new
 
         //draw frame
         dg.append('rect')
@@ -1055,10 +1050,17 @@ export const mapTemplate = function (config, withCenterPoints) {
      * Remove insets maps from the DOM
      */
     out.removeInsets = function () {
-        let svg = select('#' + out.svgId_)
-        let drawingGroup = svg.select('#drawing' + out.svgId_)
-        let existing = drawingGroup.select('#insetsgroup')
-        if (existing) existing.remove()
+        if (out.insetTemplates_) {
+            console.log(out.insetTemplates_)
+
+            for (let template in out.insetTemplates_) {
+                let id = out.insetTemplates_[template].svgId_
+                let existing = select('#' + id)
+                // if (existing) existing.remove()
+                if (existing) existing.html(""); // empty them, but dont remove them.
+            }
+            out.insetTemplates_ = {} //  GISCO-2676
+        }
     }
 
     /**
@@ -1070,6 +1072,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         }
 
         // add container to drawing group
+        // Cannot read properties of undefined (reading 'svgId')
         let svg = select('#' + out.svgId_)
         let drawingGroup = svg.select('#drawing' + out.svgId_)
         const ing = drawingGroup
@@ -1077,8 +1080,12 @@ export const mapTemplate = function (config, withCenterPoints) {
             .attr('id', 'insetsgroup')
             .attr('transform', 'translate(' + out.insetBoxPosition_[0] + ',' + out.insetBoxPosition_[1] + ')')
 
-        //if needed, use default inset setting
-        if (out.insets_ === 'default') out.insets_ = defaultInsetConfig(out.insetBoxWidth_, out.insetBoxPadding_)
+        if (out.insets_ === 'default') {
+            //if needed, use default inset config
+            out.insets_ = defaultInsetConfig(out.insetBoxWidth_, out.insetBoxPadding_)
+        }
+
+        // append each inset to map
         for (let i = 0; i < out.insets_.length; i++) {
             const config = out.insets_[i]
             config.svgId = config.svgId || 'inset' + config.geo + Math.random().toString(36).substring(7)
@@ -1559,20 +1566,17 @@ export const mapTemplate = function (config, withCenterPoints) {
             const gcp = zg.append('g').attr('id', 'g_ps')
             //allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
             gcp.selectAll('g')
-
                 .data(
-                    // filter out regions with no data and order by value in each map type template updateStyle
-                    out._centroidFeatures
+                    // filter out regions with no data and order by value in each map type template.
+                    // See updateSymbolsDrawOrder in map-proportional-symbols.js for example
+                    [...out._centroidFeatures]
                 )
                 .enter()
                 .append('g')
                 .attr('transform', function (d) {
                     return 'translate(' + out._projection(d.geometry.coordinates) + ')'
                 })
-                //.attr("r", 1)
                 .attr('class', 'symbol')
-                //.attr('val', (rg)=>data.get(rg.properties.id).value) //debugging
-                .style('fill', 'gray')
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (e, rg) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
