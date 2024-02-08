@@ -357,6 +357,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.insets = function () {
         if (!arguments.length) return out.insets_
         if (arguments.length == 1 && arguments[0] === 'default') out.insets_ = 'default'
+        else if (arguments.length == 1 && arguments[0] === false) out.insets_ = false
         else if (arguments.length == 1 && Array.isArray(arguments[0])) out.insets_ = arguments[0]
         else out.insets_ = arguments
         return out
@@ -876,7 +877,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     /**
      * Requests geographic data and builds the map template
      */
-    out.updateGeoMT = function (callback) {
+    out.updateGeoMapTemplate = function (callback) {
         //erase previous data
         geoData = null
         allNUTSGeoData = null
@@ -935,14 +936,14 @@ export const mapTemplate = function (config, withCenterPoints) {
                     if (Array.isArray(out.insetTemplates_[geo][i])) {
                         // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
                         for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                            out.insetTemplates_[geo][i][c].updateGeoMT(callback)
+                            out.insetTemplates_[geo][i][c].updateGeoMapTemplate(callback)
                         }
                     } else {
-                        out.insetTemplates_[geo][i].updateGeoMT(callback)
+                        out.insetTemplates_[geo][i].updateGeoMapTemplate(callback)
                     }
                 }
             } else {
-                out.insetTemplates_[geo].updateGeoMT(callback)
+                out.insetTemplates_[geo].updateGeoMapTemplate(callback)
             }
         }
         return out
@@ -1005,47 +1006,17 @@ export const mapTemplate = function (config, withCenterPoints) {
         const dg = svg
             .insert('g', ':first-child')
             .attr('id', 'drawing' + out.svgId_)
+            .attr('class', 'estatmap-drawing-group')
             .attr('clip-path', 'url(#' + out.svgId_ + '_clipP' + ')')
 
         //create main zoom group
         const zg = dg.append('g').attr('id', 'zoomgroup' + out.svgId_) //out.geo changed to out.svgId in order to be unique
 
         //insets
-        if (!out.insetBoxPosition_)
-            out.insetBoxPosition_ = [out.width() - out.insetBoxWidth() - 2 * out.insetBoxPadding(), 2 * out.insetBoxPadding()]
-        const ing = dg
-            .append('g')
-            .attr('id', 'insetsgroup')
-            .attr('transform', 'translate(' + out.insetBoxPosition()[0] + ',' + out.insetBoxPosition()[1] + ')')
-        //if needed, use default inset setting
-        if (out.insets_ === 'default') out.insets_ = defaultInsetConfig(out.insetBoxWidth(), out.insetBoxPadding())
-        for (let i = 0; i < out.insets_.length; i++) {
-            const config = out.insets_[i]
-            config.svgId = config.svgId || 'inset' + config.geo + Math.random().toString(36).substring(7)
-
-            //get svg element. Create it if it as an embeded SVG if it does not exists
-            let svg = select('#' + config.svgId)
-            if (svg.size() == 0) {
-                const x = config.x == undefined ? out.insetBoxPadding_ : config.x
-                const y =
-                    config.y == undefined ? out.insetBoxPadding_ + i * (out.insetBoxPadding_ + out.insetBoxWidth_) : config.y
-                const ggeo = ing
-                    .append('g')
-                    .attr('id', 'insetzg' + config.svgId)
-                    .attr('transform', 'translate(' + x + ',' + y + ')')
-                ggeo.append('svg').attr('id', config.svgId)
-            }
-
-            // build inset
-            // GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
-            if (out.insetTemplates_[config.geo]) {
-                //if inset already exists in map with same geo, then push both to an array
-                let inset = buildInset(config, out)
-                inset.buildMapTemplateBase()
-                out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo], inset]
-            } else {
-                out.insetTemplates_[config.geo] = buildInset(config, out).buildMapTemplateBase()
-            }
+        if (out.insets_) {
+            out.buildInsets()
+        } else {
+            out.removeInsets()
         }
 
         //draw frame
@@ -1074,25 +1045,70 @@ export const mapTemplate = function (config, withCenterPoints) {
                             })
                     zg.attr('transform', e.transform)
                 })
-                .on('end', function (e) {
-                    // let transform = zoomTransform(svg.node()) // get the current zoom
-                    // let m = pointer(this)
-                    // let xy = transform.invert([out.width_ / 2, out.height_ / 2])
-                    // let longlat = out._projection.invert(xy)
-                    //console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
-                    //console.log('pixSize:', parseInt(out.pixSize_ / transform.k))
-                })
             svg.call(xoo)
         }
 
-        // get projected coordinates on click
-        // zg.on('click', function(e) {
-        // 	let transform = zoomTransform(svg.node()); // get the current zoom
-        // 	let xy = transform.invert(pointer(this));
-        // 	let longlat = out._projection.invert(xy);
-        // 	console.log('geoCenter: ', [parseInt(longlat[0]), parseInt(longlat[1])]);
-        // 	console.log('pixSize:', out.pixSize_ / transform.k)
-        // })
+        return out
+    }
+
+        /**
+     * Remove insets maps from the DOM
+     */
+    out.removeInsets = function() {
+        let svg = select('#' + out.svgId_)
+        let drawingGroup = svg.select('#drawing' + out.svgId_)
+        let existing = drawingGroup.select('#insetsgroup')
+        if (existing) existing.remove()
+    }
+
+    /**
+     * Build inset maps for a map template
+     */
+    out.buildInsets = function () {
+        if (!out.insetBoxPosition_) {
+            out.insetBoxPosition_ = [out.width_ - out.insetBoxWidth_ - 2 * out.insetBoxPadding_, 2 * out.insetBoxPadding_]
+        }
+
+        // add container to drawing group
+        let svg = select('#' + out.svgId_)
+        let drawingGroup = svg.select('#drawing' + out.svgId_)
+        const ing = drawingGroup
+            .append('g')
+            .attr('id', 'insetsgroup')
+            .attr('transform', 'translate(' + out.insetBoxPosition_[0] + ',' + out.insetBoxPosition_[1] + ')')
+
+        //if needed, use default inset setting
+        if (out.insets_ === 'default') out.insets_ = defaultInsetConfig(out.insetBoxWidth_, out.insetBoxPadding_)
+        for (let i = 0; i < out.insets_.length; i++) {
+            const config = out.insets_[i]
+            config.svgId = config.svgId || 'inset' + config.geo + Math.random().toString(36).substring(7)
+
+            //get svg element. Create it if it as an embeded SVG if it does not exists
+            let svg = select('#' + config.svgId)
+            if (svg.size() == 0) {
+                const x = config.x == undefined ? out.insetBoxPadding_ : config.x
+                const y =
+                    config.y == undefined ? out.insetBoxPadding_ + i * (out.insetBoxPadding_ + out.insetBoxWidth_) : config.y
+                const ggeo = ing
+                    .append('g')
+                    .attr('id', 'insetzg' + config.svgId)
+                    .attr('transform', 'translate(' + x + ',' + y + ')')
+                ggeo.append('svg').attr('id', config.svgId)
+            }
+
+            // build inset
+            // GISCO-2676 - PT azores inset has 2 insets with the same Geo, so second was overriding first:
+            if (out.insetTemplates_[config.geo]) {
+                //if inset already exists in map with same geo, then push both to an array
+                let inset = buildInset(config, out)
+                inset.buildMapTemplateBase()
+                out.insetTemplates_[config.geo] = [out.insetTemplates_[config.geo], inset]
+            } else {
+                let inset = buildInset(config, out)
+                let drawnInset = inset.buildMapTemplateBase()
+                out.insetTemplates_[config.geo] = drawnInset
+            }
+        }
 
         return out
     }
@@ -1546,11 +1562,13 @@ export const mapTemplate = function (config, withCenterPoints) {
             gcp.selectAll('g')
                 .data(
                     // filter out regions with no data
-                    out._centroidFeatures.filter((rg)=>data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !==':').sort(function (a, b) {
-                        let val1 = data.get(a.properties.id)
-                        let val2 = data.get(b.properties.id)
-                        return val2.value - val1.value
-                    })
+                    out._centroidFeatures
+                        .filter((rg) => data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !== ':')
+                        .sort(function (a, b) {
+                            let val1 = data.get(a.properties.id)
+                            let val2 = data.get(b.properties.id)
+                            return val2.value - val1.value
+                        })
                 )
                 .enter()
                 .append('g')

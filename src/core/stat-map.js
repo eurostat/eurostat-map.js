@@ -160,7 +160,7 @@ export const statMap = function (config, withCenterPoints) {
      * This method should be called after attributes related to the map geometries have changed, to retrieve this new data and refresh the map.
      */
     out.updateGeoData = function () {
-        out.updateGeoMT(() => {
+        out.updateGeoMapTemplate(() => {
             //if stat datasets have not been loaded, wait again
             if (!isStatDataReady()) return
 

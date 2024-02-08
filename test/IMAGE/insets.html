@@ -89,7 +89,7 @@
                     .nutsbnStrokeWidth({ 0: 2, 1: 0.4, 2: 0.4, 3: 0.4, oth: 2, co: 0 })
                     .cntbnStrokeWidth({ eu: 1, efta: 1, cc: 1, oth: 2, co: 0.2 })
                     .bordersToShow(['eu', 'co', 'cc', 'efta'])
-                    .insets(insetsCfg)
+                    .insets(false)
                     .nuts2jsonBaseURL('https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/')
                     .scalebarPosition([420, 560])
                     .nutsrgSelFillSty('#003E8C')
@@ -143,28 +143,19 @@
 
             // apply labelling
             setTimeout(() => {
-                map.labelling(true)
-                    .labelsToShow(['values'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
-                map.updateLabels()
+                map.insets('default')
+                map.build()
             }, 2000)
 
             setTimeout(() => {
-                map.labelling(true)
-                    .labelsToShow(['seas', 'countries'])
-                    .labelValuesFontSize(10)
-                    .labelFill({ seas: '#012a7c', cc: 'black', values: 'black' })
-                    .labelShadow(true)
-
-                // update insets
-                map.insetTemplates_.MT.labelling(false)
-
-                map.updateLabels()
+                map.insets(insetsCfg)
+                map.build()
             }, 3000)
 
-            setTimeout(() => {}, 4000)
+            setTimeout(() => {
+                map.insets('default')
+                map.build()
+            }, 4000)
 
             map.build()
         </script>
