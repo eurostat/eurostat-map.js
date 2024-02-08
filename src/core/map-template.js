@@ -1051,10 +1051,10 @@ export const mapTemplate = function (config, withCenterPoints) {
         return out
     }
 
-        /**
+    /**
      * Remove insets maps from the DOM
      */
-    out.removeInsets = function() {
+    out.removeInsets = function () {
         let svg = select('#' + out.svgId_)
         let drawingGroup = svg.select('#drawing' + out.svgId_)
         let existing = drawingGroup.select('#insetsgroup')
@@ -1558,17 +1558,11 @@ export const mapTemplate = function (config, withCenterPoints) {
             // g_ps is the g element containing all prop symbols for the map
             const gcp = zg.append('g').attr('id', 'g_ps')
             //allow for different symbols by adding a g element here, then adding the symbols in proportional-symbols.js
-            let data = out.statData('size').getArray() ? out.statData('size') : out.statData()
             gcp.selectAll('g')
+
                 .data(
-                    // filter out regions with no data
+                    // filter out regions with no data and order by value in each map type template updateStyle
                     out._centroidFeatures
-                        .filter((rg) => data.get(rg.properties.id)?.value && data.get(rg.properties.id)?.value !== ':')
-                        .sort(function (a, b) {
-                            let val1 = data.get(a.properties.id)
-                            let val2 = data.get(b.properties.id)
-                            return val2.value - val1.value
-                        })
                 )
                 .enter()
                 .append('g')
@@ -2372,15 +2366,16 @@ const _defaultPosition = {
  */
 const defaultInsetConfig = function (s, p) {
     const out = [
-        { geo: 'IC', x: 0, y: 0, width: s, height: 0.3 * s },
-        { geo: 'CARIB', x: 0, y: 0.3 * s + p, width: 0.5 * s, height: s },
-        { geo: 'GF', x: 0.5 * s, y: 0.3 * s + p, width: 0.5 * s, height: 0.75 * s },
+        { geo: 'IC', x: 0, y: 0, width: s, height: 0.3 * s, frameStroke: 'lightgrey' },
+        { geo: 'CARIB', x: 0, y: 0.3 * s + p, width: 0.5 * s, height: s, frameStroke: 'lightgrey' },
+        { geo: 'GF', x: 0.5 * s, y: 0.3 * s + p, width: 0.5 * s, height: 0.75 * s, frameStroke: 'lightgrey' },
         {
             geo: 'YT',
             x: 0.5 * s,
             y: 1.05 * s + p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         {
             geo: 'RE',
@@ -2388,6 +2383,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.05 * s + p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         {
             geo: 'PT20',
@@ -2395,6 +2391,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.3 * s + 2 * p,
             width: 0.75 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         {
             geo: 'PT30',
@@ -2402,14 +2399,16 @@ const defaultInsetConfig = function (s, p) {
             y: 1.3 * s + 2 * p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
-        { geo: 'MT', x: 0, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s },
+        { geo: 'MT', x: 0, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s, frameStroke: 'lightgrey' },
         {
             geo: 'LI',
             x: 0.25 * s,
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         {
             geo: 'SJ_SV',
@@ -2417,6 +2416,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         {
             geo: 'SJ_JM',
@@ -2424,6 +2424,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
+            frameStroke: 'lightgrey',
         },
         /*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
 		{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},

@@ -149,6 +149,124 @@ export const map = function (config) {
         return out
     }
 
+    //@override
+    out.updateClassification = function () {
+        // apply classification to all insets that are outside of the main map's SVG
+        if (out.insetTemplates_) {
+            for (const geo in out.insetTemplates_) {
+                if (Array.isArray(out.insetTemplates_[geo])) {
+                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                        // insets with same geo that do not share the same parent inset
+                        if (Array.isArray(out.insetTemplates_[geo][i])) {
+                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
+                            }
+                        } else {
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
+                                applyClassificationToMap(out.insetTemplates_[geo][i])
+                        }
+                    }
+                } else {
+                    // unique inset geo_
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
+                }
+            }
+        }
+
+        // apply to main map
+        applyClassificationToMap(out)
+
+        return out
+    }
+
+    const applyClassificationToMap = function (map) {
+        //if not provided, get list of stat codes from the map stat data
+        if (!statCodes) {
+            //get list of stat codes.
+            statCodes = Object.keys(out.statData_)
+            //remove "default", if present
+            const index = statCodes.indexOf('default')
+            if (index > -1) statCodes.splice(index, 1)
+        }
+
+        //define size scaling function
+        let domain = getDatasetMaxMin()
+        if (!isNaN(domain[0])) {
+            out.sizeClassifier_ = scaleSqrt().domain(domain).range([out.pieMinRadius_, out.pieMaxRadius_])
+        }
+
+        return out
+    }
+
+    //@override
+    out.updateStyle = function () {
+        //if not specified, build default color ramp
+        if (!out.catColors_) {
+            out.catColors({})
+            for (let i = 0; i < statCodes.length; i++) out.catColors_[statCodes[i]] = schemeCategory10[i % 10]
+        }
+
+        //if not specified, initialise category labels
+        out.catLabels_ = out.catLabels_ || {}
+
+        //build and assign pie charts to the regions
+        //collect nuts ids from g elements. TODO: find better way of getting IDs
+        let nutsIds = []
+        if (out.svg_) {
+            let s = out.svg_.selectAll('#g_ps')
+            if (s) {
+                let sym = s.selectAll('g.symbol')
+                sym.append('g').attr('id', (rg) => {
+                    nutsIds.push(rg.properties.id)
+                    return 'pie_' + rg.properties.id
+                })
+
+                // set region hover function
+                let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+                let regions = out.svg().selectAll(selector)
+                regions
+                    .on('mouseover', function (e, rg) {
+                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                            if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                const sel = select(this)
+                                sel.attr('fill___', sel.attr('fill'))
+                                sel.attr('fill', out.nutsrgSelFillSty_)
+                                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                            }
+                        } else {
+                            const sel = select(this)
+                            sel.attr('fill___', sel.attr('fill'))
+                            sel.attr('fill', out.nutsrgSelFillSty_)
+                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                        }
+                    })
+                    .on('mousemove', function (e, rg) {
+                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
+                            if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+                                if (out._tooltip) out._tooltip.mousemove(e)
+                            }
+                        } else {
+                            if (out._tooltip) out._tooltip.mousemove(e)
+                        }
+                    })
+                    .on('mouseout', function () {
+                        const sel = select(this)
+                        let currentFill = sel.attr('fill')
+                        let newFill = sel.attr('fill___')
+                        if (newFill) {
+                            sel.attr('fill', sel.attr('fill___'))
+                            if (out._tooltip) out._tooltip.mouseout()
+                        }
+                    })
+
+                addPieChartsToMap(nutsIds)
+            }
+        }
+        return out
+    }
+
     /**
      * Function to compute composition for region id, for each category.
      * Return an object with, for each category, the share [0,1] of the category.
@@ -201,24 +319,6 @@ export const map = function (config) {
         }
 
         return comp
-    }
-
-    //@override
-    out.updateClassification = function () {
-        //if not provided, get list of stat codes from the map stat data
-        if (!statCodes) {
-            //get list of stat codes.
-            statCodes = Object.keys(out.statData_)
-            //remove "default", if present
-            const index = statCodes.indexOf('default')
-            if (index > -1) statCodes.splice(index, 1)
-        }
-
-        //define size scaling function
-        let domain = getDatasetMaxMin()
-        out.sizeClassifier_ = scaleSqrt().domain(domain).range([out.pieMinRadius_, out.pieMaxRadius_])
-
-        return out
     }
 
     /**
@@ -280,73 +380,6 @@ export const map = function (config) {
         return sum
     }
 
-    //@override
-    out.updateStyle = function () {
-        //if not specified, build default color ramp
-        if (!out.catColors()) {
-            out.catColors({})
-            for (let i = 0; i < statCodes.length; i++) out.catColors()[statCodes[i]] = schemeCategory10[i % 10]
-        }
-
-        //if not specified, initialise category labels
-        out.catLabels_ = out.catLabels_ || {}
-
-        //build and assign pie charts to the regions
-        //collect nuts ids from g elements. TODO: find better way of getting IDs
-        let nutsIds = []
-        if (out.svg()) {
-            let s = out.svg().selectAll('#g_ps')
-            if (s) {
-                let sym = s.selectAll('g.symbol')
-                sym.append('g').attr('id', (rg) => {
-                    nutsIds.push(rg.properties.id)
-                    return 'pie_' + rg.properties.id
-                })
-
-                // set region hover function
-                let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
-                let regions = out.svg().selectAll(selector)
-                regions
-                    .on('mouseover', function (e, rg) {
-                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                            if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                const sel = select(this)
-                                sel.attr('fill___', sel.attr('fill'))
-                                sel.attr('fill', out.nutsrgSelFillSty_)
-                                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                            }
-                        } else {
-                            const sel = select(this)
-                            sel.attr('fill___', sel.attr('fill'))
-                            sel.attr('fill', out.nutsrgSelFillSty_)
-                            if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                        }
-                    })
-                    .on('mousemove', function (e, rg) {
-                        if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                            if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                if (out._tooltip) out._tooltip.mousemove(e)
-                            }
-                        } else {
-                            if (out._tooltip) out._tooltip.mousemove(e)
-                        }
-                    })
-                    .on('mouseout', function () {
-                        const sel = select(this)
-                        let currentFill = sel.attr('fill')
-                        let newFill = sel.attr('fill___')
-                        if (newFill) {
-                            sel.attr('fill', sel.attr('fill___'))
-                            if (out._tooltip) out._tooltip.mouseout()
-                        }
-                    })
-
-                addPieChartsToMap(nutsIds)
-            }
-        }
-        return out
-    }
-
     function addPieChartsToMap(ids) {
         ids.forEach((nutsid) => {
             //prepare data for pie chart
@@ -380,7 +413,7 @@ export const map = function (config) {
                 .data(pie_(data))
                 .join('path')
                 .attr('fill', (d) => {
-                    return out.catColors()[d.data.code] || 'lightgray'
+                    return out.catColors_[d.data.code] || 'lightgray'
                 })
                 .attr('code', (d) => d.data.code) //for mouseover legend highlighting function
                 .attr('d', arc().innerRadius(ir).outerRadius(r))

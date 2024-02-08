@@ -70,7 +70,9 @@ export const legend = function (map, config) {
         lgg.style('font-family', m.fontFamily_)
 
         // legend for sizes
-        buildSizeLegend(m, lgg, out.sizeLegend)
+        if (m.sizeClassifier_) {
+            buildSizeLegend(m, lgg, out.sizeLegend)
+        }
 
         // legend for ps color values
         buildColorLegend(m, lgg, out.colorLegend)
