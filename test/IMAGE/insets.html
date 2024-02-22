@@ -10,20 +10,23 @@
             <svg id="container" width="1800" height="800">
                 <svg id="mappy"></svg>
                 <!-- insets -->
-                <svg id="inset0" width="80" height="80" y="650" x="0"></svg>
-                <svg id="inset1" y="650" x="80"></svg>
-                <svg id="inset2" y="667" x="80"></svg>
-                <svg id="inset3" y="650" x="160"></svg>
-                <svg id="inset4" y="650" x="350"></svg>
-                <svg id="inset5" y="650" x="440"></svg>
-                <svg id="inset6" y="650" x="530"></svg>
-                <svg id="inset7" y="650" x="620"></svg>
-                <svg id="inset8" y="650" x="710"></svg>
-                <svg id="inset9" y="650" x="800"></svg>
-                <svg id="inset10" y="650" x="890"></svg>
-                <svg id="inset11" y="650" x="980"></svg>
-                <svg id="inset12" y="650" x="1070"></svg>
-                <svg id="inset13" y="650" x="1160"></svg>
+                <svg id="newInsets">
+                    <svg id="inset0" width="80" height="80" y="650" x="0"></svg>
+                    <svg id="inset1" y="650" x="80"></svg>
+                    <svg id="inset2" y="667" x="80"></svg>
+                    <svg id="inset3" y="650" x="160"></svg>
+                    <svg id="inset4" y="650" x="350"></svg>
+                    <svg id="inset5" y="650" x="440"></svg>
+                    <svg id="inset6" y="650" x="530"></svg>
+                    <svg id="inset7" y="650" x="620"></svg>
+                    <svg id="inset8" y="650" x="710"></svg>
+                    <svg id="inset9" y="650" x="800"></svg>
+                    <svg id="inset10" y="650" x="890"></svg>
+                    <svg id="inset11" y="650" x="980"></svg>
+                    <svg id="inset12" y="650" x="1070"></svg>
+                    <svg id="inset13" y="650" x="1160"></svg>
+                </svg>
+
             </svg>
         </div>
 
@@ -144,27 +147,27 @@
 
             // apply labelling
             setTimeout(() => {
-                map.insets(false)
+                map.insets('default').insetBoxPosition([365, 0])
                 map.build()
             }, 2000)
 
             setTimeout(() => {
-                map.insets(insetsCfg)
+                map.insets(insetsCfg).insetBoxPosition([265, 0])
                 map.build()
             }, 3000)
 
             setTimeout(() => {
-                map.insets(insetsConfig())
+                map.insets(insetsConfig()).insetBoxPosition([565, 0])
                 map.build()
             }, 4000)
 
             setTimeout(() => {
-                map.insets(insetsCfg)
+                map.insets(insetsCfg).insetBoxPosition([165, 0])
                 map.build()
             }, 5000)
 
             setTimeout(() => {
-                map.insets([])
+                map.insets(insetsConfig()).insetBoxPosition([565, 0])
                 map.build()
             }, 6000)
 

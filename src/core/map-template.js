@@ -153,12 +153,12 @@ export const mapTemplate = function (config, withCenterPoints) {
     //nuts styling
     out.nutsrgFillStyle_ = 'white'
     out.nutsrgSelFillSty_ = '#e0bcdf'
-    out.nutsbnStroke_ = { 0: 'black', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: 'black' }
-    out.nutsbnStrokeWidth_ = { 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0.4 }
+    out.nutsbnStroke_ = { 0: 'none', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: '#7f7f7f' }
+    out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
     //country borders styling
     out.cntrgFillStyle_ = '#E6E6E6'
-    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: '#ffffff', co: '#7f7f7f' }
-    out.cntbnStrokeWidth_ = { eu: 0.8, efta: 0.8, cc: 0.8, oth: 0.8, co: 0.5 }
+    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
+    out.cntbnStrokeWidth_ = { eu: 0.5, efta: 0.5, cc: 0.5, oth: 0.5, co: 0.5 }
     //world map
     out.worldFillStyle_ = '#E6E6E6'
     out.worldStroke_ = 'black'
@@ -1089,9 +1089,10 @@ export const mapTemplate = function (config, withCenterPoints) {
             const config = out.insets_[i]
             config.svgId = config.svgId || 'inset' + config.geo + Math.random().toString(36).substring(7)
 
-            //get svg element. Create it if it as an embeded SVG if it does not exists
+            //get svg element. 
             let svg = select('#' + config.svgId)
             if (svg.size() == 0) {
+                // Create it as an embeded SVG if it does not exist
                 const x = config.x == undefined ? out.insetBoxPadding_ : config.x
                 const y =
                     config.y == undefined ? out.insetBoxPadding_ + i * (out.insetBoxPadding_ + out.insetBoxWidth_) : config.y
@@ -1452,7 +1453,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     }
                     if (bn.lvl > 0) return out.nutsbnStrokeWidth_[bn.lvl]
                     //if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
-                    return out.nutsbnStrokeWidth_[bn.lvl] || 0.2
+                    return out.nutsbnStrokeWidth_[bn.lvl]
                 })
 
             if (out.geo_ == 'EUR' && out.proj == '3035') {
