@@ -22,7 +22,7 @@ export const map = function (config) {
     //specific tooltip text function
     out.tooltip_.textFunction = tooltipTextFunCat
 
-    //the classifier: a function which return a class number from a stat value.
+    //the classifier: a function which returns a class number from a stat value.
     out.classifier_ = undefined
 
     /**

@@ -441,6 +441,7 @@ eurostatmap
     })
     .classToFillStyle({ urb: '#fdb462', int: '#ffffb3', rur: '#ccebc5' })
     .classToText({ urb: 'Urban', int: 'Intermediate', rur: 'Rural' })
+    .legend({ x: 10, y:170, order:['urb','int','rur'] })
     .build()
 ```
 
@@ -461,6 +462,7 @@ In addition to [the default legend parameters](#map-legend), categorical maps ha
 | **labelOffset**   | int     | _5_           | The distance between the legend box elements to the corresponding text label. |
 | **noData**        | boolean | _true_        | Show 'no data' style.                                                         |
 | **noDataText**    | Text    | _"No data"_   | 'No data' text label.                                                         |
+| **order**    | array    | _"undefined"_   | The order in which the legend classes should be drawn. E.g. ['urb','int','rur']. If left undefined, eurostatmap will order the classes automatically.                                                       |
 
 ## Bivariate choropleth map
 

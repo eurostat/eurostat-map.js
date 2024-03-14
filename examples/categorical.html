@@ -9,7 +9,8 @@
 
 <body>
     <svg id="map"></svg>
-    <script src="https://unpkg.com/eurostat-map"></script>
+    <!-- <script src="https://unpkg.com/eurostat-map"></script> -->
+    <script src="../build/eurostatmap.js"></script>
     <script>
         eurostatmap
             .map("ct")
@@ -21,7 +22,7 @@
             .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
             .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
             .insets("default")
-            .legend({ x: 10, y:170 })
+            .legend({ x: 10, y:170, order:['urb','int','rur'] })
             .build()
     </script>
 </body>

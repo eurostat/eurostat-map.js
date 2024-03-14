@@ -24,6 +24,8 @@ export const legend = function (map, config) {
     out.noData = true
     //no data label text
     out.noDataText = 'No data'
+    // allow the user to define the order of the legend elements manually as an array
+    out.order = undefined
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -56,7 +58,7 @@ export const legend = function (map, config) {
         lgg.style('font-family', m.fontFamily_)
 
         //get category codes
-        const ecls = m.classifier().domain()
+        const ecls = out.order ? out.order : m.classifier().domain()
 
         //draw legend elements for classes: rectangle + label
         for (let i = 0; i < ecls.length; i++) {
