@@ -300,7 +300,7 @@
                 .insetBoxPosition([400, 10])
                 .width(mapWidth)
                 .height(mapHeight)
-                .labelling(true)
+                .labelling(false)
                 .labelsToShow(['values'])
                 .nutsLvl('mixed')
                 .psFill('#4ac499')
@@ -350,46 +350,46 @@
             // map2.build()
 
             setTimeout(() => {
-                // map.statData('size').setData(data)
-                map.psFillOpacity(0.2)
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
+                 map.statData('size').setData(data)
+                // map.psFillOpacity(0.2)
+                 map.updateStatValues()
+                 map.updateClassification()
+                 map.updateStyle()
             }, 2000)
 
             setTimeout(() => {
-                // map.statData('size').setData(data)
-                map.psFillOpacity(0.8)
-                .legend({
-                    sizeLegend: {
-                        values: [1000, 5000],
-                    },
-                })
+                map.statData('size').setData(data2)
+                // map.psFillOpacity(0.8)
+                // .legend({
+                //     sizeLegend: {
+                //         values: [1000, 5000],
+                //     },
+                // })
                 map.updateStatValues()
                 map.updateClassification()
                 map.updateStyle()
             }, 3000)
 
-            setTimeout(() => {
-                // map.statData('size').setData(data)
-                map.psFillOpacity(0.2)
-                .legend({
-                    sizeLegend: {
-                        values: false,
-                    },
-                })
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
-            }, 4000)
+            // setTimeout(() => {
+            //      map.statData('size').setData(data)
+            //     // map.psFillOpacity(0.2)
+            //     // .legend({
+            //     //     sizeLegend: {
+            //     //         values: false,
+            //     //     },
+            //     // })
+            //     map.updateStatValues()
+            //     map.updateClassification()
+            //     map.updateStyle()
+            // }, 4000)
 
-            setTimeout(() => {
-                // map.statData('size').setData(data)
-                map.psFillOpacity(0.9)
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
-            }, 5000)
+            // setTimeout(() => {
+            //      map.statData('size').setData(nuts3)
+            //     // map.psFillOpacity(0.9)
+            //     map.updateStatValues()
+            //     map.updateClassification()
+            //     map.updateStyle()
+            // }, 5000)
 
             //D3 symbols
             // symbolsFill

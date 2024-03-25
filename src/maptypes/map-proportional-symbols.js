@@ -254,7 +254,6 @@ export const map = function (config) {
         // symbol selection
         let symb
         // if size dataset not defined then use default
-
         let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
 
         if (map.svg_) {
@@ -427,23 +426,46 @@ export const map = function (config) {
         let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
         const gcp = zoomGroup.select('#g_ps')
         let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
+        //console.log(map._centroidFeatures)
+
+        let sortedBySize = [...map._centroidFeatures].sort(function (a, b) {
+            //A negative value indicates that a should come before b.
+            //A positive value indicates that a should come after b.
+            //Zero or NaN indicates that a and b are considered equal.
+            let valA = sizeData.get(a.properties.id)
+            let valB = sizeData.get(b.properties.id)
+            if (valA || valA?.value == 0 || valB || valB?.value == 0) {
+                if ((valA || valA?.value == 0) && (valB || valB?.value == 0)) {
+                    //both values exist
+                    //biggest circles at the bottom
+                    return valB.value - valA.value
+                } else if ((valA || valA?.value == 0) && (!valB || !valB?.value == 0)) {
+                    //only valA exists
+                    return -1
+                } else if ((valB || valB?.value == 0) && (!valA || !valA?.value == 0)) {
+                    //only valB exists
+                    return 1
+                }
+            } else {
+                return 0
+            }
+        })
+
         let symbols = gcp
-            .selectAll('g')
+            .selectAll('g.symbol')
             .data(
-                // filter out regions with no data and sort by size
-                [...map._centroidFeatures]
-                    .filter((rg) => {
-                        const sv = sizeData.get(rg.properties.id)
-                        // has size data
-                        if (sv && sv.value !== 0) {
-                            return rg
-                        }
-                    })
-                    .sort(function (a, b) {
-                        let val1 = sizeData.get(a.properties.id)
-                        let val2 = sizeData.get(b.properties.id)
-                        return val2.value - val1.value
-                    })
+                // FILTERING BREAKS IMAGE -
+                // it removes regions not present in current data, but if you update the data and add data for those regions then they are not drawn!!)
+                // filter out regions with no data
+                // .filter((rg) => {
+                //     const sv = sizeData.get(rg.properties.id)
+                //     // has size data
+                //     if (sv && sv.value !== 0) {
+                //         return rg
+                //     }
+                // })
+                // sort by size
+                sortedBySize
             )
             // .enter()
             .join('g')
@@ -462,18 +484,27 @@ export const map = function (config) {
      * @return {void}
      */
     function appendCirclesToMap(map, sizeData) {
-        return map
-            .svg()
-            .selectAll('g.symbol')
-            .append('circle')
-            .filter((rg) => {
-                const sv = sizeData.get(rg.properties.id)
-                if (sv && sv.value !== ':') return rg
-            })
-            .attr('r', (rg) => {
-                let s = out.classifierSize_(sizeData.get(rg.properties.id).value)
-                return s || 0
-            })
+        let symbolContainers = map.svg().selectAll('g.symbol')
+        //console.log(symbolContainers._groups[0])
+
+        return (
+            symbolContainers
+                .append('circle')
+                // .filter((rg) => {
+                //     const sv = sizeData.get(rg.properties.id)
+                //     if (sv && sv.value !== ':') return rg
+                // })
+                .attr('r', (rg) => {
+                    if (sizeData.get(rg.properties.id)) {
+                        let val = sizeData.get(rg.properties.id)
+                        let radius = out.classifierSize_(val.value)
+                        //if (!radius) console.log(val)
+                        return radius?.toFixed(3) || 0
+                    } else {
+                        return 0
+                    }
+                })
+        )
     }
 
     /**

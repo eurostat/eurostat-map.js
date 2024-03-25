@@ -1569,14 +1569,15 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .data(
                     // filter out regions with no data and order by value in each map type template.
                     // See updateSymbolsDrawOrder in map-proportional-symbols.js for example
-                    [...out._centroidFeatures]
+                    out._centroidFeatures
                 )
                 .enter()
                 .append('g')
                 .attr('transform', function (d) {
-                    return 'translate(' + out._projection(d.geometry.coordinates) + ')'
+                    let coords = out._projection(d.geometry.coordinates)
+                    return 'translate(' + coords[0].toFixed(3) + ',' + coords[1].toFixed(3) + ')'
                 })
-                .attr('class', 'symbol')
+                .attr('class', 'symbol') // OUR SYMBOL CONTAINER
                 .attr('id', (d) => 'ps' + d.properties.id)
                 .on('mouseover', function (e, rg) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
@@ -1971,8 +1972,8 @@ export const mapTemplate = function (config, withCenterPoints) {
                                 map.statLabelsPositions_[d.properties.id].x,
                                 map.statLabelsPositions_[d.properties.id].y,
                             ])
-                            let x = pos[0]
-                            let y = pos[1]
+                            let x = pos[0].toFixed(3)
+                            let y = pos[1].toFixed(3)
                             return `translate(${x},${y})`
                         }
                         // otherwise calculate centroid
@@ -1995,8 +1996,8 @@ export const mapTemplate = function (config, withCenterPoints) {
                                     map.statLabelsPositions_[d.properties.id].x,
                                     map.statLabelsPositions_[d.properties.id].y,
                                 ])
-                                let x = pos[0]
-                                let y = pos[1]
+                                let x = pos[0].toFIxed(3)
+                                let y = pos[1].toFIxed(3)
                                 return `translate(${x},${y})`
                             }
                             // otherwise calculate centroid
