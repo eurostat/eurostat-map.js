@@ -11,10 +11,10 @@ export const tooltip = function (config) {
     config.maxWidth = config.maxWidth || '200px'
     config.fontSize = config.fontSize || '14px'
     config.background = config.background || 'white'
-    config.padding = config.padding || '5px'
+    config.padding = config.padding || '0px'
     config.border = config.border || '0px'
-    config['border-radius'] = config['border-radius'] || '5px'
-    config['box-shadow'] = config['box-shadow'] || '5px 5px 5px grey'
+    config['border-radius'] = config['border-radius'] || '0px'
+    config['box-shadow'] = config['box-shadow'] || '0px 0px 0px grey'
     config['font-family'] = config['font-family'] || 'Helvetica, Arial, sans-serif'
 
     config.transitionDuration = config.transitionDuration || 0

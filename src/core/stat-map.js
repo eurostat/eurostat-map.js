@@ -375,6 +375,11 @@ function rasterize(svg) {
     return promise
 }
 
+const upperCaseFirstLetter = (string) => `${string.slice(0, 1).toUpperCase()}${string.slice(1)}`
+
+const lowerCaseAllWordsExceptFirstLetters = (string) =>
+    string.replaceAll(/\S*/g, (word) => `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`)
+
 /**
  * Default function for tooltip text, for statistical maps.
  * It simply shows the name and code of the region and the statistical value.
@@ -387,19 +392,54 @@ const tootipTextFunStat = function (rg, map) {
 
     if (rg.properties.id) {
         //name and code
-        buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+        //ESTAT tooltip
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
+                upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(rg.properties.na)) +
+                '</b> (' +
+                rg.properties.id +
+                ') </div>'
+        )
     } else {
         //region name
-        buf.push('<b>' + rg.properties.na + '</b><br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
+                upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(rg.properties.na)) +
+                '</b></div>'
+        )
     }
     //case when no data available
     const sv = map.statData().get(rg.properties.id)
     if (!sv || (sv.value !== 0 && !sv.value)) {
-        buf.push(map.noDataText_)
+        buf.push(`
+            <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+            <table class="nuts-table">
+            <tbody>
+            <tr>
+            <td>
+            ${map.noDataText_} 
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+        `)
         return buf.join('')
     }
     //display value
-    buf.push(spaceAsThousandSeparator(sv.value))
+    buf.push(`
+    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+    <table class="nuts-table">
+    <tbody>
+    <tr>
+    <td>
+    ${spaceAsThousandSeparator(sv.value)} 
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+    `)
     //unit
     const unit = map.statData('default').unitText()
     if (unit) buf.push(' ' + unit)

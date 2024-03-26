@@ -1,4 +1,4 @@
-import { scaleSqrt, scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
+import { scaleSqrt, scaleLinear, scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
 // import {extent} from 'd3-array'
 import { select } from 'd3-selection'
 import { interpolateOrRd } from 'd3-scale-chromatic'
@@ -28,6 +28,7 @@ export const map = function (config) {
     out.psBarWidth_ = 10 //for vertical bars
     out.psMaxValue_ = undefined // allow the user to manually define the domain of the sizing scale. E.g. if the user wants to use the same scale across different maps.
     out.psMinValue_ = undefined
+    out.psSizeFun_ = scaleSqrt
 
     //colour
     out.psFill_ = '#2d50a0' //same fill for all symbols when no visual variable (setData()) for 'color' is specified
@@ -211,7 +212,7 @@ export const map = function (config) {
 
         sizeDomain = data ? [min, max] : [out.statData().getMin(), out.statData().getMax()]
 
-        out.classifierSize(scaleSqrt().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]))
+        out.classifierSize(out.psSizeFun_().domain(sizeDomain).range([out.psMinSize_, out.psMaxSize_]))
 
         // colour
         if (out.statData('color').getArray()) {
