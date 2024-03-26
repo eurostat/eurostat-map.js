@@ -3,6 +3,7 @@ import { scaleQuantile } from 'd3-scale'
 import { interpolateRgb } from 'd3-interpolate'
 import * as smap from '../core/stat-map'
 import * as lgchbi from '../legend/legend-choropleth-bivariate'
+import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 
 /**
  * Return a bivariate choropleth map.
@@ -278,33 +279,49 @@ const tooltipTextFunBiv = function (rg, map) {
     //region name
     if (rg.properties.id) {
         //name and code
-        buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                ' (' +
+                rg.properties.id +
+                ') </div>'
+        )
     } else {
         //region name
-        buf.push('<b>' + rg.properties.na + '</b><br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                '</div>'
+        )
     }
 
     //stat 1 value
     const sv1 = map.statData('v1').get(rg.properties.id)
-    if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
-    else {
-        buf.push(sv1.value)
-        //unit 1
-        const unit1 = map.statData('v1').unitText()
-        if (unit1) buf.push(' ' + unit1)
-    }
-
-    buf.push('<br>')
-
+    const unit1 = map.statData('v1').unitText()
     //stat 2 value
     const sv2 = map.statData('v2').get(rg.properties.id)
-    if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
-    else {
-        buf.push(sv2.value)
-        //unit 2
-        const unit2 = map.statData('v2').unitText()
-        if (unit2) buf.push(' ' + unit2)
-    }
+    const unit2 = map.statData('v2').unitText()
+
+    buf.push(`
+        <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+        <table class="nuts-table">
+        <tbody>
+        <tr>
+        <td>
+        ${sv1 && sv1.value ? spaceAsThousandSeparator(sv1.value) : ''} ${unit1 && sv1 && sv1.value ? unit1 : ''}
+        ${!sv1 || (sv1.value != 0 && !sv1.value) ? map.noDataText_ : ''}
+        </td>
+        </tr>
+        <tr>
+        <td>
+        ${sv2 && sv2.value ? spaceAsThousandSeparator(sv2.value): '' } ${unit2 && sv2 && sv2.value ? unit2 : ''}
+        ${!sv2 || (sv2.value != 0 && !sv2.value) ? map.noDataText_ : ''}
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+    `)
 
     return buf.join('')
 }

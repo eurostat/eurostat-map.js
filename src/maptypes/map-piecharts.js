@@ -436,10 +436,20 @@ export const map = function (config) {
 
         if (rg.properties.id) {
             //name and code
-            tp.append('div').html('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+            tp.append('div').html(
+                '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                    rg.properties.na +
+                    ' (' +
+                    rg.properties.id +
+                    ') </div>'
+            )
         } else {
             //region name
-            tp.append('div').html('<b>' + rg.properties.na + '</b><br>')
+            tp.append('div').html(
+                '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                    rg.properties.na +
+                    '</div>'
+            )
         }
 
         //prepare data for pie chart
@@ -455,15 +465,17 @@ export const map = function (config) {
 
         //create svg for pie chart
         // set the dimensions and margins of the graph
-        const width = 120,
-            height = 120,
-            margin = 25
+        let width = 150
+        let height = 150
+        let margin = 25
 
         // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
         const radius = Math.min(width, height) / 2 - margin
 
+        //width = tp.node().getBoundingClientRect().width
         const svg = tp
             .append('svg')
+            .attr('viewbox', `0, 0, ${width}, ${height}`)
             .attr('width', width)
             .attr('height', height - margin / 2)
             .append('g')

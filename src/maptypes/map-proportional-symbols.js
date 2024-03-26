@@ -749,10 +749,20 @@ const tooltipTextFunPs = function (rg, map) {
     const buf = []
     if (rg.properties.id) {
         //name and code
-        buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                ' (' +
+                rg.properties.id +
+                ') </div>'
+        )
     } else {
         //region name
-        buf.push('<b>' + rg.properties.na + '</b><br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                '</div>'
+        )
     }
 
     //stat 1 value

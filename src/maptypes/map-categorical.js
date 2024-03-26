@@ -3,6 +3,7 @@ import { scaleOrdinal } from 'd3-scale'
 import { schemeSet3 } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgct from '../legend/legend-categorical'
+import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 
 /**
  * Returns a categorical map.
@@ -161,10 +162,20 @@ const tooltipTextFunCat = function (rg, map) {
     const buf = []
     if (rg.properties.id) {
         //name and code
-        buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                ' (' +
+                rg.properties.id +
+                ') </div>'
+        )
     } else {
         //region name
-        buf.push('<b>' + rg.properties.na + '</b><br>')
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
+                rg.properties.na +
+                '</div>'
+        )
     }
     //get stat value
     const sv = map.statData().get(rg.properties.id)
@@ -176,10 +187,35 @@ const tooltipTextFunCat = function (rg, map) {
     const val = sv.value
     if (map.classToText_) {
         const lbl = map.classToText_[val]
-        buf.push(lbl ? lbl : val)
+        //display label and value
+        buf.push(`
+    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+    <table class="nuts-table">
+    <tbody>
+    <tr>
+    <td>
+    ${lbl ? lbl : val}
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+`)
         return buf.join('')
     }
-    //display value
-    buf.push(val)
+    //display just value
+    buf.push(`
+    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+    <table class="nuts-table">
+    <tbody>
+    <tr>
+    <td>
+    ${val}
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+`)
     return buf.join('')
 }

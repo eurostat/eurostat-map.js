@@ -395,7 +395,7 @@ const tootipTextFunStat = function (rg, map) {
         //ESTAT tooltip
         buf.push(
             '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(rg.properties.na)) +
+                rg.properties.na +
                 '</b> (' +
                 rg.properties.id +
                 ') </div>'
@@ -404,12 +404,15 @@ const tootipTextFunStat = function (rg, map) {
         //region name
         buf.push(
             '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                upperCaseFirstLetter(lowerCaseAllWordsExceptFirstLetters(rg.properties.na)) +
+                rg.properties.na +
                 '</b></div>'
         )
     }
     //case when no data available
     const sv = map.statData().get(rg.properties.id)
+        //unit
+        const unit = map.statData('default').unitText()
+
     if (!sv || (sv.value !== 0 && !sv.value)) {
         buf.push(`
             <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
@@ -428,21 +431,19 @@ const tootipTextFunStat = function (rg, map) {
     }
     //display value
     buf.push(`
-    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
-    <table class="nuts-table">
-    <tbody>
-    <tr>
-    <td>
-    ${spaceAsThousandSeparator(sv.value)} 
-    </td>
-    </tr>
-    </tbody>
-    </table>
-    </div>
+        <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+        <table class="nuts-table">
+        <tbody>
+        <tr>
+        <td>
+        ${spaceAsThousandSeparator(sv.value)} ${unit ? unit : ''}
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
     `)
-    //unit
-    const unit = map.statData('default').unitText()
-    if (unit) buf.push(' ' + unit)
+
     //flag
     const f = sv.status
     if (f && map.tooltip_.showFlags) {
