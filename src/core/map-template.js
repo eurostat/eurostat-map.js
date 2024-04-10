@@ -1996,8 +1996,8 @@ export const mapTemplate = function (config, withCenterPoints) {
                                     map.statLabelsPositions_[d.properties.id].x,
                                     map.statLabelsPositions_[d.properties.id].y,
                                 ])
-                                let x = pos[0].toFIxed(3)
-                                let y = pos[1].toFIxed(3)
+                                let x = pos[0].toFixed(3)
+                                let y = pos[1].toFixed(3)
                                 return `translate(${x},${y})`
                             }
                             // otherwise calculate centroid
