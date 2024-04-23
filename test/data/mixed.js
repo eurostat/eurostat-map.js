@@ -1,5 +1,5 @@
 const mixedNUTS = {
-    UK: 1,
+    UK: 1.0,
     US:1,
     CA:2,
     CN:3,
@@ -18,7 +18,7 @@ const mixedNUTS = {
     RS: ':',
     SE: ':',
     NO: ':',
-    ES1:1,
+    ES1:1.0,
     ES2:2,
     ES3:3,
     ES4:4,
@@ -128,8 +128,8 @@ const mixedNUTS = {
     "LT":12,
     "RU":12,
     "MT":12,
-    "DE":0,
-    "PL":-1,
+    "DE":1.0,
+    "PL":-1.0,
     "RS":-10,
     "BY":0.1,
     "RO":0.1

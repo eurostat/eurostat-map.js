@@ -13,6 +13,9 @@ export const statData = function (config) {
     const out = {}
 
     out.__data = undefined //for debugging
+
+    //out.maxNumberOfDecimalsInDataset = undefined
+
     /**
      * The statistical values, indexed by NUTS id.
      * Each stat value is an object {value,status}.
@@ -48,29 +51,41 @@ export const statData = function (config) {
     /**
      * Set a stat value from a nuts id.
      *
-     * @param {*} nutsId
-     * @param {*} stat The new statistical data. The format can be either {value:34.324,status:"e"} or a the value only.
+     * @param {String} nutsId
+     * @param {Object || String || Number} stat The new statistical data. The format can be either {value:34.324,status:"e"} or a the value only.
      */
     out.set = (nutsId, stat) => {
         _data_ = _data_ || {}
         const s = _data_[nutsId]
-        if (s)
+        if (nutsId == 'DE') {
+            console.log(stat)
+        }
+        if (s) {
             if (stat.value) {
                 s.value = stat.value
                 s.status = stat.status
-            } else s.value = isNaN(+stat) ? stat : +stat
-        else _data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat }
+            } else {
+                // todo: treat 1.0 as 1.0 and not 1
+                if (nutsId == 'DE') {
+                    console.log(stat)
+                }
+                s.value = isNaN(+stat) ? stat : +stat
+            }
+        } else {
+            _data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat }
+        }
         return out
     }
 
     /**
      * Set statistical data, already indexed by nutsId.
      *
-     * @param {*} data Something like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
+     * @param {Object} data Something like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...}
      */
     out.setData = (data) => {
         out.__data = data // for debugging
         _data_ = {} // overwrite existing data
+        console.log(data)
         Object.keys(data).forEach((nutsId) => out.set(nutsId, data[nutsId]))
         return out
     }
