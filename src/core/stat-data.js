@@ -57,22 +57,20 @@ export const statData = function (config) {
     out.set = (nutsId, stat) => {
         _data_ = _data_ || {}
         const s = _data_[nutsId]
-        if (nutsId == 'DE') {
-            console.log(stat)
-        }
+
         if (s) {
             if (stat.value) {
                 s.value = stat.value
                 s.status = stat.status
             } else {
-                // todo: treat 1.0 as 1.0 and not 1
-                if (nutsId == 'DE') {
-                    console.log(stat)
-                }
-                s.value = isNaN(+stat) ? stat : +stat
+                // be careful here setting values here, we need to maintain strings with trailing zeros because in JSON 1.0 === 1 and they are removed. User might want stats labels with trailing zeros.
+                s.value = stat
+                //s.value = isNaN(+stat) ? stat : +stat
             }
         } else {
-            _data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat }
+            // be careful here setting values here, we need to maintain strings with trailing zeros because in JSON 1.0 === 1 and they are removed. User might want stats labels with trailing zeros.
+            _data_[nutsId] = stat.value ? stat : { value: stat}
+            //_data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat}
         }
         return out
     }
@@ -85,7 +83,6 @@ export const statData = function (config) {
     out.setData = (data) => {
         out.__data = data // for debugging
         _data_ = {} // overwrite existing data
-        console.log(data)
         Object.keys(data).forEach((nutsId) => out.set(nutsId, data[nutsId]))
         return out
     }

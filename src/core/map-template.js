@@ -1853,10 +1853,6 @@ export const mapTemplate = function (config, withCenterPoints) {
             const s = out.statData()
             const sv = s.get(d.properties.id)
 
-            // if (d.properties.id == "DE") {
-            //     let num = Number(sv.value).toFixed(2); 
-            //     console.log(sv.value)
-            // }
             if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
                 return ''
             } else {
