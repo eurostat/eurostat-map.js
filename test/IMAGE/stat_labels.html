@@ -6,7 +6,7 @@
     </head>
 
     <body>
-        <svg id="map"></svg>
+        <!-- <svg id="map"></svg> -->
         <svg id="map1"></svg>
         <script src="../../build/eurostatmap.js"></script>
         <script src="https://d3js.org/d3-color.v2.min.js"></script>
@@ -20,12 +20,12 @@
                 .zoomExtent([1, 20])
                 .title('Population Density in Europe')
                 //.insets("default")
-                .width(1000)
+                .width(600)
                 .scale('10M')
                 .nutsLvl('mixed')
-                .colorFun(d3.interpolateBlues)
+                .colors(['#782A78', '#CB86CF', '#EDD6EF', '#CBD2EE', '#5F77CD', '#17256B'])
                 .classifMethod('threshold')
-                .threshold([50, 75, 100, 150, 300, 850])
+                .threshold([-10, -5, 0, 5, 10, 15])
                 .tooltipShowFlags(false)
                 .legend({ labelDecNb: 0, x: 15, y: 160 })
                 //styling
@@ -46,6 +46,7 @@
                     values: 3,
                 })
                 .insets('default')
+                .insetBoxWidth(150)
             //.labelFontSize({"seas":13, "countries":13})
 
             map.statData().setData(mixedNUTS)

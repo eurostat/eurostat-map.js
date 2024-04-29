@@ -1034,12 +1034,15 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .on('zoom', function (e) {
                     const k = e.transform.k
                     const cs = ['gra', 'bn_0', /*"bn_1", "bn_2", "bn_3",*/ 'bn_co', 'cntbn', 'symbol']
-                    for (let i = 0; i < cs.length; i++)
-                        out.svg()
-                            .selectAll('.' + cs[i])
-                            .style('stroke-width', function (d) {
-                                return 1 / k + 'px'
-                            })
+                    //for (let i = 0; i < cs.length; i++) {
+                        // change border thickness?
+                    //     out.svg()
+                    //         .selectAll('.' + cs[i])
+                    //         .style('stroke-width', function (d) {
+                    //             return 1 / k + 'px'
+                    //         })
+                    // }
+
                     zg.attr('transform', e.transform)
                 })
             svg.call(xoo)
@@ -1090,7 +1093,7 @@ export const mapTemplate = function (config, withCenterPoints) {
             const config = out.insets_[i]
             config.svgId = config.svgId || 'inset' + config.geo + Math.random().toString(36).substring(7)
 
-            //get svg element. 
+            //get svg element.
             let svg = select('#' + config.svgId)
             if (svg.size() == 0) {
                 // Create it as an embeded SVG if it does not exist
@@ -1819,7 +1822,6 @@ export const mapTemplate = function (config, withCenterPoints) {
      * @return {} out
      */
     out.updateValuesLabels = function (map) {
-        // apply to main map
         //clear previous labels
         let prevLabels = map.svg_.selectAll('g.stat-label > *')
         prevLabels.remove()
@@ -1828,66 +1830,56 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         let statLabels = map.svg_.selectAll('g.stat-label')
 
-        statLabels
-            .filter((d) => {
-                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                    const s = out.statData()
-                    const sv = s.get(d.properties.id)
-                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-                return false
-            })
-            .append('text')
-            .text(function (d) {
-                if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                    const s = out.statData()
-                    const sv = s.get(d.properties.id)
-                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
-                        return ''
-                    } else {
-                        if (sv.value !== ':') {
-                            return spaceAsThousandSeparator(sv.value)
-                        }
-                    }
-                }
-            })
+        // filter stat-label elements to only show those with data
+        statLabels.filter(out.statLabelsFilterFunction).append('text').text(out.statLabelsTextFunction)
 
         //add shadows to labels
         if (out.labelShadow_) {
             map.svg_
                 .selectAll('g.stat-label-shadow')
-                .filter((d) => {
-                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                        const s = out.statData()
-                        const sv = s.get(d.properties.id)
-                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }
-                    return false
-                })
+                .filter(out.statLabelsFilterFunction)
                 .append('text')
-                .text(function (d) {
-                    if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
-                        const s = out.statData()
-                        const sv = s.get(d.properties.id)
-                        if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
-                            return ''
-                        } else {
-                            if (sv.value !== ':') {
-                                return spaceAsThousandSeparator(sv.value)
-                            }
-                        }
-                    }
-                })
+                .text(out.statLabelsTextFunction)
         }
         return out
+    }
+
+    /**
+     * @description text function for statistical labelling
+     * @param {Object} d d3 selection json data element
+     * @return {string}
+     */
+    out.statLabelsTextFunction = (d) => {
+        if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+            const s = out.statData()
+            const sv = s.get(d.properties.id)
+
+            if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                return ''
+            } else {
+                if (sv.value !== ':') {
+                    return spaceAsThousandSeparator(sv.value)
+                }
+            }
+        }
+    }
+
+    /**
+     * @description function for filtering statistical labels
+     * @param {Object} d d3 selection json data element
+     * @return {boolean}
+     */
+    out.statLabelsFilterFunction = (d) => {
+        if (out.countriesToShow_.includes(d.properties.id[0] + d.properties.id[1]) || out.geo_ == 'WORLD') {
+            const s = out.statData()
+            const sv = s.get(d.properties.id)
+            if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
     }
 
     /**
