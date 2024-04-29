@@ -94,7 +94,8 @@ export const mapTemplate = function (config, withCenterPoints) {
         padding: '0px',
         border: '0px',
         borderRadius: '0px',
-        boxShadow: '0px 0px 0px grey',
+        zIndex: '999999',
+        boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
         transitionDuration: 200,
         xOffset: 0,
         yOffset: 0,
@@ -1321,7 +1322,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .append('path')
                         .attr('d', out._geom.path)
                         .attr('class', 'nutsrg')
-                        .attr('lvl', i) //to be able to distinguish levels
+                        .attr('lvl', i) //to be able to distinguish nuts levels
                         .attr('fill', out.nutsrgFillStyle_)
                 })
 

@@ -13,9 +13,9 @@ export const tooltip = function (config) {
     config.background = config.background || 'white'
     config.padding = config.padding || '0px'
     config.border = config.border || '0px'
-    config['border-radius'] = config['border-radius'] || '0px'
-    config['box-shadow'] = config['box-shadow'] || '0px 0px 0px grey'
-    config['font-family'] = config['font-family'] || 'Helvetica, Arial, sans-serif'
+    config.borderRadius = config.borderRadius || '0px'
+    config.boxShadow = config.boxShadow || '0px 0px 0px grey'
+    config.fontFamily = config.fontFamily || 'Helvetica, Arial, sans-serif'
 
     config.transitionDuration = config.transitionDuration || 0
     config.xOffset = config.xOffset || 30
@@ -34,10 +34,10 @@ export const tooltip = function (config) {
         tooltip.style('background', config.background)
         tooltip.style('padding', config.padding)
         tooltip.style('border', config.border)
-        tooltip.style('border-radius', config['border-radius'])
-        tooltip.style('box-shadow', config['box-shadow'])
+        tooltip.style('border-radius', config.borderRadius)
+        tooltip.style('box-shadow', config.boxShadow)
         tooltip.style('position', 'absolute')
-        tooltip.style('font-family', config['font-family'])
+        tooltip.style('font-family', config.fontFamily)
         tooltip.style('pointer-events', 'none')
         tooltip.style('opacity', '0')
     }

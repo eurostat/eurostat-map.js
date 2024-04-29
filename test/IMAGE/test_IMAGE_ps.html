@@ -309,8 +309,8 @@
                 .psMaxSize(maxRadius)
                 .legend({
                     //svgId: "eurostatmap-legend",
-                    x: 450,
-                    y: 400,
+                    x: 10,
+                    y: 200,
                     sizeLegend: {
                         title: 'legend title',
                     },
@@ -352,6 +352,11 @@
             setTimeout(() => {
                  map.statData('size').setData(data)
                 // map.psFillOpacity(0.2)
+                map.legend({
+                    sizeLegend: {
+                        values: [1000, 5000,10000],
+                    },
+                })
                  map.updateStatValues()
                  map.updateClassification()
                  map.updateStyle()
@@ -360,53 +365,50 @@
             setTimeout(() => {
                 map.statData('size').setData(data2)
                 // map.psFillOpacity(0.8)
-                // .legend({
-                //     sizeLegend: {
-                //         values: [1000, 5000],
-                //     },
-                // })
+                map.legend({
+                    sizeLegend: {
+                        values: [1000, 5000],
+                    },
+                })
                 map.updateStatValues()
                 map.updateClassification()
                 map.updateStyle()
             }, 3000)
 
-            // setTimeout(() => {
-            //      map.statData('size').setData(data)
-            //     // map.psFillOpacity(0.2)
-            //     // .legend({
-            //     //     sizeLegend: {
-            //     //         values: false,
-            //     //     },
-            //     // })
-            //     map.updateStatValues()
-            //     map.updateClassification()
-            //     map.updateStyle()
-            // }, 4000)
+            setTimeout(() => {
+                map.legend({
+                    sizeLegend: {
+                        values: [1000, 3000, 6000],
+                    },
+                })
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 4000)
 
-            // setTimeout(() => {
-            //      map.statData('size').setData(nuts3)
-            //     // map.psFillOpacity(0.9)
-            //     map.updateStatValues()
-            //     map.updateClassification()
-            //     map.updateStyle()
-            // }, 5000)
+            setTimeout(() => {
+                map.legend({
+                    sizeLegend: {
+                        values: [500, 1000, 4000],
+                    },
+                })
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 5000)
 
-            //D3 symbols
-            // symbolsFill
-            // symbolsStroke
-            // symbolAsterisk
-            // symbolCircle
-            // symbolCross
-            // symbolDiamond
-            // symbolDiamond2
-            // symbolPlus
-            // symbolSquare
-            // symbolSquare2
-            // symbolStar
-            // symbolTriangle
-            // symbolTriangle2
-            // symbolWye
-            // symbolTimes
+            setTimeout(() => {
+                map.legend({
+                    sizeLegend: {
+                        values: [100, 1000, 5000].reverse(),
+                    },
+                })
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
+            }, 6000)
+
+
         </script>
     </body>
 </html>
