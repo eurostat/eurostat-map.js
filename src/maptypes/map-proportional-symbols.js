@@ -294,9 +294,11 @@ export const map = function (config) {
                 // nuts regions fill colour only for those with sizeData
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (!sv || !sv.value) {
-                        return out.worldFillStyle_
+                    if ((!sv || !sv.value) && sv !== 0 && sv.value !== 0) {
+                        // no data
+                        return out.cntrgFillStyle_
                     } else {
+                        // data
                         return out.nutsrgFillStyle_
                     }
                 })
@@ -770,22 +772,27 @@ const tooltipTextFunPs = function (rg, map) {
     const sv1 = v1.get(rg.properties.id)
     if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
     else {
-        buf.push(spaceAsThousandSeparator(sv1.value))
         //unit 1
         const unit1 = v1.unitText()
-        if (unit1) buf.push(' ' + unit1)
+        buf.push(
+            `<div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">${spaceAsThousandSeparator(
+                sv1.value
+            )} ${unit1 ? unit1 : ' '}</div>`
+        )
     }
-    buf.push('<br>')
 
     //stat 2 value
     if (map.statData('color').getArray()) {
         const sv2 = map.statData('color').get(rg.properties.id)
         if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
         else {
-            buf.push(spaceAsThousandSeparator(sv2.value))
-            //unit 2
+            //stat 2
             const unit2 = map.statData('color').unitText()
-            if (unit2) buf.push(' ' + unit2)
+            buf.push(
+                `<div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;padding-top:0px">${spaceAsThousandSeparator(
+                    sv2.value
+                )} ${unit2 ? unit2 : ' '}</div>`
+            )
         }
     }
 
