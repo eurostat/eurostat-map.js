@@ -32,7 +32,7 @@ export const map = function (config) {
 
     //colour
     out.psFill_ = '#2d50a0' //same fill for all symbols when no visual variable (setData()) for 'color' is specified
-    out.psFillOpacity_ = 0.7
+    out.psFillOpacity_ = 1
     out.psStroke_ = '#ffffff'
     out.psStrokeWidth_ = 0.5
     out.psClasses_ = 5 // number of classes to use for colouring
