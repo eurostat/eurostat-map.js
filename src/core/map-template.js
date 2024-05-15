@@ -479,7 +479,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             } else {
                 let cntrg = out.svg().selectAll('.cntrg')
-                if (cntrg) cntrg.style('fill', out.cntrgFillStyle_)
+                if (cntrg) cntrg.attr('fill', out.cntrgFillStyle_)
             }
 
             //update insets
@@ -1357,7 +1357,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .append('path')
                     .attr('d', out._geom.path)
                     .attr('class', 'nutsrg')
-                    .style('fill', out.nutsrgFillStyle_)
+                    .attr('fill', out.nutsrgFillStyle_)
             }
         }
 
@@ -1587,14 +1587,14 @@ export const mapTemplate = function (config, withCenterPoints) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sel = select(this.childNodes[0])
-                            sel.attr('fill___', sel.style('fill'))
-                            sel.style('fill', out.nutsrgSelFillSty_)
+                            sel.attr('fill___', sel.attr('fill'))
+                            sel.attr('fill', out.nutsrgSelFillSty_)
                             if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                         }
                     } else {
                         const sel = select(this.childNodes[0])
-                        sel.attr('fill___', sel.style('fill'))
-                        sel.style('fill', out.nutsrgSelFillSty_)
+                        sel.attr('fill___', sel.attr('fill'))
+                        sel.attr('fill', out.nutsrgSelFillSty_)
                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
                 })
@@ -1611,7 +1611,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     const sel = select(this.childNodes[0])
                     let newFill = sel.attr('fill___')
                     if (newFill) {
-                        sel.style('fill', newFill)
+                        sel.attr('fill', newFill)
                         if (out._tooltip) out._tooltip.mouseout()
                     }
                 })

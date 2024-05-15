@@ -290,7 +290,7 @@ export const map = function (config) {
                 }
 
                 // nuts regions fill colour only for those with sizeData
-                regions.style('fill', function (rg) {
+                regions.attr('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
                     if (rg.properties.id == 'ES') {
                         console.log(sv)
@@ -309,7 +309,7 @@ export const map = function (config) {
                 })
             } else {
                 // world countries fill
-                regions.style('fill', function (rg) {
+                regions.attr('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
                     if (!sv || (!sv.value && sv !== 0 && sv.value !== 0) || sv.value == ':') {
                         return out.worldFillStyle_
@@ -413,7 +413,7 @@ export const map = function (config) {
         symb.style('fill-opacity', out.psFillOpacity())
             .style('stroke', out.psStroke())
             .style('stroke-width', out.psStrokeWidth())
-            .style('fill', function () {
+            .attr('fill', function () {
                 if (out.classifierColor_) {
                     //for ps, ecl attribute belongs to the parent g.symbol node created in map-template
                     const ecl = select(this.parentNode).attr('ecl')
