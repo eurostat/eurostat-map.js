@@ -39,7 +39,7 @@ export const map = function (config) {
     out.psColors_ = null //colours to use for threshold colouring
     out.psColorFun_ = interpolateOrRd
     out.psClassToFillStyle_ = undefined //a function returning the color from the class i
-    out.noDataFillStyle_ = 'lightgray' //style for no data regions
+    out.noDataFillStyle_ = '#8c8c8c' //style for no data regions
 
     //the threshold, when the classification method is 'threshold'
     out.psThreshold_ = [0]
@@ -292,11 +292,18 @@ export const map = function (config) {
                 // nuts regions fill colour only for those with sizeData
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0) || sv.value == ':') {
-                        // no data
-                        return out.cntrgFillStyle_
-                    } else {
-                        console.log(sv) // data
+                    if (rg.properties.id == 'ES') {
+                        console.log(sv)
+                    }
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        // NO INPUT
+                        return out.noDataFillStyle_
+                    } else if ((sv && sv.value) || (sv && sv.value == 0)) {
+                        if (sv.value == ':') {
+                            // DATA NOT AVAILABLE
+                            return out.noDataFillStyle_
+                        }
+                        // DATA
                         return out.nutsrgFillStyle_
                     }
                 })
@@ -625,10 +632,9 @@ export const map = function (config) {
                 if (
                     !sv ||
                     (!sv.value && sv !== 0 && sv.value !== 0) ||
-                    sv.value == ':' ||
                     !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])
                 ) {
-                    // no symbol for no data
+                    // no symbol for no input
                     return 'none'
                 } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
                     return 'block'
@@ -641,7 +647,6 @@ export const map = function (config) {
             if (
                 !sv ||
                 (!sv.value && sv !== 0 && sv.value !== 0) ||
-                sv.value == ':' ||
                 !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])
             ) {
                 // no symbol for no data
