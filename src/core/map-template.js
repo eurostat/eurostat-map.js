@@ -38,7 +38,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //geographical focus
     out.nutsLvl_ = 3 // 0,1,2,3, or 'mixed'
-    out.nutsYear_ = 2016
+    out.nutsYear_ = 2021
     out.geo_ = 'EUR'
     out.proj_ = '3035'
     out.projectionFunction_ = undefined // e.g. d3.geoRobinson()
@@ -467,13 +467,13 @@ export const mapTemplate = function (config, withCenterPoints) {
                 let cntrg = out.svg().selectAll('.worldrg')
                 if (cntrg) {
                     // only change fill for world regions without an ecl class
-                    cntrg.attr('fill', (region, i, nodes) => {
+                    cntrg.style('fill', (region, i, nodes) => {
                         let node = select(nodes[i])
                         if (!node.attr('ecl')) {
                             return out.cntrgFillStyle_
                         } else {
                             // leave fill as it is
-                            return node.attr('fill')
+                            return node.style('fill')
                         }
                     })
                 }
@@ -1035,7 +1035,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     const k = e.transform.k
                     const cs = ['gra', 'bn_0', /*"bn_1", "bn_2", "bn_3",*/ 'bn_co', 'cntbn', 'symbol']
                     //for (let i = 0; i < cs.length; i++) {
-                        // change border thickness?
+                    // change border thickness?
                     //     out.svg()
                     //         .selectAll('.' + cs[i])
                     //         .style('stroke-width', function (d) {
@@ -1212,7 +1212,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .attr('d', out._geom.path)
                 .attr('stroke', out.graticuleStroke())
                 .attr('stroke-width', out.graticuleStrokeWidth())
-                .attr('fill', out.seaFillStyle_)
+                .style('fill', out.seaFillStyle_)
         }
 
         if (out.drawCoastalMargin_) {
@@ -1302,7 +1302,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .append('path')
                 .attr('d', out._geom.path)
                 .attr('class', 'worldrg')
-                .attr('fill', out.worldFillStyle_)
+                .style('fill', out.worldFillStyle_)
         }
 
         //draw NUTS regions
@@ -1326,7 +1326,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .attr('d', out._geom.path)
                         .attr('class', 'nutsrg')
                         .attr('lvl', i) //to be able to distinguish nuts levels
-                        .attr('fill', out.nutsrgFillStyle_)
+                        .style('fill', out.nutsrgFillStyle_)
                 })
 
                 //add kosovo
@@ -1357,7 +1357,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .append('path')
                     .attr('d', out._geom.path)
                     .attr('class', 'nutsrg')
-                    .attr('fill', out.nutsrgFillStyle_)
+                    .style('fill', out.nutsrgFillStyle_)
             }
         }
 

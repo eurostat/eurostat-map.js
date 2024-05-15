@@ -278,8 +278,8 @@
                 ME00: ':',
             }
             let data2 = {
-                ES: 1000,
-                FR: 200,
+                ES: 0,
+                FR: ':',
                 DE: 300,
                 IT: 400,
                 LI: 500,
@@ -290,7 +290,19 @@
                 NL: 1000,
                 PO: 1100,
                 RO: 1200,
-                DE11:1000,
+                DE11: 1000,
+            }
+            let test1 = {
+                ES: 1,
+                FR: ':',
+                DE: 7,
+                IT: 0,
+            }
+            let test2 = {
+                ES: 0,
+                FR: ':',
+                DE: ':',
+                IT: 0,
             }
 
             let map = eurostatmap
@@ -315,59 +327,30 @@
                         title: 'legend title',
                     },
                 })
-            map.statData('size').setData(data2)
+            map.statData('size').setData(test1)
             map.updateClassification()
             map.updateStyle()
             map.build()
 
-            // let map2 = eurostatmap
-            //     .map('ps')
-            //     .svgId('map2')
-            //     .pixSize(7400)
-            //     .width(mapWidth)
-            //     .height(mapHeight)
-            //     .labelling(true)
-            //     .labelsConfig({
-            //         test:false
-            //     })
-            //     .nutsLvl('mixed')
-            //     .psFill('#4ac499')
-            //     .psShape('triangle')
-            //     .psFillOpacity(0.8)
-            //     .psMaxSize(maxRadius)
-            //     .legend({
-            //         //svgId: "eurostatmap-legend",
-            //         x: 450,
-            //         y: 20,
-            //         sizeLegend: {
-            //             title: 'legend',
-            //         },
-            //     })
-            // map2.statData('size').setData(data)
-            // map2.psFillOpacity(0.2)
-            // map2.updateClassification()
-            // map2.updateStyle()
-            // map2.build()
-
             setTimeout(() => {
-                 map.statData('size').setData(data)
+                map.statData('size').setData(test1)
                 // map.psFillOpacity(0.2)
                 map.legend({
                     sizeLegend: {
-                        values: [1000, 5000,10000],
+                        values: [1.2, 2.5, 3.2],
                     },
                 })
-                 map.updateStatValues()
-                 map.updateClassification()
-                 map.updateStyle()
+                map.updateStatValues()
+                map.updateClassification()
+                map.updateStyle()
             }, 2000)
 
             setTimeout(() => {
-                map.statData('size').setData(data2)
+                map.statData('size').setData(test2)
                 // map.psFillOpacity(0.8)
                 map.legend({
                     sizeLegend: {
-                        values: [1000, 5000],
+                        values: [1.5, 3.1],
                     },
                 })
                 map.updateStatValues()
@@ -375,40 +358,38 @@
                 map.updateStyle()
             }, 3000)
 
-            setTimeout(() => {
-                map.legend({
-                    sizeLegend: {
-                        values: [1000, 3000, 6000],
-                    },
-                })
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
-            }, 4000)
+            // setTimeout(() => {
+            //     map.legend({
+            //         sizeLegend: {
+            //             values: [1000, 3000, 6000],
+            //         },
+            //     })
+            //     map.updateStatValues()
+            //     map.updateClassification()
+            //     map.updateStyle()
+            // }, 4000)
 
-            setTimeout(() => {
-                map.legend({
-                    sizeLegend: {
-                        values: [500, 1000, 4000],
-                    },
-                })
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
-            }, 5000)
+            // setTimeout(() => {
+            //     map.legend({
+            //         sizeLegend: {
+            //             values: [500, 1000, 4000],
+            //         },
+            //     })
+            //     map.updateStatValues()
+            //     map.updateClassification()
+            //     map.updateStyle()
+            // }, 5000)
 
-            setTimeout(() => {
-                map.legend({
-                    sizeLegend: {
-                        values: [100, 1000, 5000].reverse(),
-                    },
-                })
-                map.updateStatValues()
-                map.updateClassification()
-                map.updateStyle()
-            }, 6000)
-
-
+            // setTimeout(() => {
+            //     map.legend({
+            //         sizeLegend: {
+            //             values: [100, 1000, 5000].reverse(),
+            //         },
+            //     })
+            //     map.updateStatValues()
+            //     map.updateClassification()
+            //     map.updateStyle()
+            // }, 6000)
         </script>
     </body>
 </html>

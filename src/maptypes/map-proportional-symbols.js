@@ -169,7 +169,7 @@ export const map = function (config) {
     }
 
     /**
-     * @description assigns a color to each symbol, based on their value
+     * @description assigns a color to each symbol, based on their statistical value
      * @param {*} map
      */
     function applyClassificationToMap(map) {
@@ -252,15 +252,12 @@ export const map = function (config) {
         //define style per class
         if (!out.psClassToFillStyle()) out.psClassToFillStyle(getColorLegend(out.psColorFun_, out.psColors_))
 
-        // symbol selection
-        let symb
         // if size dataset not defined then use default
         let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
 
         if (map.svg_) {
             //clear previous symbols
             let prevSymbols = map.svg_.selectAll(':not(#insetsgroup) g.symbol > *')
-            // if map is main map this clears insets too
             prevSymbols.remove()
 
             //change draw order according to size, then reclassify (there was an issue with nodes changing ecl attributes)
@@ -270,6 +267,7 @@ export const map = function (config) {
             }
 
             // append symbols
+            let symb
             if (out.psCustomSVG_) {
                 symb = appendCustomSymbolsToMap(map, sizeData)
             } else if (out.psShape_ == 'bar') {
@@ -294,11 +292,11 @@ export const map = function (config) {
                 // nuts regions fill colour only for those with sizeData
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0) || sv.value == ':') {
                         // no data
                         return out.cntrgFillStyle_
                     } else {
-                        // data
+                        console.log(sv) // data
                         return out.nutsrgFillStyle_
                     }
                 })
@@ -306,7 +304,7 @@ export const map = function (config) {
                 // world countries fill
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0) || sv.value == ':') {
                         return out.worldFillStyle_
                     } else {
                         return out.nutsrgFillStyle_
@@ -499,8 +497,9 @@ export const map = function (config) {
                 // })
                 .attr('r', (rg) => {
                     if (sizeData.get(rg.properties.id)) {
-                        let val = sizeData.get(rg.properties.id)
-                        let radius = out.classifierSize_(val.value)
+                        let datum = sizeData.get(rg.properties.id)
+                        if (datum.value == 0) return 0
+                        let radius = out.classifierSize_(datum.value)
                         //if (!radius) console.log(val)
                         return radius?.toFixed(3) || 0
                     } else {
@@ -625,10 +624,11 @@ export const map = function (config) {
                 const sv = sizeData.get(rg.properties.id)
                 if (
                     !sv ||
-                    !sv.value ||
-                    !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) ||
-                    sv.value == ':'
+                    (!sv.value && sv !== 0 && sv.value !== 0) ||
+                    sv.value == ':' ||
+                    !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])
                 ) {
+                    // no symbol for no data
                     return 'none'
                 } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
                     return 'block'
@@ -638,7 +638,13 @@ export const map = function (config) {
         // toggle display of mixed NUTS levels
         regions.style('display', function (rg) {
             const sv = sizeData.get(rg.properties.id)
-            if (!sv || !sv.value || !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
+            if (
+                !sv ||
+                (!sv.value && sv !== 0 && sv.value !== 0) ||
+                sv.value == ':' ||
+                !out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])
+            ) {
+                // no symbol for no data
                 return 'none'
             } else if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1]) || map.geo_ == 'WORLD') {
                 return 'block'
