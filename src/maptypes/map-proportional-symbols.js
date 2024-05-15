@@ -292,9 +292,6 @@ export const map = function (config) {
                 // nuts regions fill colour only for those with sizeData
                 regions.attr('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (rg.properties.id == 'ES') {
-                        console.log(sv)
-                    }
                     if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
                         // NO INPUT
                         return out.noDataFillStyle_
@@ -434,7 +431,6 @@ export const map = function (config) {
         let zoomGroup = map.svg_ ? map.svg_.select('#zoomgroup' + map.svgId_) : null
         const gcp = zoomGroup.select('#g_ps')
         let sizeData = map.statData('size').getArray() ? map.statData('size') : map.statData()
-        //console.log(map._centroidFeatures)
 
         let sortedBySize = [...map._centroidFeatures].sort(function (a, b) {
             //A negative value indicates that a should come before b.
@@ -493,7 +489,6 @@ export const map = function (config) {
      */
     function appendCirclesToMap(map, sizeData) {
         let symbolContainers = map.svg().selectAll('g.symbol')
-        //console.log(symbolContainers._groups[0])
 
         return (
             symbolContainers
@@ -507,7 +502,6 @@ export const map = function (config) {
                         let datum = sizeData.get(rg.properties.id)
                         if (datum.value == 0) return 0
                         let radius = out.classifierSize_(datum.value)
-                        //if (!radius) console.log(val)
                         return radius?.toFixed(3) || 0
                     } else {
                         return 0

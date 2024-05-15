@@ -151,7 +151,11 @@ export const statMap = function (config, withCenterPoints) {
 
     /** Check if all stat datasets have been loaded. */
     const isStatDataReady = function () {
-        for (let statKey in out.stat_) if (!out.statData_[statKey].isReady()) return false
+        for (let statKey in out.stat_) {
+            if (!out.statData_[statKey].isReady()) {
+                return false
+            }
+        }
         return true
     }
 

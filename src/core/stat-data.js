@@ -20,7 +20,7 @@ export const statData = function (config) {
      * The statistical values, indexed by NUTS id.
      * Each stat value is an object {value,status}.
      */
-    let _data_ = undefined
+    out._data_ = undefined
 
     /**
      * Return the stat value {value,status} from a nuts id.
@@ -29,10 +29,10 @@ export const statData = function (config) {
      */
     out.get = (nutsId) => {
         if (!nutsId) {
-            return _data_
+            return out._data_
         } else {
-            if (_data_) {
-                return _data_[nutsId]
+            if (out._data_) {
+                return out._data_[nutsId]
             } else {
                 return undefined
             }
@@ -55,8 +55,8 @@ export const statData = function (config) {
      * @param {Object || String || Number} stat The new statistical data. The format can be either {value:34.324,status:"e"} or a the value only.
      */
     out.set = (nutsId, stat) => {
-        _data_ = _data_ || {}
-        const s = _data_[nutsId]
+        out._data_ = out._data_ || {}
+        const s = out._data_[nutsId]
 
         if (s) {
             if (stat.value) {
@@ -69,8 +69,8 @@ export const statData = function (config) {
             }
         } else {
             // be careful here setting values here, we need to maintain strings with trailing zeros because in JSON 1.0 === 1 and they are removed. User might want stats labels with trailing zeros.
-            _data_[nutsId] = stat.value ? stat : { value: stat}
-            //_data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat}
+            out._data_[nutsId] = stat.value ? stat : { value: stat }
+            //out._data_[nutsId] = stat.value ? stat : { value: isNaN(+stat) ? stat : +stat}
         }
         return out
     }
@@ -82,15 +82,15 @@ export const statData = function (config) {
      */
     out.setData = (data) => {
         out.__data = data // for debugging
-        _data_ = {} // overwrite existing data
+        out._data_ = {} // overwrite existing data
         Object.keys(data).forEach((nutsId) => out.set(nutsId, data[nutsId]))
         return out
     }
 
     /** Return all stat values as an array. This can be used to classify the values. */
     out.getArray = function () {
-        if (_data_) {
-            return Object.values(_data_)
+        if (out._data_) {
+            return Object.values(out._data_)
                 .map((s) => s.value)
                 .filter((s) => s == 0 || s)
         }
@@ -98,15 +98,15 @@ export const statData = function (config) {
 
     /** Return stat unique values. This can be used for categorical maps. */
     out.getUniqueValues = function () {
-        return Object.values(_data_)
+        return Object.values(out._data_)
             .map((s) => s.value)
             .filter((item, i, ar) => ar.indexOf(item) === i)
     }
 
     /** Get min value. */
     out.getMin = function () {
-        if (_data_) {
-            return Object.values(_data_)
+        if (out._data_) {
+            return Object.values(out._data_)
                 .map((s) => s.value)
                 .filter((s) => s == 0 || (s && s !== ':'))
                 .reduce((acc, v) => Math.min(acc, v))
@@ -114,8 +114,8 @@ export const statData = function (config) {
     }
     /** Get max value. */
     out.getMax = function () {
-        if (_data_) {
-            return Object.values(_data_)
+        if (out._data_) {
+            return Object.values(out._data_)
                 .map((s) => s.value)
                 .filter((s) => s == 0 || (s && s !== ':'))
                 .reduce((acc, v) => Math.max(acc, v))
@@ -124,7 +124,7 @@ export const statData = function (config) {
 
     /** Check if the stat data is ready. */
     out.isReady = function () {
-        return _data_ != undefined
+        return out._data_ != undefined
     }
 
     /** Some metadata */
@@ -180,7 +180,7 @@ export const statData = function (config) {
     //for eurobase statistical data to retrieve from Eurostat API
     const updateEurobase = function (nutsLvl, lang, callback) {
         //erase previous data
-        _data_ = null
+        out._data_ = null
 
         getEurobasePromise(nutsLvl, lang).then(function (data___) {
             //decode stat data
@@ -197,7 +197,7 @@ export const statData = function (config) {
             out.metadata.time = jsd.Dimension('time').id[0]
 
             //index
-            _data_ = jsonstatToIndex(jsd)
+            out._data_ = jsonstatToIndex(jsd)
             //TODO: use maybe https://github.com/badosa/JSON-stat/blob/master/utils/fromtable.md to build directly an index ?
 
             if (callback) callback()
@@ -210,7 +210,7 @@ export const statData = function (config) {
     out.getTime = function () {
         const t = out.filters_.time
         if (t) return t
-        if (!_data_) return
+        if (!out._data_) return
         return out.metadata.time
     }
 
@@ -235,12 +235,12 @@ export const statData = function (config) {
     //for statistical data to retrieve from CSV file
     const updateCSV = function (callback) {
         //erase previous data
-        _data_ = null
+        out._data_ = null
 
         //retrieve csv data
         getCSVPromise().then(function (data___) {
             //decode stat data
-            _data_ = csvToIndex(data___, out.geoCol_, out.valueCol_)
+            out._data_ = csvToIndex(data___, out.geoCol_, out.valueCol_)
 
             //store some metadata
             out.metadata = { href: out.csvURL_ }

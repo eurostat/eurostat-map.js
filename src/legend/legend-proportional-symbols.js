@@ -536,7 +536,7 @@ export const legend = function (map, config) {
                     select(this).attr('fill___', cellFill)
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.style('fill', m.nutsrgSelFillSty())
+                        ps.attr('fill', m.nutsrgSelFillSty())
                     })
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })
@@ -546,7 +546,7 @@ export const legend = function (map, config) {
                     let cellFill = select(this).attr('fill___')
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.style('fill', cellFill)
+                        ps.attr('fill', cellFill)
                     })
                     select(this).style('fill', m.psClassToFillStyle()(ecl, clnb))
                 })
@@ -609,7 +609,7 @@ export const legend = function (map, config) {
                     //for ps, the symbols are the children of each g_ps element
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.style('fill', m.noDataFillStyle())
+                        ps.attr('fill', m.noDataFillStyle())
                     })
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })
@@ -619,7 +619,7 @@ export const legend = function (map, config) {
                     let cellFill = select(this).attr('fill___')
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.style('fill', cellFill)
+                        ps.attr('fill', cellFill)
                     })
                     select(this).style('fill', m.noDataFillStyle())
                 })

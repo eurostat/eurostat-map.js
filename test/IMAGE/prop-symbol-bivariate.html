@@ -72,7 +72,15 @@
                         title: 'legend title',
                     },
                 })
-            map.statData('size').setData(sizedata)
+
+            let mapCallbacksFired = 0
+            map.callback((map) => {
+                mapCallbacksFired++
+                console.log(mapCallbacksFired)
+            })
+
+            //map.statData('size').setData(sizedata)
+            map.statData().setData(sizedata)
             map.statData('color').setData(colordata)
             map.updateClassification()
             map.updateStyle()
