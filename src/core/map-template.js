@@ -1326,7 +1326,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .attr('d', out._geom.path)
                         .attr('class', 'nutsrg')
                         .attr('lvl', i) //to be able to distinguish nuts levels
-                        .style('fill', out.nutsrgFillStyle_)
+                        .attr('fill', out.nutsrgFillStyle_)
                 })
 
                 //add kosovo

@@ -410,10 +410,10 @@ const tootipTextFunStat = function (rg, map) {
     }
     //case when no data available
     const sv = map.statData().get(rg.properties.id)
-        //unit
-        const unit = map.statData('default').unitText()
+    //unit
+    const unit = map.statData('default').unitText()
 
-    if (!sv || (sv.value !== 0 && !sv.value)) {
+    if (!sv || (sv.value !== 0 && !sv.value) || sv.value == ':') {
         buf.push(`
             <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
             <table class="nuts-table">
