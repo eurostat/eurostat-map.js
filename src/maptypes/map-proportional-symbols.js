@@ -294,7 +294,7 @@ export const map = function (config) {
                 // nuts regions fill colour only for those with sizeData
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if ((!sv || !sv.value) && sv !== 0 && sv.value !== 0) {
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
                         // no data
                         return out.cntrgFillStyle_
                     } else {
@@ -306,7 +306,7 @@ export const map = function (config) {
                 // world countries fill
                 regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
-                    if (!sv || !sv.value) {
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
                         return out.worldFillStyle_
                     } else {
                         return out.nutsrgFillStyle_
