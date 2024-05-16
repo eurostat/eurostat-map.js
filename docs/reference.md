@@ -253,7 +253,7 @@ Along with data-driven sizing, it is possible to colour the symbols according to
 | _map_.**psStrokeWidth**([*value*])   | number           | _0.3_                | The width of the stroke.                                                                                                                                                                 |
 | _map_.**psClasses**([*value*])       | number           | _5_                  | The number of classes to use when applying data-driven colour for the symbols. Similar to clnb() for choropleth maps.                                                                    |
 | _map_.**psColorFun**([*value*])      | function         | _d3.interpolateOrRd_ | The color function, as defined in [d3-scale-chromatic](https://github.com/d3/d3-scale-chromatic/)                                                                                        |
-| _map_.**psSizeFun**([*value*])       | function         | _d3.scaleSqrt_       | The D3 scale function used to define the sizes of the symbols. The following methods are then called internally: psSizeFun().domain(sizeDomain).range([psMinSize, psMaxSize])                       |
+| _map_.**psSizeFun**([*value*])       | function         | _d3.scaleSqrt_       | The D3 scale function used to define the sizes of the symbols. The following methods are then called internally: psSizeFun().domain(sizeDomain).range([psMinSize, psMaxSize])            |
 | _map_.**psClassifMethod**([*value*]) | String           | _"quantile"_         | The classification method. Possible values are _"quantile"_, _"equinter"_ for equal intervals, and _"threshold"_ for user defined threshold (see threshold method).                      |
 | _map_.**psThreshold**([*value*])     | Array            | _[0]_                | If _psClassifMethod = "threshold"_, the breaks of the classification.                                                                                                                    |
 | _map_.**psColours**([*value*])       | Array            | null                 | The colours to be using data-driven colour. The number of colours specified in the array should match the number of classes (specified using psClasses())                                |
@@ -278,6 +278,7 @@ The following parameters are properties of the sizeLegend object:
 | ------------------ | -------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
 | **title**          | String   | _null_                              | Title of the size legend                                                                      |
 | **titlePadding**   | Number   | _10_                                | Padding between the legend title and legend body                                              |
+| **titleFontSize**  | Number   | _12_                                | Title font size in pixels                                                                     |
 | **values**         | Number   | _undefined_                         | Manually set the raw data values to be used in the legend                                     |
 | **cellNb**         | Number   | _4_                                 | Number of symbols to be shown in the legend (when values are not set manually)                |
 | **shapePadding**   | Number   | _10_                                | The padding between consecutive legend shape elements                                         |
@@ -295,6 +296,8 @@ The following parameters are properties of the colorLegend object:
 | ---------------------- | -------- | ----------------------------------- | ----------------------------------------------------------------------------- |
 | **title**              | String   | _null_                              | Title of the size legend                                                      |
 | **titlePadding**       | Number   | _10_                                | Padding between the legend title and legend body                              |
+| **titleFontSize**      | Number   | _12_                                | Title font size in pixels                                                     |
+| **marginTop**          | Number   | _35_                                | Margin top in pixels. Distance between size and color legends                 |
 | **shapeWidth**         | Number   | _13_                                | The width of the legend box elements                                          |
 | **shapeHeight**        | Number   | _13_                                | The height of the legend box elements                                         |
 | **shapePadding**       | Number   | _10_                                | The padding between consecutive legend shape elements                         |

@@ -50,6 +50,7 @@ export const legend = function (map, config) {
         title: null,
         titleFontSize: 12,
         titlePadding: 10, //padding between title and legend body
+        marginTop: 30, // margin top (distance between color and size legend)
         shapeWidth: 20, //the width of the legend box elements
         shapeHeight: 20, //the height of the legend box elements
         shapePadding: 1, //the distance between consecutive legend shape elements in the color legend
@@ -118,6 +119,7 @@ export const legend = function (map, config) {
         }
         // legend for ps color values
         out._colorLegendNode = lgg.append('g').attr('class', 'color-legend-container')
+
         // position it below size legend
         out._colorLegendNode.attr('transform', `translate(0,${out._sizeLegendNode.node().getBBox().height})`)
         if (m.classifierColor_) {
@@ -401,8 +403,8 @@ export const legend = function (map, config) {
         }
 
         //draw title
-        if (!out.sizeLegend.title && out.title) out.sizeLegend.title = out.title //allow root legend title
-        if (out.sizeLegend.title)
+        if (!out.sizeLegend.title && out.title) out.sizeLegend.title = out.title //if unspecified, set size legend title as root legend title
+        if (out.sizeLegend.title) {
             out._sizeLegendNode
                 .append('text')
                 .attr('x', out.boxPadding)
@@ -413,6 +415,7 @@ export const legend = function (map, config) {
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
+        }
 
         let maxRadius = m.classifierSize_(max(out._sizeLegendValues)) //maximum circle radius to be shown in legend
         let x = out.boxPadding + maxRadius
@@ -483,20 +486,19 @@ export const legend = function (map, config) {
         let f = out.colorLegend.labelFormatter || spaceAsThousandSeparator
         const svgMap = m.svg()
 
-        let marginTop = 35
-
         //title
-        if (out.colorLegend.title)
+        if (out.colorLegend.title) {
             out._colorLegendNode
                 .append('text')
                 .attr('class', 'eurostatmap-legend-title')
                 .attr('x', out.boxPadding)
-                .attr('y', out.titleFontSize + marginTop)
+                .attr('y', out.titleFontSize + out.colorLegend.marginTop)
                 .text(out.colorLegend.title)
                 .style('font-size', out.titleFontSize + 'px')
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
+        }
 
         // x position of color legend cells
         let x = out.boxPadding
@@ -506,7 +508,7 @@ export const legend = function (map, config) {
 
         for (let i = 0; i < clnb; i++) {
             //the vertical position of the legend element
-            let y = out.titleFontSize + marginTop * 1.5 + i * out.colorLegend.shapeHeight // account for title + margin
+            let y = out.titleFontSize + out.colorLegend.titlePadding + out.colorLegend.marginTop + i * out.colorLegend.shapeHeight // account for title + margin
 
             //the class number, depending on order
             const ecl = out.ascending ? i : clnb - i - 1
@@ -584,7 +586,7 @@ export const legend = function (map, config) {
 
         //'no data' legend box
         if (out.colorLegend.noData) {
-            let y = out.titleFontSize + marginTop + clnb * out.colorLegend.shapeHeight + 20 // add 20 to separate it from the rest
+            let y = out.titleFontSize + out.colorLegend.marginTop + clnb * out.colorLegend.shapeHeight + 20 // add 20 to separate it from the rest
 
             let itemContainer = out._colorLegendNode
                 .append('g')
@@ -628,8 +630,8 @@ export const legend = function (map, config) {
             itemContainer
                 .append('text')
                 .attr('x', out.colorLegend.labelOffset.x)
-                .attr('y', out.colorLegend.shapeHeight)
-                .attr('alignment-baseline', 'start')
+                .attr('y', out.colorLegend.shapeHeight / 2)
+                .attr('alignment-baseline', 'middle')
                 .attr('class', 'eurostatmap-legend-label')
                 .text(out.colorLegend.noDataText)
                 .style('font-size', out.labelFontSize + 'px')
