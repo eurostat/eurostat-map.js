@@ -467,13 +467,13 @@ export const mapTemplate = function (config, withCenterPoints) {
                 let cntrg = out.svg().selectAll('.worldrg')
                 if (cntrg) {
                     // only change fill for world regions without an ecl class
-                    cntrg.style('fill', (region, i, nodes) => {
+                    cntrg.attr('fill', (region, i, nodes) => {
                         let node = select(nodes[i])
                         if (!node.attr('ecl')) {
                             return out.cntrgFillStyle_
                         } else {
                             // leave fill as it is
-                            return node.style('fill')
+                            return node.attr('fill')
                         }
                     })
                 }
@@ -1289,7 +1289,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .append('path')
                 .attr('d', out._geom.path)
                 .attr('class', 'cntrg')
-                .style('fill', out.cntrgFillStyle())
+                .attr('fill', out.cntrgFillStyle())
         }
 
         //draw world map
@@ -1302,7 +1302,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .append('path')
                 .attr('d', out._geom.path)
                 .attr('class', 'worldrg')
-                .style('fill', out.worldFillStyle_)
+                .attr('fill', out.worldFillStyle_)
         }
 
         //draw NUTS regions

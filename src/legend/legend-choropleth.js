@@ -15,12 +15,12 @@ export const legend = function (map, config) {
     out.ascending = true
 
     //the width of the legend box elements
-    out.shapeWidth = 13
+    out.shapeWidth = 20
     //the height of the legend box elements
-    out.shapeHeight = 15
+    out.shapeHeight = 20
 
     //the separation line length
-    out.sepLineLength = 17
+    out.sepLineLength = 22
     //the separation line color
     out.sepLineStroke = 'black'
     //the separation line width
@@ -271,7 +271,8 @@ export const legend = function (map, config) {
     }
 
     function highlightRegions(map, ecl) {
-        const sel = map.selectAll('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
+        let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
         sel.style('fill', out.map.nutsrgSelFillSty())
         sel.attr('fill___', function () {
             select(this).attr('fill')
@@ -279,7 +280,8 @@ export const legend = function (map, config) {
     }
 
     function unhighlightRegions(map, ecl) {
-        const sel = map.selectAll('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
+        let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
         sel.style('fill', function () {
             select(this).attr('fill___')
         })
