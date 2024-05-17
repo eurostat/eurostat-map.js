@@ -38,7 +38,7 @@
             basemap = function () {
                 return (
                     eurostatmap
-                        .map('ch')
+                        .map('ps')
                         .svgId('mappy')
                         .containerId('container')
                         .pixSize(7400)
@@ -136,6 +136,7 @@
             let exampleData2 = { ES: 10 }
             let map = basemap()
             map.statData().setData(exampleData1)
+            map.statData('color').setData(exampleData1)
 
             // apply labelling
             setTimeout(() => {
@@ -159,7 +160,6 @@
 
             map.build()
 
-
             setTimeout(() => {
                 // map.labelling(true)
                 //     .labelsToShow(['seas', 'countries'])
@@ -174,7 +174,6 @@
 
                 map.drawCoastalMargin(true)
             }, 3000)
-
         </script>
     </body>
 </html>

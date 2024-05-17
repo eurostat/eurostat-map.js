@@ -139,28 +139,28 @@ export const map = function (config) {
         defineClassifiers()
 
         // apply classification to all insets that are outside of the main map's SVG
-        // if (out.insetTemplates_) {
-        //     for (const geo in out.insetTemplates_) {
-        //         if (Array.isArray(out.insetTemplates_[geo])) {
-        //             for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-        //                 // insets with same geo that do not share the same parent inset
-        //                 if (Array.isArray(out.insetTemplates_[geo][i])) {
-        //                     // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
-        //                     for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-        //                         if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
-        //                             applyClassificationToMap(out.insetTemplates_[geo][i][c])
-        //                     }
-        //                 } else {
-        //                     if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
-        //                         applyClassificationToMap(out.insetTemplates_[geo][i])
-        //                 }
-        //             }
-        //         } else {
-        //             // unique inset geo_
-        //             if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
-        //         }
-        //     }
-        // }
+        if (out.insetTemplates_) {
+            for (const geo in out.insetTemplates_) {
+                if (Array.isArray(out.insetTemplates_[geo])) {
+                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
+                        // insets with same geo that do not share the same parent inset
+                        if (Array.isArray(out.insetTemplates_[geo][i])) {
+                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
+                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
+                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
+                            }
+                        } else {
+                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
+                                applyClassificationToMap(out.insetTemplates_[geo][i])
+                        }
+                    }
+                } else {
+                    // unique inset geo_
+                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
+                }
+            }
+        }
 
         // apply to main map
         applyClassificationToMap(out)
@@ -174,7 +174,7 @@ export const map = function (config) {
      */
     function applyClassificationToMap(map) {
         if (map.svg_) {
-            if (map.classifierColor_) {
+            if (out.classifierColor_) {
                 //assign color class to each symbol, based on their value
                 // at this point, the symbol path hasnt been appended. Only the parent g.symbol element (in map-template)
                 let colorData = map.statData('color')
@@ -187,7 +187,7 @@ export const map = function (config) {
                     if (v !== 0 && !v) {
                         return 'nd'
                     }
-                    let c = +map.classifierColor_(+v)
+                    let c = +out.classifierColor_(+v)
                     return c
                 })
             }
