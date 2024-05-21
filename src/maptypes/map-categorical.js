@@ -18,8 +18,6 @@ export const map = function (config) {
     out.classToFillStyle_ = undefined
     /** Text label for each category/class. Ex.: { "urb": "Urban", "int": "Intermediate", "rur": "Rural" } */
     out.classToText_ = undefined
-    /** The color for non data regions */
-    out.noDataFillStyle_ = 'lightgray'
     //specific tooltip text function
     out.tooltip_.textFunction = tooltipTextFunCat
 

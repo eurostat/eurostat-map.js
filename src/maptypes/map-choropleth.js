@@ -5,13 +5,12 @@ import { interpolateYlOrBr } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
 
-
 /**
  * Returns a chroropleth map.
  *
  * @param {*} config
  */
- export const map = function (config) {
+export const map = function (config) {
     //create map object to return, using the template
     const out = smap.statMap(config)
 
@@ -29,8 +28,6 @@ import * as lgch from '../legend/legend-choropleth'
     out.colorFun_ = interpolateYlOrBr
     //a function returning the color from the class i
     out.classToFillStyle_ = undefined
-    //style for no data regions
-    out.noDataFillStyle_ = 'lightgray'
     //the classifier: a function which return a class number from a stat value.
     out.classifier_ = undefined
 
@@ -199,8 +196,6 @@ import * as lgch from '../legend/legend-choropleth'
 
     //@override
     out.updateStyle = function () {
-
-
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
@@ -225,8 +220,8 @@ import * as lgch from '../legend/legend-choropleth'
             }
         }
 
-                // apply to main map
-                applyStyleToMap(out)
+        // apply to main map
+        applyStyleToMap(out)
 
         return out
     }
@@ -353,7 +348,6 @@ import * as lgch from '../legend/legend-choropleth'
             }
         }
     }
-
 
     //@override
     out.getLegendConstructor = function () {

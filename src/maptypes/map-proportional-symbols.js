@@ -39,7 +39,6 @@ export const map = function (config) {
     out.psColors_ = null //colours to use for threshold colouring
     out.psColorFun_ = interpolateOrRd
     out.psClassToFillStyle_ = undefined //a function returning the color from the class i
-    out.noDataFillStyle_ = '#8c8c8c' //style for no data regions
 
     //the threshold, when the classification method is 'threshold'
     out.psThreshold_ = [0]

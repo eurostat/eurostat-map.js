@@ -36,8 +36,6 @@ export const map = function (config) {
     //show piecharts only when data for all categories is complete.
     //Otherwise, consider the regions as being with no data at all.
     out.showOnlyWhenComplete_ = false
-    //style for no data regions
-    out.noDataFillStyle_ = 'darkgray'
 
     out.sizeClassifier_ = null //d3 scale for scaling pie sizes
     out.statPie_ = null

@@ -152,16 +152,16 @@ export const mapTemplate = function (config, withCenterPoints) {
     ]
 
     //nuts styling
-    out.nutsrgFillStyle_ = 'white'
-    out.nutsrgSelFillSty_ = '#e0bcdf'
+    out.nutsrgFillStyle_ = '#EfEfEf'
+    out.nutsrgSelFillSty_ = 'cyan'
     out.nutsbnStroke_ = { 0: 'none', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: '#7f7f7f' }
     out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
     //country borders styling
-    out.cntrgFillStyle_ = '#E6E6E6'
+    out.cntrgFillStyle_ = '#EfEfEf'
     out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
     out.cntbnStrokeWidth_ = { eu: 0.5, efta: 0.5, cc: 0.5, oth: 0.5, co: 0.5 }
     //world map
-    out.worldFillStyle_ = '#E6E6E6'
+    out.worldFillStyle_ = '#EfEfEf'
     out.worldStroke_ = 'black'
     out.worldStrokeWidth_ = 1
     out.worldCoastStroke_ = 'none'
@@ -224,6 +224,9 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.nuts2jsonBaseURL_ = window.location.hostname.includes('ec.europa.eu')
         ? 'https://ec.europa.eu/assets/estat/E/E4/gisco/pub/nuts2json/v2/'
         : 'https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/'
+
+    //style for no data regions
+    out.noDataFillStyle_ = '#bcbcbc'
 
     /**
      * Insets.
