@@ -287,6 +287,8 @@ The following parameters are properties of the sizeLegend object:
 | **labelOffset**    | Number   | _25_                                | The distance between the legend box elements to the corresponding text label.                 |
 | **labelDecNb**     | Number   | _0_                                 | The number of decimals for each label.                                                        |
 | **labelFormatter** | Function | _d3.format("." + labelDecNb + "f")_ | A function used to format the values of the legend labels.                                    |
+| **noData**         | Boolean  | _false_                             | Show a 'no data' legend item in the size legend.                                              |
+| **noDataText**     | String   | _'No data'_                         | Text shown in the 'no data' legend item in the size legend.                                   |
 
 **colorLegend**
 

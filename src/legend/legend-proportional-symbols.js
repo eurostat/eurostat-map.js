@@ -43,6 +43,8 @@ export const legend = function (map, config) {
         labelFormatter: undefined,
         _totalBarsHeight: 0,
         _totalD3SymbolsHeight: 0,
+        noData: false, // show no data legend item
+        noDataText: 'No data', //no data text label
     }
 
     // color legend config (legend illustrating the data-driven colour classes)
@@ -139,6 +141,16 @@ export const legend = function (map, config) {
     function buildSizeLegend(m) {
         if (!m.psCustomSVG_ && m.psShape_ == 'circle') {
             buildCircleLegend(m, out.sizeLegend)
+            if (out.sizeLegend.noData) {
+                let y = out._sizeLegendNode.node().getBBox().height + out.colorLegend.shapeHeight + 5
+                let x = out.boxPadding
+                let container = out._sizeLegendNode
+                    .append('g')
+                    .attr('transform', `translate(${x},${y})`)
+                    .attr('class', 'color-legend-item')
+
+                buildNoDataLegend(x, y, container, out.sizeLegend.noDataText)
+            }
             return
         }
 
@@ -188,6 +200,67 @@ export const legend = function (map, config) {
                 buildD3SymbolItem(map, val, symbolSize, i, labelFormatter)
             }
         }
+
+        if (out.sizeLegend.noData) {
+            let y = out._sizeLegendNode.node().getBBox().height + out.colorLegend.shapeHeight + 5
+            let x = out.boxPadding
+            let container = out._sizeLegendNode
+                .append('g')
+                .attr('transform', `translate(${x},${y})`)
+                .attr('class', 'color-legend-item')
+
+            buildNoDataLegend(x, y, container, out.colorLegend.noDataText)
+        }
+    }
+
+    //'no data' legend box
+    function buildNoDataLegend(x, y, container, noDataText) {
+        let m = out.map
+
+        //append symbol & style
+        container
+            .append('g')
+            .attr('fill', m.noDataFillStyle())
+            .style('fill-opacity', m.psFillOpacity())
+            .style('stroke', m.psStroke())
+            .attr('stroke-width', 1)
+            .append('rect')
+            .attr('width', out.colorLegend.shapeWidth)
+            .attr('height', out.colorLegend.shapeHeight)
+            .on('mouseover', function () {
+                const parents = m.svg_.select('#g_ps').selectAll("[ecl='nd']")
+                let cellFill = select(this.parentNode).attr('fill')
+                // save legend cell fill color to revert during mouseout:
+                select(this).attr('fill___', cellFill)
+                //for ps, the symbols are the children of each g_ps element
+                parents.each(function (d, i) {
+                    let ps = select(this.childNodes[0])
+                    ps.attr('fill', m.noDataFillStyle())
+                })
+                select(this).style('fill', m.nutsrgSelFillSty())
+            })
+            .on('mouseout', function () {
+                //for ps, the symbols are the children of each g_ps element
+                const parents = m.svg_.select('#g_ps').selectAll("[ecl='nd']")
+                let cellFill = select(this).attr('fill___')
+                parents.each(function (d, i) {
+                    let ps = select(this.childNodes[0])
+                    ps.attr('fill', cellFill)
+                })
+                select(this).style('fill', m.noDataFillStyle())
+            })
+
+        //'no data' label
+        container
+            .append('text')
+            .attr('x', out.colorLegend.labelOffset.x)
+            .attr('y', out.colorLegend.shapeHeight / 2)
+            .attr('alignment-baseline', 'middle')
+            .attr('class', 'eurostatmap-legend-label')
+            .text(noDataText)
+            .style('font-size', out.labelFontSize + 'px')
+            .style('font-family', m.fontFamily_)
+            .style('fill', out.fontFill)
     }
 
     /**
@@ -587,56 +660,12 @@ export const legend = function (map, config) {
         //'no data' legend box
         if (out.colorLegend.noData) {
             let y = out.titleFontSize + out.colorLegend.marginTop + clnb * out.colorLegend.shapeHeight + 20 // add 20 to separate it from the rest
-
-            let itemContainer = out._colorLegendNode
+            let container = out._colorLegendNode
                 .append('g')
                 .attr('transform', `translate(${x},${y})`)
                 .attr('class', 'color-legend-item')
 
-            //append symbol & style
-            itemContainer
-                .append('g')
-                .attr('fill', m.noDataFillStyle())
-                .style('fill-opacity', m.psFillOpacity())
-                .style('stroke', m.psStroke())
-                .attr('stroke-width', 1)
-                .append('rect')
-                .attr('width', out.colorLegend.shapeWidth)
-                .attr('height', out.colorLegend.shapeHeight)
-                .on('mouseover', function () {
-                    const parents = svgMap.select('#g_ps').selectAll("[ecl='nd']")
-                    let cellFill = select(this.parentNode).attr('fill')
-                    // save legend cell fill color to revert during mouseout:
-                    select(this).attr('fill___', cellFill)
-                    //for ps, the symbols are the children of each g_ps element
-                    parents.each(function (d, i) {
-                        let ps = select(this.childNodes[0])
-                        ps.attr('fill', m.noDataFillStyle())
-                    })
-                    select(this).style('fill', m.nutsrgSelFillSty())
-                })
-                .on('mouseout', function () {
-                    //for ps, the symbols are the children of each g_ps element
-                    const parents = svgMap.select('#g_ps').selectAll("[ecl='nd']")
-                    let cellFill = select(this).attr('fill___')
-                    parents.each(function (d, i) {
-                        let ps = select(this.childNodes[0])
-                        ps.attr('fill', cellFill)
-                    })
-                    select(this).style('fill', m.noDataFillStyle())
-                })
-
-            //'no data' label
-            itemContainer
-                .append('text')
-                .attr('x', out.colorLegend.labelOffset.x)
-                .attr('y', out.colorLegend.shapeHeight / 2)
-                .attr('alignment-baseline', 'middle')
-                .attr('class', 'eurostatmap-legend-label')
-                .text(out.colorLegend.noDataText)
-                .style('font-size', out.labelFontSize + 'px')
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
+            buildNoDataLegend(x, y, container)
         }
     }
 
