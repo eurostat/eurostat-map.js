@@ -209,7 +209,7 @@ export const legend = function (map, config) {
                 .attr('transform', `translate(${x},${y})`)
                 .attr('class', 'color-legend-item')
 
-            buildNoDataLegend(x, y, container, out.colorLegend.noDataText)
+            buildNoDataLegend(x, y, container, out.sizeLegend.noDataText)
         }
     }
 
@@ -665,7 +665,7 @@ export const legend = function (map, config) {
                 .attr('transform', `translate(${x},${y})`)
                 .attr('class', 'color-legend-item')
 
-            buildNoDataLegend(x, y, container)
+            buildNoDataLegend(x, y, container, out.colorLegend.noDataText)
         }
     }
 
