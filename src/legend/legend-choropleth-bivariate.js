@@ -277,7 +277,7 @@ export const legend = function (map, config) {
             lgg.append('text')
                 .attr('x', out.boxPadding + out.noDataShapeSize + out.boxPadding)
                 .attr('y', y + out.noDataShapeSize * 0.5)
-                .attr('alignment-baseline', 'middle')
+                .attr('dominant-baseline', 'middle')
                 .text(out.noDataText)
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)

@@ -168,7 +168,7 @@ export const legend = function (map, config) {
                 .style('font-weight', out.titleFontWeight)
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
-                .style('alignment-baseline', 'hanging')
+                .style('dominant-baseline', 'hanging')
         }
 
         let domain = m.classifierSize_.domain()
@@ -254,8 +254,8 @@ export const legend = function (map, config) {
         container
             .append('text')
             .attr('x', out.colorLegend.labelOffset.x)
-            .attr('y', out.colorLegend.shapeHeight / 2)
-            .attr('alignment-baseline', 'middle')
+            .attr('y', out.colorLegend.shapeHeight / 2 + 1)
+            .attr('dominant-baseline', 'middle')
             .attr('class', 'eurostatmap-legend-label')
             .text(noDataText)
             .style('font-size', out.labelFontSize + 'px')
@@ -314,7 +314,7 @@ export const legend = function (map, config) {
             .append('text')
             .attr('x', labelX)
             .attr('y', 0)
-            .attr('alignment-baseline', 'middle')
+            .attr('dominant-baseline', 'middle')
             .attr('text-anchor', 'start')
             .attr('class', 'eurostatmap-legend-label')
             .text(labelFormatter(value))
@@ -380,14 +380,14 @@ export const legend = function (map, config) {
 
         //label position
         let labelX = x + m.classifierSize_(m.classifierSize_.domain()[0]) + out.sizeLegend.labelOffset.x
-        let labelY = out.sizeLegend.shapeOffset.y / 2 //y + out.sizeLegend.labelOffset.y
+        let labelY = out.sizeLegend.shapeOffset.y / 2 + 1 //y + out.sizeLegend.labelOffset.y
 
         //append label
         itemContainer
             .append('text')
             .attr('x', labelX)
             .attr('y', labelY)
-            .attr('alignment-baseline', 'middle')
+            .attr('dominant-baseline', 'middle')
             .attr('text-anchor', 'start')
             .attr('class', 'eurostatmap-legend-label')
             .text(labelFormatter(value))
@@ -451,7 +451,7 @@ export const legend = function (map, config) {
             .append('text')
             .attr('x', labelX)
             .attr('y', labelY)
-            .attr('alignment-baseline', 'middle')
+            .attr('dominant-baseline', 'middle')
             .attr('text-anchor', 'start')
             .attr('class', 'eurostatmap-legend-label')
             .text(labelFormatter(value))
@@ -646,7 +646,7 @@ export const legend = function (map, config) {
                     .attr('class', 'eurostatmap-legend-label')
                     .attr('x', out.colorLegend.labelOffset.x)
                     .attr('y', out.colorLegend.shapeHeight)
-                    .attr('alignment-baseline', 'middle')
+                    .attr('dominant-baseline', 'middle')
                     .text((d) => {
                         let text = f(m.classifierColor_.invertExtent(out.ascending ? ecl + 1 : ecl - 1)[out.ascending ? 0 : 1])
                         return text
