@@ -598,6 +598,8 @@ export const legend = function (map, config) {
         itemContainer
             .append('text')
             .style('font-size', out.labelFontSize + 'px')
+            .style('font-family', m.fontFamily_)
+            .style('fill', out.fontFill)
             .attr('class', 'eurostatmap-legend-label')
             .attr('y', (d, i) => {
                 let y = -1 - 2 * m.classifierSize_(d) - out.labelFontSize
