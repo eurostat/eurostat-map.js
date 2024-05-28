@@ -124,7 +124,7 @@ export const legend = function (map, config) {
 
         // position it below size legend
         out._colorLegendNode.attr('transform', `translate(0,${out._sizeLegendNode.node().getBBox().height})`)
-        if (m.classifierColor_) {
+        if (m.classifierColor_ && out.colorLegend) {
             buildColorLegend(m, out.colorLegend)
         }
 
@@ -232,12 +232,41 @@ export const legend = function (map, config) {
                 let cellFill = select(this.parentNode).attr('fill')
                 // save legend cell fill color to revert during mouseout:
                 select(this).attr('fill___', cellFill)
-                //for ps, the symbols are the children of each g_ps element
+                //for ps, the symbols are the children of each g_ps element but could also be nutsrg
                 parents.each(function (d, i) {
                     let ps = select(this.childNodes[0])
                     ps.attr('fill', m.noDataFillStyle())
                 })
                 select(this).style('fill', m.nutsrgSelFillSty())
+
+                let ecl = 'nd'
+
+                // main map
+                highlightRegions(m.svg_, ecl)
+
+                // all external insets
+                if (out.map.insetTemplates_) {
+                    let insets = out.map.insetTemplates_
+                    for (const geo in insets) {
+                        if (Array.isArray(insets[geo])) {
+                            for (var i = 0; i < insets[geo].length; i++) {
+                                // insets with same geo that do not share the same parent inset
+                                if (Array.isArray(insets[geo][i])) {
+                                    // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                                    for (var c = 0; c < insets[geo][i].length; c++) {
+                                        if (insets[geo][i][c].svgId_ !== out.svgId_)
+                                            highlightRegions(insets[geo][i][c].svg(), ecl)
+                                    }
+                                } else {
+                                    if (insets[geo][i].svgId_ !== out.svgId_) highlightRegions(insets[geo][i].svg(), ecl)
+                                }
+                            }
+                        } else {
+                            // unique inset geo_
+                            if (insets[geo].svgId_ !== out.svgId_) highlightRegions(insets[geo].svg(), ecl)
+                        }
+                    }
+                }
             })
             .on('mouseout', function () {
                 //for ps, the symbols are the children of each g_ps element
@@ -248,6 +277,33 @@ export const legend = function (map, config) {
                     ps.attr('fill', cellFill)
                 })
                 select(this).style('fill', m.noDataFillStyle())
+
+                let ecl = 'nd'
+                // regions
+                unhighlightRegions(m.svg_, ecl)
+                // apply hover to all external insets
+                if (out.map.insetTemplates_) {
+                    let insets = out.map.insetTemplates_
+                    for (const geo in insets) {
+                        if (Array.isArray(insets[geo])) {
+                            for (var i = 0; i < insets[geo].length; i++) {
+                                // insets with same geo that do not share the same parent inset
+                                if (Array.isArray(insets[geo][i])) {
+                                    // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
+                                    for (var c = 0; c < insets[geo][i].length; c++) {
+                                        if (insets[geo][i][c].svgId_ !== out.svgId_)
+                                            unhighlightRegions(insets[geo][i][c].svg(), ecl)
+                                    }
+                                } else {
+                                    if (insets[geo][i].svgId_ !== out.svgId_) unhighlightRegions(insets[geo][i].svg(), ecl)
+                                }
+                            }
+                        } else {
+                            // unique inset geo_
+                            if (insets[geo].svgId_ !== out.svgId_) unhighlightRegions(insets[geo].svg(), ecl)
+                        }
+                    }
+                }
             })
 
         //'no data' label
@@ -261,6 +317,23 @@ export const legend = function (map, config) {
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
             .style('fill', out.fontFill)
+    }
+
+    function highlightRegions(map, ecl) {
+        let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
+        sel.style('fill', out.map.nutsrgSelFillSty())
+        sel.attr('fill___', function () {
+            select(this).attr('fill')
+        })
+    }
+
+    function unhighlightRegions(map, ecl) {
+        let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
+        sel.style('fill', function () {
+            select(this).attr('fill___')
+        })
     }
 
     /**

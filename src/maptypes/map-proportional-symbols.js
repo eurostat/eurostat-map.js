@@ -303,6 +303,20 @@ export const map = function (config) {
                         return out.nutsrgFillStyle_
                     }
                 })
+
+                // apply 'nd' class to no data for legend item hover
+                regions.attr('ecl', function (rg) {
+                    const sv = sizeData.get(rg.properties.id)
+                    if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
+                        // NO INPUT
+                        return 'nd'
+                    } else if ((sv && sv.value) || (sv && sv.value == 0)) {
+                        if (sv.value == ':') {
+                            // DATA NOT AVAILABLE
+                            return 'nd'
+                        }
+                    }
+                })
             } else {
                 // world countries fill
                 regions.attr('fill', function (rg) {
