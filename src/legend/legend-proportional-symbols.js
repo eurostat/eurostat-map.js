@@ -76,6 +76,7 @@ export const legend = function (map, config) {
                         out[key][p] = config[key][p]
                     }
                 }
+                if (config.colorLegend == false) out.colorLegend = false
             } else {
                 out[key] = config[key]
             }
