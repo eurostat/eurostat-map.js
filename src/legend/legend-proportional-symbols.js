@@ -143,7 +143,10 @@ export const legend = function (map, config) {
         if (!m.psCustomSVG_ && m.psShape_ == 'circle') {
             buildCircleLegend(m, out.sizeLegend)
             if (out.sizeLegend.noData) {
-                let y = out._sizeLegendNode.node().getBBox().height + out.colorLegend.shapeHeight + 5
+                let y = out._sizeLegendNode.node().getBBox().height + 5
+                if (out.colorLegend) {
+                    y += out.colorLegend.shapeHeight
+                }
                 let x = out.boxPadding
                 let container = out._sizeLegendNode
                     .append('g')
@@ -203,7 +206,10 @@ export const legend = function (map, config) {
         }
 
         if (out.sizeLegend.noData) {
-            let y = out._sizeLegendNode.node().getBBox().height + out.colorLegend.shapeHeight + 5
+            let y = out._sizeLegendNode.node().getBBox().height
+            if (out.colorLegend) {
+                y += out.colorLegend.shapeHeight + 5
+            }
             let x = out.boxPadding
             let container = out._sizeLegendNode
                 .append('g')
@@ -226,8 +232,8 @@ export const legend = function (map, config) {
             .style('stroke', m.psStroke())
             .attr('stroke-width', 1)
             .append('rect')
-            .attr('width', out.colorLegend.shapeWidth)
-            .attr('height', out.colorLegend.shapeHeight)
+            .attr('width', out.colorLegend ? out.colorLegend.shapeWidth : 20)
+            .attr('height', out.colorLegend ? out.colorLegend.shapeHeight : 20)
             .on('mouseover', function () {
                 const parents = m.svg_.select('#g_ps').selectAll("[ecl='nd']")
                 let cellFill = select(this.parentNode).attr('fill')
@@ -310,8 +316,8 @@ export const legend = function (map, config) {
         //'no data' label
         container
             .append('text')
-            .attr('x', out.colorLegend.labelOffset.x)
-            .attr('y', out.colorLegend.shapeHeight / 2 + 1)
+            .attr('x', out.colorLegend ? out.colorLegend.labelOffset.x : 25)
+            .attr('y', out.colorLegend ? out.colorLegend.shapeHeight / 2 + 1 : 11)
             .attr('dominant-baseline', 'middle')
             .attr('class', 'eurostatmap-legend-label')
             .text(noDataText)
