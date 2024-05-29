@@ -143,10 +143,7 @@ export const legend = function (map, config) {
         if (!m.psCustomSVG_ && m.psShape_ == 'circle') {
             buildCircleLegend(m, out.sizeLegend)
             if (out.sizeLegend.noData) {
-                let y = out._sizeLegendNode.node().getBBox().height + 5
-                if (out.colorLegend) {
-                    y += out.colorLegend.shapeHeight
-                }
+                let y = out._sizeLegendNode.node().getBBox().height + 25
                 let x = out.boxPadding
                 let container = out._sizeLegendNode
                     .append('g')
