@@ -12,7 +12,7 @@ export const legend = function (map, config) {
     const out = lg.legend(map)
 
     //size
-    out.squareSize = 30
+    out.squareSize = 100
 
     //orientation
     out.rotation = 0
@@ -154,7 +154,7 @@ export const legend = function (map, config) {
         //breaks 2
         if (out.breaks2)
             for (let i = 0; i < out.breaks2.length; i++) {
-                let x = -out.labelFontSize / 1.5
+                let x = -out.labelFontSize / 2 - 1
                 let y = sz * (i + 1) - sz / 2
                 square
                     .append('text')
