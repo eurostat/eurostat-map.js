@@ -160,7 +160,7 @@ export const legend = function (map, config) {
                     .append('text')
                     .attr('x', x)
                     .attr('y', y)
-                    .text(out.breaks2[i])
+                    .text([...out.breaks2].reverse()[i])
                     .attr('text-anchor', 'middle')
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)

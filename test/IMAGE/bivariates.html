@@ -66,21 +66,56 @@
                 ES1: 200,
                 PL812: 100,
             }
+            const COLORS = [
+                'rgb(230,184,0)',
+
+                'rgb(139,137,0)',
+
+                'rgb(51,100,0)',
+
+                'rgb(239,213,119)',
+
+                'rgb(154,190,119)',
+
+                'rgb(56,138,119)',
+
+                'rgb(246,239,224)',
+
+                'rgb(154,190,224)',
+
+                'rgb(56,138,224)',
+            ]
             const map = eurostatmap
                 .map('chbi')
                 .nutsLvl('mixed')
-                .classToFillStyle((i, j) => {
-                    if (i == 0 && j == 2) return '#71a8df'
-                    if (i == 1 && j == 2) return '#286eb4'
-                    if (i == 2 && j == 2) return '#1e5388'
-                    if (i == 0 && j == 1) return '#fddba2'
-                    if (i == 1 && j == 1) return '#faa519'
-                    if (i == 2 && j == 1) return '#c87e04'
-                    if (i == 0 && j == 0) return '#9dd58a'
-                    if (i == 1 && j == 0) return '#5fb441'
-                    if (i == 2 && j == 0) return '#468631'
+                .classToFillStyle((class1, class2) => {
+                    if (class1 == 0 && class2 == 2) return COLORS[0]
+                    if (class1 == 1 && class2 == 2) return COLORS[1]
+                    if (class1 == 2 && class2 == 2) return COLORS[2]
+                    if (class1 == 0 && class2 == 1) return COLORS[3]
+                    if (class1 == 1 && class2 == 1) return COLORS[4]
+                    if (class1 == 2 && class2 == 1) return COLORS[5]
+                    if (class1 == 0 && class2 == 0) return COLORS[6]
+                    if (class1 == 1 && class2 == 0) return COLORS[7]
+                    if (class1 == 2 && class2 == 0) return COLORS[8]
                     return 'gray'
                 })
+                .legend({
+                    boxFill: 'none',
+                    label2: 'Y axis',
+                    label1: 'X axis',
+                    breaks1: [100, 200, 300],
+                    breaks2: [100, 200, 300],
+                    x: 5,
+                    y: 120,
+                    squareSize: 100,
+                    labelFontSize: 12,
+                })
+                .nutsrgSelFillSty('yellow')
+                .showSourceLink(false)
+                .coastalMarginColor('lightgray')
+                .insets('default')
+                .callback(() => console.log('callback fired'))
                 .tooltip({
                     textFunction: function (rg, map) {
                         const buf = []
@@ -124,22 +159,6 @@
                         return buf.join('')
                     },
                 })
-                .legend({
-                    boxFill: 'none',
-                    label2: 'Y axis',
-                    label1: 'X axis',
-                    breaks1: [100, 200, 300],
-                    breaks2: [100, 200, 300],
-                    x: 5,
-                    y: 120,
-                    squareSize: 100,
-                    labelFontSize: 12,
-                })
-                .nutsrgSelFillSty('yellow')
-                .showSourceLink(false)
-                .coastalMarginColor('lightgray')
-                .insets('default')
-                .callback(() => console.log('callback fired'))
             //.countriesToShow(countriesToShow)
             //.bordersToShow(['efta', 'eu', 'cc', 'co'])
 
