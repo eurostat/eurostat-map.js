@@ -128,6 +128,7 @@
                     label2: 'label2',
                     label1: 'label1',
                     breaks1: ['break1', 'break2', 'break3'],
+                    breaks2: [' b 2', ' b 2', ' b 2'],
                     x: 5,
                     y: 120,
                     squareSize: 100,
@@ -137,10 +138,11 @@
                 .showSourceLink(false)
                 .coastalMarginColor('lightgray')
                 .insets('default')
+                .callback(() => console.log('callback fired'))
             //.countriesToShow(countriesToShow)
             //.bordersToShow(['efta', 'eu', 'cc', 'co'])
 
-            map.statData('v1').setData(data)
+            map.statData().setData(data)
             map.statData('v2').setData(data)
             map.updateClassification()
             map.updateStyle()

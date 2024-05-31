@@ -153,6 +153,7 @@ export const statMap = function (config, withCenterPoints) {
     const isStatDataReady = function () {
         for (let statKey in out.stat_) {
             if (!out.statData_[statKey].isReady()) {
+                // BUG HERE. E.G. for chbi maps the user callback is never executed for all inset maps because isReady() returns false, because v1 and v2 are specified but not 'default'.
                 return false
             }
         }
@@ -187,7 +188,7 @@ export const statMap = function (config, withCenterPoints) {
             //bug - map.statData('size').setData({ ES: 10000, DE: 10000, FR: 5000 }) results in out.statData(statKey).get() = undefined
             if (!out.stat(statKey) && out.statData(statKey).get()) return
 
-            //if no config is specified, use default data source: population density
+            //if no config is specified, use default data source: population density - why?
             //TODO move that out of loop ?
             if (statKey == 'default' && !out.stat(statKey))
                 out.stat(statKey, { eurostatDatasetCode: 'demo_r_d3dens', unitText: 'inhab./km²' })

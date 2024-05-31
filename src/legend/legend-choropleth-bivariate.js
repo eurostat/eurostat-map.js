@@ -12,7 +12,7 @@ export const legend = function (map, config) {
     const out = lg.legend(map)
 
     //size
-    out.squareSize = 50
+    out.squareSize = 30
 
     //orientation
     out.rotation = 0
@@ -38,11 +38,15 @@ export const legend = function (map, config) {
     out.boxPadding = out.labelFontSize
 
     //add extra distance between legend and no data item
-    out.noDataYOffset = 0
+    out.noDataYOffset = 20
 
     //arrows
     out.arrowHeight = 15
     out.arrowWidth = 14
+    out.arrowPadding = {
+        x: 5,
+        y: -20,
+    }
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -138,19 +142,34 @@ export const legend = function (map, config) {
             for (let i = 0; i < out.breaks1.length; i++)
                 square
                     .append('text')
-                    .attr('x', sz * (i + 1))
+                    .attr('x', sz * (i + 1) - sz / 2)
                     .attr('y', out.squareSize + out.labelFontSize)
                     .text(out.breaks1[i])
                     .attr('text-anchor', 'middle')
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)
                     .style('fill', out.fontFill)
+        // .attr('dominant-baseline', 'central')
 
         //breaks 2
-        if (out.breaks2) for (let i = 0; i < out.breaks2.length; i++) console.log('legend.breaks2 not yet implemented')
-        //TODO similar to break 1 and label 2
+        if (out.breaks2)
+            for (let i = 0; i < out.breaks2.length; i++) {
+                let x = -out.labelFontSize / 1.5
+                let y = sz * (i + 1) - sz / 2
+                square
+                    .append('text')
+                    .attr('x', x)
+                    .attr('y', y)
+                    .text(out.breaks2[i])
+                    .attr('text-anchor', 'middle')
+                    .style('font-size', out.labelFontSize + 'px')
+                    .style('font-family', m.fontFamily_)
+                    .style('fill', out.fontFill)
+                    .attr('dominant-baseline', 'central')
+                    .attr('transform', `rotate(-90, ${x}, ${y})`) // Apply rotation
+            }
 
-        //labels 1
+        // X axis title
         square
             .append('text')
             .attr('x', 0)
@@ -160,7 +179,7 @@ export const legend = function (map, config) {
             .style('font-family', m.fontFamily_)
             .style('fill', out.fontFill)
 
-        //labels 2
+        // y axis title
         square
             .append('text')
 
@@ -171,7 +190,10 @@ export const legend = function (map, config) {
 
             // settings for 0 or 45 rotation
             .attr('x', out.rotation == 0 ? -out.squareSize : -out.labelFontSize + out.arrowWidth / 2) //with roation 0, acts as Y axis
-            .attr('y', out.rotation == 0 ? -out.arrowWidth / 1.5 : out.labelFontSize + out.arrowHeight / 2)
+            .attr(
+                'y',
+                (out.rotation == 0 ? -out.arrowWidth / 1.5 : out.labelFontSize + out.arrowHeight / 2) + out.arrowPadding.y / 2
+            )
             .attr(
                 'transform',
                 out.rotation == 0
@@ -217,8 +239,8 @@ export const legend = function (map, config) {
             .attr(
                 'd',
                 line()([
-                    [0, out.squareSize + out.arrowHeight / 2],
-                    [out.squareSize, out.squareSize + out.arrowHeight / 2],
+                    [0, out.squareSize + out.arrowHeight + out.arrowPadding.x], // origin
+                    [out.squareSize, out.squareSize + out.arrowHeight + out.arrowPadding.x], // destination
                 ])
             )
             .attr('stroke', 'black')
@@ -230,8 +252,8 @@ export const legend = function (map, config) {
             .attr(
                 'd',
                 line()([
-                    [-out.arrowWidth / 2, out.squareSize],
-                    [-out.arrowWidth / 2, 0],
+                    [out.arrowPadding.y, out.squareSize],
+                    [out.arrowPadding.y, 0],
                 ])
             )
             .attr('stroke', 'black')
@@ -240,12 +262,13 @@ export const legend = function (map, config) {
         //'no data' legend box
         if (out.noData) {
             // add extra padding when rotation is 0
-            out.noDataYOffset =
+            let noDataYOffset =
                 out.rotation == 0 ? out.noDataYOffset + out.squareSize / out.map.clnb_ + out.arrowHeight / 2 : out.noDataYOffset
+
             y =
                 out.rotation == 0
-                    ? y + out.squareSize + out.noDataYOffset
-                    : y + 1.4142 * out.squareSize + out.boxPadding * 2 + out.noDataYOffset
+                    ? y + out.squareSize + noDataYOffset
+                    : y + 1.4142 * out.squareSize + out.boxPadding * 2 + noDataYOffset
 
             //rectangle
             lgg.append('rect')
@@ -275,8 +298,8 @@ export const legend = function (map, config) {
                 })
             //'no data' label
             lgg.append('text')
-                .attr('x', out.boxPadding + out.noDataShapeSize + out.boxPadding)
-                .attr('y', y + out.noDataShapeSize * 0.5)
+                .attr('x', out.boxPadding + out.noDataShapeSize + 5)
+                .attr('y', y + out.noDataShapeSize * 0.5 + 1)
                 .attr('dominant-baseline', 'middle')
                 .text(out.noDataText)
                 .style('font-size', out.labelFontSize + 'px')

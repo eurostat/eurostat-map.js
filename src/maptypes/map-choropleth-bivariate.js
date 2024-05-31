@@ -96,9 +96,12 @@ export const map = function (config) {
 
     function applyClassificationToMap(map) {
         //set classifiers
+        let stat1 = out.statData('v1').getArray() || out.statData().getArray()
+        let stat2 = out.statData('v2').getArray()
+
         const range = [...Array(out.clnb()).keys()]
-        if (!out.classifier1_) out.classifier1(scaleQuantile().domain(out.statData('v1').getArray()).range(range))
-        if (!out.classifier2_) out.classifier2(scaleQuantile().domain(out.statData('v2').getArray()).range(range))
+        if (!out.classifier1_) out.classifier1(scaleQuantile().domain(stat1).range(range))
+        if (!out.classifier2_) out.classifier2(scaleQuantile().domain(stat2).range(range))
 
         //assign class to nuts regions, based on their value
         if (map.svg_) {
