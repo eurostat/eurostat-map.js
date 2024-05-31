@@ -381,8 +381,8 @@ const tooltipTextFunBiv = function (rg, map) {
     }
 
     //stat 1 value
-    const sv1 = map.statData('v1').get(rg.properties.id) || out.statData().get(rg.properties.id)
-    const unit1 = map.statData('v1').unitText() || out.statData().unitText()
+    const sv1 = map.statData('v1').get(rg.properties.id) || map.statData().get(rg.properties.id)
+    const unit1 = map.statData('v1').unitText() || map.statData().unitText()
     //stat 2 value
     const sv2 = map.statData('v2').get(rg.properties.id)
     const unit2 = map.statData('v2').unitText()

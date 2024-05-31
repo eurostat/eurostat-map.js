@@ -117,49 +117,49 @@
                 .coastalMarginColor('lightgray')
                 .insets('default')
                 .callback(() => console.log('callback fired'))
-                .tooltip({
-                    textFunction: function (rg, map) {
-                        const buf = []
-                        //region name
-                        if (rg.properties.id) {
-                            //name and code
-                            buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
-                        } else {
-                            //region name
-                            buf.push('<b>' + rg.properties.na + '</b><br>')
-                        }
+            // .tooltip({
+            //     textFunction: function (rg, map) {
+            //         const buf = []
+            //         //region name
+            //         if (rg.properties.id) {
+            //             //name and code
+            //             buf.push('<b>' + rg.properties.na + '</b> (' + rg.properties.id + ') <br>')
+            //         } else {
+            //             //region name
+            //             buf.push('<b>' + rg.properties.na + '</b><br>')
+            //         }
 
-                        //URT value
-                        if (countriesToShow.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                            const data2 = map.statData('v2')
-                            const sv2 = data2.get(rg.properties.id)
-                            if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
-                            else {
-                                buf.push(
-                                    sv2.value == 1
-                                        ? 'Predominantly urban region'
-                                        : sv2.value == 2
-                                        ? 'Intermediate region'
-                                        : 'Predominantly rural region'
-                                )
-                            }
+            //         //URT value
+            //         if (countriesToShow.includes(rg.properties.id[0] + rg.properties.id[1])) {
+            //             const data2 = map.statData('v2')
+            //             const sv2 = data2.get(rg.properties.id)
+            //             if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
+            //             else {
+            //                 buf.push(
+            //                     sv2.value == 1
+            //                         ? 'Predominantly urban region'
+            //                         : sv2.value == 2
+            //                         ? 'Intermediate region'
+            //                         : 'Predominantly rural region'
+            //                 )
+            //             }
 
-                            buf.push('<br>')
+            //             buf.push('<br>')
 
-                            //stat value
-                            const sv1 = map.statData('v1').get(rg.properties.id)
-                            if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
-                            else {
-                                buf.push(sv1.value)
-                                //unit 1
-                                const unit1 = map.statData('v1').unitText()
-                                if (unit1) buf.push(' ' + unit1)
-                            }
-                        }
+            //             //stat value
+            //             const sv1 = map.statData('v1').get(rg.properties.id)
+            //             if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
+            //             else {
+            //                 buf.push(sv1.value)
+            //                 //unit 1
+            //                 const unit1 = map.statData('v1').unitText()
+            //                 if (unit1) buf.push(' ' + unit1)
+            //             }
+            //         }
 
-                        return buf.join('')
-                    },
-                })
+            //         return buf.join('')
+            //     },
+            // })
             //.countriesToShow(countriesToShow)
             //.bordersToShow(['efta', 'eu', 'cc', 'co'])
 
