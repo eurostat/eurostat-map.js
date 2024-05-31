@@ -27,10 +27,16 @@ export const legend = function (map, config) {
     out.breaks1 = undefined
     out.breaks2 = undefined
 
+    //axis
+    out.yAxisLabelsOffset = { x: 0, y: 0 }
+    out.xAxisLabelsOffset = { x: 0, y: 0 }
+
     //show no data
     out.noData = true
     //show no data
-    out.noDataShapeSize = 15
+    out.noDataShapeHeight = 15
+    out.noDataShapeWidth = 15
+
     //no data text label
     out.noDataText = 'No data'
 
@@ -154,8 +160,8 @@ export const legend = function (map, config) {
         //breaks 2
         if (out.breaks2)
             for (let i = 0; i < out.breaks2.length; i++) {
-                let x = -out.labelFontSize / 2 - 1
-                let y = sz * (i + 1) - sz / 2
+                let x = -out.labelFontSize / 2 - 1 + out.yAxisLabelsOffset.x
+                let y = sz * (i + 1) - sz / 2 + out.yAxisLabelsOffset.y
                 square
                     .append('text')
                     .attr('x', x)
@@ -172,8 +178,15 @@ export const legend = function (map, config) {
         // X axis title
         square
             .append('text')
-            .attr('x', 0)
-            .attr('y', out.squareSize + out.labelFontSize + out.arrowHeight / 1.5 + (out.breaks1 ? out.labelFontSize + 2 : 0))
+            .attr('x', 0 + out.xAxisLabelsOffset.x)
+            .attr(
+                'y',
+                out.squareSize +
+                    out.labelFontSize +
+                    out.arrowHeight / 1.5 +
+                    (out.breaks1 ? out.labelFontSize + 2 : 0) +
+                    out.xAxisLabelsOffset.y
+            )
             .text(out.label1)
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
@@ -274,8 +287,8 @@ export const legend = function (map, config) {
             lgg.append('rect')
                 .attr('x', out.boxPadding)
                 .attr('y', y)
-                .attr('width', out.noDataShapeSize)
-                .attr('height', out.noDataShapeSize)
+                .attr('width', out.noDataShapeWidth)
+                .attr('height', out.noDataShapeHeight)
                 .attr('fill', m.noDataFillStyle())
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
@@ -298,8 +311,8 @@ export const legend = function (map, config) {
                 })
             //'no data' label
             lgg.append('text')
-                .attr('x', out.boxPadding + out.noDataShapeSize + 5)
-                .attr('y', y + out.noDataShapeSize * 0.5 + 1)
+                .attr('x', out.boxPadding + out.noDataShapeWidth + 5)
+                .attr('y', y + out.noDataShapeHeight * 0.5 + 1)
                 .attr('dominant-baseline', 'middle')
                 .text(out.noDataText)
                 .style('font-size', out.labelFontSize + 'px')

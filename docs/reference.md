@@ -507,17 +507,21 @@ eurostatmap
 
 In addition to [the default legend parameters](#map-legend), bivariate choropleth maps have the following specific legend parameters:
 
-| Parameter           | Type    | Default value  | Description                                                                      |
-| ------------------- | ------- | -------------- | -------------------------------------------------------------------------------- |
-| **squareSize**      | number  | _50_           | The size, in pixel, of the legend square.                                        |
-| **rotation**        | number  | _0_            | The rotation to apply to the main legend. Recommended values are either 0 or -45 |
-| **label1**          | string  | _"Variable 1"_ | The text for the label of variable 1.                                            |
-| **label2**          | string  | _"Variable 2"_ | The text for the label of variable 1.                                            |
-| **labelFontSize**   | int     | _12_           | The font size of the legend label.                                               |
-| **noData**          | boolean | _true_         | Show/hide 'no data' style in the legend.                                         |
-| **noDataShapeSize** | number  | _15_           | The size, in pixel, of the 'No data' legend shape.                               |
-| **noDataText**      | Text    | _"No data"_    | 'No data' text label.                                                            |
-| **noDataYOffset**   | Text    | 0              | Add distance between the main legend and the 'no data' item in pixels            |
+| Parameter             | Type     | Default value    | Description                                                                      |
+| --------------------- | -------- | ---------------- | -------------------------------------------------------------------------------- |
+| **squareSize**        | number   | _50_             | The size, in pixel, of the legend square.                                        |
+| **rotation**          | number   | _0_              | The rotation to apply to the main legend. Recommended values are either 0 or -45 |
+| **label1**            | string   | _"Variable 1"_   | The text for the label of variable 1.                                            |
+| **label2**            | string   | _"Variable 2"_   | The text for the label of variable 1.                                            |
+| **breaks1**           | string[] | _undefined_      | An array of strings shown as axis labels for variable 1                          |
+| **breaks2**           | string[] | _undefined_      | An array of strings shown as axis labels for variable 2                          |
+| **labelFontSize**     | int      | _12_             | The font size of the legend label.                                               |
+| **noData**            | boolean  | _true_           | Show/hide 'no data' style in the legend.                                         |
+| **noDataShapeSize**   | number   | _15_             | The size, in pixel, of the 'No data' legend shape.                               |
+| **noDataText**        | Text     | _"No data"_      | 'No data' text label.                                                            |
+| **noDataYOffset**     | Text     | 0                | Add distance between the main legend and the 'no data' item in pixels            |
+| **yAxisLabelsOffset** | Object   | _{ x: 0, y: 0 }_ | Offset the axis labels that correspond with breaks1                              |
+| **xAxisLabelsOffset** | Object   | _{ x: 0, y: 0 }_ | Offset the axis labels that correspond with breaks2                              |
 
 ## Stripe composition map
 
