@@ -313,11 +313,11 @@ export const legend = function (map, config) {
             lgg.append('text')
                 .attr('x', out.boxPadding + out.noDataShapeWidth + 5)
                 .attr('y', y + out.noDataShapeHeight * 0.5 + 1)
-                .attr('dominant-baseline', 'middle')
                 .text(out.noDataText)
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
+                .attr('dominant-baseline', 'middle')
         }
 
         //set legend box dimensions
