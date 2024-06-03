@@ -171,7 +171,7 @@ export const legend = function (map, config) {
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)
                     .style('fill', out.fontFill)
-                    .attr('dominant-baseline', 'central')
+                    .style('dominant-baseline', 'middle')
                     .attr('transform', `rotate(-90, ${x}, ${y})`) // Apply rotation
             }
 
@@ -317,7 +317,7 @@ export const legend = function (map, config) {
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
-                .attr('dominant-baseline', 'middle')
+                .style('dominant-baseline', 'middle')
         }
 
         //set legend box dimensions
