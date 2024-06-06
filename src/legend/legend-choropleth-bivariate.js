@@ -28,8 +28,8 @@ export const legend = function (map, config) {
     out.breaks2 = undefined
 
     //axis
-    out.yAxisLabelsOffset = { x: 0, y: 0 }
-    out.xAxisLabelsOffset = { x: 0, y: 0 }
+    out.yAxisLabelsOffset = { x: 5, y: 0 }
+    out.xAxisLabelsOffset = { x: 0, y: 5 }
 
     //show no data
     out.noData = true
@@ -51,8 +51,11 @@ export const legend = function (map, config) {
     out.arrowWidth = 14
     out.arrowPadding = {
         x: 5,
-        y: -20,
+        y: 5,
     }
+
+    //distance between axis and axis title / arrow
+    out.axisPadding = { x: 10, y: 0 }
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -94,10 +97,11 @@ export const legend = function (map, config) {
         //square group
         const square = lgg
             .append('g')
+            .attr('class', 'bivariate-squares-chart')
             .attr(
                 'transform',
                 'translate(' +
-                    (out.boxPadding + (out.rotation == 0 ? out.arrowWidth / 2 + out.labelFontSize / 2 : 0)) +
+                    out.boxPadding +
                     ',' +
                     (xc + y) +
                     ') rotate(' +
@@ -109,7 +113,9 @@ export const legend = function (map, config) {
                     ')'
             )
 
-        for (let i = 0; i < clnb; i++)
+        const initialX = out.arrowPadding.y + out.yAxisLabelsOffset.x + out.axisPadding.x
+
+        for (let i = 0; i < clnb; i++) {
             for (let j = 0; j < clnb; j++) {
                 //the class numbers, depending on order
                 const ecl1 = clnb - i - 1
@@ -119,7 +125,8 @@ export const legend = function (map, config) {
                 //draw rectangle
                 square
                     .append('rect')
-                    .attr('x', (clnb - 1 - i) * sz)
+                    .attr('class', 'bivariate-square')
+                    .attr('x', initialX + (clnb - 1 - i) * sz)
                     .attr('y', j * sz)
                     .attr('width', sz)
                     .attr('height', sz)
@@ -142,88 +149,135 @@ export const legend = function (map, config) {
                         select(this).style('fill', fill)
                     })
             }
+        }
 
-        //breaks 1
-        if (out.breaks1)
-            for (let i = 0; i < out.breaks1.length; i++)
+        //breaks labels 1 (x axis)
+        if (out.breaks1) {
+            for (let i = 0; i < out.breaks1.length; i++) {
+                let x = initialX + sz * (i + 1)
+                let y = out.squareSize + out.labelFontSize
+                // Append labels
                 square
                     .append('text')
-                    .attr('x', sz * (i + 1) - sz / 2)
-                    .attr('y', out.squareSize + out.labelFontSize)
+                    .attr('class', 'bivariate-break1-label')
+                    .attr('x', x + out.xAxisLabelsOffset.x)
+                    .attr('y', y + out.xAxisLabelsOffset.y)
                     .text(out.breaks1[i])
                     .attr('text-anchor', 'middle')
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)
                     .style('fill', out.fontFill)
-        // .attr('dominant-baseline', 'central')
 
-        //breaks 2
-        if (out.breaks2)
+                // Append ticks
+                square
+                    .append('line')
+                    .attr('class', 'bivariate-break1-tick')
+                    .attr('x1', x + out.xAxisLabelsOffset.x)
+                    .attr('x2', x + out.xAxisLabelsOffset.x)
+                    .attr('y1', out.squareSize) // Starting point of the tick
+                    .attr('y2', out.squareSize + 5) // Ending point of the tick (5 pixels above the starting point)
+                    .attr('stroke', out.fontFill) // Same color as the labels
+                    .attr('stroke-width', 1) // Width of the tick line
+            }
+        }
+
+        //breaks labels 2 (y axis)
+        if (out.breaks2) {
             for (let i = 0; i < out.breaks2.length; i++) {
-                let x = -out.labelFontSize / 2 - 1 + out.yAxisLabelsOffset.x
-                let y = sz * (i + 1) - sz / 2 + out.yAxisLabelsOffset.y
+                let x = initialX
+                let y = sz * (i + 2) - sz
+
+                // Append labels
                 square
                     .append('text')
-                    .attr('x', x)
-                    .attr('y', y)
+                    .attr('class', 'bivariate-break2-label')
+                    .attr('x', x + out.yAxisLabelsOffset.y)
+                    .attr('y', y - out.yAxisLabelsOffset.x - 2)
                     .text([...out.breaks2].reverse()[i])
                     .attr('text-anchor', 'middle')
                     .style('font-size', out.labelFontSize + 'px')
                     .style('font-family', m.fontFamily_)
                     .style('fill', out.fontFill)
-                    .style('dominant-baseline', 'middle')
                     .attr('transform', `rotate(-90, ${x}, ${y})`) // Apply rotation
+
+                // Append ticks
+                square
+                    .append('line')
+                    .attr('class', 'bivariate-break2-tick')
+                    .attr('x1', x) // Starting point of the tick (5 pixels to the left)
+                    .attr('x2', x - 5) // Ending point of the tick (aligned with label x position)
+                    .attr('y1', y) // Same y position as the label
+                    .attr('y2', y) // Same y position as the label
+                    .attr('stroke', out.fontFill) // Same color as the labels
+                    .attr('stroke-width', 1) // Width of the tick line
             }
+        }
+
+        // append X axis arrow
+        let xAxisArrowY = out.squareSize + out.arrowHeight + out.arrowPadding.x + out.xAxisLabelsOffset.y + out.axisPadding.y
+        square
+            .append('path')
+            .attr('class', 'bivariate-axis-arrow')
+            .attr(
+                'd',
+                line()([
+                    [initialX, xAxisArrowY], // origin
+                    [initialX + out.squareSize, xAxisArrowY], // destination
+                ])
+            )
+            .attr('stroke', 'black')
+            .attr('marker-end', 'url(#arrowhead)')
 
         // X axis title
         square
             .append('text')
-            .attr('x', 0 + out.xAxisLabelsOffset.x)
-            .attr(
-                'y',
-                out.squareSize +
-                    out.labelFontSize +
-                    out.arrowHeight / 1.5 +
-                    (out.breaks1 ? out.labelFontSize + 2 : 0) +
-                    out.xAxisLabelsOffset.y
-            )
+            .attr('class', 'bivariate-axis-title')
+            .attr('x', initialX + out.xAxisLabelsOffset.x)
+            .attr('y', xAxisArrowY + 4)
             .text(out.label1)
+            .attr('dominant-baseline', 'hanging')
+            .attr('alignment-baseline', 'hanging')
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
             .style('fill', out.fontFill)
+
+        // append Y axis arrow
+        let yAxisArrowX = -out.labelFontSize + 5
+        square
+            .append('path')
+            .attr('class', 'bivariate-axis-arrow')
+            .attr(
+                'd',
+                line()([
+                    [yAxisArrowX, out.squareSize],
+                    [yAxisArrowX, 0],
+                ])
+            )
+            .attr('stroke', 'black')
+            .attr('marker-end', 'url(#arrowhead)')
 
         // y axis title
         square
             .append('text')
-
-            // settings for -45 rotation
-            // .attr('x', -out.labelFontSize)
-            // .attr('y', out.labelFontSize)
-            // .attr('transform', 'rotate(90) translate(' + out.labelFontSize + ',0)')
-
-            // settings for 0 or 45 rotation
+            .attr('class', 'bivariate-axis-title')
+            .attr('x', -out.squareSize)
+            .attr('y', -out.labelFontSize)
             .attr('x', out.rotation == 0 ? -out.squareSize : -out.labelFontSize + out.arrowWidth / 2) //with roation 0, acts as Y axis
-            .attr(
-                'y',
-                (out.rotation == 0 ? -out.arrowWidth / 1.5 : out.labelFontSize + out.arrowHeight / 2) + out.arrowPadding.y / 2
-            )
+            .attr('y', out.rotation == 0 ? -out.labelFontSize : out.labelFontSize + out.arrowHeight / 2)
             .attr(
                 'transform',
-                out.rotation == 0
-                    ? 'rotate(-90) translate(0,' + -out.labelFontSize / 2 + ')'
-                    : 'rotate(90) translate(' + out.labelFontSize / 2 + ',0)'
+                out.rotation == 0 ? 'rotate(-90) translate(0,0)' : 'rotate(90) translate(' + out.labelFontSize / 2 + ',0)'
             )
-
             .text(out.label2)
             .style('font-size', out.labelFontSize + 'px')
             .style('font-family', m.fontFamily_)
             .style('fill', out.fontFill)
-        //https://stackoverflow.com/questions/16726115/svg-text-rotation-around-the-center/30022443
 
         //frame
         square
             .append('rect')
-            .attr('x', 0)
+            .attr('class', 'bivariate-frame')
+            .attr('x', initialX)
             .attr('y', 0)
             .attr('width', out.squareSize)
             .attr('height', out.squareSize)
@@ -231,7 +285,7 @@ export const legend = function (map, config) {
             .style('stroke', 'black')
             .attr('stroke-width', 0.7)
 
-        // ARROWS
+        // Arrow defs
         square
             .append('defs')
             .append('marker')
@@ -245,32 +299,6 @@ export const legend = function (map, config) {
             .append('path')
             .attr('d', 'M 0 0 L 5 5 L 0 10') //M2,2 L10,6 L2,10 L6,6 L2,2
             .attr('marker-units', 'strokeWidth')
-
-        // horizontal arrow
-        square
-            .append('path')
-            .attr(
-                'd',
-                line()([
-                    [0, out.squareSize + out.arrowHeight + out.arrowPadding.x], // origin
-                    [out.squareSize, out.squareSize + out.arrowHeight + out.arrowPadding.x], // destination
-                ])
-            )
-            .attr('stroke', 'black')
-            .attr('marker-end', 'url(#arrowhead)')
-
-        // vertical arrow
-        square
-            .append('path')
-            .attr(
-                'd',
-                line()([
-                    [out.arrowPadding.y, out.squareSize],
-                    [out.arrowPadding.y, 0],
-                ])
-            )
-            .attr('stroke', 'black')
-            .attr('marker-end', 'url(#arrowhead)')
 
         //'no data' legend box
         if (out.noData) {
