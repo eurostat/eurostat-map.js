@@ -28,6 +28,9 @@ export const legend = function (map, config) {
     out.legendSpacing = 35 //spacing between color & size legends (if applicable)
     out.labelFontSize = 12 //the font size of the legend labels
 
+    out.noDataShapeWidth = 20
+    out.noDataShapeHeight = 20
+
     //size legend config (legend illustrating the values of different symbol sizes)
     out.sizeLegend = {
         title: null,
@@ -229,8 +232,8 @@ export const legend = function (map, config) {
             .style('stroke', m.psStroke())
             .attr('stroke-width', 1)
             .append('rect')
-            .attr('width', out.colorLegend ? out.colorLegend.shapeWidth : 20)
-            .attr('height', out.colorLegend ? out.colorLegend.shapeHeight : 20)
+            .attr('width', out.colorLegend ? out.colorLegend.shapeWidth : out.noDataShapeWidth)
+            .attr('height', out.colorLegend ? out.colorLegend.shapeHeight : out.noDataShapeHeight)
             .on('mouseover', function () {
                 const parents = m.svg_.select('#g_ps').selectAll("[ecl='nd']")
                 let cellFill = select(this.parentNode).attr('fill')
