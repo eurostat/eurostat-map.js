@@ -229,8 +229,8 @@ export const legend = function (map, config) {
             .append('g')
             .attr('fill', m.noDataFillStyle())
             .style('fill-opacity', m.psFillOpacity())
-            .style('stroke', m.psStroke())
-            .attr('stroke-width', 1)
+            .style('stroke', '#000')
+            .attr('stroke-width', 0.4)
             .append('rect')
             .attr('width', out.colorLegend ? out.colorLegend.shapeWidth : out.noDataShapeWidth)
             .attr('height', out.colorLegend ? out.colorLegend.shapeHeight : out.noDataShapeHeight)
@@ -316,8 +316,8 @@ export const legend = function (map, config) {
         //'no data' label
         container
             .append('text')
-            .attr('x', out.colorLegend ? out.colorLegend.labelOffset.x : 25)
-            .attr('y', out.colorLegend ? out.colorLegend.shapeHeight / 2 + 1 : 11)
+            .attr('x', out.colorLegend ? out.colorLegend.labelOffset.x : out.noDataShapeWidth + 5)
+            .attr('y', out.colorLegend ? out.colorLegend.shapeHeight / 2 + 1 : out.noDataShapeHeight / 2 + 1)
             .attr('dominant-baseline', 'middle')
             .attr('class', 'eurostatmap-legend-label')
             .text(noDataText)
