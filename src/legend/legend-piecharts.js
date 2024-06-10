@@ -31,7 +31,7 @@ export const legend = function (map, config) {
     out.colorLegend = {
         title: null,
         labelOffset: 5, //the distance between the legend box elements to the corresponding text label
-        shapeWidth: 13, //the width of the legend box elements
+        shapeWidth: 22, //the width of the legend box elements
         shapeHeight: 15, //the height of the legend box elements
         shapePadding: 5, //the distance between consecutive legend box elements
         noData: true, //show no data

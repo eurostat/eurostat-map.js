@@ -1,6 +1,6 @@
 import { scaleSqrt } from 'd3-scale'
 import { select, arc, pie, extent, sum, selectAll } from 'd3'
-import { interpolateOrRd } from 'd3-scale-chromatic'
+import { interpolateOrRd, schemeCategory10 } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgpc from '../legend/legend-piecharts'
 
@@ -29,7 +29,7 @@ export const map = function (config) {
     //labels - indexed by category code
     out.catLabels_ = undefined
 
-    // 'other' section of the pie chart for when 'totalCode' is defined with statPie()
+    // 'other' section of the pie chart for when 'out.totalCode_' is defined with statPie()
     out.pieOtherColor_ = '#FFCC80'
     out.pieOtherText_ = 'Other'
 
@@ -86,9 +86,9 @@ export const map = function (config) {
         })
 
     /** The codes of the categories to consider for the composition. */
-    let statCodes = undefined
+    out.statCodes_ = undefined
     /** The code of the "total" category in the eurostat database */
-    let totalCode = undefined
+    out.totalCode__ = undefined
 
     /**
      * A function to define a pie chart map easily, without repetition of information.
@@ -99,19 +99,23 @@ export const map = function (config) {
      * @param {Array} codes The category codes of the composition
      * @param {Array} labels Optional: The labels for the category codes
      * @param {Array} colors Optional: The colors for the category
-     * @param {string} totalCode Optional: The category code of the total (used to calculate total & "other" values if codes array dont represent all possible categories)
+     * @param {string} tCode Optional: The category code of the total (used to calculate total & "other" values if codes array dont represent all possible categories)
      */
     out.statPie = function (stat, dim, codes, labels, colors, tCode) {
-        //add one dataset config for each category
+        //add one dataset (stat) config for each category (code)
         stat.filters = stat.filters || {}
         for (let i = 0; i < codes.length; i++) {
             //category code
             const code = codes[i]
             stat.filters[dim] = code
             const sc_ = {}
-            for (let key in stat) sc_[key] = stat[key]
+            for (let key in stat) {
+                sc_[key] = stat[key]
+            }
             sc_.filters = {}
-            for (let key in stat.filters) sc_.filters[key] = stat.filters[key]
+            for (let key in stat.filters) {
+                sc_.filters[key] = stat.filters[key]
+            }
             out.stat(code, sc_)
 
             //if specified, retrieve and assign color
@@ -126,12 +130,12 @@ export const map = function (config) {
             }
         }
 
-        //set statCodes
-        statCodes = codes
+        //set out.statCodes_
+        out.statCodes_ = codes
 
-        //set totalCode
+        //set out.totalCode_
         if (tCode) {
-            totalCode = tCode
+            out.totalCode_ = tCode
             stat.filters[dim] = tCode
             const sc_ = {}
             for (let key in stat) sc_[key] = stat[key]
@@ -181,12 +185,12 @@ export const map = function (config) {
 
     const applyClassificationToMap = function (map) {
         //if not provided, get list of stat codes from the map stat data
-        if (!statCodes) {
+        if (!out.statCodes_) {
             //get list of stat codes.
-            statCodes = Object.keys(out.statData_)
+            out.statCodes_ = Object.keys(out.statData_)
             //remove "default", if present
-            const index = statCodes.indexOf('default')
-            if (index > -1) statCodes.splice(index, 1)
+            const index = out.statCodes_.indexOf('default')
+            if (index > -1) out.statCodes_.splice(index, 1)
         }
 
         //define size scaling function
@@ -203,7 +207,7 @@ export const map = function (config) {
         //if not specified, build default color ramp
         if (!out.catColors_) {
             out.catColors({})
-            for (let i = 0; i < statCodes.length; i++) out.catColors_[statCodes[i]] = schemeCategory10[i % 10]
+            for (let i = 0; i < out.statCodes_.length; i++) out.catColors_[out.statCodes_[i]] = schemeCategory10[i % 10]
         }
 
         //if not specified, initialise category labels
@@ -274,9 +278,9 @@ export const map = function (config) {
         let comp = {},
             sum = 0
         //get stat value for each category. Compute the sum.
-        for (let i = 0; i < statCodes.length; i++) {
+        for (let i = 0; i < out.statCodes_.length; i++) {
             //retrieve code and stat value
-            const sc = statCodes[i]
+            const sc = out.statCodes_[i]
             const s = out.statData(sc).get(id)
 
             //case when some data is missing
@@ -289,9 +293,9 @@ export const map = function (config) {
             sum += s.value
         }
 
-        // when totalCode is specified, use it as the sum instead of the sum of the specified categories.
-        if (totalCode) {
-            let s = out.statData(totalCode).get(id)
+        // when out.totalCode_ is specified, use it as the sum instead of the sum of the specified categories.
+        if (out.totalCode_) {
+            let s = out.statData(out.totalCode_).get(id)
             if (s) {
                 sum = s.value
             } else {
@@ -303,12 +307,12 @@ export const map = function (config) {
         if (sum == 0) return undefined
 
         //compute ratios
-        for (let i = 0; i < statCodes.length; i++) {
-            comp[statCodes[i]] /= sum
+        for (let i = 0; i < out.statCodes_.length; i++) {
+            comp[out.statCodes_[i]] /= sum
         }
 
-        //add "other" category when totalCode is used
-        if (totalCode) {
+        //add "other" category when out.totalCode_ is used
+        if (out.totalCode_) {
             let totalPerc = 0
             for (let key in comp) {
                 totalPerc = totalPerc + comp[key]
@@ -347,9 +351,9 @@ export const map = function (config) {
     const getRegionTotal = function (id) {
         let sum = 0
         let s
-        if (totalCode) {
+        if (out.totalCode_) {
             //when total is a stat code
-            s = out.statData(totalCode).get(id)
+            s = out.statData(out.totalCode_).get(id)
             //case when some data is missing
             if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
                 if (out.showOnlyWhenComplete()) {
@@ -360,9 +364,9 @@ export const map = function (config) {
             }
         } else {
             //get stat value for each category. Compute the sum.
-            for (let i = 0; i < statCodes.length; i++) {
+            for (let i = 0; i < out.statCodes_.length; i++) {
                 //retrieve code and stat value
-                const sc = statCodes[i]
+                const sc = out.statCodes_[i]
                 s = out.statData(sc).get(id)
                 //case when some data is missing
                 if (!s || (s.value != 0 && !s.value) || isNaN(s.value)) {
@@ -553,12 +557,12 @@ export const map = function (config) {
         breakdownDiv.style.padding = '10px'
         breakdownDiv.style.paddingTop = '0px'
         breakdownDiv.style.fontSize = '13px'
-        //let units = out.statData(statCodes[0]).unitText();
+        //let units = out.statData(out.statCodes_[0]).unitText();
 
         // show value for each category
-        for (let i = 0; i < statCodes.length; i++) {
+        for (let i = 0; i < out.statCodes_.length; i++) {
             //retrieve code and stat value
-            const sc = statCodes[i]
+            const sc = out.statCodes_[i]
             const s = out.statData(sc).get(rg.properties.id)
             if (s && s.value) {
                 let string = '<strong>' + out.catLabels_[sc] + '</strong>: ' + s.value.toFixed() + '<br>'
