@@ -41,6 +41,7 @@ export const legend = function (map, config) {
         shapePadding: 5, //the y distance between consecutive legend shape elements
         shapeOffset: { x: 0, y: 0 },
         shapeFill: 'white',
+        shapeStroke: null,
         labelOffset: { x: 5, y: 0 }, //the distance between the legend box elements to the corresponding text label
         labelDecNb: 0, //the number of decimal for the legend labels
         labelFormatter: undefined,
@@ -378,7 +379,7 @@ export const legend = function (map, config) {
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
             })
             .style('fill-opacity', m.psFillOpacity())
-            .style('stroke', m.psStroke())
+            .style('stroke', out.sizeLegend.shapeStroke ? out.sizeLegend.shapeStroke : m.psStroke())
             .style('stroke-width', m.psStrokeWidth())
             .append('path')
             .attr('d', d)
@@ -446,7 +447,7 @@ export const legend = function (map, config) {
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
             })
             .style('fill-opacity', m.psFillOpacity())
-            .style('stroke', m.psStroke())
+            .style('stroke', out.sizeLegend.shapeStroke ? out.sizeLegend.shapeStroke : m.psStroke())
             .style('stroke-width', m.psStrokeWidth())
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
@@ -511,7 +512,7 @@ export const legend = function (map, config) {
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
             })
             .style('fill-opacity', m.psFillOpacity())
-            .style('stroke', m.psStroke())
+            .style('stroke', out.sizeLegend.shapeStroke ? out.sizeLegend.shapeStroke : m.psStroke())
             .style('stroke-width', m.psStrokeWidth())
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
