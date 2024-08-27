@@ -341,9 +341,10 @@
                 .psShape('circle')
                 .psClassifMethod('threshold')
                 .psThreshold([1, 2, 3, 4, 5])
+                .psMaxSize(10)
                 .psColors(['#E9ECF6', '#BCC5EA', '#8A9BDA', '#5A71C6', '#2B48A9', '#081132'])
                 .psFillOpacity(0.8)
-                .psMaxSize(maxRadius)
+                .nutsrgFillStyle('white')
                 .legend({
                     //svgId: "eurostatmap-legend",
                     x: 10,
@@ -357,7 +358,7 @@
                     colorLegend: false,
                 })
             map.statData('size').setData(test1)
-            map.statData('color').setData(test2)
+            map.statData('color').setData(test1)
             map.updateClassification()
             map.updateStyle()
             map.build()

@@ -159,7 +159,7 @@ export const mapTemplate = function (config, withCenterPoints) {
     //country borders styling
     out.cntrgFillStyle_ = '#EfEfEf'
     out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
-    out.cntbnStrokeWidth_ = { eu: 0.5, efta: 0.5, cc: 0.5, oth: 0.5, co: 0.5 }
+    out.cntbnStrokeWidth_ = { eu: 0.5, efta: 0.5, cc: 0.5, oth: 0.5, co: 0.2 }
     //world map
     out.worldFillStyle_ = '#EfEfEf'
     out.worldStroke_ = 'black'
