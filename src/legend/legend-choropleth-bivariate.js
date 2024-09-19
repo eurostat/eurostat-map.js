@@ -134,11 +134,11 @@ export const legend = function (map, config) {
                     .on('mouseover', function () {
                         const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
                         const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
-                        sel.style('fill', m.nutsrgSelFillSty())
+                        sel.style('fill', '#00FFFFFF') //transparent
                         sel.attr('fill___', function () {
                             select(this).attr('fill')
                         })
-                        select(this).style('fill', m.nutsrgSelFillSty())
+                        select(this).style('fill', '#00FFFFFF') //transparent
                     })
                     .on('mouseout', function () {
                         const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
@@ -321,14 +321,14 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
                 .on('mouseover', function () {
+                    // TODO: change this to estat logic of making all other classes transparent?
                     const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
-
                     const sel = nRg.selectAll("[nd='nd']")
-                    sel.style('fill', m.nutsrgSelFillSty())
+                    sel.style('fill', '#00FFFFFF') //transparent
                     sel.attr('fill___', function (d) {
                         select(this).attr('fill')
                     })
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                    select(this).style('fill', '#00FFFFFF') //transparent
                 })
                 .on('mouseout', function () {
                     const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')

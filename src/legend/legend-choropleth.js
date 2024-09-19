@@ -97,6 +97,7 @@ export const legend = function (map, config) {
                 .attr('height', out.shapeHeight)
                 .attr('fill', m.classToFillStyle()(ecl, m.clnb()))
                 .on('mouseover', function () {
+                    // TODO: change this to estat logic of making all other classes transparent?
                     // legend cell colour
                     select(this).style('fill', m.nutsrgSelFillSty())
                     // regions

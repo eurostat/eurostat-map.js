@@ -328,6 +328,7 @@ export const legend = function (map, config) {
     }
 
     function highlightRegions(map, ecl) {
+        // TODO: change this to estat logic of making all other classes transparent?
         let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
         const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
         sel.style('fill', out.map.nutsrgSelFillSty())

@@ -76,6 +76,7 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
+                    // TODO: change this to estat logic of making all other classes transparent?
                     svgMap
                         .selectAll('pattern')
                         .selectAll("rect[code='" + code + "']")
