@@ -132,7 +132,7 @@ export const legend = function (map, config) {
                     .attr('height', sz)
                     .attr('fill', fill)
                     .on('mouseover', function () {
-                        const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                        const nRg = out.map.nutsLvl_ == 'mixed' ? document.selectAll('#g_nutsrg') : document.select('#g_nutsrg')
                         const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
                         sel.style('fill', m.nutsrgSelFillSty())
                         sel.attr('fill___', function () {
@@ -141,7 +141,7 @@ export const legend = function (map, config) {
                         select(this).style('fill', m.nutsrgSelFillSty())
                     })
                     .on('mouseout', function () {
-                        const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                        const nRg = out.map.nutsLvl_ == 'mixed' ? document.selectAll('#g_nutsrg') : document.select('#g_nutsrg')
                         const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
                         sel.style('fill', function () {
                             select(this).attr('fill___')
@@ -321,7 +321,7 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
                 .on('mouseover', function () {
-                    const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                    const nRg = out.map.nutsLvl_ == 'mixed' ? document.selectAll('#g_nutsrg') : document.select('#g_nutsrg')
                     const sel = nRg.selectAll("[nd='nd']")
                     sel.style('fill', m.nutsrgSelFillSty())
                     sel.attr('fill___', function (d) {
@@ -330,7 +330,7 @@ export const legend = function (map, config) {
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })
                 .on('mouseout', function () {
-                    const nRg = out.map.nutsLvl_ == 'mixed' ? svgMap.selectAll('#g_nutsrg') : svgMap.select('#g_nutsrg')
+                    const nRg = out.map.nutsLvl_ == 'mixed' ? document.selectAll('#g_nutsrg') : document.select('#g_nutsrg')
                     const sel = nRg.selectAll("[nd='nd']")
                     sel.style('fill', function (d) {
                         select(this).attr('fill___')
