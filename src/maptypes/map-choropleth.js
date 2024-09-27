@@ -157,9 +157,10 @@ export const map = function (config) {
             if (out.makeClassifNice_) out.classifier().nice()
         } else if (out.classifMethod_ === 'threshold') {
             //https://github.com/d3/d3-scale#threshold-scales
-            out.clnb(out.threshold().length + 1)
+            out.clnb(out.threshold_.length + 1)
             const range = getA(out.clnb())
-            out.classifier(scaleThreshold().domain(out.threshold()).range(range))
+            console.log(out.threshold_)
+            out.classifier(scaleThreshold().domain(out.threshold_).range(range))
         }
 
         let selector = map.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
@@ -174,7 +175,7 @@ export const map = function (config) {
                 const v = sv.value
                 if (v != 0 && !v) return
                 if (v == ':') return 'nd'
-                let ecl = +out.classifier()(+v)
+                let ecl = +out.classifier_(v)
                 return ecl
             })
 
