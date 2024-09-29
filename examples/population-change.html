@@ -1,48 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>eurostat-map.js</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eurostat-map.js</title>
-</head>
+    <body>
+        <svg id="map"></svg>
+        <script src="../build/eurostatmap.js"></script>
 
-<body>
-    <svg id="map"></svg>
-    <script src="https://unpkg.com/eurostat-map"></script>
+        <!-- for eurostatmap.colorFun() -->
+        <script src="https://d3js.org/d3-color.v2.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 
-    <!-- for eurostatmap.colorFun() -->
-    <script src="https://d3js.org/d3-color.v2.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
-    
-    <script>
-        eurostatmap
-            .map("ch")
-            .title("Population change")
-            .titleFontSize(40)
-            .scale("60M")
-            .nutsLvl(3)
-            .stat( { eurostatDatasetCode: "demo_r_gind3", filters: { indic_de: "GROWRT", time: 2016 }, unitText: "‰" } )
+        <script>
+            let height = window.innerHeight
+            let m = eurostatmap
+                .map('ch')
+                .width(height)
+                .height(height - 50)
+                .title('Population change')
+                .subtitle('Change per 1 000 persons, 2022')
+                .subtitleFontSize(15)
+                .nutsLvl(2)
+                .stat({
+                    eurostatDatasetCode: 'demo_r_gind3',
+                    filters: { indic_de: 'GROWRT', time: 2022 },
+                    unitText: '‰',
+                })
+                .colorFun(d3.interpolateRdBu)
+                .classifMethod('threshold')
+                .threshold([-15, -10, -6, -4, -2, 0, 2, 4, 6, 10, 15])
+                .nutsbnStroke({ 0: 'white', 1: 'white', 2: 'white', 3: 'white' })
+                .nutsbnStrokeWidth({ 0: 1, 1: 0.1, 2: 0.1, 3: 0.1, oth: 0, co: 0 })
+                .seaFillStyle('white')
+                .frameStroke('none')
+                .cntrgFillStyle('white')
+                .cntbnStroke('white')
+                .drawCoastalMargin(false)
 
-            .colorFun(d3.interpolateRdYlBu)
-            .classifMethod("threshold")
-            .threshold([-15, -10, -6, -4, -2, 0, 2, 4, 6, 10, 15])
-
-            .drawCoastalMargin(false)
-            .seaFillStyle("#333")
-            .nutsbnStroke({ 0: "#777", 1: "#777", 2: "#777", 3: "#777", oth: "#444", co: "none" })
-            .cntrgFillStyle("darkgray")
-
-            .drawGraticule(false)
-
-            .tooltipShowFlags("long")
-            .botTxtFill("white")
-
-            .legend({ x:650, y:10, title: "In ‰, 2015-2016", labelDecNb: 0 })
-            .build();
-
-    </script>
-</body>
-
+            if (height > 800) {
+                //m.insets("default") //show inset maps of overseas regions using the default styling
+                m.legend({ x: 10, y: 115, title: '‰', labelDecNb: 0 })
+            } else {
+                m.titleFontSize(12).subtitleFontSize(11).showSourceLink(false)
+            }
+            m.build()
+        </script>
+    </body>
 </html>

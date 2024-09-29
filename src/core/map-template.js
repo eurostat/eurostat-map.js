@@ -153,7 +153,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //nuts styling
     out.nutsrgFillStyle_ = '#EfEfEf'
-    out.nutsrgSelFillSty_ = 'cyan'
+    out.nutsrgSelFillSty_ = 'red'
     out.nutsbnStroke_ = { 0: 'none', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: '#7f7f7f' }
     out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
     //country borders styling
@@ -1704,6 +1704,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     //dataset link
                     let code = out.stat().eurostatDatasetCode
                     let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`
+                    let linkColor = '#0e47cb'
                     let link = out
                         .svg()
                         .append('a')
@@ -1714,19 +1715,20 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .attr('x', out.width_ - out.botTxtPadding_)
                         .attr('y', out.height_ - out.botTxtPadding_)
                         .text('EUROSTAT')
+                        .attr('fill', linkColor)
                         .style('font-family', out.fontFamily_)
                         .style('font-size', out.botTxtFontSize_ + 'px')
                         .style('font-weight', 'bold')
                         .attr('text-anchor', 'end')
                         .on('mouseover', function () {
                             const sel = select(this)
-                            sel.attr('fill', 'lightblue')
+                            sel.attr('fill', '#082b7a')
                             sel.style('cursor', 'pointer')
                             sel.style('text-decoration', 'underline')
                         })
                         .on('mouseout', function () {
                             const sel = select(this)
-                            sel.attr('fill', 'black')
+                            sel.attr('fill', linkColor)
                             sel.style('cursor', 'default')
                             sel.style('text-decoration', 'none')
                         })

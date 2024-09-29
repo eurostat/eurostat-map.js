@@ -49,13 +49,10 @@ export const legend = function (map, config) {
     //arrows
     out.arrowHeight = 15
     out.arrowWidth = 14
-    out.arrowPadding = {
-        x: 5,
-        y: 5,
-    }
+    out.arrowPadding = 10 // padding between arrow and axis label
 
     //distance between axis and axis title / arrow
-    out.axisPadding = { x: 10, y: 0 }
+    out.axisPadding = { x: 0, y: 0 }
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -113,7 +110,7 @@ export const legend = function (map, config) {
                     ')'
             )
 
-        const initialX = out.arrowPadding.y + out.yAxisLabelsOffset.x + out.axisPadding.x
+        const initialX = out.yAxisLabelsOffset.x
 
         for (let i = 0; i < clnb; i++) {
             for (let j = 0; j < clnb; j++) {
@@ -132,21 +129,49 @@ export const legend = function (map, config) {
                     .attr('height', sz)
                     .attr('fill', fill)
                     .on('mouseover', function () {
-                        const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
-                        const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
-                        sel.style('fill', '#00FFFFFF') //transparent
+                        // Get the regions
+                        const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
+                        const sel = regions.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
+
+                        // Save original fill of selected regions
                         sel.attr('fill___', function () {
-                            select(this).attr('fill')
+                            return select(this).attr('fill')
                         })
-                        select(this).style('fill', '#00FFFFFF') //transparent
+
+                        // Make non-selected regions transparent
+                        regions.selectAll('path').style('fill', '#ffffff00') // Transparent
+
+                        // Restore color of selected regions
+                        sel.style('fill', function () {
+                            return select(this).attr('fill___')
+                        })
+
+                        // Keep all rects in the legend with their color, and add a thick border to the hovered rect
+                        selectAll('.bivariate-square')
+                            .style('fill', function () {
+                                return select(this).attr('fill')
+                            })
+                            .style('stroke', null) // Remove borders from non-hovered rects
+
+                        select(this).style('stroke', 'black').style('stroke-width', '3px') // Add thick border on hover
                     })
                     .on('mouseout', function () {
-                        const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
-                        const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
-                        sel.style('fill', function () {
-                            select(this).attr('fill___')
+                        // Get the regions
+                        const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
+                        const sel = regions.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
+
+                        // Restore the original fill of all regions
+                        regions.selectAll('path').style('fill', function () {
+                            return select(this).attr('fill___')
                         })
-                        select(this).style('fill', fill)
+
+                        // Restore all rects in the legend to their original fill and remove border
+                        selectAll('.bivariate-square')
+                            .style('fill', function () {
+                                return select(this).attr('fill')
+                            })
+                            .style('stroke', null)
+                            .style('stroke-width', null) // Reset border
                     })
             }
         }
@@ -214,7 +239,7 @@ export const legend = function (map, config) {
         }
 
         // append X axis arrow
-        let xAxisArrowY = out.squareSize + out.arrowHeight + out.arrowPadding.x + out.xAxisLabelsOffset.y + out.axisPadding.y
+        let xAxisArrowY = out.squareSize + out.arrowHeight + out.xAxisLabelsOffset.y + out.axisPadding.y
         square
             .append('path')
             .attr('class', 'bivariate-axis-arrow')
@@ -233,7 +258,7 @@ export const legend = function (map, config) {
             .append('text')
             .attr('class', 'bivariate-axis-title')
             .attr('x', initialX + out.xAxisLabelsOffset.x)
-            .attr('y', xAxisArrowY + 4)
+            .attr('y', xAxisArrowY + out.arrowPadding)
             .text(out.label1)
             .attr('dominant-baseline', 'hanging')
             .attr('alignment-baseline', 'hanging')
@@ -321,14 +346,12 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
                 .on('mouseover', function () {
-                    // TODO: change this to estat logic of making all other classes transparent?
-                    const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
-                    const sel = nRg.selectAll("[nd='nd']")
-                    sel.style('fill', '#00FFFFFF') //transparent
+                    const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
+                    const sel = regions.selectAll("[nd='nd']")
+                    sel.style('fill', 'red') //transparent
                     sel.attr('fill___', function (d) {
                         select(this).attr('fill')
                     })
-                    select(this).style('fill', '#00FFFFFF') //transparent
                 })
                 .on('mouseout', function () {
                     const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')

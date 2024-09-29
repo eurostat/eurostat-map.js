@@ -1,42 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>eurostat-map.js</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eurostat-map.js</title>
-</head>
-
-<body>
-    <svg id="map"></svg>
-    <script src="https://unpkg.com/eurostat-map"></script>
-    <script>
-        let map = eurostatmap
-            .map("ch")
-            .title("Population in Europe")
-            .titleFontSize(40)
-            .titleFill("#444")
-            .scale("20M")
-            .nutsYear(2016)
-            .stat( { eurostatDatasetCode:"demo_r_d3dens", unitText: "people/km²" } )
-            .classifMethod("threshold").threshold([50, 75, 100, 150, 300, 850])
-            .tooltipShowFlags(false)
-            .legend({ x:10, y:180, title: "Density, people/km²", labelDecNb: 0 })
+    <body>
+        <svg id="map"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script>
+            let width = 800
+            let map = eurostatmap
+                .map('ch')
+                .width(width)
+                .height(width)
+                .title('Population change')
+                .titleFontSize(20)
+                .subtitleFontSize(17)
+                .subtitle('Crude rate of total population change by NUTS 3 regions, 2021')
+                .nutsLvl(2)
+                //.zoomExtent([1, 10])
+                .stat({
+                    eurostatDatasetCode: 'demo_r_gind3',
+                    filters: { indic_de: 'GROWRT', time: 2021 },
+                    unitText: '‰',
+                })
+                .colors(['#997A00', '#CDB119', '#EFD65C', '#F6EA9E', '#C8EBB9', '#9BD9BC', '#67B7AC', '#208486'])
+                .classifMethod('threshold')
+                .threshold([-15, -10, -5, 0, 5, 10, 15])
+                .drawCoastalMargin(false)
+                .nutsbnStroke({
+                    0: '#000',
+                    1: '#ffffff',
+                    2: '#ffffff',
+                    3: '#ffffff',
+                    co: '#777',
+                })
+                .nutsbnStrokeWidth({ 0: 1, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 })
+                .nutsrgFillStyle('#D3D3D3')
+                .drawGraticule(false)
+                .frameStrokeWidth(0)
+                .cntrgFillStyle('white')
+                .cntbnStroke('white')
+                .drawCoastalMargin(false)
 
             if (window.innerWidth > 800) {
-                map.insets("default")
+                map.insets('default')
             } else {
                 // settings for smaller devices
-                map.legend({ labelDecNb:0, x: window.innerWidth - 80, y:5 })
-                .titleFontSize(12)
-                .botTxtFontSize(6)
-                .tooltip({fontSize:10})
-                .legend({labelFontSize:9})
+                map.legend({ labelDecNb: 0, x: window.innerWidth - 80, y: 5 })
+                    .titleFontSize(12)
+                    .botTxtFontSize(6)
+                    .tooltip({ fontSize: 10 })
+                    .legend({ labelFontSize: 9 })
             }
 
-            map.build();
-    </script>
-</body>
-
+            map.build()
+        </script>
+    </body>
 </html>
-
