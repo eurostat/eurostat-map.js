@@ -129,49 +129,20 @@ export const legend = function (map, config) {
                     .attr('height', sz)
                     .attr('fill', fill)
                     .on('mouseover', function () {
-                        // Get the regions
                         const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
                         const sel = regions.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
-
-                        // Save original fill of selected regions
+                        sel.style('fill', 'red') //transparent
                         sel.attr('fill___', function () {
-                            return select(this).attr('fill')
+                            select(this).attr('fill')
                         })
-
-                        // Make non-selected regions transparent
-                        regions.selectAll('path').style('fill', '#ffffff00') // Transparent
-
-                        // Restore color of selected regions
-                        sel.style('fill', function () {
-                            return select(this).attr('fill___')
-                        })
-
-                        // Keep all rects in the legend with their color, and add a thick border to the hovered rect
-                        selectAll('.bivariate-square')
-                            .style('fill', function () {
-                                return select(this).attr('fill')
-                            })
-                            .style('stroke', null) // Remove borders from non-hovered rects
-
-                        select(this).style('stroke', 'black').style('stroke-width', '3px') // Add thick border on hover
                     })
                     .on('mouseout', function () {
-                        // Get the regions
-                        const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
-                        const sel = regions.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
-
-                        // Restore the original fill of all regions
-                        regions.selectAll('path').style('fill', function () {
-                            return select(this).attr('fill___')
+                        const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
+                        const sel = nRg.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
+                        sel.style('fill', function () {
+                            select(this).attr('fill___')
                         })
-
-                        // Restore all rects in the legend to their original fill and remove border
-                        selectAll('.bivariate-square')
-                            .style('fill', function () {
-                                return select(this).attr('fill')
-                            })
-                            .style('stroke', null)
-                            .style('stroke-width', null) // Reset border
+                        select(this).style('fill', fill)
                     })
             }
         }
