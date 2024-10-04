@@ -140,7 +140,7 @@
         <div class="container">
             <div id="header">
                 <div class="titles">
-                    <span id="title">Change in GHG emissions intensity of the economy, EU, 2012-2022</span>
+                    <span id="title">Change in GHG emissions intensity of the economy, 2012-2022</span>
                     <br />
                     <span id="subtitle">(%-change; grams per euro, chain-linked volumes (2010))</span>
                 </div>
@@ -15477,8 +15477,79 @@
             let insetWidth = 80
             let insetHeight = 80
             let insetPadding = 5
-            let startingColors = ['#EBF6EB', '#C2E3C2', '#85C685', '#33A033', '#177217', '#053005']
             let startingThresholds = [-20, -25, -30, -35, -45]
+            let sequential = ['#C6E5C6', '#A0D4A0', '#7CC27B', '#5AB259', '#309C30', '#177217']
+            let diverging = ['#856B0D', '#C7B05F', '#ECE5CA', '#CEE9CE', '#6FBC6F', '#177217']
+            const naceOptions = {
+                TOTAL: {
+                    title: 'All NACE activities',
+                    source: 'TOTAL.csv',
+                    class_breaks: [-20, -25, -30, -35, -45],
+                    colour_scheme: {
+                        type: 'sequential',
+                        reversed: true,
+                        scheme: 'estatC1 (Eurostat)',
+                        colors: sequential,
+                    },
+                },
+                A: {
+                    title: 'Agriculture, forestry and fishing',
+                    source: 'A.csv',
+                    class_breaks: [20, 10, 0, -10, -20],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: diverging,
+                    },
+                },
+                B: {
+                    title: 'Mining and quarrying',
+                    source: 'B.csv',
+                    class_breaks: [60, 30, 0, -20, -40],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: diverging,
+                    },
+                },
+                C: {
+                    title: 'Manufacturing',
+                    source: 'C.csv',
+                    class_breaks: [-15, -20, -25, -30, -40],
+                    colour_scheme: {
+                        type: 'sequential',
+                        reversed: true,
+                        scheme: 'estatC1 (Eurostat)',
+                        colors: sequential,
+                    },
+                },
+                D: {
+                    title: 'Electricity, gas, steam and air conditioning supply',
+                    source: 'D.csv',
+                    class_breaks: [35, 20, 0, -20, -40],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: diverging,
+                    },
+                },
+                E: {
+                    title: 'Water supply, sewerage, waste management and remediation activities',
+                    source: 'E.csv',
+                    class_breaks: [50, 25, 0, -25, -50],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: diverging,
+                    },
+                },
+            }
+            let startingColors = sequential
+
             let mapConfig = {
                     width: 795,
                     height: 625,
@@ -15725,76 +15796,6 @@
             map.statData().setData(mapConfig.data), map.build()
 
             //START EXTRA CODE
-            let sequential = ['#C6E5C6', '#A0D4A0', '#7CC27B', '#5AB259', '#309C30', '#177217']
-            let diverging = ['#856B0D', '#C7B05F', '#ECE5CA', '#CEE9CE', '#6FBC6F', '#177217']
-            const naceOptions = {
-                TOTAL: {
-                    title: 'All NACE activities',
-                    source: 'TOTAL.csv',
-                    class_breaks: [-20, -25, -30, -35, -45],
-                    colour_scheme: {
-                        type: 'sequential',
-                        reversed: true,
-                        scheme: 'estatC1 (Eurostat)',
-                        colors: sequential,
-                    },
-                },
-                A: {
-                    title: 'Agriculture, forestry and fishing',
-                    source: 'A.csv',
-                    class_breaks: [20, 10, 0, -10, -20],
-                    colour_scheme: {
-                        type: 'diverging',
-                        reversed: true,
-                        scheme: 'estatAC (Eurostat)',
-                        colors: diverging,
-                    },
-                },
-                B: {
-                    title: 'Mining and quarrying',
-                    source: 'B.csv',
-                    class_breaks: [60, 30, 0, -20, -40],
-                    colour_scheme: {
-                        type: 'diverging',
-                        reversed: true,
-                        scheme: 'estatAC (Eurostat)',
-                        colors: diverging,
-                    },
-                },
-                C: {
-                    title: 'Manufacturing',
-                    source: 'C.csv',
-                    class_breaks: [-15, -20, -25, -30, -40],
-                    colour_scheme: {
-                        type: 'sequential',
-                        reversed: true,
-                        scheme: 'estatC1 (Eurostat)',
-                        colors: sequential,
-                    },
-                },
-                D: {
-                    title: 'Electricity, gas, steam and air conditioning supply',
-                    source: 'D.csv',
-                    class_breaks: [35, 20, 0, -20, -40],
-                    colour_scheme: {
-                        type: 'diverging',
-                        reversed: true,
-                        scheme: 'estatAC (Eurostat)',
-                        colors: diverging,
-                    },
-                },
-                E: {
-                    title: 'Water supply, sewerage, waste management and remediation activities',
-                    source: 'E.csv',
-                    class_breaks: [50, 25, 0, -25, -50],
-                    colour_scheme: {
-                        type: 'diverging',
-                        reversed: true,
-                        scheme: 'estatAC (Eurostat)',
-                        colors: diverging,
-                    },
-                },
-            }
 
             // Get the custom select trigger and options wrapper
             const customSelectTrigger = document.querySelector('.select-trigger')
