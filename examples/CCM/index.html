@@ -147,7 +147,7 @@
 
                 <div id="naceSelectWrapper" class="custom-select-wrapper">
                     <div class="custom-select">
-                        <div class="select-trigger">Select an option</div>
+                        <div class="select-trigger" tabindex="0">Select an option</div>
                         <ul class="custom-options">
                             <!-- Options will be dynamically populated here -->
                         </ul>
@@ -15547,6 +15547,34 @@
                         colors: diverging,
                     },
                 },
+                F: {
+                    title: 'Construction',
+                    source: 'F.csv',
+                    class_breaks: [50, 20, 0, -20, -40],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: diverging,
+                    },
+                },
+                'G-U_X_H': {
+                    title: 'Services (except transportation and storage)',
+                    source: 'G-U_X_H.csv',
+                    class_breaks: [0, -15, -25, -35, -45],
+                    colour_scheme: {
+                        type: 'diverging',
+                        reversed: true,
+                        scheme: 'estatAC (Eurostat)',
+                        colors: ['#856B0D', '#DAE7CC', '#BCE0BB', '#83C582', '#4F9E4C', '#177217'],
+                    },
+                },
+                H: {
+                    title: 'Transportation and storage',
+                    source: 'H.csv',
+                    class_breaks: [50, 25, 0, -15, -30],
+                    colour_scheme: { type: 'diverging', reversed: true, scheme: 'estatAC (Eurostat)', colors: diverging },
+                },
             }
             let startingColors = sequential
 
@@ -15801,37 +15829,80 @@
             const customSelectTrigger = document.querySelector('.select-trigger')
             const customOptionsWrapper = document.querySelector('.custom-options')
             const naceSelectWrapper = document.getElementById('naceSelectWrapper')
-
-            // Toggle dropdown visibility when clicking the select trigger
-            naceSelectWrapper.addEventListener('click', function () {
-                customOptionsWrapper.classList.toggle('open') // Add/remove 'open' class
-            })
+            let currentIndex = 0
 
             // Populate the custom select dropdown dynamically
-            Object.keys(naceOptions).forEach((key) => {
+            Object.keys(naceOptions).forEach((key, index) => {
                 const option = document.createElement('li')
                 option.classList.add('custom-option')
                 option.setAttribute('data-value', key)
                 option.textContent = naceOptions[key].title
+                option.setAttribute('data-index', index) // Store index in the option
                 customOptionsWrapper.appendChild(option)
             })
 
-            // Select the first item by default
-            const firstOption = customOptionsWrapper.querySelector('.custom-option')
-            if (firstOption) {
-                firstOption.classList.add('selected') // Apply the selected class
-                customSelectTrigger.textContent = firstOption.textContent // Set the trigger text
+            // Track if dropdown navigation is active
+            let dropdownActive = false
+            let options = Array.from(customOptionsWrapper.querySelectorAll('.custom-option'))
+            let activeOptionIndex = options.findIndex((option) => option.classList.contains('selected'))
+
+            // Function to highlight the option
+            function highlightOption(index) {
+                options.forEach((option) => option.classList.remove('selected'))
+                options[index].classList.add('selected')
+                customSelectTrigger.textContent = options[index].textContent
+                activeOptionIndex = index
             }
+
+            // Select the first item by default
+            highlightOption(0)
+
+            // Event listener for arrow keys and enter
+            document.addEventListener('keydown', function (event) {
+                if (dropdownActive || event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                    if (event.key === 'ArrowDown' && activeOptionIndex < options.length - 1) {
+                        highlightOption(activeOptionIndex + 1)
+                        options[activeOptionIndex].click() // Simulate click on the selected option
+                    } else if (event.key === 'ArrowUp' && activeOptionIndex > 0) {
+                        highlightOption(activeOptionIndex - 1)
+                        options[activeOptionIndex].click() // Simulate click on the selected option
+                    } else if (event.key === 'Enter') {
+                        options[activeOptionIndex].click() // Simulate click on the selected option
+                        dropdownActive = false // After selection, stop active arrow navigation
+                    }
+                    event.preventDefault() // Prevent default behavior
+                }
+            })
+
+            // Add event listener to open the dropdown when clicking
+            naceSelectWrapper.addEventListener('click', function () {
+                customOptionsWrapper.classList.toggle('open')
+                dropdownActive = true // Activate arrow key navigation when dropdown is open
+            })
+
+            // Add event listener to set dropdownActive to true after selecting an option
+            customOptionsWrapper.addEventListener('click', function () {
+                dropdownActive = true // Keep arrow key navigation active after selection
+            })
+
+            // Close the dropdown and disable arrow key navigation when clicking outside
+            document.addEventListener('click', function (event) {
+                const isClickInside = naceSelectWrapper.contains(event.target) || customOptionsWrapper.contains(event.target)
+                if (!isClickInside) {
+                    dropdownActive = false // Disable arrow key navigation
+                    customOptionsWrapper.classList.remove('open') // Close dropdown
+                }
+            })
 
             // Add event listener to handle selection and fetch data
             customOptionsWrapper.addEventListener('click', function (event) {
-                // disable document mouse events to prevent eurostat-map map hover bug while changing dataset
-                document.body.style.pointerEvents = 'none'
-
                 const clickedOption = event.target
 
+                // Update the activeOptionIndex to the clicked option's index
+                activeOptionIndex = options.indexOf(clickedOption)
+
                 // Remove 'selected' class from all options
-                document.querySelectorAll('.custom-option').forEach((option) => option.classList.remove('selected'))
+                options.forEach((option) => option.classList.remove('selected'))
 
                 // Add 'selected' class to the clicked option (for blue background and white text)
                 clickedOption.classList.add('selected')
@@ -15857,7 +15928,6 @@
                     customOptionsWrapper.classList.remove('open')
                 }
             })
-
             // Function to fetch the CSV, convert it to JSON, and apply to the map with additional properties
             async function fetchCSVandConvertToJSON(selectedOption) {
                 try {
