@@ -71,7 +71,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //map frame (none by default)
     out.frameStroke_ = 'none'
-    out.frameStrokeWidth_ = 0.5
+    out.frameStrokeWidth_ = 0.3
 
     //scalebar
     out.showScalebar_ = false
@@ -2452,16 +2452,16 @@ const _defaultPosition = {
  */
 const defaultInsetConfig = function (s, p) {
     const out = [
-        { geo: 'IC', x: 0, y: 0, width: s, height: 0.3 * s, frameStroke: 'lightgrey' },
-        { geo: 'CARIB', x: 0, y: 0.3 * s + p, width: 0.5 * s, height: s, frameStroke: 'lightgrey' },
-        { geo: 'GF', x: 0.5 * s, y: 0.3 * s + p, width: 0.5 * s, height: 0.75 * s, frameStroke: 'lightgrey' },
+        { geo: 'IC', x: 0, y: 0, width: s, height: 0.3 * s, frameStroke: 'black' },
+        { geo: 'CARIB', x: 0, y: 0.3 * s + p, width: 0.5 * s, height: s, frameStroke: 'black' },
+        { geo: 'GF', x: 0.5 * s, y: 0.3 * s + p, width: 0.5 * s, height: 0.75 * s, frameStroke: 'black' },
         {
             geo: 'YT',
             x: 0.5 * s,
             y: 1.05 * s + p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         {
             geo: 'RE',
@@ -2469,7 +2469,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.05 * s + p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         {
             geo: 'PT20',
@@ -2477,7 +2477,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.3 * s + 2 * p,
             width: 0.75 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         {
             geo: 'PT30',
@@ -2485,16 +2485,16 @@ const defaultInsetConfig = function (s, p) {
             y: 1.3 * s + 2 * p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
-        { geo: 'MT', x: 0, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s, frameStroke: 'lightgrey' },
+        { geo: 'MT', x: 0, y: 1.55 * s + 3 * p, width: 0.25 * s, height: 0.25 * s, frameStroke: 'black' },
         {
             geo: 'LI',
             x: 0.25 * s,
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         {
             geo: 'SJ_SV',
@@ -2502,7 +2502,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         {
             geo: 'SJ_JM',
@@ -2510,7 +2510,7 @@ const defaultInsetConfig = function (s, p) {
             y: 1.55 * s + 3 * p,
             width: 0.25 * s,
             height: 0.25 * s,
-            frameStroke: 'lightgrey',
+            frameStroke: 'black',
         },
         /*{geo:"IC", x:0, y:0}, {geo:"RE", x:dd, y:0}, {geo:"YT", x:2*dd, y:0},
 		{geo:"GP", x:0, y:dd}, {geo:"MQ", x:dd, y:dd}, {geo:"GF",scale:"10M", x:2*dd, y:dd},
