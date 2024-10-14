@@ -32,7 +32,8 @@
             eurostatmap
                 .map('ps')
                 .nutsLvl(0)
-                .title('GDP, 2018')
+                .title('Gross domestic product (GDP) across Europe')
+                .subtitle('Total GDP (size) and GDP per inhabitant (color)')
                 .zoomExtent([1, 2])
                 //GDP per inhabitant
                 .stat('color', {
@@ -73,7 +74,7 @@
                         shapePadding: 0,
                         titlePadding: 50,
                         shapeOffset: { x: 0, y: -50 },
-                        labelOffset: { x: 40, y: -40 },
+                        labelOffset: { x: 70, y: -40 },
                         labelFormatter: d3.format(',.2r'),
                     },
                     colorLegend: {

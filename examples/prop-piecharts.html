@@ -354,6 +354,7 @@
             const ourMap = eurostatmap
                 .map('pie')
                 .nutsLvl(1)
+                .width(800)
                 .catLabels({
                     cancer: 'cancer',
                     circulatory: 'circulatory',
@@ -362,11 +363,12 @@
                 .pieOtherColor('#FFCC80')
                 .pieOtherText('Other')
                 .pieMinRadius(6)
-                .title('Most common causes of death, 2016')
+                .title('Most common causes of death')
+                .subtitle('Death rate (pie size) and cause of death (color), 2016')
                 .legend({
-                    x: 600,
-                    y: 250,
-                    boxOpacity: 0.8,
+                    x: 530,
+                    y: 100,
+                    boxOpacity: 0,
                     boxFill: 'white',
                     titleFontWeight: 'bold',
                     sizeLegend: {

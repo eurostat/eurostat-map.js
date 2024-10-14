@@ -53,7 +53,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //map title
     out.title_ = ''
-    out.titleFontSize_ = 17
+    out.titleFontSize_ = 21
     out.titleFill_ = 'black'
     out.titlePosition_ = undefined
     out.titleFontWeight_ = 'bold'
@@ -62,7 +62,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //map subtitle
     out.subtitle_ = ''
-    out.subtitleFontSize_ = 12
+    out.subtitleFontSize_ = 17
     out.subtitleFill_ = 'grey'
     out.subtitlePosition_ = undefined
     out.subtitleFontWeight_ = 100
@@ -1699,10 +1699,16 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //source dataset URL
         if (out.showSourceLink_) {
-            if (out.stat()) {
-                if (out.stat().eurostatDatasetCode) {
+            let stat
+            if (withCenterPoints) {
+                stat = out.stat('size')
+            } else {
+                stat = out.stat()
+            }
+            if (stat) {
+                if (stat.eurostatDatasetCode) {
                     //dataset link
-                    let code = out.stat().eurostatDatasetCode
+                    let code = stat.eurostatDatasetCode
                     let url = `https://ec.europa.eu/eurostat/databrowser/view/${code}/default/table?lang=en`
                     let linkColor = '#0e47cb'
                     let link = out

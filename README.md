@@ -6,17 +6,6 @@
 
 Eurostatmap allows developers to quickly create and customise thematic web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database), or custom data added manually.
 
-You can build an interactive web map based on a few lines of code:
-
-```javascript
-eurostatmap
-    .map('ch')
-    .title('Population density in Europe')
-    .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'people/km²' })
-    .legend({ x: 500, y: 180, title: 'Density, people/km²' })
-    .build()
-```
-
 <div>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/population-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png" alt="choropleth" width="400"/> </a>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png"  alt="proportional circles" width="400"/></a>
@@ -31,6 +20,17 @@ eurostatmap
 </div>
 
 ## Examples
+
+You can build an interactive web map based on a few lines of code:
+
+```javascript
+eurostatmap
+    .map('ch')
+    .title('Population density in Europe')
+    .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'people/km²' })
+    .legend({ x: 500, y: 180, title: 'Density, people/km²' })
+    .build()
+```
 
 -   [Population density](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html))
 -   [Population density map with dot pattern](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html))

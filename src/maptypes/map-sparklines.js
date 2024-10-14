@@ -262,12 +262,20 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'fill',
+                    typeof out.sparkAreaColor_ == 'function' ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_
+                )
                 .attr(
                     'stroke',
-                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                    typeof out.sparkLineColor_ == 'function' ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
                 )
-                .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
+                .attr(
+                    'stroke-width',
+                    typeof out.sparkLineStrokeWidth_ == 'function'
+                        ? (d, i) => out.sparkLineStrokeWidth_(d, i)
+                        : out.sparkLineStrokeWidth_ + 'px'
+                )
                 .attr('opacity', out.sparkLineOpacity_)
                 .attr('fill-opacity', 0.3)
                 .attr('stroke', 'none')
@@ -284,14 +292,20 @@ export const map = function (config) {
                 )
                 .attr('transform', (d) => `translate(0,-${height / 2})`)
         }
+        console.log(typeof out.sparkLineStrokeWidth_)
 
         // Add the line
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
             .attr('opacity', out.sparkLineOpacity_)
-            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
-            .attr('stroke-width', out.sparkLineStrokeWidth_ + 'px')
+            .attr('stroke', typeof out.sparkLineColor_ == 'function' ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
+            .attr(
+                'stroke-width',
+                typeof out.sparkLineStrokeWidth_ == 'function'
+                    ? (d, i) => out.sparkLineStrokeWidth_(d, i)
+                    : out.sparkLineStrokeWidth_ + 'px'
+            )
             .attr(
                 'd',
                 line()
@@ -441,10 +455,13 @@ export const map = function (config) {
         if (out.sparkType_ == 'area') {
             node.append('path')
                 .datum(data)
-                .attr('fill', typeof out.sparkAreaColor_ == Function ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_)
+                .attr(
+                    'fill',
+                    typeof out.sparkAreaColor_ == 'function' ? (d, i) => out.sparkAreaColor_(d, i) : out.sparkAreaColor_
+                )
                 .attr(
                     'stroke',
-                    typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
+                    typeof out.sparkLineColor_ == 'function' ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_
                 )
                 .attr('stroke-width', 1)
                 .attr('opacity', out.sparkLineOpacity_)
@@ -468,7 +485,7 @@ export const map = function (config) {
         node.append('path')
             .datum(data)
             .attr('fill', 'none')
-            .attr('stroke', typeof out.sparkLineColor_ == Function ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
+            .attr('stroke', typeof out.sparkLineColor_ == 'function' ? (d, i) => out.sparkLineColor_(d, i) : out.sparkLineColor_)
             .attr('stroke-width', 1)
             .attr(
                 'd',
