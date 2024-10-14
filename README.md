@@ -2,7 +2,6 @@
 
 ![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map)
 ![npm](https://img.shields.io/npm/v/eurostat-map)
-[![Build Status](https://travis-ci.org/eurostat/eurostat-map.js.svg?branch=master)](https://travis-ci.org/eurostat/eurostat-map.js)
 ![license](https://img.shields.io/badge/license-EUPL-success)
 
 Eurostatmap allows developers to quickly create and customise thematic web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database), or custom data added manually.
