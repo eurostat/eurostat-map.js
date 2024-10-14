@@ -7,6 +7,17 @@
 
 Eurostatmap allows developers to quickly create and customise thematic web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database), or custom data added manually.
 
+You can build an interactive web map based on a few lines of code:
+
+```javascript
+eurostatmap
+    .map('ch')
+    .title('Population density in Europe')
+    .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'people/km²' })
+    .legend({ x: 500, y: 180, title: 'Density, people/km²' })
+    .build()
+```
+
 <div>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/population-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/ch.png" alt="choropleth" width="400"/> </a>
 <a href="https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/previews/prop.png"  alt="proportional circles" width="400"/></a>
@@ -43,17 +54,6 @@ Eurostatmap allows developers to quickly create and customise thematic web maps 
 -   **Standalone**: For the latest version, use `<script src="https://unpkg.com/eurostat-map"></script>` as shown in [the examples](#examples). For a fixed version, use `<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>`, where _X.Y.Z_ is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
 
 ## Documentation
-
-You can build an interactive web map based on a few lines of code:
-
-```javascript
-eurostatmap
-    .map('ch')
-    .title('Population density in Europe')
-    .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'people/km²' })
-    .legend({ x: 500, y: 180, title: 'Density, people/km²' })
-    .build()
-```
 
 For a quick tutorial check out this notebook:
 https://observablehq.com/@joewdavies/eurostat-map-js
