@@ -53,7 +53,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //map title
     out.title_ = ''
-    out.titleFontSize_ = 20
+    out.titleFontSize_ = 17
     out.titleFill_ = 'black'
     out.titlePosition_ = undefined
     out.titleFontWeight_ = 'bold'
@@ -1639,11 +1639,11 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .attr('y', out.titlePosition()[1])
                 .text(out.title())
                 .style('font-family', out.fontFamily_)
-                .style('font-size', out.titleFontSize() + 'px')
-                .style('font-weight', out.titleFontWeight())
-                .style('fill', out.titleFill())
-                .style('stroke', out.titleStroke())
-                .style('stroke-width', out.titleStrokeWidth())
+                .style('font-size', out.titleFontSize_ + 'px')
+                .style('font-weight', out.titleFontWeight_)
+                .style('fill', out.titleFill_)
+                .style('stroke', out.titleStroke_)
+                .style('stroke-width', out.titleStrokeWidth_)
                 .style('stroke-linejoin', 'round')
                 .style('paint-order', 'stroke')
         }
