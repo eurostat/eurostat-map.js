@@ -21,7 +21,7 @@ Eurostatmap allows developers to quickly create and customise thematic web maps 
 
 ## Examples
 
-You can build an interactive web map based on a few lines of code:
+You can build an interactive statistical map with just a few lines of code:
 
 ```javascript
 eurostatmap
