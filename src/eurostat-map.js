@@ -40,6 +40,7 @@ export const map = function (type, config) {
  * The returned function has for arguments the SVG element where to use the fill pattern, and the number of classes.
  *
  * @param {*} opts Various parameters on the fill pattern.
+ * @returns {function}
  */
 export const getFillPatternDefinitionFun = function (opts) {
     opts = opts || {}

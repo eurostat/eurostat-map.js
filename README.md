@@ -1,10 +1,10 @@
-# [eurostat-map.js](https://github.com/eurostat/eurostat-map)
+# [eurostat-map](https://github.com/eurostat/eurostat-map)
 
 ![npm bundle size](https://img.shields.io/bundlephobia/min/eurostat-map)
 ![npm](https://img.shields.io/npm/v/eurostat-map)
 ![license](https://img.shields.io/badge/license-EUPL-success)
 
-Eurostatmap allows developers to quickly create and customise thematic web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database), or custom data added manually.
+Eurostat-map.js allows developers to quickly create and customise thematic web maps based on [NUTS regions](https://ec.europa.eu/eurostat/web/nuts/background), showing [Eurostat](https://ec.europa.eu/eurostat) data directly retrieved from the [Eurostat database](https://ec.europa.eu/eurostat/data/database), or custom data added manually.
 
 <div>
 <a href="https://eurostat.github.io/eurostat-map/examples/population-density.html" target="_blank"> <img src="https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/previews/ch.png" alt="choropleth" width="400"/> </a>
@@ -49,8 +49,15 @@ eurostatmap
 
 ## Installation
 
--   **Node.js**: With `npm install eurostatmap` and then `eurostatmap = require("eurostatmap")`.
--   **Standalone**: For the latest version, use `<script src="https://unpkg.com/eurostat-map"></script>` as shown in [the examples](#examples). For a fixed version, use `<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>`, where _X.Y.Z_ is a version number among [these ones](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
+### Node.js
+
+-   `npm install eurostatmap`
+-   `eurostatmap = require("eurostatmap")`.
+
+### Standalone
+
+-   For the latest version, use `<script src="https://unpkg.com/eurostat-map"></script>` as shown in [the examples](#examples).
+-   For a fixed version, use `<script src="https://unpkg.com/eurostat-map@X.Y.Z"></script>`, where _X.Y.Z_ is a [version number](https://www.npmjs.com/package/eurostat-map?activeTab=versions).
 
 ## Documentation
 
