@@ -153,7 +153,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //nuts styling
     out.nutsrgFillStyle_ = '#EfEfEf'
-    out.nutsrgSelFillSty_ = 'red'
+    out.nutsrgSelFillSty_ = 'red' // USE CSS
     out.nutsbnStroke_ = { 0: 'none', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: '#7f7f7f' }
     out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
     //country borders styling
@@ -844,7 +844,7 @@ export const mapTemplate = function (config, withCenterPoints) {
 
             // world maps
         } else if (out.geo_ == 'WORLD') {
-            return [json('https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/src/assets/topojson/WORLD_4326.json')]
+            return [json('https://raw.githubusercontent.com/eurostat/eurostat-map/master/src/assets/topojson/WORLD_4326.json')]
         } else {
             // NUTS maps for eurobase data with a specific NUTS level
 

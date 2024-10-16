@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>eurostat-map.js</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>eurostat-map.js</title>
-</head>
-
-<body>
-    <svg id="map"></svg>
-    <!-- <script src="https://unpkg.com/eurostat-map"></script> -->
-    <script src="../build/eurostatmap.js"></script>
-    <script>
-        eurostatmap
-            .map("ct")
-            .title("NUTS urban/rural typology")
-            .scale("60M")
-            .nutsYear(2013)
-            .nutsLvl(3)
-            .stat( { csvURL: "https://eurostat.github.io/eurostat-map.js/examples/urb_rur_typo.csv", geoCol: "NUTS_ID_2013", valueCol: "urban_rural" } )
-            .classToFillStyle({ urb: "#fdb462", int: "#ffffb3", rur: "#ccebc5" })
-            .classToText({ "urb": "Urban", "int": "Intermediate", "rur": "Rural" })
-            .insets("default")
-            .legend({ x: 10, y:170, order:['urb','int','rur'] })
-            .build()
-    </script>
-</body>
+    <body>
+        <svg id="map"></svg>
+        <!-- <script src="https://unpkg.com/eurostat-map"></script> -->
+        <script src="../build/eurostatmap.js"></script>
+        <script>
+            eurostatmap
+                .map('ct')
+                .title('NUTS urban/rural typology')
+                .scale('60M')
+                .nutsYear(2013)
+                .nutsLvl(3)
+                .stat({
+                    csvURL: 'https://eurostat.github.io/eurostat-map/examples/urb_rur_typo.csv',
+                    geoCol: 'NUTS_ID_2013',
+                    valueCol: 'urban_rural',
+                })
+                .classToFillStyle({ urb: '#fdb462', int: '#ffffb3', rur: '#ccebc5' })
+                .classToText({ urb: 'Urban', int: 'Intermediate', rur: 'Rural' })
+                .insets('default')
+                .legend({ x: 10, y: 170, order: ['urb', 'int', 'rur'] })
+                .build()
+        </script>
+    </body>
 </html>

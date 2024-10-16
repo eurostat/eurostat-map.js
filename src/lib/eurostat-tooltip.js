@@ -28,6 +28,7 @@ export const tooltip = function (config) {
         if (tooltip.empty()) tooltip = select('body').append('div').attr('id', config.div)
 
         //tooltip.style("width",config.width);
+        // USE CSS
         tooltip.style('max-width', config.maxWidth)
         tooltip.style('overflow', 'hidden')
         tooltip.style('font-size', config.fontSize)

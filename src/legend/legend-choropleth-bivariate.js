@@ -60,7 +60,6 @@ export const legend = function (map, config) {
     //@override
     out.update = function () {
         const m = out.map
-        const svgMap = m.svg()
         const lgg = out.lgg
         const clnb = m.clnb()
         const sz = out.squareSize / clnb

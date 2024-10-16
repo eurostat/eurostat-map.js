@@ -4,6 +4,7 @@ import { scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
 import { interpolateYlOrBr } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
+import { processInsets } from '../core/utils'
 
 /**
  * Returns a chroropleth map.
@@ -103,26 +104,7 @@ export const map = function (config) {
     out.updateClassification = function () {
         // apply classification to all insets that are outside of the main map's SVG
         if (out.insetTemplates_) {
-            for (const geo in out.insetTemplates_) {
-                if (Array.isArray(out.insetTemplates_[geo])) {
-                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                        // insets with same geo that do not share the same parent inset
-                        if (Array.isArray(out.insetTemplates_[geo][i])) {
-                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
-                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
-                                    applyClassificationToMap(out.insetTemplates_[geo][i][c])
-                            }
-                        } else {
-                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_)
-                                applyClassificationToMap(out.insetTemplates_[geo][i])
-                        }
-                    }
-                } else {
-                    // unique inset geo_
-                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyClassificationToMap(out.insetTemplates_[geo])
-                }
-            }
+            processInsets(out.insetTemplates_, out.svgId_, applyClassificationToMap)
         }
 
         // apply to main map
@@ -132,65 +114,56 @@ export const map = function (config) {
     }
 
     function applyClassificationToMap(map) {
-        //simply return the array [0,1,2,3,...,nb-1]
-        const getA = function (nb) {
-            return [...Array(nb).keys()]
+        // Helper function to generate a range [0, 1, 2, ..., nb-1]
+        const generateRange = (nb) => [...Array(nb).keys()]
+
+        // Configure classifier based on the selected classification method
+        const setupClassifier = () => {
+            const dataArray = out.statData().getArray()
+            const range = generateRange(out.clnb())
+
+            switch (out.classifMethod_) {
+                case 'quantile':
+                    out.classifier(scaleQuantile().domain(dataArray).range(range))
+                    break
+                case 'equinter':
+                    out.classifier(
+                        scaleQuantize()
+                            .domain([min(dataArray), max(dataArray)])
+                            .range(range)
+                    )
+                    if (out.makeClassifNice_) out.classifier().nice()
+                    break
+                case 'threshold':
+                    out.clnb(out.threshold_.length + 1)
+                    out.classifier(scaleThreshold().domain(out.threshold_).range(generateRange(out.clnb())))
+                    break
+            }
         }
 
-        //TODO: make it possible to use continuous color ramps?
-
-        //use suitable classification type
-        if (out.classifMethod_ === 'quantile') {
-            //https://github.com/d3/d3-scale#quantile-scales
-            const domain = out.statData().getArray()
-            const range = getA(out.clnb())
-            out.classifier(scaleQuantile().domain(domain).range(range))
-        } else if (out.classifMethod_ === 'equinter') {
-            //https://github.com/d3/d3-scale#quantize-scales
-            const domain = out.statData().getArray()
-            const range = getA(out.clnb())
-            out.classifier(
-                scaleQuantize()
-                    .domain([min(domain), max(domain)])
-                    .range(range)
-            )
-            if (out.makeClassifNice_) out.classifier().nice()
-        } else if (out.classifMethod_ === 'threshold') {
-            //https://github.com/d3/d3-scale#threshold-scales
-            out.clnb(out.threshold_.length + 1)
-            const range = getA(out.clnb())
-            console.log(out.threshold_)
-            out.classifier(scaleThreshold().domain(out.threshold_).range(range))
-        }
-
-        let selector = map.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
-
-        // assign class (ecl attribute) to regions, based on their value
-        if (map.svg_) {
-            let regions = map.svg().selectAll(selector)
-            regions.attr('ecl', function (rg, w, e, t, d) {
-                const sv = out.statData().get(rg.properties.id)
-                // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
-                if (!sv) return
-                const v = sv.value
-                if (v != 0 && !v) return
-                if (v == ':') return 'nd'
-                let ecl = +out.classifier_(v)
-                return ecl
+        // Apply classifier and set 'ecl' attribute to regions based on value
+        const classifyRegions = (regions) => {
+            regions.attr('ecl', (rg) => {
+                const regionData = out.statData().get(rg.properties.id)
+                if (!regionData) return // Lack of data is handled explicitly
+                const value = regionData.value
+                if (value === ':') return 'nd'
+                return value != null ? +out.classifier_(value) : undefined
             })
+        }
 
-            //when mixing NUTS, level 0 is separated from the rest (class nutsrg0)
-            if (map.nutsLvl_ == 'mixed') {
-                map.svg()
-                    .selectAll('path.nutsrg0')
-                    .attr('ecl', function (rg) {
-                        const sv = out.statData().get(rg.properties.id)
-                        if (!sv) return // GISCO-2678 - lack of data no longer means no data, instead it is explicitly set using ':'.
-                        const v = sv.value
-                        if (v != 0 && !v) return
-                        if (v == ':') return 'nd'
-                        return +out.classifier()(+v)
-                    })
+        // Initialize classifier
+        setupClassifier()
+
+        // Apply classification and assign 'ecl' attribute based on map type
+        if (map.svg_) {
+            const selector = map.geo_ === 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            classifyRegions(map.svg().selectAll(selector))
+
+            // Handle mixed NUTS level, separating NUTS level 0
+            if (map.nutsLvl_ === 'mixed') {
+                const nuts0Regions = map.svg().selectAll('path.nutsrg0')
+                classifyRegions(nuts0Regions)
             }
         }
     }
@@ -200,25 +173,7 @@ export const map = function (config) {
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
-            for (const geo in out.insetTemplates_) {
-                if (Array.isArray(out.insetTemplates_[geo])) {
-                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                        // insets with same geo that do not share the same parent inset
-                        if (Array.isArray(out.insetTemplates_[geo][i])) {
-                            // this is the case when there are more than 2 different insets with the same geo. E.g. 3 insets for PT20
-                            for (var c = 0; c < out.insetTemplates_[geo][i].length; c++) {
-                                if (out.insetTemplates_[geo][i][c].svgId_ !== out.svgId_)
-                                    applyStyleToMap(out.insetTemplates_[geo][i][c])
-                            }
-                        } else {
-                            if (out.insetTemplates_[geo][i].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo][i])
-                        }
-                    }
-                } else {
-                    // unique inset geo_
-                    if (out.insetTemplates_[geo].svgId_ !== out.svgId_) applyStyleToMap(out.insetTemplates_[geo])
-                }
-            }
+            processInsets(out.insetTemplates_, out.svgId_, applyStyleToMap)
         }
 
         // apply to main map
@@ -228,122 +183,98 @@ export const map = function (config) {
     }
 
     function applyStyleToMap(map) {
-        // define function that returns a class' colour
+        // Define function to get a class' color
         if (out.filtersDefinitionFun_) {
-            // if dot density
-            //set fill style
+            // Dot density style
             out.classToFillStyle(getFillPatternLegend())
         } else {
+            // Color legend style
             out.classToFillStyle(getColorLegend(out.colorFun(), out.colors_))
         }
 
-        // set colour of regions
+        // Apply color and events to regions if SVG exists
         if (map.svg_) {
-            let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
-            let regions = map.svg().selectAll(selector)
+            const selector = out.geo_ === 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            const regions = map.svg().selectAll(selector)
+
+            // Apply transition and set initial fill colors with data-driven logic
             regions
                 .transition()
                 .duration(out.transitionDuration())
                 .attr('fill', function (rg) {
-                    if (map.geo_ == 'WORLD') {
-                        //world template
-                        const ecl = select(this).attr('ecl')
+                    const ecl = select(this).attr('ecl')
+                    if (out.geo_ === 'WORLD') {
+                        // World template logic
                         if (!ecl) return out.cntrgFillStyle_
                         if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
-                        let cf = out.classToFillStyle_
-                        let v = cf(ecl, out.clnb_)
-                        if (!v) return out.cntrgFillStyle_
-                        return v
+                        const fillStyle = out.classToFillStyle_(ecl, out.clnb_)
+                        return fillStyle || out.cntrgFillStyle_
                     } else {
-                        // only apply data-driven colour to included countries for NUTS templates
-                        if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                            const ecl = select(this).attr('ecl')
+                        // NUTS template logic
+                        const countryId = rg.properties.id.slice(0, 2)
+                        if (out.countriesToShow_.includes(countryId)) {
                             if (!ecl) return out.nutsrgFillStyle_
                             if (ecl === 'nd') return out.noDataFillStyle() || 'gray'
                             return out.classToFillStyle()(ecl, out.clnb_)
-                        } else {
-                            return out.nutsrgFillStyle_
                         }
+                        return out.nutsrgFillStyle_
                     }
                 })
-                //set mouse events for regions
-                //GISCO-2767 - mouseover region fill bug before transition ends
                 .end()
-                .then(
-                    () => {
-                        regions
-                            .on('mouseover', function (e, rg) {
-                                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                        const sel = select(this)
-                                        sel.attr('fill___', sel.attr('fill'))
-                                        sel.attr('fill', map.nutsrgSelFillSty_)
-                                        if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                                    }
-                                } else {
-                                    const sel = select(this)
-                                    sel.attr('fill___', sel.attr('fill'))
-                                    sel.attr('fill', map.nutsrgSelFillSty_)
-                                    if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                                }
-                            })
-                            .on('mousemove', function (e, rg) {
-                                if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                                    if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                        if (out._tooltip) out._tooltip.mousemove(e)
-                                    }
-                                } else {
-                                    if (out._tooltip) out._tooltip.mousemove(e)
-                                }
-                            })
-                            .on('mouseout', function () {
-                                const sel = select(this)
-                                let newFill = sel.attr('fill___')
-                                if (newFill) {
-                                    sel.attr('fill', sel.attr('fill___'))
-                                    if (map._tooltip) map._tooltip.mouseout()
-                                }
-                            })
-                    },
-                    (err) => {
-                        // rejection
-                    }
-                )
+                .then(() => {
+                    // Store the original color for each region
+                    regions.each(function () {
+                        const sel = select(this)
+                        sel.attr('fill___', sel.attr('fill'))
+                    })
 
-            if (out.nutsLvl_ == 'mixed') {
-                // Toggle visibility - only show NUTS 1,2,3 with stat values when mixing different NUTS levels
+                    // Set up mouse events
+                    regions
+                        .on('mouseover', function (e, rg) {
+                            const sel = select(this)
+                            const countryId = rg.properties.id.slice(0, 2)
+                            if (out.geo_ === 'WORLD' || out.countriesToShow_.includes(countryId)) {
+                                sel.attr('fill___', sel.attr('fill')) // Store original color
+                                sel.style('fill', map.nutsrgSelFillSty_) // Apply highlight color
+                                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
+                            }
+                        })
+                        .on('mousemove', function (e) {
+                            if (out._tooltip) out._tooltip.mousemove(e)
+                        })
+                        .on('mouseout', function () {
+                            const sel = select(this)
+                            sel.style('fill', sel.attr('fill___')) // Revert to original color
+                            if (map._tooltip) map._tooltip.mouseout()
+                        })
+                })
+                .catch((err) => {
+                    //console.error('Error applying transition to regions:', err)
+                })
+
+            // Apply additional settings for mixed NUTS level view
+            if (out.nutsLvl_ === 'mixed') {
                 map.svg()
                     .selectAll('path.nutsrg')
                     .style('display', function (rg) {
                         const ecl = select(this).attr('ecl')
                         const lvl = select(this).attr('lvl')
-                        // always display NUTS 0 for mixed, and filter countries to show
-                        if ((ecl && out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) || lvl == '0') {
-                            return 'block'
-                        } else {
-                            // dont show unclassified regions
-                            return 'none'
-                        }
+                        const countryId = rg.properties.id.slice(0, 2)
+                        return (ecl && out.countriesToShow_.includes(countryId)) || lvl === '0' ? 'block' : 'none'
                     })
-
-                    //toggle stroke - similar concept to display attr (only show borders of NUTS regions that are classified (as data or no data) - a la IMAGE)
-                    .style('stroke', function (bn) {
+                    .style('stroke', function () {
                         const lvl = select(this).attr('lvl')
                         const ecl = select(this).attr('ecl')
-                        if (ecl && lvl !== '0') {
-                            return map.nutsbnStroke_[parseInt(lvl)] || '#777'
-                        }
+                        return ecl && lvl !== '0' ? map.nutsbnStroke_[parseInt(lvl)] || '#777' : null
                     })
-                    .style('stroke-width', function (rg) {
+                    .style('stroke-width', function () {
                         const lvl = select(this).attr('lvl')
                         const ecl = select(this).attr('ecl')
-                        if (ecl && lvl !== '0') {
-                            return map.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2
-                        }
+                        return ecl && lvl !== '0' ? map.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2 : null
                     })
             }
 
-            // update labels of stat values, appending the stat labels to the region centroids
+            // Update labels for statistical values if required
             if (out.labelsToShow_.includes('values')) {
                 out.updateValuesLabels(map)
             }

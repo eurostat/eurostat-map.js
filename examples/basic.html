@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>eurostat-map.js basic example</title>
+    </head>
+
+    <body>
+        <svg id="map"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script>
+            eurostatmap
+                .map('ch')
+                .title('Population density in Europe')
+                .subtitle('2021')
+                .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'people/km²', filters: { TIME: '2021' } })
+                .legend({ x: 530, y: 90, title: 'Density, people/km²' })
+                .build()
+        </script>
+    </body>
+</html>

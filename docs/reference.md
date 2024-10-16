@@ -58,7 +58,7 @@ Specify the NUTS geometries and the geographical extent of the map.
 
 ## World maps
 
-It is also possible to build thematic world maps using eurostat-map. Simply pass "WORLD" to the map.geo() method. See [this example](https://github.com/eurostat/eurostat-map.js/blob/master/examples/world.html) for how to configure a world map.
+It is also possible to build thematic world maps using eurostat-map. Simply pass "WORLD" to the map.geo() method. See [this example](https://github.com/eurostat/eurostat-map/blob/master/examples/world.html) for how to configure a world map.
 
 | Method                                     | Type          | Default value       | Description                                                                |
 | ------------------------------------------ | ------------- | ------------------- | -------------------------------------------------------------------------- |
@@ -121,7 +121,7 @@ Example:
 ```javascript
 map = eurostatmap.map(...);
 map.stat( {
-	csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/examples/urb_rur_typo.csv",
+	csvURL: "https://raw.githubusercontent.com/eurostat/eurostat-map/master/examples/urb_rur_typo.csv",
 	geoCol: "NUTS_ID_2013",
 	valueCol: "urban_rural"
 });
@@ -155,13 +155,13 @@ map.statData().setData({
 
 ## Choropleth map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-density.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/population-change.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/ch_ex.png)](https://eurostat.github.io/eurostat-map/examples/population-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/pp_ex.png)](https://eurostat.github.io/eurostat-map/examples/population-dot-density.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/dv_ex.png)](https://eurostat.github.io/eurostat-map/examples/population-change.html)
 
 A [choropleth map](https://en.wikipedia.org/wiki/Choropleth_map) shows areas **colored or patterned** in proportion to a statistical variable. These maps should be used to show _intensive_ statistical variables such as proportions, ratios, densities, rates of change, percentages, etc.
 
-Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map.js/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map.js/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/population-dot-density.html)).
+Here is [an example](https://eurostat.github.io/eurostat-map/examples/population-density.html) with color value (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/population-density.html)), [another](https://eurostat.github.io/eurostat-map/examples/population-change.html) with a diverging color scheme (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/population-change.html)), and [a last one](https://eurostat.github.io/eurostat-map/examples/population-dot-density.html) with a texture pattern (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/population-dot-density.html)).
 
 Example:
 
@@ -208,10 +208,10 @@ In addition to [the default legend parameters](#map-legend), choropleth maps hav
 
 ## Proportional symbol map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pc_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/pc_ex.png)](https://eurostat.github.io/eurostat-map/examples/prop-circles.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/ps_ex.png)](https://eurostat.github.io/eurostat-map/examples/prop-circles.html)
 
-A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical _extensive_ variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-circles.html)).
+A proportional symbol map shows symbols (typically circles) **sized** in proportion to a statistical variable. These maps should be used to show statistical _extensive_ variables such as quantities, populations, numbers, etc. Here is [an example](https://eurostat.github.io/eurostat-map/examples/prop-circles.html) (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/prop-circles.html)).
 
 Example:
 
@@ -315,9 +315,9 @@ The following parameters are properties of the colorLegend object:
 
 ## Proportional pie chart map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/pie_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/pie_ex.png)](https://eurostat.github.io/eurostat-map/examples/prop-piecharts.html)
 
-A proportional pie chart map shows pie charts **sized** in proportion to a statistical variable. The slices of the pie chart are made up of the different categories of that statistical variable. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/prop-piecharts.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/prop-piecharts.html)).
+A proportional pie chart map shows pie charts **sized** in proportion to a statistical variable. The slices of the pie chart are made up of the different categories of that statistical variable. Here is [an example](https://eurostat.github.io/eurostat-map/examples/prop-piecharts.html) (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/prop-piecharts.html)).
 
 Example:
 
@@ -429,9 +429,9 @@ The following parameters are properties of the **colorLegend** object:
 
 ## Categorical map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/categorical.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/ct_ex.png)](https://eurostat.github.io/eurostat-map/examples/categorical.html)
 
-A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/categorical.html)).
+A categorical map shows areas according to categories (or discrete values). Here is [an example](https://eurostat.github.io/eurostat-map/examples/categorical.html) of such map (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/categorical.html)).
 
 Example:
 
@@ -441,7 +441,7 @@ eurostatmap
     .nutsYear(2013)
     .nutsLvl(3)
     .stat({
-        csvURL: 'https://raw.githubusercontent.com/eurostat/eurostat-map.js/dev/examples/urb_rur_typo.csv',
+        csvURL: 'https://raw.githubusercontent.com/eurostat/eurostat-map/dev/examples/urb_rur_typo.csv',
         geoCol: 'NUTS_ID_2013',
         valueCol: 'urban_rural',
     })
@@ -472,9 +472,9 @@ In addition to [the default legend parameters](#map-legend), categorical maps ha
 
 ## Bivariate choropleth map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/chbi_ex.png)](https://eurostat.github.io/eurostat-map/examples/pop-unemploy-bivariate.html)
 
-A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. It shows how the correlation between these variables varies across space. Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/pop-unemploy-bivariate.html)).
+A bivariate choropleth map is a choropleth map showing the combination of two statistical variables. It shows how the correlation between these variables varies across space. Here is [an example](https://eurostat.github.io/eurostat-map/examples/pop-unemploy-bivariate.html) of such map (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/pop-unemploy-bivariate.html)).
 
 Example:
 
@@ -525,12 +525,12 @@ In addition to [the default legend parameters](#map-legend), bivariate choroplet
 
 ## Stripe composition map
 
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html)
-[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map.js/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/comp1.png)](https://eurostat.github.io/eurostat-map/examples/livestock_composition.html)
+[![Example](https://raw.githubusercontent.com/eurostat/eurostat-map/master/docs/img/comp2.png)](https://eurostat.github.io/eurostat-map/examples/farm_size.html)
 
 A stripe composition map is a choropleth map showing the composition of a statistical variable using a pattern of stripes of different colors and widths. The color of a stripe corresponds to its category, and its width is proportional to the share of this category in the total. A stripe composition map shows how proportions vary across space.
 
-Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map.js/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/farm_size.html))
+Here is [an example](https://eurostat.github.io/eurostat-map/examples/livestock_composition.html) of such map (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/livestock_composition.html)), and [another one](https://eurostat.github.io/eurostat-map/examples/farm_size.html) (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/farm_size.html))
 
 Example:
 
@@ -609,7 +609,7 @@ In addition to [the default legend parameters](#map-legend), stripe composition 
 
 A sparkline is a very small line chart, typically drawn without axes or coordinates. It presents the general shape of the variation (typically over time) in some measurement, such as temperature, in a simple and highly condensed way. A chart is drawn for each region showing the temporal variations of each.
 
-Here is [an example](https://eurostat.github.io/eurostat-map.js/examples/sparklines.html) of such map (see [the code](https://github.com/eurostat/eurostat-map.js/blob/master/examples/sparklines.html))
+Here is [an example](https://eurostat.github.io/eurostat-map/examples/sparklines.html) of such map (see [the code](https://github.com/eurostat/eurostat-map/blob/master/examples/sparklines.html))
 
 Example:
 
@@ -823,7 +823,7 @@ eurostatmap.map(...)
 );
 ```
 
-See also [this example with a focus on Spain](https://eurostat.github.io/eurostat-map.js/examples/spain.html) (see [the code](../examples/spain.html)).
+See also [this example with a focus on Spain](https://eurostat.github.io/eurostat-map/examples/spain.html) (see [the code](../examples/spain.html)).
 
 Note that a map inset is built as a proper map within a map: It has all properties of a map, and share most of them with its parent map. It is thus possible to define map insets within map insets, following a recursive structure.
 
