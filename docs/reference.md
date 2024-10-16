@@ -74,16 +74,16 @@ It is also possible to build thematic world maps using eurostat-map. Simply pass
 The map statistical data can be accessed with the _map_.**statData**() method, which returns an object with the following methods:
 
 | Method                   | Description                                                                                                                                                                  |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **get**([*nutsId*])      | Return the stat value {value,status} from a nuts id. If no argument is specified, returns the entire index.                                                                  |
 | **getValue**([*nutsId*]) | Return the stat value from a nuts id.                                                                                                                                        |
-| **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or a the value only.                                                |
+| **set**([*nutsId,stat*]) | Set a stat value from a nuts id. The new statistical data format can be either {value:34.324,status:"e"} or just the value only.                                             |
 | **setData**([*index*])   | Set statistical data, already indexed by nutsId. The index has a structure like: { "PT":0.2, "LU":0.6, ...}, or with status: { "PT": {value:0.2, status:"e"}, "LU":0.6, ...} |
 | **getArray**()           | Return all stat values as an array. This can be used to classify the values.                                                                                                 |
 | **getUniqueValues**()    | Return stat unique values. This can be used for categorical maps.                                                                                                            |
 | **getMin**()             | Get minimum value.                                                                                                                                                           |
 | **getMax**()             | Get maximum value.                                                                                                                                                           |
-| **unitText**([*value*])  | String                                                                                                                                                                       | _undefined_ | The text of the unit of measurement, to show in the tooltip. |
+| **unitText**([*value*])  | The text of the unit of measurement, to show in the tooltip. _undefined_ by default.                                                                                         |
 
 The map statistical data source can be accessed with the _map_.**stat**([*value*]) method. Several types of data sources are supported (see sections below).
 
