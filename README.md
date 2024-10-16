@@ -51,8 +51,19 @@ eurostatmap
 
 ### Node.js
 
--   `npm install eurostatmap`
--   `eurostatmap = require("eurostatmap")`.
+`npm install eurostatmap`
+
+then
+
+```javascript
+import eurostatmap from 'eurostatmap'
+```
+
+or
+
+```javascript
+eurostatmap = require('eurostatmap')
+```
 
 ### Standalone
 
