@@ -72,17 +72,14 @@ export const legend = function (map, config) {
         out.makeBackgroundBox()
 
         //draw title
-        if (out.title)
+        if (out.title) {
             lgg.append('text')
-                .attr('class', 'eurostat-map-legend-title')
+                .attr('class', 'em-legend-title')
                 .attr('x', xc)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(out.title)
                 .style('text-anchor', 'middle')
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
+        }
 
         //set font family
         lgg.style('font-family', m.fontFamily_)
@@ -126,13 +123,13 @@ export const legend = function (map, config) {
                     .attr('y', j * sz)
                     .attr('width', sz)
                     .attr('height', sz)
-                    .attr('fill', fill)
+                    .style('fill', fill)
                     .on('mouseover', function () {
                         const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
                         const sel = regions.selectAll("[ecl1='" + ecl1 + "']").filter("[ecl2='" + ecl2 + "']")
                         sel.style('fill', 'red') //transparent
                         sel.attr('fill___', function () {
-                            select(this).attr('fill')
+                            select(this).style('fill')
                         })
                     })
                     .on('mouseout', function () {
@@ -276,7 +273,7 @@ export const legend = function (map, config) {
             .attr('y', 0)
             .attr('width', out.squareSize)
             .attr('height', out.squareSize)
-            .attr('fill', 'none')
+            .style('fill', 'none')
             .style('stroke', 'black')
             .attr('stroke-width', 0.7)
 
@@ -312,7 +309,7 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', out.noDataShapeWidth)
                 .attr('height', out.noDataShapeHeight)
-                .attr('fill', m.noDataFillStyle())
+                .style('fill', m.noDataFillStyle())
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.7)
                 .on('mouseover', function () {
@@ -320,7 +317,7 @@ export const legend = function (map, config) {
                     const sel = regions.selectAll("[nd='nd']")
                     sel.style('fill', 'red') //transparent
                     sel.attr('fill___', function (d) {
-                        select(this).attr('fill')
+                        select(this).style('fill')
                     })
                 })
                 .on('mouseout', function () {

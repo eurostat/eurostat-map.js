@@ -150,3 +150,28 @@ export const executeForAllInsets = function (insets, mainSvgId, callback, parame
         }
     }
 }
+
+export const getFontSizeFromClass = function (className) {
+    // Create a temporary element with the specified class
+    const tempElement = document.createElement('div')
+    tempElement.className = className
+
+    // Apply inline styles to minimize layout interference
+    tempElement.style.position = 'absolute'
+    tempElement.style.visibility = 'hidden'
+    tempElement.style.height = 'auto'
+    tempElement.style.width = 'auto'
+    tempElement.style.lineHeight = 'normal'
+    tempElement.style.fontSize = 'initial'
+
+    // Append directly to the body
+    document.body.appendChild(tempElement)
+
+    // Get the computed font-size property and parse it to a number
+    const fontSize = parseFloat(window.getComputedStyle(tempElement).fontSize)
+
+    // Remove the temporary element from the document body
+    document.body.removeChild(tempElement)
+
+    return fontSize || 0
+}

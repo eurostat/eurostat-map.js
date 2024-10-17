@@ -175,7 +175,7 @@ export const map = function (config) {
         //build and assign texture to the regions
         out.svg()
             .selectAll('path.nutsrg')
-            .attr('fill', function (d) {
+            .style('fill', function (d) {
                 const id = d.properties.id
 
                 if (!out.countriesToShow_.includes(id[0] + id[1])) return out.nutsrgFillStyle_
@@ -249,8 +249,8 @@ export const map = function (config) {
                 if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                     if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                         const sel = select(this)
-                        sel.attr('fill___', sel.attr('fill'))
-                        sel.attr('fill', out.nutsrgSelFillSty_)
+                        sel.attr('fill___', sel.style('fill'))
+                        sel.style('fill', out.hoverColor_)
                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
                 } else {
@@ -268,10 +268,10 @@ export const map = function (config) {
             })
             .on('mouseout', function () {
                 const sel = select(this)
-                let currentFill = sel.attr('fill')
+                let currentFill = sel.style('fill')
                 let newFill = sel.attr('fill___')
                 if (newFill) {
-                    sel.attr('fill', sel.attr('fill___'))
+                    sel.style('fill', sel.attr('fill___'))
                     if (out._tooltip) out._tooltip.mouseout()
                 }
             })
@@ -330,7 +330,7 @@ export const map = function (config) {
             .selectAll('path')
             .data(pie_(data))
             .join('path')
-            .attr('fill', (d) => {
+            .style('fill', (d) => {
                 return out.catColors()[d.data.code] || 'lightgray'
             })
             .attr('d', arc().innerRadius(ir).outerRadius(r))

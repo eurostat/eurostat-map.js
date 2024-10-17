@@ -43,16 +43,13 @@ export const legend = function (map, config) {
         out.makeBackgroundBox()
 
         //draw title
-        if (out.title)
+        if (out.title) {
             lgg.append('text')
-                .attr('class', 'eurostat-map-legend-title')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(out.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
+        }
 
         //set font family
         lgg.style('font-family', m.fontFamily_)
@@ -76,7 +73,7 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', out.shapeWidth)
                 .attr('height', out.shapeHeight)
-                .attr('fill', m.classToFillStyle()[ecl_])
+                .style('fill', m.classToFillStyle()[ecl_])
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
@@ -84,7 +81,7 @@ export const legend = function (map, config) {
                     sel.style('fill', m.nutsrgSelFillSty())
                     const th = select(this)
                     sel.attr('fill___', function (d) {
-                        th.attr('fill')
+                        th.style('fill')
                     })
                     th.style('fill', m.nutsrgSelFillSty())
                 })
@@ -112,7 +109,7 @@ export const legend = function (map, config) {
                     sel.style('fill', m.nutsrgSelFillSty())
                     const th = select(this)
                     sel.attr('fill___', function (d) {
-                        th.attr('fill')
+                        th.style('fill')
                     })
                 })
                 .on('mouseout', function () {
@@ -137,14 +134,14 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', out.shapeWidth)
                 .attr('height', out.shapeHeight)
-                .attr('fill', m.noDataFillStyle())
+                .style('fill', m.noDataFillStyle())
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
                     sel.style('fill', m.nutsrgSelFillSty())
                     sel.attr('fill___', function (d) {
-                        select(this).attr('fill')
+                        select(this).style('fill')
                     })
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })

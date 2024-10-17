@@ -228,7 +228,7 @@ export const map = function (config) {
             regions
                 .transition()
                 .duration(out.transitionDuration())
-                .attr('fill', function (rg) {
+                .style('fill', function (rg) {
                     // only apply data-driven colour to included countries for NUTS templates
                     if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                         const ecl1 = select(this).attr('ecl1')
@@ -250,14 +250,14 @@ export const map = function (config) {
                                 if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                                     if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                         const sel = select(this)
-                                        sel.attr('fill___', sel.attr('fill'))
-                                        sel.attr('fill', map.nutsrgSelFillSty_)
+                                        sel.attr('fill___', sel.style('fill'))
+                                        sel.style('fill', map.hoverColor_)
                                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                                     }
                                 } else {
                                     const sel = select(this)
-                                    sel.attr('fill___', sel.attr('fill'))
-                                    sel.attr('fill', map.nutsrgSelFillSty_)
+                                    sel.attr('fill___', sel.style('fill'))
+                                    sel.style('fill', map.hoverColor_)
                                     if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                                 }
                             })
@@ -274,7 +274,7 @@ export const map = function (config) {
                                 const sel = select(this)
                                 let newFill = sel.attr('fill___')
                                 if (newFill) {
-                                    sel.attr('fill', sel.attr('fill___'))
+                                    sel.style('fill', sel.attr('fill___'))
                                     if (map._tooltip) map._tooltip.mouseout()
                                 }
                             })

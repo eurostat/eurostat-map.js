@@ -159,7 +159,7 @@ export const map = function (config) {
 
         // Apply classification and assign 'ecl' attribute based on map type
         if (map.svg_) {
-            const selector = map.geo_ === 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            const selector = map.geo_ === 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
             classifyRegions(map.svg().selectAll(selector))
 
             // Handle mixed NUTS level, separating NUTS level 0
@@ -196,14 +196,14 @@ export const map = function (config) {
 
         // Apply color and events to regions if SVG exists
         if (map.svg_) {
-            const selector = out.geo_ === 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            const selector = out.geo_ === 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
             const regions = map.svg().selectAll(selector)
 
             // Apply transition and set initial fill colors with data-driven logic
             regions
                 .transition()
                 .duration(out.transitionDuration())
-                .attr('fill', function (rg) {
+                .style('fill', function (rg) {
                     const ecl = select(this).attr('ecl')
                     if (out.geo_ === 'WORLD') {
                         // World template logic
@@ -227,7 +227,7 @@ export const map = function (config) {
                     // Store the original color for each region
                     regions.each(function () {
                         const sel = select(this)
-                        sel.attr('fill___', sel.attr('fill'))
+                        sel.attr('fill___', sel.style('fill'))
                     })
 
                     // Set up mouse events
@@ -236,8 +236,8 @@ export const map = function (config) {
                             const sel = select(this)
                             const countryId = rg.properties.id.slice(0, 2)
                             if (out.geo_ === 'WORLD' || out.countriesToShow_.includes(countryId)) {
-                                sel.attr('fill___', sel.attr('fill')) // Store original color
-                                sel.style('fill', map.nutsrgSelFillSty_) // Apply highlight color
+                                sel.attr('fill___', sel.style('fill')) // Store original color
+                                sel.style('fill', map.hoverColor_) // Apply highlight color
                                 if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                             }
                         })
@@ -257,7 +257,7 @@ export const map = function (config) {
             // Apply additional settings for mixed NUTS level view
             if (out.nutsLvl_ === 'mixed') {
                 map.svg()
-                    .selectAll('path.nutsrg')
+                    .selectAll('path.em-nutsrg')
                     .style('display', function (rg) {
                         const ecl = select(this).attr('ecl')
                         const lvl = select(this).attr('lvl')
@@ -316,68 +316,51 @@ export const getFillPatternLegend = function () {
 const choroplethTooltipFunction = function (region, map) {
     const buf = []
 
-    if (region.properties.id) {
-        //name and code
-        //ESTAT tooltip
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                region.properties.na +
-                '</b> (' +
-                region.properties.id +
-                ') </div>'
-        )
-    } else {
-        //region name
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                region.properties.na +
-                '</b></div>'
-        )
-    }
-    //case when no data available
-    const sv = map.statData().get(region.properties.id)
-    //unit
-    const unit = map.statData('default').unitText()
+    // Header with region name and ID
+    const regionName = region.properties.na
+    const regionId = region.properties.id
+    buf.push(`
+        <div class="estat-vis-tooltip-bar">
+            <b>${regionName}</b>${regionId ? ` (${regionId})` : ''}
+        </div>
+    `)
 
-    if (!sv || (sv.value !== 0 && !sv.value) || sv.value == ':') {
+    // Retrieve region's data value and unit
+    const statData = map.statData()
+    const sv = statData.get(regionId)
+    const unit = statData.unitText() || ''
+
+    // No data case
+    if (!sv || (sv.value !== 0 && !sv.value) || sv.value === ':') {
         buf.push(`
-            <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
-            <table class="nuts-table">
-            <tbody>
-            <tr>
-            <td>
-            ${map.noDataText_} 
-            </td>
-            </tr>
-            </tbody>
-            </table>
+            <div class="estat-vis-tooltip-text no-data">
+                <table class="nuts-table">
+                    <tbody>
+                        <tr><td>${map.noDataText_}</td></tr>
+                    </tbody>
+                </table>
             </div>
         `)
         return buf.join('')
     }
-    //display value
+
+    // Data display
     buf.push(`
-        <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
-        <table class="nuts-table">
-        <tbody>
-        <tr>
-        <td>
-        ${spaceAsThousandSeparator(sv.value)} ${unit ? unit : ''}
-        </td>
-        </tr>
-        </tbody>
-        </table>
+        <div class="estat-vis-tooltip-text">
+            <table class="nuts-table">
+                <tbody>
+                    <tr><td>${spaceAsThousandSeparator(sv.value)} ${unit}</td></tr>
+                </tbody>
+            </table>
         </div>
     `)
 
-    //flag
-    const f = sv.status
-    if (f && map.tooltip_.showFlags) {
-        if (map.tooltip_.showFlags === 'short') buf.push(' ' + f)
-        else {
-            const f_ = flags[f]
-            buf.push(f_ ? ' (' + f_ + ')' : ' ' + f)
-        }
+    // Optional status flag
+    const statusFlag = sv.status
+    if (statusFlag && map.tooltip_.showFlags) {
+        const flagText = map.tooltip_.showFlags === 'short' ? statusFlag : flags[statusFlag] || statusFlag
+        buf.push(` <span class="status-flag">${flagText}</span>`)
     }
+
     return buf.join('')
 }

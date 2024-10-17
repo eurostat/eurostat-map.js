@@ -1,0 +1,22 @@
+.em-legend-background {
+    fill: white;
+    opacity: 0.7;
+    rx: 0;
+    ry: 0;
+}
+.em-legend-label {
+    font-size: 15px;
+    dominant-baseline: central;
+}
+.em-legend-title {
+    font-size: 16px;
+    fill: black;
+}
+.em-legend-separator {
+    stroke: white;
+    stroke-width: 1;
+}
+.em-legend-tick {
+    stroke: grey;
+    stroke-width: 1;
+}

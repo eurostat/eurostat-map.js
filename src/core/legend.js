@@ -22,17 +22,9 @@ export const legend = function (map) {
     //the legend box
     out.boxMargin = 10
     out.boxPadding = 7
-    out.boxCornerRad = 0
-    out.boxFill = 'white'
-    out.boxOpacity = 0.7
-
-    //font
-    out.fontFill = 'black'
 
     //legend title
     out.title = ''
-    out.titleFontSize = 15
-    out.titleFontWeight = 'normal'
 
     /** Build legend. */
     out.build = function () {
@@ -55,13 +47,7 @@ export const legend = function (map) {
 
     /** Draw legend background box */
     out.makeBackgroundBox = function () {
-        out.lgg
-            .append('rect')
-            .attr('id', 'legendBR')
-            .attr('rx', out.boxCornerRad)
-            .attr('ry', out.boxCornerRad)
-            .style('fill', out.boxFill)
-            .style('opacity', out.boxOpacity)
+        out.lgg.append('rect').attr('id', 'legendBR').attr('class', 'em-legend-background')
     }
 
     /** Set legend box dimensions, ensuring it has suitable dimensions to fit to all legend graphic elements */

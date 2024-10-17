@@ -5,11 +5,11 @@ import { formatDefaultLocale } from 'd3-format'
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from 'd3-geo'
 import { geoRobinson } from 'd3-geo-projection'
 import { feature } from 'topojson-client'
-import { getBBOXAsGeoJSON } from './utils'
+import { getBBOXAsGeoJSON, spaceAsThousandSeparator, executeForAllInsets } from './utils'
 import * as tp from '../tooltip/tooltip'
 import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
-import { spaceAsThousandSeparator } from './utils'
+import { defineDeprecatedFunctions } from './deprecated'
 
 // set default d3 locale
 formatDefaultLocale({
@@ -151,31 +151,16 @@ export const mapTemplate = function (config, withCenterPoints) {
         'UK',
     ]
 
-    //nuts styling
-    out.nutsrgFillStyle_ = '#EfEfEf'
-    out.nutsrgSelFillSty_ = 'red' // USE CSS
-    out.nutsbnStroke_ = { 0: 'none', 1: 'grey', 2: 'grey', 3: 'grey', oth: 'grey', co: '#7f7f7f' }
-    out.nutsbnStrokeWidth_ = { 0: 0, 1: 0.4, 2: 0.4, 3: 0.4, oth: 0, co: 0 }
-    //country borders styling
-    out.cntrgFillStyle_ = '#EfEfEf'
-    out.cntbnStroke_ = { eu: 'black', efta: 'black', cc: 'black', oth: 'black', co: '#7f7f7f' }
-    out.cntbnStrokeWidth_ = { eu: 0.5, efta: 0.5, cc: 0.5, oth: 0.5, co: 0.2 }
-    //world map
-    out.worldFillStyle_ = '#EfEfEf'
-    out.worldStroke_ = 'black'
-    out.worldStrokeWidth_ = 1
-    out.worldCoastStroke_ = 'none'
-    out.worldCoastStrokeWidth_ = 0.3
+    //nuts hover color
+    out.hoverColor_ = 'red' // USE CSS
+
     //sea
-    out.seaFillStyle_ = 'white'
     out.drawCoastalMargin_ = false
-    out.coastalMarginColor_ = '#c2daed'
-    out.coastalMarginWidth_ = 5
+    out.coastalMarginColor_ = '#5d8cad'
+    out.coastalMarginWidth_ = 3
     out.coastalMarginStdDev_ = 2
     //graticule
     out.drawGraticule_ = false
-    out.graticuleStroke_ = 'lightgray'
-    out.graticuleStrokeWidth_ = 1
 
     //labelling (country names and geographical features)
     out.labelling_ = false
@@ -272,14 +257,18 @@ export const mapTemplate = function (config, withCenterPoints) {
      *  - To get the attribute value, call the method without argument.
      *  - To set the attribute value, call the same method with the new value as single argument.
      */
-    for (const att in out)
+    for (const att in out) {
         out[att.substring(0, att.length - 1)] = function (v) {
             if (!arguments.length) return out[att]
             out[att] = v
             return out
         }
+    }
 
-        //special ones which affect also the insets
+    // warn existing users of functions that have been banished to the shadow realm.
+    defineDeprecatedFunctions(out)
+
+    //special ones which affect also the insets
     ;['tooltip_', 'nuts2jsonBaseURL_'].forEach(function (att) {
         out[att.substring(0, att.length - 1)] = function (v) {
             if (!arguments.length) return out[att]
@@ -325,15 +314,6 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
             }
         }
-    }
-
-    // override deprecated tooltipText
-    out.tooltipText = function (v) {
-        console.log(
-            'map.tooltipText() is now deprecated. Please use map.tooltip(config.textFunction) instead. See API reference for details.'
-        )
-        out.tooltip_.textFunction = v
-        return out
     }
 
     //title getter and setter
@@ -391,164 +371,23 @@ export const mapTemplate = function (config, withCenterPoints) {
                 zg.append('g')
                     .attr('id', 'g_gra')
                     .style('fill', 'none')
-                    .style('stroke', out.graticuleStroke())
-                    .style('stroke-width', out.graticuleStrokeWidth())
                     .selectAll('path')
                     .data(out._geom.gra)
                     .enter()
                     .append('path')
                     .attr('d', out._geom.path)
-                    .attr('class', 'gra')
+                    .attr('class', 'em-graticule')
 
                 out.svg()
                     .select('#g_gra')
                     .each(function () {
-                        // move graticule to back (in front of sea)
+                        // move graticule behind land mass
                         out.geo_ == 'WORLD'
                             ? this.parentNode.insertBefore(this, this.parentNode.childNodes[3])
                             : this.parentNode.insertBefore(this, this.parentNode.childNodes[1])
                     })
             }
         }
-        return out
-    }
-
-    // sea color override
-    out.seaFillStyle = function (v) {
-        if (!arguments.length) return out.seaFillStyle_
-        out.seaFillStyle_ = v
-
-        //update existing sea
-        if (out.geo_ == 'WORLD') {
-            if (out.svg_) {
-                let sea = out.svg_.select('#sphere')
-                if (sea) sea.style('fill', out.seaFillStyle_)
-            }
-        } else {
-            if (out.svg_) {
-                let sea = out.svg_.selectAll('#sea')
-                if (sea) sea.style('fill', out.seaFillStyle_)
-            }
-        }
-
-        //update insets
-        for (const geo in out.insetTemplates_) {
-            if (Array.isArray(out.insetTemplates_[geo])) {
-                // check for insets within insets
-                for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                    //check for insets within insets within insets
-                    if (Array.isArray(out.insetTemplates_[geo][i])) {
-                        for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                            let inset = out.insetTemplates_[geo][i][n]
-                            //set
-                            inset.seaFillStyle_ = out.seaFillStyle_
-                        }
-                    } else {
-                        let inset = out.insetTemplates_[geo][i]
-                        //set
-                        inset.seaFillStyle_ = out.seaFillStyle_
-                    }
-                }
-            } else {
-                let inset = out.insetTemplates_[geo]
-                //set
-                inset.seaFillStyle_ = out.seaFillStyle_
-            }
-        }
-
-        return out
-    }
-
-    // cntrg land color override
-    out.cntrgFillStyle = function (v) {
-        if (!arguments.length) return out.cntrgFillStyle_
-        out.cntrgFillStyle_ = v
-
-        //update existing land
-        if (out.svg_) {
-            if (out.geo_ == 'WORLD') {
-                let cntrg = out.svg().selectAll('.worldrg')
-                if (cntrg) {
-                    // only change fill for world regions without an ecl class
-                    cntrg.attr('fill', (region, i, nodes) => {
-                        let node = select(nodes[i])
-                        if (!node.attr('ecl')) {
-                            return out.cntrgFillStyle_
-                        } else {
-                            // leave fill as it is
-                            return node.attr('fill')
-                        }
-                    })
-                }
-            } else {
-                let cntrg = out.svg().selectAll('.cntrg')
-                if (cntrg) cntrg.attr('fill', out.cntrgFillStyle_)
-            }
-
-            //update insets
-            for (const geo in out.insetTemplates_) {
-                if (Array.isArray(out.insetTemplates_[geo])) {
-                    // check for insets within insets
-                    for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                        //check for insets within insets within insets
-                        if (Array.isArray(out.insetTemplates_[geo][i])) {
-                            for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                                let inset = out.insetTemplates_[geo][i][n]
-                                //set
-                                inset.cntrgFillStyle_ = out.cntrgFillStyle_
-                            }
-                        } else {
-                            let inset = out.insetTemplates_[geo][i]
-                            //set
-                            inset.cntrgFillStyle_ = out.cntrgFillStyle_
-                        }
-                    }
-                } else {
-                    let inset = out.insetTemplates_[geo]
-                    //set
-                    inset.cntrgFillStyle_ = out.cntrgFillStyle_
-                }
-            }
-        }
-
-        return out
-    }
-
-    // nutsrg land color override
-    out.nutsrgFillStyle = function (v) {
-        if (!arguments.length) return out.nutsrgFillStyle_
-        out.nutsrgFillStyle_ = v
-
-        //update existing default nutsrg color
-        if (out.svg_) {
-            out.updateStyle()
-        }
-
-        //update insets
-        for (const geo in out.insetTemplates_) {
-            if (Array.isArray(out.insetTemplates_[geo])) {
-                // check for insets within insets
-                for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                    //check for insets within insets within insets
-                    if (Array.isArray(out.insetTemplates_[geo][i])) {
-                        for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                            let inset = out.insetTemplates_[geo][i][n]
-                            //set
-                            inset.nutsrgFillStyle_ = out.nutsrgFillStyle_
-                        }
-                    } else {
-                        let inset = out.insetTemplates_[geo][i]
-                        //set
-                        inset.nutsrgFillStyle_ = out.nutsrgFillStyle_
-                    }
-                }
-            } else {
-                let inset = out.insetTemplates_[geo]
-                //set
-                inset.nutsrgFillStyle_ = out.nutsrgFillStyle_
-            }
-        }
-
         return out
     }
 
@@ -634,36 +473,10 @@ export const mapTemplate = function (config, withCenterPoints) {
                 }
 
                 //draw for insets - requires geometries so we have to rebuild base template
-                for (const geo in out.insetTemplates_) {
-                    if (Array.isArray(out.insetTemplates_[geo])) {
-                        // check for insets within insets
-                        for (var i = 0; i < out.insetTemplates_[geo].length; i++) {
-                            //check for insets within insets within insets
-                            if (Array.isArray(out.insetTemplates_[geo][i])) {
-                                for (var n = 0; n < out.insetTemplates_[geo][i].length; n++) {
-                                    let inset = out.insetTemplates_[geo][i][n]
-                                    //setter for inset margin
-                                    inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                                    // redraw
-                                    if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
-                                }
-                            } else {
-                                let inset = out.insetTemplates_[geo][i]
-                                //setter for inset margin
-                                inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                                // redraw
-                                if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
-                            }
-                        }
-                    } else {
-                        let inset = out.insetTemplates_[geo]
-                        //setter for inset margin
-                        inset.drawCoastalMargin_ = out.drawCoastalMargin_
-                        if (out.drawCoastalMargin_) drawNewCoastalMargin(inset)
-                    }
+                if (out.insetTemplates_ && out.drawCoastalMargin_) {
+                    executeForAllInsets(out.insetTemplates_, out.svgId_, drawNewCoastalMargin)
+                    drawNewCoastalMargin(out)
                 }
-
-                if (out.drawCoastalMargin_) drawNewCoastalMargin(out)
 
                 // move margin to back (in front of sea)
                 selectAll('#g_coast_margin').each(function () {
@@ -1022,30 +835,17 @@ export const mapTemplate = function (config, withCenterPoints) {
         //draw frame
         dg.append('rect')
             .attr('id', 'frame' + out.geo_)
+            .attr('class', 'em-frame')
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', out.width_)
             .attr('height', out.height_)
-            .style('stroke-width', out.frameStrokeWidth_)
-            .style('stroke', out.frameStroke_)
-            .style('fill', 'none')
 
         //make drawing group zoomable
         if (out.zoomExtent()) {
             let xoo = zoom()
                 .scaleExtent(out.zoomExtent())
                 .on('zoom', function (e) {
-                    const k = e.transform.k
-                    const cs = ['gra', 'bn_0', /*"bn_1", "bn_2", "bn_3",*/ 'bn_co', 'cntbn', 'symbol']
-                    //for (let i = 0; i < cs.length; i++) {
-                    // change border thickness?
-                    //     out.svg()
-                    //         .selectAll('.' + cs[i])
-                    //         .style('stroke-width', function (d) {
-                    //             return 1 / k + 'px'
-                    //         })
-                    // }
-
                     zg.attr('transform', e.transform)
                 })
             svg.call(xoo)
@@ -1201,11 +1001,11 @@ export const mapTemplate = function (config, withCenterPoints) {
         //draw background rectangle
         zg.append('rect')
             .attr('id', 'sea')
+            .attr('class', 'em-sea')
             .attr('x', -5 * out.width_)
             .attr('y', -5 * out.height_)
             .attr('width', 11 * out.width_)
             .attr('height', 11 * out.height_)
-            .style('fill', () => (out.geo_ == 'WORLD' ? 'white' : out.seaFillStyle_)) //for world templates sea colour is applied to the sphere
 
         //sphere for world map
         if (out.geo_ == 'WORLD') {
@@ -1213,9 +1013,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .datum({ type: 'Sphere' })
                 .attr('id', 'sphere')
                 .attr('d', out._geom.path)
-                .attr('stroke', out.graticuleStroke())
-                .attr('stroke-width', out.graticuleStrokeWidth())
-                .style('fill', out.seaFillStyle_)
+                .attr('class', 'em-graticule')
         }
 
         if (out.drawCoastalMargin_) {
@@ -1272,27 +1070,24 @@ export const mapTemplate = function (config, withCenterPoints) {
             zg.append('g')
                 .attr('id', 'g_gra')
                 .style('fill', 'none')
-                .style('stroke', out.graticuleStroke())
-                .style('stroke-width', out.graticuleStrokeWidth())
                 .selectAll('path')
                 .data(out._geom.gra)
                 .enter()
                 .append('path')
                 .attr('d', out._geom.path)
-                .attr('class', 'gra')
+                .attr('class', 'em-graticule')
         }
 
         //draw country regions
         if (out._geom.cntrg) {
             zg.append('g')
                 .attr('id', 'g_cntrg')
+                .attr('class', 'em-cntrg')
                 .selectAll('path')
                 .data(out._geom.cntrg)
                 .enter()
                 .append('path')
                 .attr('d', out._geom.path)
-                .attr('class', 'cntrg')
-                .attr('fill', out.cntrgFillStyle())
         }
 
         //draw world map
@@ -1305,7 +1100,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .append('path')
                 .attr('d', out._geom.path)
                 .attr('class', 'worldrg')
-                .attr('fill', out.worldFillStyle_)
+                .style('fill', out.worldFillStyle_)
         }
 
         //draw NUTS regions
@@ -1326,10 +1121,9 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .data(r)
                         .enter()
                         .append('path')
+                        .attr('class', 'em-nutsrg')
                         .attr('d', out._geom.path)
-                        .attr('class', 'nutsrg')
                         .attr('lvl', i) //to be able to distinguish nuts levels
-                        .attr('fill', out.nutsrgFillStyle_)
                 })
 
                 //add kosovo
@@ -1358,9 +1152,8 @@ export const mapTemplate = function (config, withCenterPoints) {
                     .data(out._geom.nutsrg)
                     .enter()
                     .append('path')
+                    .attr('class', 'em-nutsrg')
                     .attr('d', out._geom.path)
-                    .attr('class', 'nutsrg')
-                    .attr('fill', out.nutsrgFillStyle_)
             }
         }
 
@@ -1368,8 +1161,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         if (out._geom.cntbn) {
             zg.append('g')
                 .attr('id', 'g_cntbn')
-                .style('fill', 'none')
-                //.style("stroke-linecap", "round").style("stroke-linejoin", "round")
+                .attr('class', 'nutsbn-container')
                 .selectAll('path')
                 .data(out._geom.cntbn)
                 .enter()
@@ -1383,31 +1175,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                 })
                 .attr('d', out._geom.path)
                 .attr('class', function (bn) {
-                    return bn.properties.co === 'T' ? 'bn_co' : 'cntbn'
-                })
-                .style('stroke', function (bn) {
-                    //coastal boundaries
-                    if (bn.properties.co === 'T') return out.cntbnStroke_.co
-                    //eu borders
-                    if (bn.properties.eu === 'T') return out.cntbnStroke_.eu
-                    //efta borders
-                    if (bn.properties.efta === 'T') return out.cntbnStroke_.efta
-                    //cc borders
-                    if (bn.properties.cc === 'T') return out.cntbnStroke_.cc
-                    //other borders
-                    if (bn.properties.oth === 'T') return out.cntbnStroke_.oth
-                })
-                .style('stroke-width', function (bn) {
-                    //coastal boundaries
-                    if (bn.properties.co === 'T') return out.cntbnStrokeWidth_.co + 'px'
-                    //eu borders
-                    if (bn.properties.eu === 'T') return out.cntbnStrokeWidth_.eu + 'px'
-                    //efta borders
-                    if (bn.properties.efta === 'T') return out.cntbnStrokeWidth_.efta + 'px'
-                    //cc borders
-                    if (bn.properties.cc === 'T') return out.cntbnStrokeWidth_.cc + 'px'
-                    //other borders
-                    if (bn.properties.oth === 'T') return out.cntbnStrokeWidth_.oth + 'px'
+                    return bn.properties.co === 'T' ? 'bn-co' : 'cntbn'
                 })
         }
 
@@ -1433,34 +1201,15 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .append('path')
                 .attr('d', out._geom.path)
                 .attr('class', function (bn) {
-                    bn = bn.properties
-                    if (bn.co === 'T') return 'bn_co'
-                    const cl = ['bn_' + bn.lvl]
-                    //if (bn.oth === "T") cl.push("bn_oth");
+                    let props = bn.properties
+                    //KOSOVO
+                    if (props.id > 100000) {
+                        return 'em-kosovo-bn'
+                    }
+                    if (props.co === 'T') return 'bn-co'
+                    const cl = ['bn-' + props.lvl]
+                    //if (bn.oth === "T") cl.push("bn-oth");
                     return cl.join(' ')
-                })
-                .style('stroke', function (bn) {
-                    bn = bn.properties
-                    if (bn.co === 'T') return out.nutsbnStroke_.co || '#1f78b4'
-                    //if (bn.oth === "T") return out.nutsbnStroke_.oth || "#444";
-
-                    //KOSOVO
-                    if (bn.id > 100000) {
-                        return '#4f4f4f'
-                    }
-
-                    return out.nutsbnStroke_[bn.lvl] || '#777'
-                })
-                .style('stroke-width', function (bn) {
-                    bn = bn.properties
-                    if (bn.co === 'T') return out.nutsbnStrokeWidth_.co
-                    //KOSOVO
-                    if (bn.id > 100000) {
-                        return 0.2
-                    }
-                    if (bn.lvl > 0) return out.nutsbnStrokeWidth_[bn.lvl]
-                    //if (bn.oth === "T") return out.nutsbnStrokeWidth_.oth || 1;
-                    return out.nutsbnStrokeWidth_[bn.lvl]
                 })
 
             if (out.geo_ == 'EUR' && out.proj == '3035') {
@@ -1483,7 +1232,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         }
 
         //draw world boundaries
-        if (out._geom.worldbn)
+        if (out._geom.worldbn) {
             zg.append('g')
                 .attr('id', 'g_worldbn')
                 .style('fill', 'none')
@@ -1493,25 +1242,15 @@ export const mapTemplate = function (config, withCenterPoints) {
                 .enter()
                 .append('path')
                 .attr('d', out._geom.path)
-                //.attr("class", function (bn) { return (bn.properties.COAS_FLAG === "F") ? "bn_co" : "worldbn" })
-                //.attr("id", (bn) => bn.properties.CNTR_BN_ID)
-                .style('stroke', function (bn) {
+                .attr('class', function (bn) {
                     if (bn.properties.POL_STAT > 0) {
                         //disputed
-                        return '#b2b2b2'
-                    } else if (bn.properties.COAS_FLAG == 'F') {
-                        return out.worldStroke_
-                    } else if (bn.properties.COAS_FLAG == 'T') {
-                        return out.worldCoastStroke_
+                        return 'bn-d'
                     }
+                    return bn.properties.COAS_FLAG === 'F' ? 'bn-co' : 'worldbn'
                 })
-                .style('stroke-width', function (bn) {
-                    if (bn.properties.COAS_FLAG == 'F') {
-                        return out.worldStrokeWidth_
-                    } else if (bn.properties.COAS_FLAG == 'T') {
-                        return out.worldCoastStrokeWidth_
-                    }
-                })
+            //.attr("id", (bn) => bn.properties.CNTR_BN_ID)
+        }
 
         if (out._geom.kosovo) {
             //add kosovo to world map
@@ -1590,14 +1329,14 @@ export const mapTemplate = function (config, withCenterPoints) {
                     if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                         if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                             const sel = select(this.childNodes[0])
-                            sel.attr('fill___', sel.attr('fill'))
-                            sel.attr('fill', out.nutsrgSelFillSty_)
+                            sel.attr('fill___', sel.style('fill'))
+                            sel.style('fill', out.hoverColor_)
                             if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                         }
                     } else {
                         const sel = select(this.childNodes[0])
-                        sel.attr('fill___', sel.attr('fill'))
-                        sel.attr('fill', out.nutsrgSelFillSty_)
+                        sel.attr('fill___', sel.style('fill'))
+                        sel.style('fill', out.hoverColor_)
                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                     }
                 })
@@ -1614,7 +1353,7 @@ export const mapTemplate = function (config, withCenterPoints) {
                     const sel = select(this.childNodes[0])
                     let newFill = sel.attr('fill___')
                     if (newFill) {
-                        sel.attr('fill', newFill)
+                        sel.style('fill', newFill)
                         if (out._tooltip) out._tooltip.mouseout()
                     }
                 })
@@ -1721,20 +1460,20 @@ export const mapTemplate = function (config, withCenterPoints) {
                         .attr('x', out.width_ - out.botTxtPadding_)
                         .attr('y', out.height_ - out.botTxtPadding_)
                         .text('EUROSTAT')
-                        .attr('fill', linkColor)
+                        .style('fill', linkColor)
                         .style('font-family', out.fontFamily_)
                         .style('font-size', out.botTxtFontSize_ + 'px')
                         .style('font-weight', 'bold')
                         .attr('text-anchor', 'end')
                         .on('mouseover', function () {
                             const sel = select(this)
-                            sel.attr('fill', '#082b7a')
+                            sel.style('fill', '#082b7a')
                             sel.style('cursor', 'pointer')
                             sel.style('text-decoration', 'underline')
                         })
                         .on('mouseout', function () {
                             const sel = select(this)
-                            sel.attr('fill', linkColor)
+                            sel.style('fill', linkColor)
                             sel.style('cursor', 'default')
                             sel.style('text-decoration', 'none')
                         })
@@ -2369,13 +2108,13 @@ export const mapTemplate = function (config, withCenterPoints) {
             'nutsLvl_',
             'nutsYear_',
             'nutsrgFillStyle_',
-            'nutsrgSelFillSty_',
-            'nutsbnStroke_',
-            'nutsbnStrokeWidth_',
+            'hoverColor_',
+            //'nutsbnStroke_',
+            // 'nutsbnStrokeWidth_',
             'cntrgFillStyle_',
             'cntbnStroke_',
             'cntbnStrokeWidth_',
-            'seaFillStyle_',
+            'seaFillStyle_', // DEPRECATED
             'drawCoastalMargin_',
             'coastalMarginColor_',
             'coastalMarginWidth_',

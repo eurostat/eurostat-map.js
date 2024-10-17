@@ -165,14 +165,10 @@ export const legend = function (map, config) {
         if (out.sizeLegend.title) {
             out._sizeLegendNode
                 .append('text')
-                .attr('class', 'eurostatmap-legend-title')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding)
                 .text(out.sizeLegend.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
                 .style('dominant-baseline', 'hanging')
         }
 
@@ -228,7 +224,7 @@ export const legend = function (map, config) {
         //append symbol & style
         container
             .append('g')
-            .attr('fill', m.noDataFillStyle())
+            .style('fill', m.noDataFillStyle())
             .style('fill-opacity', m.psFillOpacity())
             .style('stroke', '#000')
             .attr('stroke-width', 0.4)
@@ -237,13 +233,13 @@ export const legend = function (map, config) {
             .attr('height', out.colorLegend ? out.colorLegend.shapeHeight : out.noDataShapeHeight)
             .on('mouseover', function () {
                 const parents = m.svg_.select('#g_ps').selectAll("[ecl='nd']")
-                let cellFill = select(this.parentNode).attr('fill')
+                let cellFill = select(this.parentNode).style('fill')
                 // save legend cell fill color to revert during mouseout:
                 select(this).attr('fill___', cellFill)
                 //for ps, the symbols are the children of each g_ps element but could also be nutsrg
                 parents.each(function (d, i) {
                     let ps = select(this.childNodes[0])
-                    ps.attr('fill', m.noDataFillStyle())
+                    ps.style('fill', m.noDataFillStyle())
                 })
                 select(this).style('fill', m.nutsrgSelFillSty())
 
@@ -282,7 +278,7 @@ export const legend = function (map, config) {
                 let cellFill = select(this).attr('fill___')
                 parents.each(function (d, i) {
                     let ps = select(this.childNodes[0])
-                    ps.attr('fill', cellFill)
+                    ps.style('fill', cellFill)
                 })
                 select(this).style('fill', m.noDataFillStyle())
 
@@ -333,7 +329,7 @@ export const legend = function (map, config) {
         const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
         sel.style('fill', out.map.nutsrgSelFillSty())
         sel.attr('fill___', function () {
-            select(this).attr('fill')
+            select(this).style('fill')
         })
     }
 
@@ -443,7 +439,7 @@ export const legend = function (map, config) {
         m.customSymbols.prevSymb = itemContainer
             .append('g')
             .attr('class', 'size-legend-symbol')
-            .attr('fill', (d) => {
+            .style('fill', (d) => {
                 // if secondary stat variable is used for symbol colouring, then dont colour the legend symbols using psFill()
                 return m.classifierColor_ ? out.sizeLegend.shapeFill : m.psFill_
             })
@@ -562,14 +558,10 @@ export const legend = function (map, config) {
         if (out.sizeLegend.title) {
             out._sizeLegendNode
                 .append('text')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding + out.titleFontSize)
-                .attr('class', 'eurostatmap-legend-title')
                 .text(out.sizeLegend.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
         }
 
         let maxRadius = m.classifierSize_(max(out._sizeLegendValues)) //maximum circle radius to be shown in legend
@@ -581,7 +573,7 @@ export const legend = function (map, config) {
             .attr('transform', `translate(${x},${y})`)
             .attr('class', 'circle-legend')
             .attr('text-anchor', 'right')
-            .attr('fill', 'black')
+            .style('fill', 'black')
             .selectAll('g')
             .data(out._sizeLegendValues)
             .join('g')
@@ -591,7 +583,7 @@ export const legend = function (map, config) {
         itemContainer
             .append('circle')
             .attr('class', 'eurostatmap-legend-circle')
-            .attr('fill', 'none')
+            .style('fill', 'none')
             .attr('stroke', 'black')
             .attr('cy', (d) => -m.classifierSize_(d))
             .attr('r', m.classifierSize_)
@@ -647,14 +639,10 @@ export const legend = function (map, config) {
         if (out.colorLegend.title) {
             out._colorLegendNode
                 .append('text')
-                .attr('class', 'eurostatmap-legend-title')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.titleFontSize + out.colorLegend.marginTop)
                 .text(out.colorLegend.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
         }
 
         // x position of color legend cells
@@ -678,7 +666,7 @@ export const legend = function (map, config) {
             //append symbol & style
             itemContainer
                 .append('g')
-                .attr('fill', m.psClassToFillStyle()(ecl, clnb))
+                .style('fill', m.psClassToFillStyle()(ecl, clnb))
                 .style('fill-opacity', m.psFillOpacity())
                 .style('stroke', m.psStroke())
                 .style('stroke-width', 1)
@@ -690,12 +678,12 @@ export const legend = function (map, config) {
                 .on('mouseover', function () {
                     //for ps, the symbols are the children of each g_ps element
                     const parents = svgMap.select('#g_ps').selectAll("[ecl='" + ecl + "']")
-                    let cellFill = select(this.parentNode).attr('fill')
+                    let cellFill = select(this.parentNode).style('fill')
                     // save legend cell fill color to revert during mouseout:
                     select(this).attr('fill___', cellFill)
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.attr('fill', m.nutsrgSelFillSty())
+                        ps.style('fill', m.nutsrgSelFillSty())
                     })
                     select(this).style('fill', m.nutsrgSelFillSty())
                 })
@@ -705,7 +693,7 @@ export const legend = function (map, config) {
                     let cellFill = select(this).attr('fill___')
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.attr('fill', cellFill)
+                        ps.style('fill', cellFill)
                     })
                     select(this).style('fill', m.psClassToFillStyle()(ecl, clnb))
                 })

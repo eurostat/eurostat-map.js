@@ -289,7 +289,7 @@ export const map = function (config) {
                 }
 
                 // nuts regions fill colour only for those with sizeData
-                regions.attr('fill', function (rg) {
+                regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
                     if (!sv || (!sv.value && sv !== 0 && sv.value !== 0)) {
                         // NO INPUT
@@ -319,7 +319,7 @@ export const map = function (config) {
                 })
             } else {
                 // world countries fill
-                regions.attr('fill', function (rg) {
+                regions.style('fill', function (rg) {
                     const sv = sizeData.get(rg.properties.id)
                     if (!sv || (!sv.value && sv !== 0 && sv.value !== 0) || sv.value == ':') {
                         return out.worldFillStyle_
@@ -423,7 +423,7 @@ export const map = function (config) {
         symb.style('fill-opacity', out.psFillOpacity())
             .style('stroke', out.psStroke())
             .style('stroke-width', out.psStrokeWidth())
-            .attr('fill', function () {
+            .style('fill', function () {
                 if (out.classifierColor_) {
                     //for ps, ecl attribute belongs to the parent g.symbol node created in map-template
                     const ecl = select(this.parentNode).attr('ecl')
@@ -765,52 +765,36 @@ export const symbolsLibrary = {
  * @param {*} rg The region to show information on.
  * @param {*} map The map element
  */
-const tooltipTextFunPs = function (rg, map) {
+const tooltipTextFunPs = function (region, map) {
     const buf = []
-    if (rg.properties.id) {
-        //name and code
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
-                rg.properties.na +
-                ' (' +
-                rg.properties.id +
-                ') </div>'
-        )
-    } else {
-        //region name
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
-                rg.properties.na +
-                '</div>'
-        )
-    }
+
+    // Header with region name and ID
+    const regionName = region.properties.na
+    const regionId = region.properties.id
+    buf.push(`
+        <div class="estat-vis-tooltip-bar">
+            <b>${regionName}</b>${regionId ? ` (${regionId})` : ''}
+        </div>
+    `)
 
     //stat 1 value
     const v1 = map.statData('size').getArray() ? map.statData('size') : map.statData()
-    const sv1 = v1.get(rg.properties.id)
+    const sv1 = v1.get(region.properties.id)
     if (!sv1 || (sv1.value != 0 && !sv1.value)) buf.push(map.noDataText_)
     else {
         //unit 1
         const unit1 = v1.unitText()
-        buf.push(
-            `<div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">${spaceAsThousandSeparator(
-                sv1.value
-            )} ${unit1 ? unit1 : ' '}</div>`
-        )
+        buf.push(`<div class="estat-vis-tooltip-text">${spaceAsThousandSeparator(sv1.value)} ${unit1 ? unit1 : ' '}</div>`)
     }
 
     //stat 2 value
     if (map.statData('color').getArray()) {
-        const sv2 = map.statData('color').get(rg.properties.id)
+        const sv2 = map.statData('color').get(region.properties.id)
         if (!sv2 || (sv2.value != 0 && !sv2.value)) buf.push(map.noDataText_)
         else {
             //stat 2
             const unit2 = map.statData('color').unitText()
-            buf.push(
-                `<div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;padding-top:0px">${spaceAsThousandSeparator(
-                    sv2.value
-                )} ${unit2 ? unit2 : ' '}</div>`
-            )
+            buf.push(`<div class="estat-vis-tooltip-text">${spaceAsThousandSeparator(sv2.value)} ${unit2 ? unit2 : ' '}</div>`)
         }
     }
 

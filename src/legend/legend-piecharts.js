@@ -97,22 +97,20 @@ export const legend = function (map, config) {
 
         //draw title
         if (!config.title && out.title) config.title = out.title //allow root legend title
-        if (config.title)
+        if (config.title) {
             lgg.append('text')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out.boxPadding + out.titleFontSize)
                 .text(config.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
+        }
 
         //circles
         let maxSize = m.sizeClassifier_(max(config.values)) //maximum circle radius to be shown in legend
         let y = out.boxPadding + (config.title ? out.titleFontSize + out.boxPadding + config.titlePadding : 0) + maxSize * 2
         let container = lgg
             .append('g')
-            .attr('fill', 'black')
+            .style('fill', 'black')
             .attr('transform', `translate(${maxSize + out.boxPadding},${y})`) //needs to be dynamic
             .attr('text-anchor', 'right')
             .selectAll('g')
@@ -120,7 +118,7 @@ export const legend = function (map, config) {
             .join('g')
         container
             .append('circle')
-            .attr('fill', 'none')
+            .style('fill', 'none')
             .attr('stroke', 'black')
             .attr('cy', (d) => -m.sizeClassifier_(d))
             .attr('r', m.sizeClassifier_)
@@ -171,15 +169,13 @@ export const legend = function (map, config) {
         const svgMap = m.svg()
 
         //draw title
-        if (config.title)
+        if (config.title) {
             lgg.append('text')
+                .attr('class', 'em-legend-title')
                 .attr('x', out.boxPadding)
                 .attr('y', out._sizeLegendHeight + out.legendSpacing + out.boxPadding + out.titleFontSize)
                 .text(config.title)
-                .style('font-size', out.titleFontSize + 'px')
-                .style('font-weight', out.titleFontWeight)
-                .style('font-family', m.fontFamily_)
-                .style('fill', out.fontFill)
+        }
 
         //set font family
         lgg.style('font-family', m.fontFamily_)
@@ -204,7 +200,7 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', config.shapeWidth)
                 .attr('height', config.shapeHeight)
-                .attr('fill', scs[code])
+                .style('fill', scs[code])
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
@@ -264,7 +260,7 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', config.shapeWidth)
                 .attr('height', config.shapeHeight)
-                .attr('fill', m.noDataFillStyle())
+                .style('fill', m.noDataFillStyle())
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
