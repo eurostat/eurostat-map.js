@@ -1,7 +1,7 @@
 import { json, csv } from 'd3-fetch'
-import { getEstatDataURL } from '../lib/eurostat-base'
+import { getEstatDataURL } from './utils'
 import JSONstat from 'jsonstat-toolkit'
-import { csvToIndex, jsonstatToIndex } from '../lib/eurostat-map-util'
+import { csvToIndex, jsonstatToIndex } from './utils'
 
 /**
  * A statistical dataset, to be used for a statistical map.

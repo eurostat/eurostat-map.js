@@ -3,7 +3,7 @@ import { select } from 'd3-selection'
 import * as lg from '../core/legend'
 import { symbolsLibrary } from '../maptypes/map-proportional-symbols'
 import { symbol } from 'd3-shape'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+import { spaceAsThousandSeparator } from '../core/utils'
 import { formatDefaultLocale } from 'd3-format'
 import { max } from 'd3-array'
 

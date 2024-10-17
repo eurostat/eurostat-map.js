@@ -4,7 +4,7 @@ import { scaleQuantile, scaleQuantize, scaleThreshold } from 'd3-scale'
 import { interpolateYlOrBr } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgch from '../legend/legend-choropleth'
-import { processInsets } from '../core/utils'
+import { executeForAllInsets, spaceAsThousandSeparator } from '../core/utils'
 
 /**
  * Returns a chroropleth map.
@@ -31,6 +31,8 @@ export const map = function (config) {
     out.classToFillStyle_ = undefined
     //the classifier: a function which return a class number from a stat value.
     out.classifier_ = undefined
+    // set tooltip function
+    out.tooltip_.textFunction = choroplethTooltipFunction
 
     /**
      * Definition of getters/setters for all previously defined attributes.
@@ -104,7 +106,7 @@ export const map = function (config) {
     out.updateClassification = function () {
         // apply classification to all insets that are outside of the main map's SVG
         if (out.insetTemplates_) {
-            processInsets(out.insetTemplates_, out.svgId_, applyClassificationToMap)
+            executeForAllInsets(out.insetTemplates_, out.svgId_, applyClassificationToMap)
         }
 
         // apply to main map
@@ -173,7 +175,7 @@ export const map = function (config) {
         // apply style to insets
         // apply classification to all insets
         if (out.insetTemplates_) {
-            processInsets(out.insetTemplates_, out.svgId_, applyStyleToMap)
+            executeForAllInsets(out.insetTemplates_, out.svgId_, applyStyleToMap)
         }
 
         // apply to main map
@@ -309,4 +311,73 @@ export const getFillPatternLegend = function () {
     return function (ecl) {
         return 'url(#pattern_' + ecl + ')'
     }
+}
+
+const choroplethTooltipFunction = function (region, map) {
+    const buf = []
+
+    if (region.properties.id) {
+        //name and code
+        //ESTAT tooltip
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
+                region.properties.na +
+                '</b> (' +
+                region.properties.id +
+                ') </div>'
+        )
+    } else {
+        //region name
+        buf.push(
+            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
+                region.properties.na +
+                '</b></div>'
+        )
+    }
+    //case when no data available
+    const sv = map.statData().get(region.properties.id)
+    //unit
+    const unit = map.statData('default').unitText()
+
+    if (!sv || (sv.value !== 0 && !sv.value) || sv.value == ':') {
+        buf.push(`
+            <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+            <table class="nuts-table">
+            <tbody>
+            <tr>
+            <td>
+            ${map.noDataText_} 
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+        `)
+        return buf.join('')
+    }
+    //display value
+    buf.push(`
+        <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+        <table class="nuts-table">
+        <tbody>
+        <tr>
+        <td>
+        ${spaceAsThousandSeparator(sv.value)} ${unit ? unit : ''}
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+    `)
+
+    //flag
+    const f = sv.status
+    if (f && map.tooltip_.showFlags) {
+        if (map.tooltip_.showFlags === 'short') buf.push(' ' + f)
+        else {
+            const f_ = flags[f]
+            buf.push(f_ ? ' (' + f_ + ')' : ' ' + f)
+        }
+    }
+    return buf.join('')
 }

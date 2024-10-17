@@ -1,9 +1,20 @@
-import { flags } from '../lib/eurostat-base'
+import { flags } from './utils'
 import * as mt from './map-template'
 import * as sd from './stat-data'
 import * as lg from './legend'
 import { select } from 'd3'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+import { spaceAsThousandSeparator } from './utils'
+
+/**
+ * Default function for tooltip text, for statistical maps.
+ * It simply shows the name and code of the region and the statistical value.
+ *
+ * @param {*} rg The region to show information on.
+ * @param {*} map The map element
+ */
+const defaultTooltipTextFunction = () => {
+    //
+}
 
 /**
  * An abstract statistical map: A map template with statistical data, without any particular styling rule.
@@ -53,7 +64,7 @@ export const statMap = function (config, withCenterPoints) {
     //transition time for rendering
     out.transitionDuration_ = 500
     //specific tooltip text function
-    out.tooltip_.textFunction = tootipTextFunStat
+    out.tooltip_.textFunction = defaultTooltipTextFunction
     //for maps using special fill patterns, this is the function to define them in the SVG image - See functions: getFillPatternLegend and getFillPatternDefinitionFun
     out.filtersDefinitionFun_ = undefined
     //a callback function to execute after the map build is complete.
@@ -385,82 +396,6 @@ const upperCaseFirstLetter = (string) => `${string.slice(0, 1).toUpperCase()}${s
 
 const lowerCaseAllWordsExceptFirstLetters = (string) =>
     string.replaceAll(/\S*/g, (word) => `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`)
-
-/**
- * Default function for tooltip text, for statistical maps.
- * It simply shows the name and code of the region and the statistical value.
- *
- * @param {*} rg The region to show information on.
- * @param {*} map The map element
- */
-const tootipTextFunStat = function (rg, map) {
-    const buf = []
-
-    if (rg.properties.id) {
-        //name and code
-        //ESTAT tooltip
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                rg.properties.na +
-                '</b> (' +
-                rg.properties.id +
-                ') </div>'
-        )
-    } else {
-        //region name
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;"><b>' +
-                rg.properties.na +
-                '</b></div>'
-        )
-    }
-    //case when no data available
-    const sv = map.statData().get(rg.properties.id)
-    //unit
-    const unit = map.statData('default').unitText()
-
-    if (!sv || (sv.value !== 0 && !sv.value) || sv.value == ':') {
-        buf.push(`
-            <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
-            <table class="nuts-table">
-            <tbody>
-            <tr>
-            <td>
-            ${map.noDataText_} 
-            </td>
-            </tr>
-            </tbody>
-            </table>
-            </div>
-        `)
-        return buf.join('')
-    }
-    //display value
-    buf.push(`
-        <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
-        <table class="nuts-table">
-        <tbody>
-        <tr>
-        <td>
-        ${spaceAsThousandSeparator(sv.value)} ${unit ? unit : ''}
-        </td>
-        </tr>
-        </tbody>
-        </table>
-        </div>
-    `)
-
-    //flag
-    const f = sv.status
-    if (f && map.tooltip_.showFlags) {
-        if (map.tooltip_.showFlags === 'short') buf.push(' ' + f)
-        else {
-            const f_ = flags[f]
-            buf.push(f_ ? ' (' + f_ + ')' : ' ' + f)
-        }
-    }
-    return buf.join('')
-}
 
 /**
  * Retrieve some URL parameters, which could be then reused as map definition parameters.

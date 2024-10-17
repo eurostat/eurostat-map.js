@@ -3,7 +3,6 @@ import { scaleOrdinal } from 'd3-scale'
 import { schemeSet3 } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgct from '../legend/legend-categorical'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
 
 /**
  * Returns a categorical map.
@@ -160,20 +159,10 @@ const tooltipTextFunCat = function (rg, map) {
     const buf = []
     if (rg.properties.id) {
         //name and code
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
-                rg.properties.na +
-                ' (' +
-                rg.properties.id +
-                ') </div>'
-        )
+        buf.push('<div class="estat-vis-tooltip-bar">' + rg.properties.na + ' (' + rg.properties.id + ') </div>')
     } else {
         //region name
-        buf.push(
-            '<div class="estat-vis-tooltip-bar" style="background: #515560;color: #ffffff;padding: 6px;font-size:15px;">' +
-                rg.properties.na +
-                '</div>'
-        )
+        buf.push('<div class="estat-vis-tooltip-bar">' + rg.properties.na + '</div>')
     }
     //get stat value
     const sv = map.statData().get(rg.properties.id)
@@ -187,7 +176,7 @@ const tooltipTextFunCat = function (rg, map) {
         const lbl = map.classToText_[val]
         //display label and value
         buf.push(`
-    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+    <div class="estat-vis-tooltip-text">
     <table class="nuts-table">
     <tbody>
     <tr>
@@ -203,7 +192,7 @@ const tooltipTextFunCat = function (rg, map) {
     }
     //display just value
     buf.push(`
-    <div class="estat-vis-tooltip-text" style="background: #ffffff;color: #171a22;padding: 4px;font-size:15px;">
+    <div class="estat-vis-tooltip-text">
     <table class="nuts-table">
     <tbody>
     <tr>

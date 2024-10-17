@@ -5,7 +5,7 @@ import { interpolateOrRd } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgps from '../legend/legend-proportional-symbols'
 import { symbol, symbolCircle, symbolDiamond, symbolStar, symbolCross, symbolSquare, symbolTriangle, symbolWye } from 'd3-shape'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+import { spaceAsThousandSeparator } from '../core/utils'
 
 /**
  * Returns a proportional symbol map.

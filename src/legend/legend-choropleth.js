@@ -1,7 +1,7 @@
 import { select } from 'd3-selection'
 import { format } from 'd3-format'
 import * as lg from '../core/legend'
-import { processInsets } from '../core/utils'
+import { executeForAllInsets } from '../core/utils'
 
 /**
  * A legend for choropleth maps
@@ -82,14 +82,14 @@ export const legend = function (map, config) {
                     select(this).style('fill', m.nutsrgSelFillSty())
                     highlightRegions(out.map, ecl)
                     if (out.map.insetTemplates_) {
-                        processInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)
+                        executeForAllInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)
                     }
                 })
                 .on('mouseout', function () {
                     select(this).style('fill', fill)
                     unhighlightRegions(out.map, ecl)
                     if (out.map.insetTemplates_) {
-                        processInsets(out.map.insetTemplates_, svgId, unhighlightRegions, ecl)
+                        executeForAllInsets(out.map.insetTemplates_, svgId, unhighlightRegions, ecl)
                     }
                 })
         }

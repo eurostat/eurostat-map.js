@@ -13,6 +13,14 @@ module.exports = {
         libraryTarget: 'umd',
         publicPath: '/build/', // Optional: if resources are served from this path
     },
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'], // For CSS files
+            },
+        ],
+    },
     plugins: [new LiveReloadPlugin()],
     watch: true,
     devtool: 'inline-source-map',

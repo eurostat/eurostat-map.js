@@ -3,7 +3,7 @@ import { scaleQuantile } from 'd3-scale'
 import { interpolateRgb } from 'd3-interpolate'
 import * as smap from '../core/stat-map'
 import * as lgchbi from '../legend/legend-choropleth-bivariate'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+import { spaceAsThousandSeparator } from '../core/utils'
 
 /**
  * Return a bivariate choropleth map.

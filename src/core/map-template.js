@@ -5,11 +5,11 @@ import { formatDefaultLocale } from 'd3-format'
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from 'd3-geo'
 import { geoRobinson } from 'd3-geo-projection'
 import { feature } from 'topojson-client'
-import { getBBOXAsGeoJSON } from '../lib/eurostat-map-util'
-import * as tp from '../lib/eurostat-tooltip'
+import { getBBOXAsGeoJSON } from './utils'
+import * as tp from '../tooltip/tooltip'
 import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
-import { spaceAsThousandSeparator } from '../lib/eurostat-map-util'
+import { spaceAsThousandSeparator } from './utils'
 
 // set default d3 locale
 formatDefaultLocale({
@@ -101,7 +101,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         yOffset: 0,
         textFunction: null,
         showFlags: false,
-    } //  See eurostat-tooltip.js for more details
+    } //  See tooltip.js for more details
 
     out.tooltipText_ = (rg) => {
         return rg.properties.na

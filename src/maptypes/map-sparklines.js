@@ -292,7 +292,6 @@ export const map = function (config) {
                 )
                 .attr('transform', (d) => `translate(0,-${height / 2})`)
         }
-        console.log(typeof out.sparkLineStrokeWidth_)
 
         // Add the line
         node.append('path')
