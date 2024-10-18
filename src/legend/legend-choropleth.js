@@ -42,7 +42,6 @@ export const legend = function (map, config) {
     //@override
     out.update = function () {
         const m = out.map
-        const svgMap = m.svg()
         const lgg = out.lgg
 
         // Update legend parameters if necessary
@@ -70,30 +69,6 @@ export const legend = function (map, config) {
         // Label formatter
         const formatLabel = out.labelFormatter || format(`.${out.labelDecNb}f`)
 
-        // Draw legend elements for each class
-        const appendLegendRect = (x, y, fill, ecl, svgId) => {
-            return lgg
-                .append('rect')
-                .attr('x', x)
-                .attr('y', y)
-                .attr('width', out.shapeWidth)
-                .attr('height', out.shapeHeight)
-                .style('fill', fill)
-                .on('mouseover', function () {
-                    select(this).style('fill', m.hoverColor())
-                    highlightRegions(out.map, ecl)
-                    if (out.map.insetTemplates_) {
-                        executeForAllInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)
-                    }
-                })
-                .on('mouseout', function () {
-                    select(this).style('fill', fill)
-                    unhighlightRegions(out.map, ecl)
-                    if (out.map.insetTemplates_) {
-                        executeForAllInsets(out.map.insetTemplates_, svgId, unhighlightRegions, ecl)
-                    }
-                })
-        }
         let baseY = out.boxPadding
         if (out.title) baseY = baseY + getFontSizeFromClass('em-legend-title') + 8 // title size + padding
         for (let i = 0; i < m.clnb(); i++) {
@@ -102,7 +77,26 @@ export const legend = function (map, config) {
             const fillColor = m.classToFillStyle()(ecl, m.clnb())
 
             // Append rectangle for each class
-            appendLegendRect(out.boxPadding, y, fillColor, ecl, out.svgId_)
+            lgg.append('rect')
+                .attr('x', x)
+                .attr('y', y)
+                .attr('width', out.shapeWidth)
+                .attr('height', out.shapeHeight)
+                .style('fill', fillColor)
+                .on('mouseover', function () {
+                    select(this).style('fill', m.hoverColor_)
+                    highlightRegions(out.map, ecl)
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)
+                    }
+                })
+                .on('mouseout', function () {
+                    select(this).style('fill', fillColor)
+                    unhighlightRegions(out.map, ecl)
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, svgId, unhighlightRegions, ecl)
+                    }
+                })
 
             // Append separation line
             if (i > 0) {

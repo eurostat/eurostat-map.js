@@ -3,6 +3,7 @@ import { scaleOrdinal } from 'd3-scale'
 import { schemeSet3 } from 'd3-scale-chromatic'
 import * as smap from '../core/stat-map'
 import * as lgct from '../legend/legend-categorical'
+import { executeForAllInsets } from '../core/utils'
 
 /**
  * Returns a categorical map.
@@ -79,66 +80,89 @@ export const map = function (config) {
             out.classToFillStyle(ctfs)
         }
 
-        //apply style to nuts regions depending on class
-        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
-        let regions = out.svg().selectAll(selector)
-        regions
-            .transition()
-            .duration(out.transitionDuration())
-            .style('fill', function () {
-                const ecl = select(this).attr('ecl')
-                if (!ecl || ecl === 'nd') return out.noDataFillStyle_ || 'gray'
-                return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || 'gray'
-            })
-            // apply mouseover event
-            .end()
-            .then(
-                () => {
+        // apply classification to all insets
+        if (out.insetTemplates_) {
+            executeForAllInsets(out.insetTemplates_, out.svgId_, applyStyleToMap)
+        }
+
+        // apply to main map
+        applyStyleToMap(out)
+        return out
+    }
+
+    function applyStyleToMap(map) {
+        // Apply color and events to regions if SVG exists
+        if (map.svg_) {
+            const selector = out.geo_ === 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
+            const regions = map.svg().selectAll(selector)
+
+            // Apply transition and set initial fill colors with data-driven logic
+            regions
+                .transition()
+                .duration(out.transitionDuration())
+                .style('fill', function (rg) {
+                    const ecl = select(this).attr('ecl')
+                    if (!ecl || ecl === 'nd') return out.noDataFillStyle_ || 'gray'
+                    return out.classToFillStyle_[out.classifier().domain()[ecl]] || out.noDataFillStyle_ || 'gray'
+                })
+                .end()
+                .then(() => {
+                    // Store the original color for each region
+                    regions.each(function () {
+                        const sel = select(this)
+                        sel.attr('fill___', sel.style('fill'))
+                    })
+
+                    // Set up mouse events
                     regions
                         .on('mouseover', function (e, rg) {
-                            if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                                if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                    const sel = select(this)
-                                    sel.attr('fill___', sel.style('fill'))
-                                    sel.style('fill', out.hoverColor_)
-                                    if (out._tooltip) {
-                                        out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                                    }
-                                }
-                            } else {
-                                const sel = select(this)
-                                sel.attr('fill___', sel.style('fill'))
-                                sel.style('fill', out.hoverColor_)
-                                if (out._tooltip) {
-                                    out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
-                                }
+                            const sel = select(this)
+                            const countryId = rg.properties.id.slice(0, 2)
+                            if (out.geo_ === 'WORLD' || out.countriesToShow_.includes(countryId)) {
+                                sel.style('fill', map.hoverColor_) // Apply highlight color
+                                if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                             }
                         })
-                        .on('mousemove', function (e, rg) {
-                            if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
-                                if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
-                                    if (out._tooltip) out._tooltip.mousemove(e)
-                                }
-                            } else {
-                                if (out._tooltip) out._tooltip.mousemove(e)
-                            }
+                        .on('mousemove', function (e) {
+                            if (out._tooltip) out._tooltip.mousemove(e)
                         })
                         .on('mouseout', function () {
                             const sel = select(this)
-                            let currentFill = sel.style('fill')
-                            let newFill = sel.attr('fill___')
-                            if (newFill) {
-                                sel.style('fill', sel.attr('fill___'))
-                                if (out._tooltip) out._tooltip.mouseout()
-                            }
+                            sel.style('fill', sel.attr('fill___')) // Revert to original color
+                            if (map._tooltip) map._tooltip.mouseout()
                         })
-                },
-                (err) => {
-                    // rejection
-                }
-            )
+                })
+                .catch((err) => {
+                    //console.error('Error applying transition to regions:', err)
+                })
 
-        return out
+            // Apply additional settings for mixed NUTS level view
+            if (out.nutsLvl_ === 'mixed') {
+                map.svg()
+                    .selectAll('path.em-nutsrg')
+                    .style('display', function (rg) {
+                        const ecl = select(this).attr('ecl')
+                        const lvl = select(this).attr('lvl')
+                        const countryId = rg.properties.id.slice(0, 2)
+                        return (ecl && out.countriesToShow_.includes(countryId)) || lvl === '0' ? 'block' : 'none'
+                    })
+                    .style('stroke', function () {
+                        const lvl = select(this).attr('lvl')
+                        const ecl = select(this).attr('ecl')
+                        return ecl && lvl !== '0' ? map.nutsbnStroke_[parseInt(lvl)] || '#777' : null
+                    })
+                    .style('stroke-width', function () {
+                        const lvl = select(this).attr('lvl')
+                        const ecl = select(this).attr('ecl')
+                        return ecl && lvl !== '0' ? map.nutsbnStrokeWidth_[parseInt(lvl)] || 0.2 : null
+                    })
+            }
+
+            // Update labels for statistical values if required
+            if (out.labelsToShow_.includes('values')) {
+                out.updateValuesLabels(map)
+            }
+        }
     }
 
     //@override

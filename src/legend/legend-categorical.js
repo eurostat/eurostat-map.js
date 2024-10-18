@@ -1,5 +1,6 @@
 import { select } from 'd3-selection'
 import * as lg from '../core/legend'
+import { executeForAllInsets } from '../core/utils'
 
 /**
  * A legend for categorical maps
@@ -62,6 +63,7 @@ export const legend = function (map, config) {
             //the class
             const ecl_ = ecls[i]
             const ecl = m.classifier()(ecl_)
+            const fillColor = m.classToFillStyle()[ecl_]
 
             //the vertical position of the legend element
             const y =
@@ -73,25 +75,22 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', out.shapeWidth)
                 .attr('height', out.shapeHeight)
-                .style('fill', m.classToFillStyle()[ecl_])
+                .style('fill', fillColor)
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    sel.style('fill', m.hoverColor())
-                    const th = select(this)
-                    sel.attr('fill___', function (d) {
-                        th.style('fill')
-                    })
-                    th.style('fill', m.hoverColor())
+                    select(this).style('fill', m.hoverColor_)
+                    highlightRegions(out.map, ecl)
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.svgId_, highlightRegions, ecl)
+                    }
                 })
                 .on('mouseout', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    const th = select(this)
-                    sel.style('fill', function (d) {
-                        th.attr('fill___')
-                    })
-                    th.style('fill', m.classToFillStyle()[ecl])
+                    select(this).style('fill', fillColor)
+                    unhighlightRegions(out.map, ecl)
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.svgId_, unhighlightRegions, ecl)
+                    }
                 })
 
             //label
@@ -104,21 +103,6 @@ export const legend = function (map, config) {
                 .style('font-size', out.labelFontSize + 'px')
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
-                .on('mouseover', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    sel.style('fill', m.hoverColor())
-                    const th = select(this)
-                    sel.attr('fill___', function (d) {
-                        th.style('fill')
-                    })
-                })
-                .on('mouseout', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    const th = select(this)
-                    sel.style('fill', function (d) {
-                        th.attr('fill___')
-                    })
-                })
         }
 
         //'no data' legend box
@@ -134,24 +118,35 @@ export const legend = function (map, config) {
                 .attr('y', y)
                 .attr('width', out.shapeWidth)
                 .attr('height', out.shapeHeight)
-                .style('fill', m.noDataFillStyle())
+                .style('fill', m.noDataFillStyle_)
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
-                    sel.style('fill', m.hoverColor())
-                    sel.attr('fill___', function (d) {
-                        select(this).style('fill')
-                    })
-                    select(this).style('fill', m.hoverColor())
+                    select(this).style('fill', m.hoverColor_)
+                    highlightRegions(out.map, 'nd')
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.svgId_, highlightRegions, 'nd')
+                    }
                 })
                 .on('mouseout', function () {
-                    const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
-                    sel.style('fill', function (d) {
-                        select(this).attr('fill___')
-                    })
-                    select(this).style('fill', m.noDataFillStyle())
+                    select(this).style('fill', m.noDataFillStyle_)
+                    unhighlightRegions(out.map, 'nd')
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.svgId_, unhighlightRegions, 'nd')
+                    }
                 })
+            // .on('mouseover', function () {
+            //     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
+            //     sel.style('fill', m.hoverColor())
+            //     select(this).style('fill', m.hoverColor())
+            // })
+            // .on('mouseout', function () {
+            //     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
+            //     sel.style('fill', function (d) {
+            //         select(this).attr('fill___')
+            //     })
+            //     select(this).style('fill', m.noDataFillStyle())
+            // })
 
             //'no data' label
             lgg.append('text')
@@ -167,6 +162,32 @@ export const legend = function (map, config) {
 
         //set legend box dimensions
         out.setBoxDimension()
+    }
+
+    // Highlight selected regions on mouseover
+    function highlightRegions(map, ecl) {
+        const selector = out.map.geo_ === 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const allRegions = map.svg_.selectAll(selector).selectAll('[ecl]')
+
+        // Set all regions to white
+        allRegions.style('fill', 'white')
+
+        // Highlight only the selected regions by restoring their original color
+        const selectedRegions = allRegions.filter("[ecl='" + ecl + "']")
+        selectedRegions.each(function () {
+            select(this).style('fill', select(this).attr('fill___')) // Restore original color for selected regions
+        })
+    }
+
+    // Reset all regions to their original colors on mouseout
+    function unhighlightRegions(map) {
+        const selector = out.map.geo_ === 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
+        const allRegions = map.svg_.selectAll(selector).selectAll('[ecl]')
+
+        // Restore each region's original color from the fill___ attribute
+        allRegions.each(function () {
+            select(this).style('fill', select(this).attr('fill___'))
+        })
     }
 
     return out
