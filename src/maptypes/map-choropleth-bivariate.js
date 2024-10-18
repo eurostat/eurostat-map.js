@@ -104,7 +104,7 @@ export const map = function (config) {
         if (!out.classifier2_) out.classifier2(scaleQuantile().domain(stat2).range(range))
 
         //assign class to nuts regions, based on their value
-        let selector = map.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+        let selector = map.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
         if (map.svg_) {
             let regions = map.svg().selectAll(selector)
             regions
@@ -139,7 +139,7 @@ export const map = function (config) {
             //when mixing NUTS, level 0 is separated from the rest (class nutsrg0)
             if (map.nutsLvl_ == 'mixed') {
                 map.svg()
-                    .selectAll('path.nutsrg0')
+                    .selectAll('path.em-nutsrg0')
                     .attr('ecl1', function (rg) {
                         if (!out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) return
                         const sv = out.statData('v1').get(rg.properties.id) || out.statData().get(rg.properties.id)
@@ -167,7 +167,7 @@ export const map = function (config) {
             //when mixing NUTS, level 0 is separated from the rest (using class nutsrg0)
             if (out.nutsLvl_ == 'mixed') {
                 map.svg_
-                    .selectAll('path.nutsrg0')
+                    .selectAll('path.em-nutsrg0')
                     .attr('ecl1', function (rg) {
                         const sv = out.statData('v2').get(rg.properties.id)
                         if (!sv) return
@@ -223,7 +223,7 @@ export const map = function (config) {
 
         // set colour of regions
         if (map.svg()) {
-            let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+            let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
             let regions = map.svg().selectAll(selector)
             regions
                 .transition()
@@ -287,7 +287,7 @@ export const map = function (config) {
             if (out.nutsLvl_ == 'mixed') {
                 // Toggle visibility - only show NUTS 1,2,3 with stat values when mixing different NUTS levels
                 map.svg()
-                    .selectAll('path.nutsrg')
+                    .selectAll('path.em-nutsrg')
                     .style('display', function (rg) {
                         const ecl1 = select(this).attr('ecl1')
                         const ecl2 = select(this).attr('ecl2')

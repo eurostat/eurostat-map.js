@@ -164,7 +164,7 @@ export const map = function (config) {
 
             // Handle mixed NUTS level, separating NUTS level 0
             if (map.nutsLvl_ === 'mixed') {
-                const nuts0Regions = map.svg().selectAll('path.nutsrg0')
+                const nuts0Regions = map.svg().selectAll('path.em-nutsrg0')
                 classifyRegions(nuts0Regions)
             }
         }

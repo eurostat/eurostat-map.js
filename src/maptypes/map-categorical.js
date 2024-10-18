@@ -57,7 +57,7 @@ export const map = function (config) {
 
         //assign class to nuts regions, based on their value
         out.svg()
-            .selectAll('path.nutsrg')
+            .selectAll('path.em-nutsrg')
             .attr('ecl', function (rg) {
                 const sv = out.statData().get(rg.properties.id)
                 if (!sv) return 'nd'
@@ -80,7 +80,7 @@ export const map = function (config) {
         }
 
         //apply style to nuts regions depending on class
-        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
         let regions = out.svg().selectAll(selector)
         regions
             .transition()

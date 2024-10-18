@@ -226,7 +226,7 @@ export const map = function (config) {
                 })
 
                 // set region hover function
-                let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+                let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
                 let regions = out.svg().selectAll(selector)
                 regions
                     .on('mouseover', function (e, rg) {

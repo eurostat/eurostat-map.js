@@ -174,7 +174,7 @@ export const map = function (config) {
 
         //build and assign texture to the regions
         out.svg()
-            .selectAll('path.nutsrg')
+            .selectAll('path.em-nutsrg')
             .style('fill', function (d) {
                 const id = d.properties.id
 
@@ -242,7 +242,7 @@ export const map = function (config) {
             })
 
         // set region hover function
-        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.nutsrg'
+        let selector = out.geo_ == 'WORLD' ? 'path.worldrg' : 'path.em-nutsrg'
         let regions = out.svg().selectAll(selector)
         regions
             .on('mouseover', function (e, rg) {
