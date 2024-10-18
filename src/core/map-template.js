@@ -5,7 +5,7 @@ import { formatDefaultLocale } from 'd3-format'
 import { geoIdentity, geoPath, geoGraticule, geoGraticule10, geoCentroid } from 'd3-geo'
 import { geoRobinson } from 'd3-geo-projection'
 import { feature } from 'topojson-client'
-import { getBBOXAsGeoJSON, spaceAsThousandSeparator, executeForAllInsets } from './utils'
+import { getBBOXAsGeoJSON, spaceAsThousandSeparator, executeForAllInsets, getFontSizeFromClass } from './utils'
 import * as tp from '../tooltip/tooltip'
 import { DEFAULTLABELS, STATLABELPOSITIONS } from './labels'
 import { kosovoBnFeatures } from './kosovo'
@@ -53,21 +53,11 @@ export const mapTemplate = function (config, withCenterPoints) {
 
     //map title
     out.title_ = ''
-    out.titleFontSize_ = 21
-    out.titleFill_ = 'black'
     out.titlePosition_ = undefined
-    out.titleFontWeight_ = 'bold'
-    out.titleStroke_ = 'none'
-    out.titleStrokeWidth_ = 'none'
 
     //map subtitle
     out.subtitle_ = ''
-    out.subtitleFontSize_ = 17
-    out.subtitleFill_ = 'grey'
     out.subtitlePosition_ = undefined
-    out.subtitleFontWeight_ = 100
-    out.subtitleStroke_ = 'none'
-    out.subtitleStrokeWidth_ = 'none'
 
     //map frame (none by default)
     out.frameStroke_ = 'none'
@@ -773,8 +763,11 @@ export const mapTemplate = function (config, withCenterPoints) {
     out.buildMapTemplateBase = function () {
         //get svg element. Create it if it does not exists
         let svg = select('#' + out.svgId())
-        if (svg.size() == 0) svg = select('body').append('svg').attr('id', out.svgId())
-        out.svg(svg)
+        if (svg.size() == 0) {
+            svg = select('body').append('svg').attr('id', out.svgId())
+        }
+        svg.attr('class', 'em-map')
+        out.svg_ = svg
 
         //set container for cases where container contains various maps
         if (!out.containerId_) out.containerId_ = out.svgId_
@@ -1370,44 +1363,31 @@ export const mapTemplate = function (config, withCenterPoints) {
         //title
         if (out.title()) {
             //define default position
-            if (!out.titlePosition()) out.titlePosition([10, 5 + out.titleFontSize()])
+            if (!out.titlePosition()) out.titlePosition([10, getFontSizeFromClass('em-title') + 10])
             //draw title
             out.svg()
                 .append('text')
                 .attr('id', 'title' + out.geo_)
-                .attr('class', 'eurostat-map-title')
+                .attr('class', 'em-title')
                 .style('pointer-events', 'none')
                 .attr('x', out.titlePosition()[0])
                 .attr('y', out.titlePosition()[1])
                 .text(out.title())
-                .style('font-family', out.fontFamily_)
-                .style('font-size', out.titleFontSize_ + 'px')
-                .style('font-weight', out.titleFontWeight_)
-                .style('fill', out.titleFill_)
-                .style('stroke', out.titleStroke_)
-                .style('stroke-width', out.titleStrokeWidth_)
-                .style('stroke-linejoin', 'round')
-                .style('paint-order', 'stroke')
         }
 
         if (out.subtitle()) {
             //define default position
-            if (!out.subtitlePosition()) out.subtitlePosition([10, 8 + out.titleFontSize() + 5 + out.subtitleFontSize()])
+            if (!out.subtitlePosition())
+                out.subtitlePosition([10, getFontSizeFromClass('em-title') + getFontSizeFromClass('em-sutitle') + 15])
             //draw subtitle
             out.svg()
                 .append('text')
                 .attr('id', 'subtitle' + out.geo_)
-                .attr('class', 'eurostat-map-subtitle')
+                .attr('class', 'em-subtitle')
                 .style('pointer-events', 'none')
                 .attr('x', out.subtitlePosition()[0])
                 .attr('y', out.subtitlePosition()[1])
                 .text(out.subtitle())
-                .style('font-family', out.fontFamily_)
-                .style('font-size', out.subtitleFontSize() + 'px')
-                .style('font-weight', out.subtitleFontWeight())
-                .style('fill', out.subtitleFill())
-                .style('stroke', out.subtitleStroke())
-                .style('stroke-width', out.subtitleStrokeWidth())
                 .style('stroke-linejoin', 'round')
                 .style('paint-order', 'stroke')
         }

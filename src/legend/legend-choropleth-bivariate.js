@@ -32,7 +32,7 @@ export const legend = function (map, config) {
     out.showBreaks = false // if set to true and breaks1 and breaks2 are undefined then breaks are automatically defined
 
     //axis
-    out.yAxisLabelsOffset = { x: 5, y: 0 }
+    out.yAxisLabelsOffset = { x: 0, y: 0 }
     out.xAxisLabelsOffset = { x: 0, y: 0 }
 
     //show no data
@@ -54,9 +54,6 @@ export const legend = function (map, config) {
     out.arrowHeight = 15
     out.arrowWidth = 14
     out.arrowPadding = 10 // padding between arrow and axis label
-
-    //distance between axis and axis title / arrow
-    out.axisPadding = { x: 10, y: 10 }
 
     //override attribute values with config values
     if (config) for (let key in config) out[key] = config[key]
@@ -202,7 +199,9 @@ export const legend = function (map, config) {
         }
 
         // Append X axis arrow
-        const xAxisArrowY = out.squareSize + out.arrowHeight + out.xAxisLabelsOffset.y + out.axisPadding.y
+        let xAxisArrowY = out.squareSize + out.arrowHeight + out.xAxisLabelsOffset.y
+        if (out.showBreaks || (out.breaks1 && out.breaks2)) xAxisArrowY += out.labelFontSize / 1.5 // move over for tick labels
+
         square
             .append('path')
             .attr('class', 'em-bivariate-axis-arrow')
@@ -217,7 +216,9 @@ export const legend = function (map, config) {
             .attr('marker-end', 'url(#arrowhead)')
 
         // Append Y axis arrow
-        const yAxisArrowX = -out.axisTitleFontSize
+        let yAxisArrowX = -out.arrowHeight + out.yAxisLabelsOffset.x
+        if (out.showBreaks || (out.breaks1 && out.breaks2)) yAxisArrowX -= out.labelFontSize / 2 // move over for tick labels
+
         square
             .append('path')
             .attr('class', 'em-bivariate-axis-arrow')
@@ -246,7 +247,7 @@ export const legend = function (map, config) {
             .append('text')
             .attr('class', 'em-bivariate-axis-title')
             .attr('x', -out.squareSize)
-            .attr('y', -out.axisTitleFontSize - out.arrowPadding)
+            .attr('y', yAxisArrowX - out.arrowPadding)
             .attr('transform', `rotate(-90)`)
             .text(out.label2)
 

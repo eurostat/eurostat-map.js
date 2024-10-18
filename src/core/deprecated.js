@@ -2,6 +2,13 @@
 // remove when completely phased out.
 
 export const defineDeprecatedFunctions = (out) => {
+    out.tooltipText = function (v) {
+        console.warn(
+            'map.tooltipText() is now deprecated. Please use map.tooltip(config.textFunction) instead. See API reference for details.'
+        )
+        out.tooltip_.textFunction = v
+        return out
+    }
     out.seaFillStyle = function (v) {
         console.warn('seaFillStyle() is now DEPRECATED, please use the .em-sea CSS class')
         return out
@@ -35,11 +42,10 @@ export const defineDeprecatedFunctions = (out) => {
         out.hoverColor_ = v
         return out
     }
-    out.tooltipText = function (v) {
-        console.warn(
-            'map.tooltipText() is now deprecated. Please use map.tooltip(config.textFunction) instead. See API reference for details.'
-        )
-        out.tooltip_.textFunction = v
-        return out
+    out.titleFontSize = function (v) {
+        console.warn('map.titleFontSize() is now DEPRECATED. please use the .em-title CSS class')
+    }
+    out.subtitleFontSize = function (v) {
+        console.warn('map.subtitleFontSize() is now DEPRECATED. please use the .em-subtitle CSS class')
     }
 }
