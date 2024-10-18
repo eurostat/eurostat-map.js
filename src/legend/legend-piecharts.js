@@ -208,8 +208,8 @@ export const legend = function (map, config) {
                     svgMap
                         .selectAll('.piechart')
                         .selectAll("path[code='" + code + "']")
-                        .style('fill', m.nutsrgSelFillSty())
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                        .style('fill', m.hoverColor())
+                    select(this).style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     svgMap
@@ -232,7 +232,7 @@ export const legend = function (map, config) {
                     svgMap
                         .selectAll('pattern')
                         .selectAll("rect[code='" + code + "']")
-                        .style('fill', m.nutsrgSelFillSty())
+                        .style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     const col = m.catColors()[code] || 'lightgray'
@@ -264,8 +264,8 @@ export const legend = function (map, config) {
                 .attr('stroke', 'black')
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
-                    svgMap.select('#g_nutsrg').selectAll("[nd='nd']").style('fill', m.nutsrgSelFillSty())
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                    svgMap.select('#g_nutsrg').selectAll("[nd='nd']").style('fill', m.hoverColor())
+                    select(this).style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     const sel = svgMap
@@ -287,7 +287,7 @@ export const legend = function (map, config) {
                 .style('font-family', m.fontFamily_)
                 .style('fill', out.fontFill)
                 .on('mouseover', function () {
-                    svgMap.select('#g_nutsrg').selectAll("[nd='nd']").style('fill', m.nutsrgSelFillSty())
+                    svgMap.select('#g_nutsrg').selectAll("[nd='nd']").style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     const sel = svgMap

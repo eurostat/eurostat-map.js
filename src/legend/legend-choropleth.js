@@ -80,7 +80,7 @@ export const legend = function (map, config) {
                 .attr('height', out.shapeHeight)
                 .style('fill', fill)
                 .on('mouseover', function () {
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                    select(this).style('fill', m.hoverColor())
                     highlightRegions(out.map, ecl)
                     if (out.map.insetTemplates_) {
                         executeForAllInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)

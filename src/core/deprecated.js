@@ -35,8 +35,8 @@ export const defineDeprecatedFunctions = (out) => {
         console.warn('graticuleStrokeWidth() is now DEPRECATED, please use the .em-graticule CSS class')
         return out
     }
-    out.nutsrgSelFillSty = function (v) {
-        console.warn('nutsrgSelFillSty() is now DEPRECATED, please use hoverColor() instead')
+    out.nutsrgFillStyle = function (v) {
+        console.warn('hoverColor() is now DEPRECATED, please use hoverColor() instead')
         out.hoverColor_ = v
         return out
     }

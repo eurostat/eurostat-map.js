@@ -236,7 +236,6 @@ export const map = function (config) {
                             const sel = select(this)
                             const countryId = rg.properties.id.slice(0, 2)
                             if (out.geo_ === 'WORLD' || out.countriesToShow_.includes(countryId)) {
-                                sel.attr('fill___', sel.style('fill')) // Store original color
                                 sel.style('fill', map.hoverColor_) // Apply highlight color
                                 if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                             }

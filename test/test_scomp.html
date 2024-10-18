@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
+    <body>
+        <svg id="map"></svg>
+        <script src="../build/eurostatmap.js"></script>
+        <script>
+            const map = eurostatmap
+                .map('scomp')
+                .scale('60M')
+                .zoomExtent([1, 2])
 
-<body>
-    <svg id="map"></svg>
-    <script src="../build/eurostatmap.js"></script>
-    <script>
-        const map = eurostatmap
-            .map("scomp")
-            .scale("60M")
-            .zoomExtent([1,2])
-
-            //livestock
-            .nutsLvl(1)
-            .nutsYear(2016)
-            .stripeWidth(12)
+                //livestock
+                .nutsLvl(1)
+                .nutsYear(2016)
+                .stripeWidth(12)
             //.stripeOrientation(45)
-            map.statComp( { eurostatDatasetCode: "agr_r_animal", filters: { unit: "THS_HD", time: "2018" }, unitText: "1000 heads" },
-                "animals",
-                ["A2000", "A2300", "A2400", "A3100", "A4100", "A4200"], ["bovines", "cows", "buffalos", "pigs", "sheeps", "goats"],
-                ["#7fc97f", "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f"]
+            map.statComp(
+                { eurostatDatasetCode: 'agr_r_animal', filters: { unit: 'THS_HD', time: '2018' }, unitText: '1000 heads' },
+                'animals',
+                ['A2000', 'A2300', 'A2400', 'A3100', 'A4100', 'A4200'],
+                ['bovines', 'cows', 'buffalos', 'pigs', 'sheeps', 'goats'],
+                ['#7fc97f', '#beaed4', '#fdc086', '#ffff99', '#386cb0', '#f0027f']
             )
-            .insets("default")
-            .title("European livestock composition (2018)")
-            .legend({x:10, y:150, title: "Animals", boxOpacity: 0.8, boxFill: "white" })
-            .seaFillStyle("white")
-            .coastalMarginColor("lightgray")
-            .drawGraticule(false)
+                .insets('default')
+                .title('European livestock composition (2018)')
+                .legend({ x: 10, y: 150, title: 'Animals', boxOpacity: 0.8, boxFill: 'white' })
+                .seaFillStyle('white')
+                .coastalMarginColor('lightgray')
+                .drawGraticule(false)
 
-
-
-            /*/size of exploitations agri
+                /*/size of exploitations agri
             .nutsLvl(2)
             .nutsYear(2013)
             .stripeWidth(10)
@@ -49,13 +48,7 @@
             .legend({x:550, y:100, title: "Farm areas"})
 */
 
-
-
-
-
-
-
-            /*/cod
+                /*/cod
             .nutsLvl(2)
             .nutsYear(2016)
             .stripeWidth(20)
@@ -69,7 +62,7 @@
             )
             //.showOnlyWhenComplete(true)
             .legend({x:550, y:10, title: "Causes of death"})
-            .nutsrgSelFillSty("white")
+            .hoverColor("white")
             .catLabels({
 A_B: "Certain infectious and parasitic", 
 C: "Malignant neoplasms", 
@@ -97,8 +90,7 @@ ACC: "Accidents",
     })
 */
 
-
-            /*/Governement expenditure by COFOG
+                /*/Governement expenditure by COFOG
             .nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(60)
@@ -113,7 +105,7 @@ ACC: "Accidents",
             //.showOnlyWhenComplete(true)
             .legend({x:550, y:10, title: "Gov expenditure"})*/
 
-            /*/COICOP
+                /*/COICOP
             .nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(60)
@@ -140,7 +132,7 @@ ACC: "Accidents",
                 CP12: "Miscellaneous"
             })*/
 
-            /*/population by age
+                /*/population by age
             .nutsLvl(3)
             .nutsYear(2016)
             .stripeWidth(10)
@@ -161,10 +153,7 @@ ACC: "Accidents",
             .legend({x:550, y:10, title: "Population by age"})
 */
 
-
-
-
-            /*/GDP by sector
+                /*/GDP by sector
             .nutsLvl(0)
             .nutsYear(2016)
             .stripeWidth(70)
@@ -194,10 +183,7 @@ ACC: "Accidents",
                 "R-U": "Arts, entertainment, other services, int, etc.",
             })*/
 
-
-
-
-                        /*/internet utilisation
+                /*/internet utilisation
             .nutsLvl(2)
             .nutsYear(2016)
             .stripeWidth(15)
@@ -208,8 +194,7 @@ ACC: "Accidents",
             )
             .legend({x:550, y:150, title: "Internet"})*/
 
-
-            /*/business demography
+                /*/business demography
             .nutsLvl(2)
             .nutsYear(2016)
             .stripeWidth(15)
@@ -222,9 +207,7 @@ ACC: "Accidents",
             )
             .legend({})*/
 
-            .build();
-
-</script>
-</body>
-
+                .build()
+        </script>
+    </body>
 </html>

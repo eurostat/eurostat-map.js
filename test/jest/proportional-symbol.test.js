@@ -28,7 +28,7 @@ test('proportional symbol map', async () => {
             .svgId('ps-test-map')
             .nutsLvl(0)
             .title('GDP, 2018')
-            .nutsrgSelFillSty('cyan')
+            .hoverColor('cyan')
             .zoomExtent([1, 2])
             //GDP per inhabitant
             .stat('color', {

@@ -78,12 +78,12 @@ export const legend = function (map, config) {
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    sel.style('fill', m.nutsrgSelFillSty())
+                    sel.style('fill', m.hoverColor())
                     const th = select(this)
                     sel.attr('fill___', function (d) {
                         th.style('fill')
                     })
-                    th.style('fill', m.nutsrgSelFillSty())
+                    th.style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
@@ -106,7 +106,7 @@ export const legend = function (map, config) {
                 .style('fill', out.fontFill)
                 .on('mouseover', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='" + ecl + "']")
-                    sel.style('fill', m.nutsrgSelFillSty())
+                    sel.style('fill', m.hoverColor())
                     const th = select(this)
                     sel.attr('fill___', function (d) {
                         th.style('fill')
@@ -139,11 +139,11 @@ export const legend = function (map, config) {
                 .attr('stroke-width', 0.5)
                 .on('mouseover', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")
-                    sel.style('fill', m.nutsrgSelFillSty())
+                    sel.style('fill', m.hoverColor())
                     sel.attr('fill___', function (d) {
                         select(this).style('fill')
                     })
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                    select(this).style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     const sel = svgMap.select('#g_nutsrg').selectAll("[ecl='nd']")

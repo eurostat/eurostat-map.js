@@ -241,7 +241,7 @@ export const legend = function (map, config) {
                     let ps = select(this.childNodes[0])
                     ps.style('fill', m.noDataFillStyle())
                 })
-                select(this).style('fill', m.nutsrgSelFillSty())
+                select(this).style('fill', m.hoverColor())
 
                 let ecl = 'nd'
 
@@ -327,7 +327,7 @@ export const legend = function (map, config) {
         // TODO: change this to estat logic of making all other classes transparent?
         let selector = out.map.geo_ == 'WORLD' ? '#g_worldrg' : '#g_nutsrg'
         const sel = map.selectAll(selector).selectAll("[ecl='" + ecl + "']")
-        sel.style('fill', out.map.nutsrgSelFillSty())
+        sel.style('fill', out.map.hoverColor())
         sel.attr('fill___', function () {
             select(this).style('fill')
         })
@@ -683,9 +683,9 @@ export const legend = function (map, config) {
                     select(this).attr('fill___', cellFill)
                     parents.each(function (d, i) {
                         let ps = select(this.childNodes[0])
-                        ps.style('fill', m.nutsrgSelFillSty())
+                        ps.style('fill', m.hoverColor())
                     })
-                    select(this).style('fill', m.nutsrgSelFillSty())
+                    select(this).style('fill', m.hoverColor())
                 })
                 .on('mouseout', function () {
                     //for ps, the symbols are the children of each g_ps element
