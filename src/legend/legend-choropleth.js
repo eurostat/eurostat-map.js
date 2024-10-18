@@ -71,13 +71,15 @@ export const legend = function (map, config) {
 
         let baseY = out.boxPadding
         if (out.title) baseY = baseY + getFontSizeFromClass('em-legend-title') + 8 // title size + padding
-        for (let i = 0; i < m.clnb(); i++) {
+        for (let i = 0; i < m.clnb_; i++) {
             const y = baseY + i * out.shapeHeight
+            const x = out.boxPadding
             const ecl = out.ascending ? m.clnb() - i - 1 : i
-            const fillColor = m.classToFillStyle()(ecl, m.clnb())
+            const fillColor = m.classToFillStyle()(ecl, m.clnb_)
 
             // Append rectangle for each class
             lgg.append('rect')
+                .attr('class', 'em-legend-rect')
                 .attr('x', x)
                 .attr('y', y)
                 .attr('width', out.shapeWidth)
@@ -87,14 +89,14 @@ export const legend = function (map, config) {
                     select(this).style('fill', m.hoverColor_)
                     highlightRegions(out.map, ecl)
                     if (out.map.insetTemplates_) {
-                        executeForAllInsets(out.map.insetTemplates_, svgId, highlightRegions, ecl)
+                        executeForAllInsets(out.map.insetTemplates_, out.map.svgId, highlightRegions, ecl)
                     }
                 })
                 .on('mouseout', function () {
                     select(this).style('fill', fillColor)
                     unhighlightRegions(out.map, ecl)
                     if (out.map.insetTemplates_) {
-                        executeForAllInsets(out.map.insetTemplates_, svgId, unhighlightRegions, ecl)
+                        executeForAllInsets(out.map.insetTemplates_, out.map.svgId, unhighlightRegions, ecl)
                     }
                 })
 
@@ -132,9 +134,27 @@ export const legend = function (map, config) {
         // 'No data' box and label if applicable
         if (out.noData) {
             const y = baseY + m.clnb() * out.shapeHeight + out.boxPadding
-            appendLegendRect(out.boxPadding, y, m.noDataFillStyle(), 'nd', out.svgId_ || 'defaultSvgId')
-                .attr('stroke', 'black')
-                .attr('stroke-width', 0.5)
+            lgg.append('rect')
+                .attr('class', 'em-legend-rect')
+                .attr('x', out.boxPadding)
+                .attr('y', y)
+                .attr('width', out.shapeWidth)
+                .attr('height', out.shapeHeight)
+                .style('fill', out.map.noDataFillStyle_)
+                .on('mouseover', function () {
+                    select(this).style('fill', m.hoverColor_)
+                    highlightRegions(out.map, 'nd')
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.map.svgId, highlightRegions, 'nd')
+                    }
+                })
+                .on('mouseout', function () {
+                    select(this).style('fill', out.map.noDataFillStyle_)
+                    unhighlightRegions(out.map, 'nd')
+                    if (out.map.insetTemplates_) {
+                        executeForAllInsets(out.map.insetTemplates_, out.map.svgId, unhighlightRegions, 'nd')
+                    }
+                })
 
             lgg.append('text')
                 .attr('class', 'em-legend-label')

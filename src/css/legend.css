@@ -41,7 +41,8 @@
 }
 .em-bivariate-tick {
 }
-.em-bivariate-square {
+.em-bivariate-square,
+.em-legend-rect {
     cursor: pointer;
     stroke: white;
 }
