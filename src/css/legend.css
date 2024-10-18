@@ -30,6 +30,8 @@
 }
 .em-bivariate-nodata {
     stroke: black;
+    stroke-width: 0.5;
+    cursor: pointer;
 }
 .em-bivariate-axis-title {
     font-size: 15px;
@@ -38,4 +40,8 @@
     font-size: 14px;
 }
 .em-bivariate-tick {
+}
+.em-bivariate-square {
+    cursor: pointer;
+    stroke: white;
 }

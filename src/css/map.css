@@ -22,6 +22,7 @@ a text {
 }
 .em-nutsrg {
     fill: #efefef;
+    cursor: pointer;
 }
 .em-kosovo-bn {
     stroke: '#4f4f4f';

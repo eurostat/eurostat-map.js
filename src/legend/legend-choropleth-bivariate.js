@@ -113,7 +113,7 @@ export const legend = function (map, config) {
 
                 square
                     .append('rect')
-                    .attr('class', 'bivariate-square')
+                    .attr('class', 'em-bivariate-square')
                     .attr('x', initialX + (clnb - 1 - i) * sz)
                     .attr('y', j * sz)
                     .attr('width', sz)
@@ -123,6 +123,8 @@ export const legend = function (map, config) {
                         const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
                         const sel = regions.selectAll(`[ecl1='${ecl1}']`).filter(`[ecl2='${ecl2}']`)
                         sel.style('fill', 'red')
+                        // Make the stroke thicker on hover
+                        select(this).raise().style('stroke-width', 2).style('stroke', out.map.hoverColor_) // Increase the stroke width on hover
                     })
                     .on('mouseout', function () {
                         const container = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
@@ -132,6 +134,8 @@ export const legend = function (map, config) {
                             sel.style('fill', sel.attr('fill___'))
                         })
                         select(this).style('fill', fill)
+                        // Reset the stroke width to the original value on mouseout
+                        select(this).style('stroke-width', 0.5).style('stroke', 'white') // Reset stroke width back to normal
                     })
             }
         }
@@ -292,6 +296,8 @@ export const legend = function (map, config) {
                     const regions = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
                     const sel = regions.selectAll("[nd='nd']")
                     sel.style('fill', 'red')
+                    // Make the stroke thicker on hover
+                    select(this).raise().style('stroke-width', 2).style('stroke', out.map.hoverColor_) // Increase the stroke width on hover
                 })
                 .on('mouseout', function () {
                     const nRg = out.map.nutsLvl_ == 'mixed' ? selectAll('#g_nutsrg') : select('#g_nutsrg')
@@ -300,6 +306,8 @@ export const legend = function (map, config) {
                         return select(this).attr('fill___')
                     })
                     select(this).style('fill', out.map.noDataFillStyle())
+                    // Reset the stroke width to the original value on mouseout
+                    select(this).style('stroke-width', 0.5).style('stroke', 'black') // Reset stroke width back to normal
                 })
             lgg.append('text')
                 .attr('class', 'em-bivariate-label')
