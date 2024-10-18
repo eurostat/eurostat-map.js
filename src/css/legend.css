@@ -20,3 +20,22 @@
     stroke: grey;
     stroke-width: 1;
 }
+.em-bivariate-break2-label {
+}
+.em-bivariate-frame {
+    fill: none;
+    stroke: black;
+}
+.em-bivariate-arrowhead {
+}
+.em-bivariate-nodata {
+    stroke: black;
+}
+.em-bivariate-axis-title {
+    font-size: 15px;
+}
+.em-bivariate-label {
+    font-size: 14px;
+}
+.em-bivariate-tick {
+}

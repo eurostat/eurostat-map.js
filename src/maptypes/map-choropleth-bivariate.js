@@ -245,18 +245,22 @@ export const map = function (config) {
                 .end()
                 .then(
                     () => {
+                        // Store the original color for each region
+                        regions.each(function () {
+                            const sel = select(this)
+                            sel.attr('fill___', sel.style('fill'))
+                        })
+
                         regions
                             .on('mouseover', function (e, rg) {
                                 if (out.countriesToShow_ && out.geo_ !== 'WORLD') {
                                     if (out.countriesToShow_.includes(rg.properties.id[0] + rg.properties.id[1])) {
                                         const sel = select(this)
-                                        sel.attr('fill___', sel.style('fill'))
                                         sel.style('fill', map.hoverColor_)
                                         if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                                     }
                                 } else {
                                     const sel = select(this)
-                                    sel.attr('fill___', sel.style('fill'))
                                     sel.style('fill', map.hoverColor_)
                                     if (out._tooltip) out._tooltip.mouseover(out.tooltip_.textFunction(rg, out))
                                 }

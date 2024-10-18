@@ -12,6 +12,7 @@
             const map = eurostatmap
                 .map('chbi')
                 .nutsLvl(2)
+                .width(1000)
                 .nutsYear(2016)
                 //.stat("v1", { eurostatDatasetCode:"demo_r_gind3", filters: { indic_de: "GROWRT", time: 2016 }, unitText: "‰" } )
                 .stat('v1', { eurostatDatasetCode: 'demo_r_d3dens', unitText: 'inh./km²' })
@@ -20,48 +21,20 @@
                     filters: { age: 'Y20-64', sex: 'T', unit: 'PC', time: 2017 },
                     unitText: '%',
                 })
-                .countriesToShow([
-                    'AT',
-                    'BE',
-                    'BG',
-                    'CY',
-                    'CZ',
-                    'DE',
-                    'DK',
-                    'EE',
-                    'EL',
-                    'ES',
-                    'FI',
-                    'FR',
-                    'HR',
-                    'HU',
-                    'IE',
-                    'IT',
-                    'LI',
-                    'LT',
-                    'LU',
-                    'LV',
-                    'MT',
-                    'NL',
-                    'PL',
-                    'PT',
-                    'RO',
-                    'SE',
-                    'SI',
-                    'SK',
-                ])
                 .bordersToShow(['efta', 'eu', 'oth', 'cc', 'co'])
                 .title('Unemployment and population density')
                 .insets('default')
                 .scale('60M')
                 .legend({
-                    boxFill: 'none',
-                    squareSize: 110,
-                    rotation: -45,
-                    label1: 'Unemployment ',
-                    label2: 'Population',
-                    x: 10,
-                    y: 120,
+                    // rotation: -45,
+                    squareSize: 100,
+                    label1: 'Inhabitants per km²',
+                    label2: 'Unemployment',
+                    // breaks1: [1, 2, 3],
+                    // breaks2: [1, 2, 3],
+                    showBreaks: true,
+                    x: 0,
+                    y: 140,
                 })
                 .drawGraticule(false)
                 .seaFillStyle('#d3dee8')
