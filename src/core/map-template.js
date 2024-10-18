@@ -822,7 +822,7 @@ export const mapTemplate = function (config, withCenterPoints) {
         const dg = svg
             .insert('g', ':first-child')
             .attr('id', 'drawing' + out.svgId_)
-            .attr('class', 'estatmap-drawing-group')
+            .attr('class', 'em-drawing-group')
             .attr('clip-path', 'url(#' + out.svgId_ + '_clipP' + ')')
 
         //create main zoom group
@@ -941,9 +941,12 @@ export const mapTemplate = function (config, withCenterPoints) {
 
         //geo center and extent: if not specified, use the default one, or the compute one from the topojson bbox
         const dp = _defaultPosition[out.geo_ + '_' + out.proj_]
-        if (!out.geoCenter())
-            if (dp) out.geoCenter(dp.geoCenter)
-            else out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])])
+        if (!out.geoCenter_)
+            if (dp) {
+                out.geoCenter(dp.geoCenter)
+            } else {
+                out.geoCenter([0.5 * (geoData.bbox[0] + geoData.bbox[2]), 0.5 * (geoData.bbox[1] + geoData.bbox[3])])
+            }
         //pixel size (zoom level): if not specified, compute value from SVG dimensions and topojson geographical extent
         if (!out.pixSize_)
             if (dp) {

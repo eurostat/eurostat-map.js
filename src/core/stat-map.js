@@ -1,4 +1,4 @@
-import { flags } from './utils'
+import { applyInlineStylesFromCSS, flags, serialize, rasterize, getDownloadURL } from './utils'
 import * as mt from './map-template'
 import * as sd from './stat-data'
 import * as lg from './legend'
@@ -316,14 +316,35 @@ export const statMap = function (config, withCenterPoints) {
      *
      */
     out.exportMapToSVG = function () {
-        let svgBlob = serialize(out.svg_.node())
-        var svgUrl = URL.createObjectURL(svgBlob)
-        var downloadLink = document.createElement('a')
+        // Clone the original SVG node to avoid modifying the DOM
+        const svgNodeClone = out.svg_.node().cloneNode(true)
+        // Add XML namespaces if not already present
+        if (!svgNodeClone.hasAttribute('xmlns')) {
+            svgNodeClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+        }
+        if (!svgNodeClone.hasAttribute('xmlns:xlink')) {
+            svgNodeClone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+        }
+
+        // Temporarily append the clone to the document to compute styles
+        document.body.appendChild(svgNodeClone)
+
+        // Convert CSS to inline styles before saving the SVG
+        applyInlineStylesFromCSS(svgNodeClone)
+
+        // Remove the cloned SVG from the document after applying styles
+        document.body.removeChild(svgNodeClone)
+
+        const svgUrl = getDownloadURL(svgNodeClone)
+
+        // Create a download link and trigger download
+        const downloadLink = document.createElement('a')
         downloadLink.href = svgUrl
         downloadLink.download = 'eurostatmap.svg'
         document.body.appendChild(downloadLink)
         downloadLink.click()
         document.body.removeChild(downloadLink)
+
         return out
     }
 
@@ -332,70 +353,64 @@ export const statMap = function (config, withCenterPoints) {
      * @description Exports the current map with styling to PNG and downloads it
      *
      */
-    out.exportMapToPNG = function () {
-        let canvasPromise = rasterize(out.svg_.node())
-        canvasPromise.then((canvasBlob) => {
-            var canvasUrl = URL.createObjectURL(canvasBlob)
-            var downloadLink = document.createElement('a')
-            downloadLink.href = canvasUrl
-            downloadLink.download = 'eurostatmap.png'
-            document.body.appendChild(downloadLink)
-            downloadLink.click()
-            document.body.removeChild(downloadLink)
-        })
+    out.exportMapToPNG = function (width, height) {
+        const svgNodeClone = out.svg_.node().cloneNode(true)
+        // Convert CSS to inline styles before saving the SVG
+        applyInlineStylesFromCSS(svgNodeClone)
+
+        // Step 1: Serialize the SVG node to a string
+        const serializer = new XMLSerializer()
+        const svgString = serializer.serializeToString(svgNodeClone)
+
+        // Step 2: Create a Blob from the serialized SVG
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+
+        // Step 3: Create a URL for the Blob
+        const url = URL.createObjectURL(svgBlob)
+
+        // Get the width and height attributes from the SVG
+        width = width || svgNodeClone.getAttribute('width')
+        height = height || svgNodeClone.getAttribute('height')
+
+        if (!width || !height) {
+            throw new Error('SVG width or height attributes are missing or invalid.')
+        }
+
+        // Step 4: Create an Image element and load the Blob URL
+        const img = new Image()
+        img.onload = function () {
+            // Step 5: Draw the image on a canvas
+            const canvas = document.createElement('canvas')
+            canvas.width = parseFloat(width) // Set canvas width from SVG's width attribute
+            canvas.height = parseFloat(height) // Set canvas height from SVG's height attribute
+
+            const context = canvas.getContext('2d')
+            context.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+            // Step 6: Convert the canvas to a PNG blob
+            canvas.toBlob(function (pngBlob) {
+                // Step 7: Download the PNG file
+                const pngUrl = URL.createObjectURL(pngBlob)
+                const downloadLink = document.createElement('a')
+                downloadLink.href = pngUrl
+                downloadLink.download = 'eurostat-map.png'
+                document.body.appendChild(downloadLink)
+                downloadLink.click()
+                document.body.removeChild(downloadLink)
+
+                // Clean up URLs
+                URL.revokeObjectURL(url)
+                URL.revokeObjectURL(pngUrl)
+            }, 'image/png')
+        }
+
+        // Set the image source to the Blob URL
+        img.src = url
         return out
     }
 
     return out
 }
-
-// adapted from https://observablehq.com/@mbostock/saving-svg
-// turns svg into blob
-function serialize(svg) {
-    const xmlns = 'http://www.w3.org/2000/xmlns/'
-    const xlinkns = 'http://www.w3.org/1999/xlink'
-    const svgns = 'http://www.w3.org/2000/svg'
-    svg = svg.cloneNode(true)
-    const fragment = window.location.href + '#'
-    const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT, null, false)
-    while (walker.nextNode()) {
-        for (const attr of walker.currentNode.attributes) {
-            if (attr.value.includes(fragment)) {
-                attr.value = attr.value.replace(fragment, '#')
-            }
-        }
-    }
-    svg.setAttributeNS(xmlns, 'xmlns', svgns)
-    svg.setAttributeNS(xmlns, 'xmlns:xlink', xlinkns)
-    const serializer = new window.XMLSerializer()
-    const string = serializer.serializeToString(svg)
-    return new Blob([string], { type: 'image/svg+xml' })
-}
-
-// adapted from https://observablehq.com/@mbostock/saving-sv
-//svg to canvas blob promise
-function rasterize(svg) {
-    let resolve, reject
-    const promise = new Promise((y, n) => ((resolve = y), (reject = n)))
-    const image = new Image()
-    image.onerror = reject
-    image.onload = () => {
-        const rect = svg.getBoundingClientRect()
-        const canvas = document.createElement('canvas')
-        canvas.width = rect.width
-        canvas.height = rect.height
-        const context = canvas.getContext('2d')
-        context.drawImage(image, 0, 0, rect.width, rect.height)
-        context.canvas.toBlob(resolve)
-    }
-    image.src = URL.createObjectURL(serialize(svg))
-    return promise
-}
-
-const upperCaseFirstLetter = (string) => `${string.slice(0, 1).toUpperCase()}${string.slice(1)}`
-
-const lowerCaseAllWordsExceptFirstLetters = (string) =>
-    string.replaceAll(/\S*/g, (word) => `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`)
 
 /**
  * Retrieve some URL parameters, which could be then reused as map definition parameters.
