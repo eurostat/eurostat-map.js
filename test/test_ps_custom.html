@@ -13,7 +13,7 @@
         <script>
             // test custom svg symbols
             let map = eurostatmap
-                .map('ps')
+                .map('proportionalSymbol')
                 .svgId('basic')
                 .nutsLvl('mixed')
                 .psOffset({ x: -5, y: -10 })
@@ -92,7 +92,23 @@
                     },
                 })
 
-            map.statData('size').setData({TR834:100,DE:90,BE:15,BG:13,DK:14,SE:123,FR:90,ES:84, ES1:43,ES2:41,ES3:44,ES4:44,ES5:80, ES11:110, ES12:50})
+            map.statData('size').setData({
+                TR834: 100,
+                DE: 90,
+                BE: 15,
+                BG: 13,
+                DK: 14,
+                SE: 123,
+                FR: 90,
+                ES: 84,
+                ES1: 43,
+                ES2: 41,
+                ES3: 44,
+                ES4: 44,
+                ES5: 80,
+                ES11: 110,
+                ES12: 50,
+            })
             map.build()
 
             setTimeout(() => {
@@ -107,7 +123,6 @@
                     },
                 })
             }, 2000)
-
         </script>
     </body>
 </html>

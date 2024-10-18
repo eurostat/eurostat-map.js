@@ -167,7 +167,7 @@ Example:
 
 ```javascript
 eurostatmap
-    .map('ch')
+    .map('choropleth')
     .title('Population in Europe')
     .stat({ eurostatDatasetCode: 'demo_r_d3dens', unitText: 'inhab./km²' })
     .classifMethod('threshold')
@@ -217,7 +217,7 @@ Example:
 
 ```javascript
 eurostatmap
-    .map('ps')
+    .map('proportionalSymbol')
     .nutsLvl(1)
     .stat({
         eurostatDatasetCode: 'demo_r_pjangrp3',
@@ -324,7 +324,7 @@ Example:
 ```javascript
 //population composition by age
 eurostatmap
-    .map('pie')
+    .map('pieChart')
     .nutsLvl(1)
     .stat('Y_LT15', {
         eurostatDatasetCode: 'demo_r_pjanaggr3',
@@ -351,7 +351,7 @@ Or simpler:
 ```javascript
 //population composition by age
 eurostatmap
-    .map('pie')
+    .map('pieChart')
     .nutsLvl(3)
     .nutsYear(2016)
     .stripeWidth(10)
@@ -437,7 +437,7 @@ Example:
 
 ```javascript
 eurostatmap
-    .map('ct')
+    .map('categorical')
     .nutsYear(2013)
     .nutsLvl(3)
     .stat({
@@ -480,7 +480,7 @@ Example:
 
 ```javascript
 eurostatmap
-    .map('chbi')
+    .map('bivariateChoropleth')
     .nutsLvl(2)
     .nutsYear(2016)
     .stat('v1', { eurostatDatasetCode: 'demo_r_d3dens', unitText: 'inh./km²' })
@@ -537,7 +537,7 @@ Example:
 ```javascript
 //population composition by age
 eurostatmap
-    .map('scomp')
+    .map('stripeComposition')
     .nutsLvl(3)
     .nutsYear(2016)
     .stripeWidth(10)
@@ -567,7 +567,7 @@ Or simplier:
 ```javascript
 //population composition by age
 eurostatmap
-    .map('scomp')
+    .map('stripeComposition')
     .nutsLvl(3)
     .nutsYear(2016)
     .stripeWidth(10)
@@ -615,7 +615,7 @@ Example:
 
 ```javascript
 eurostatmap
-    .map('spark')
+    .map('sparkline')
     .nutsLvl(1)
     .statSpark(
         { eurostatDatasetCode: 'demo_r_pjanaggr3', filters: { sex: 'T', unit: 'NR' }, unitText: 'people' },

@@ -20,7 +20,7 @@ test('choropleth with fill pattern', async () => {
         // these will be executed within test.html, that was loaded before
         //builds test map in test.html
         eurostatmap
-            .map('ch')
+            .map('choropleth')
             .width(900)
             .title('Population in Europe')
             .titleFontSize(40)

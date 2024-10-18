@@ -528,7 +528,7 @@
                 'rgb(56,138,224)',
             ]
             const map = eurostatmap
-                .map('chbi')
+                .map('bivariateChoropleth')
                 .nutsLvl('mixed')
                 .classToFillStyle((class1, class2) => {
                     if (class1 == 0 && class2 == 2) return COLORS[0]

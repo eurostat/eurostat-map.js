@@ -110,7 +110,7 @@
             let projection = d3.geoAzimuthalEqualArea().rotate(proj.rotate).scale(proj.scale)
 
             let map = eurostatmap
-                .map('ch')
+                .map('choropleth')
                 .projectionFunction(projection)
                 .width(mapWidth)
                 .height(mapHeight)
